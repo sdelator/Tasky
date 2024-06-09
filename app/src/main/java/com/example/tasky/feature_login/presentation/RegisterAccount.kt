@@ -16,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.tasky.R
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
@@ -33,7 +35,7 @@ fun RegisterAccountContent() {
             .padding(top = 70.dp)
     )
     {
-        Header(title = "Create your account")
+        Header(title = stringResource(R.string.create_your_account))
         // White bottom sheet-like shape
         Card(
             modifier = Modifier
@@ -52,15 +54,15 @@ fun RegisterAccountContent() {
                     .padding(16.dp)
                     .fillMaxWidth()
             ) {
-                TextBox(hintText = "Name")
-                TextBox(hintText = "Email")
-                TextBox(hintText = "Password")
+                TextBox(hintText = stringResource(R.string.name))
+                TextBox(hintText = stringResource(R.string.email))
+                TextBox(hintText = stringResource(R.string.password))
 
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = { /*TODO*/ },
-                    buttonName = "GET STARTED"
+                    buttonName = stringResource(R.string.get_started)
                 )
             }
         }

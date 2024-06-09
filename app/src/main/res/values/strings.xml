@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Tasky</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="log_in">LOG IN</string>
+    <string name="name">Name</string>
+    <string name="get_started">GET STARTED</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="welcome_back">Welcome Back!</string>
 </resources>
