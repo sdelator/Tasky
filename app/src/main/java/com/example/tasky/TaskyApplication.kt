@@ -13,6 +13,6 @@ class TaskyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("sandra", TAG)
+        Log.d(TAG, "OnCreate is called")
     }
 }

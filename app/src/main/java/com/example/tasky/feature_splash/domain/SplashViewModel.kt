@@ -10,10 +10,14 @@ class SplashViewModel @Inject constructor() : ViewModel() {
     // TODO check if user has an active session or needs to login
     // todo if user has active session, navigate to the agenda screen, else to login screen
 
-    var userIsLoggedIn = true
+    companion object {
+        private val TAG = "SplashViewModel"
+    }
+
+    var isUserLoggedIn = true
 
     fun checkIfUserIsLoggedIn(): Boolean {
-        Log.d("sandra", "splashviewmodel check if user is logged in")
-        return userIsLoggedIn
+        Log.d(TAG, "check if user is logged in")
+        return isUserLoggedIn
     }
 }

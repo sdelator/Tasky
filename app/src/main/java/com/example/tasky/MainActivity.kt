@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
         private const val TAG = "MainActivity"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("sandra", TAG)
+        Log.d(TAG, "onCreate is called")
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         splashScreen.setKeepOnScreenCondition {
