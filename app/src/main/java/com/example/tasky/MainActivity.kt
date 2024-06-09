@@ -6,14 +6,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.tasky.feature_login.presentation.LoginScreenContent
+import com.example.tasky.feature_login.presentation.RegisterAccountContent
 import com.example.tasky.feature_splash.domain.SplashViewModel
 import com.example.tasky.ui.theme.TaskyTheme
 
 class MainActivity : ComponentActivity() {
 
     private val splashViewModel: SplashViewModel by viewModels()
+    private val isLoggedInState = mutableStateOf(false)
 
     companion object {
         private const val TAG = "MainActivity"
@@ -24,13 +27,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         splashScreen.setKeepOnScreenCondition {
             //TODO add logic to check navigation
-            val isUserLoggedIn = splashViewModel.checkIfUserIsLoggedIn()
+            isLoggedInState.value = splashViewModel.checkIfUserIsLoggedIn()
             false
         }
         enableEdgeToEdge()
         setContent {
             TaskyTheme {
-                LoginScreenContent()
+                if (isLoggedInState.value) {
+                    LoginScreenContent()
+                } else RegisterAccountContent()
             }
         }
     }
