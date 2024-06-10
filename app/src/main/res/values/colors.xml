@@ -7,5 +7,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="tasky_green">#279F70</color>
     <color name="black">#FF000000</color>
+    <color name="gray">#A9B4BE</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
