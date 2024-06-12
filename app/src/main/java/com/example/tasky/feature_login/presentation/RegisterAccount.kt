@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tasky.R
 import com.example.tasky.common.domain.isValidEmail
 import com.example.tasky.common.domain.isValidName
@@ -35,9 +36,16 @@ import com.example.tasky.common.presentation.TextBox
 @Composable
 @Preview
 fun RegisterAccountContent() {
+    val loginViewModel: LoginViewModel = hiltViewModel()
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    var isNameValid by remember { mutableStateOf(false) }
+    var isEmailValid by remember { mutableStateOf(false) }
+    var isPasswordValid by remember { mutableStateOf(false) }
+
+    val isFormValid = isNameValid && isEmailValid && isPasswordValid
 
     Box(
         modifier = Modifier
@@ -66,23 +74,33 @@ fun RegisterAccountContent() {
                     .fillMaxWidth()
             ) {
                 TextBox(hintText = stringResource(R.string.name),
-                    onValueChange = { name = it },
+                    onValueChange = {
+                        name = it
+                        isNameValid = it.isValidName()
+                    },
                     validator = { it.isValidName() }
                 )
                 TextBox(hintText = stringResource(R.string.email),
-                    onValueChange = { email = it },
+                    onValueChange = {
+                        email = it
+                        isEmailValid = it.isValidEmail()
+                    },
                     validator = { it.isValidEmail() }
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
-                    onValueChange = { password = it },
+                    onValueChange = {
+                        password = it
+                        isPasswordValid = it.isValidPassword()
+                    },
                     validator = { it.isValidPassword() },
                     isPasswordField = true
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { /*TODO*/ },
+                    enabled = isFormValid,
+                    onClick = { loginViewModel.registerUserClicked() },
                     buttonName = stringResource(R.string.get_started)
                 )
             }

@@ -40,6 +40,7 @@ fun TextBox(
         value = text,
         onValueChange = {
             text = it
+            onValueChange(it)
             isValid = validator(it)
         },
         modifier = Modifier

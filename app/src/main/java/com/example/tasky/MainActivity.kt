@@ -12,7 +12,9 @@ import com.example.tasky.feature_login.presentation.LoginScreenContent
 import com.example.tasky.feature_login.presentation.RegisterAccountContent
 import com.example.tasky.feature_splash.domain.SplashViewModel
 import com.example.tasky.ui.theme.TaskyTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val splashViewModel: SplashViewModel by viewModels()
