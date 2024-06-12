@@ -1,4 +1,17 @@
+import java.util.Properties
+
 // build.gradle.kts (App-level)
+
+// Load local.properties file
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+// Retrieve the API key
+val apiKey: String? = localProperties.getProperty("apiKey")
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -19,6 +32,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        // Add the API key to build config fields
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
