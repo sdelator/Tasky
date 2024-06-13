@@ -31,6 +31,7 @@ import com.example.tasky.common.domain.isValidPassword
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
+import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 
 
 @Composable
@@ -100,7 +101,15 @@ fun RegisterAccountContent() {
                 SimpleButton(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = isFormValid,
-                    onClick = { loginViewModel.registerUserClicked() },
+                    onClick = {
+                        loginViewModel.registerUserClicked(
+                            RegisterUserInfo(
+                                name,
+                                email,
+                                password
+                            )
+                        )
+                    },
                     buttonName = stringResource(R.string.get_started)
                 )
             }
