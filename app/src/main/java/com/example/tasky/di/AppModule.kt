@@ -2,6 +2,7 @@ package com.example.tasky.di
 
 import android.app.Application
 import com.example.tasky.common.domain.Constants
+import com.example.tasky.common.model.ResponseHandler
 import com.example.tasky.feature_login.data.remote.TaskyApi
 import com.example.tasky.feature_login.data.repository.UserRemoteRemoteRepositoryImpl
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
@@ -27,7 +28,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(api: TaskyApi, app: Application): UserRemoteRepository {
-        return UserRemoteRemoteRepositoryImpl(api, app)
+    fun provideUserRemoteRepository(
+        api: TaskyApi,
+        responseHandler: ResponseHandler,
+        app: Application
+    ): UserRemoteRepository {
+        return UserRemoteRemoteRepositoryImpl(api, responseHandler, app)
     }
 }
