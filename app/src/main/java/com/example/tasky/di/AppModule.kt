@@ -3,6 +3,7 @@ package com.example.tasky.di
 import android.app.Application
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.model.ResponseHandler
+import com.example.tasky.feature_login.data.remote.BaseHeaderInterceptor
 import com.example.tasky.feature_login.data.remote.TaskyApi
 import com.example.tasky.feature_login.data.repository.UserRemoteRemoteRepositoryImpl
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
@@ -10,7 +11,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -19,9 +22,19 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideTaskyApi(): TaskyApi {
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(BaseHeaderInterceptor())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTaskyApi(okHttpClient: OkHttpClient): TaskyApi {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(TaskyApi::class.java)
     }

@@ -3,6 +3,7 @@ package com.example.tasky.feature_login.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasky.common.model.Resource
 import com.example.tasky.feature_login.domain.model.LoginUserInfo
 import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
@@ -22,14 +23,24 @@ class LoginViewModel @Inject constructor(
     fun registerUserClicked(userInfo: RegisterUserInfo) {
         Log.d(TAG, "registerUserClicked and userInfo is $userInfo")
         viewModelScope.launch {
-            userRemoteRepository.postRegisterCall(userInfo)
+            val resource = userRemoteRepository.postRegisterCall(userInfo)
+
+            when (resource) {
+                is Resource.Success -> println("success register!")
+                is Resource.Failure -> println("failed register :(")
+            }
         }
     }
 
     fun logInClicked(userCredentials: LoginUserInfo) {
         Log.d(TAG, "logInClicked and userCredentials is $userCredentials")
         viewModelScope.launch {
-            userRemoteRepository.postLoginCall(userCredentials)
+            val resource = userRemoteRepository.postLoginCall(userCredentials)
+
+            when (resource) {
+                is Resource.Success -> println("success login!")
+                is Resource.Failure -> println("failed login :(")
+            }
         }
     }
 }

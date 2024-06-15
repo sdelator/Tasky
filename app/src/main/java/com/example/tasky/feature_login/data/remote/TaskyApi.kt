@@ -11,10 +11,14 @@ import retrofit2.http.POST
 
 interface TaskyApi {
     @POST("/register")
-    suspend fun registerUser(@Body registerUserInfo: RegisterUserInfo)
+    suspend fun registerUser(
+        @Body registerUserInfo: RegisterUserInfo
+    )
 
     @POST("/login")
-    suspend fun loginUser(@Body loginUserInfo: LoginUserInfo): LoginUserResponse
+    suspend fun loginUser(
+        @Body loginUserInfo: LoginUserInfo
+    ): LoginUserResponse
 
     @POST("/accessToken")
     suspend fun getNewAccessToken(@Body accessToken: AccessToken): AccessTokenResponse
