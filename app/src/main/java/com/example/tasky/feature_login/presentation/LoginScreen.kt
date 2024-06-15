@@ -23,17 +23,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tasky.R
 import com.example.tasky.common.domain.isValidEmail
 import com.example.tasky.common.domain.isValidPassword
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
+import com.example.tasky.feature_login.domain.model.LoginUserInfo
 
 
 @Composable
 @Preview
 fun LoginScreenContent() {
+    val loginViewModel: LoginViewModel = hiltViewModel()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -76,7 +79,14 @@ fun LoginScreenContent() {
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        loginViewModel.logInClicked(
+                            LoginUserInfo(
+                                email = email,
+                                password = password
+                            )
+                        )
+                    },
                     buttonName = stringResource(R.string.log_in)
                 )
             }
