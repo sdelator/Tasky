@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         splashScreen.setKeepOnScreenCondition {
             //TODO add logic to check navigation
-            isLoggedInState.value = splashViewModel.checkIfUserIsLoggedIn()
+            isLoggedInState.value = splashViewModel.isUserLoggedIn()
             false
         }
         enableEdgeToEdge()
