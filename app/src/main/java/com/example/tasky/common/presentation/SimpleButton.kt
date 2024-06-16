@@ -14,10 +14,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SimpleButton(
+    buttonName: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    buttonName: String
+    enabled: Boolean = true
 ) {
     androidx.compose.material3.Button(
         onClick = onClick,
