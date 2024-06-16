@@ -25,13 +25,14 @@ class LoginViewModel @Inject constructor(
 
 
     private val _viewState =
-        MutableStateFlow<AuthenticationViewState>(AuthenticationViewState.Loading)
-    val viewState: StateFlow<AuthenticationViewState>
+        MutableStateFlow<AuthenticationViewState?>(null)
+    val viewState: StateFlow<AuthenticationViewState?>
         get() = _viewState
 
     fun registerUserClicked(userInfo: RegisterUserInfo) {
         Log.d(TAG, "registerUserClicked and userInfo is $userInfo")
         viewModelScope.launch {
+            _viewState.emit(AuthenticationViewState.Loading)
             val resource = userRemoteRepository.postRegisterCall(userInfo)
 
             when (resource) {

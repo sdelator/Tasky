@@ -14,6 +14,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -128,7 +130,17 @@ fun RegisterAccountContent() {
 
         when (viewState) {
             is AuthenticationViewState.Loading -> {
-                // Show a loading indicator if needed
+                // Show a loading indicator
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f))
+                        .align(Alignment.Center)
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
             }
 
             is AuthenticationViewState.Success -> {
@@ -136,6 +148,7 @@ fun RegisterAccountContent() {
             }
 
             is AuthenticationViewState.Failure -> {
+                // Show an Alert Dialog with API failure Error code/message
                 val message = (viewState as AuthenticationViewState.Failure).message
                 LaunchedEffect(message) {
                     dialogMessage = message
