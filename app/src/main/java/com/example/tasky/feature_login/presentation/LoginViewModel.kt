@@ -45,6 +45,7 @@ class LoginViewModel @Inject constructor(
 
                 is Resource.Failure -> {
                     println("failed register :(")
+                    // emit a viewState to show ErrorMessage
                     _viewState.emit(AuthenticationViewState.Failure(resource.errorMessage.toString()))
                 }
             }
@@ -54,17 +55,20 @@ class LoginViewModel @Inject constructor(
     fun logInClicked(userCredentials: LoginUserInfo) {
         Log.d(TAG, "logInClicked and userCredentials is $userCredentials")
         viewModelScope.launch {
+            _viewState.emit(AuthenticationViewState.Loading)
             val resource = userRemoteRepository.postLoginCall(userCredentials)
 
             when (resource) {
                 is Resource.Success -> {
                     println("success login!")
-                    //emit a viewState to change to calendar composable
+                    // emit a viewState to change to calendar composable
+                    _viewState.emit(AuthenticationViewState.Success)
                 }
 
                 is Resource.Failure -> {
                     println("failed login :(")
-                    //emit a viewState to show ErrorMessage
+                    // emit a viewState to show ErrorMessage
+                    _viewState.emit(AuthenticationViewState.Failure(resource.errorMessage.toString()))
                 }
             }
         }

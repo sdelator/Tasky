@@ -19,7 +19,7 @@ interface TaskyApi {
     @POST("/login")
     suspend fun loginUser(
         @Body loginUserInfo: LoginUserInfo
-    ): LoginUserResponse
+    ): Response<LoginUserResponse>
 
     @POST("/accessToken")
     suspend fun getNewAccessToken(@Body accessToken: AccessToken): AccessTokenResponse

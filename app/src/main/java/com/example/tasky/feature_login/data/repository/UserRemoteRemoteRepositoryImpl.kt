@@ -41,7 +41,20 @@ class UserRemoteRemoteRepositoryImpl(
 
     override suspend fun postLoginCall(loginUserInfo: LoginUserInfo): Resource<LoginUserResponse> {
         return try {
-            responseHandler.handleSuccess(api.loginUser(loginUserInfo = loginUserInfo))
+            val response = api.loginUser(loginUserInfo = loginUserInfo)
+            if (response.isSuccessful) {
+                val loginUserResponse = response.body()
+                if (loginUserResponse != null) {
+                    responseHandler.handleSuccess(loginUserResponse)
+                } else {
+                    responseHandler.handleFailure(HttpException(response), "Response body is null")
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val errorMessage =
+                    errorBody?.let { JSONObject(it).getString("message") } ?: "Unknown error"
+                responseHandler.handleFailure(HttpException(response), errorMessage)
+            }
         } catch (e: Exception) {
             responseHandler.handleFailure(e)
         }
