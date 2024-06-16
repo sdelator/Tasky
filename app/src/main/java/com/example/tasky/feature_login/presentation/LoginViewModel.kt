@@ -4,10 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.model.Resource
+import com.example.tasky.feature_login.domain.model.AuthenticationViewState
 import com.example.tasky.feature_login.domain.model.LoginUserInfo
 import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,6 +23,12 @@ class LoginViewModel @Inject constructor(
         const val TAG = "LoginViewModel"
     }
 
+
+    private val _viewState =
+        MutableStateFlow<AuthenticationViewState>(AuthenticationViewState.Loading)
+    val viewState: StateFlow<AuthenticationViewState>
+        get() = _viewState
+
     fun registerUserClicked(userInfo: RegisterUserInfo) {
         Log.d(TAG, "registerUserClicked and userInfo is $userInfo")
         viewModelScope.launch {
@@ -29,11 +38,12 @@ class LoginViewModel @Inject constructor(
                 is Resource.Success -> {
                     println("success register!")
                     // emit a viewState to show LoginScreen composable
+                    _viewState.emit(AuthenticationViewState.Success)
                 }
 
                 is Resource.Failure -> {
                     println("failed register :(")
-                    // emit a viewState to show ErrorMessage
+                    _viewState.emit(AuthenticationViewState.Failure(resource.errorMessage.toString()))
                 }
             }
         }

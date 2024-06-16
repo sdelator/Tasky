@@ -5,6 +5,7 @@ import com.example.tasky.feature_login.domain.model.AccessTokenResponse
 import com.example.tasky.feature_login.domain.model.LoginUserInfo
 import com.example.tasky.feature_login.domain.model.LoginUserResponse
 import com.example.tasky.feature_login.domain.model.RegisterUserInfo
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -13,7 +14,7 @@ interface TaskyApi {
     @POST("/register")
     suspend fun registerUser(
         @Body registerUserInfo: RegisterUserInfo
-    )
+    ): Response<Unit>
 
     @POST("/login")
     suspend fun loginUser(

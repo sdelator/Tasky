@@ -10,9 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +36,7 @@ import com.example.tasky.common.domain.isValidPassword
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
+import com.example.tasky.feature_login.domain.model.AuthenticationViewState
 import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 
 
@@ -38,6 +44,8 @@ import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 @Preview
 fun RegisterAccountContent() {
     val loginViewModel: LoginViewModel = hiltViewModel()
+    val viewState by loginViewModel.viewState.collectAsState()
+
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -47,6 +55,9 @@ fun RegisterAccountContent() {
     var isPasswordValid by remember { mutableStateOf(false) }
 
     val isFormValid = isNameValid && isEmailValid && isPasswordValid
+
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogMessage by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -113,6 +124,38 @@ fun RegisterAccountContent() {
                     buttonName = stringResource(R.string.get_started)
                 )
             }
+        }
+
+        when (viewState) {
+            is AuthenticationViewState.Loading -> {
+                // Show a loading indicator if needed
+            }
+
+            is AuthenticationViewState.Success -> {
+                // Handle success if needed
+            }
+
+            is AuthenticationViewState.Failure -> {
+                val message = (viewState as AuthenticationViewState.Failure).message
+                LaunchedEffect(message) {
+                    dialogMessage = message
+                    showDialog = true
+                }
+            }
+        }
+
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("Error") },
+                text = { Text(dialogMessage) },
+                confirmButton = {
+                    Button(onClick = { showDialog = false }) {
+                        Text("OK")
+                    }
+                }
+            )
         }
     }
 }

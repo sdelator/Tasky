@@ -82,6 +82,7 @@ dependencies {
     // Hilt dependencies
     implementation(libs.hilt.android)
     implementation(libs.androidx.room.common)
+    implementation(libs.material)
     ksp(libs.dagger.hilt.compiler)
     ksp("androidx.hilt:hilt-compiler:1.2.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
@@ -99,5 +100,4 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.3")
-
 }

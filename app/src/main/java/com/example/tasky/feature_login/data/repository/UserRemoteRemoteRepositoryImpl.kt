@@ -9,6 +9,8 @@ import com.example.tasky.feature_login.domain.model.LoginUserInfo
 import com.example.tasky.feature_login.domain.model.LoginUserResponse
 import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class UserRemoteRemoteRepositoryImpl(
     private val api: TaskyApi,
@@ -23,9 +25,17 @@ class UserRemoteRemoteRepositoryImpl(
 
     override suspend fun postRegisterCall(registerUserInfo: RegisterUserInfo): Resource<Unit> {
         return try {
-            responseHandler.handleSuccess(api.registerUser(registerUserInfo = registerUserInfo))
+            val response = api.registerUser(registerUserInfo = registerUserInfo)
+            if (response.isSuccessful) {
+                responseHandler.handleSuccess(Unit)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val errorMessage =
+                    errorBody?.let { JSONObject(it).getString("message") } ?: "Unknown error"
+                responseHandler.handleFailure(HttpException(response), errorMessage)
+            }
         } catch (e: Exception) {
-            responseHandler.handleFailure(e)
+            responseHandler.handleFailure(e, e.message ?: "Unknown error")
         }
     }
 

@@ -15,18 +15,18 @@ open class ResponseHandler @Inject constructor(
         return Resource.Success(data)
     }
 
-    fun <T : Any> handleFailure(e: Exception): Resource.Failure<T> {
+    fun <T : Any> handleFailure(e: Exception, errorMessage: String? = null): Resource.Failure<T> {
         return when (e) {
-            is HttpException -> Resource.Failure(getErrorMessage(e.code()), null)
-            else -> Resource.Failure(ResolvableStringRes(R.string.content_failure), null)
+            is HttpException -> Resource.Failure(getErrorMessage(e.code(), errorMessage), null)
+            else -> Resource.Failure(context.getString(R.string.content_failure), null)
         }
     }
 
     private fun getErrorMessage(
         code: Int,
         msg: String? = "unable to connect. Please try again"
-    ): ResolvableString {
-        return ResolvableString(context.getString(R.string.response_error, msg, code))
+    ): String {
+        return context.getString(R.string.response_error, msg, code)
     }
 
 }
