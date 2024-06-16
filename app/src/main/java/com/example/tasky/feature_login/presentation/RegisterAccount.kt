@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,6 +63,8 @@ fun RegisterAccountContent(navController: NavController) {
 
     var showDialog by remember { mutableStateOf(false) }
     var dialogMessage by remember { mutableStateOf("") }
+
+    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier
@@ -117,7 +120,9 @@ fun RegisterAccountContent(navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     enabled = isFormValid,
                     onClick = {
-                        loginViewModel.hideKeyboard()
+                        // clear focus hides the keyboard
+                        focusManager.clearFocus()
+
                         loginViewModel.registerUserClicked(
                             RegisterUserInfo(
                                 name,

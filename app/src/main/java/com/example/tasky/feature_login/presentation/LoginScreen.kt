@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,6 +45,8 @@ fun LoginScreenContent() {
     var isPasswordValid by remember { mutableStateOf(false) }
 
     val isFormValid = isEmailValid && isPasswordValid
+
+    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier
@@ -92,6 +95,9 @@ fun LoginScreenContent() {
                     modifier = Modifier.fillMaxWidth(),
                     enabled = isFormValid,
                     onClick = {
+                        // clear focus hides the keyboard
+                        focusManager.clearFocus()
+
                         loginViewModel.logInClicked(
                             LoginUserInfo(
                                 email = email,
