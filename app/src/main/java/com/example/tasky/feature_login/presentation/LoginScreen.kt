@@ -40,6 +40,11 @@ fun LoginScreenContent() {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    var isEmailValid by remember { mutableStateOf(false) }
+    var isPasswordValid by remember { mutableStateOf(false) }
+
+    val isFormValid = isEmailValid && isPasswordValid
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -67,18 +72,25 @@ fun LoginScreenContent() {
                     .fillMaxWidth()
             ) {
                 TextBox(hintText = stringResource(R.string.email),
-                    onValueChange = { email = it },
+                    onValueChange = {
+                        email = it
+                        isEmailValid = it.isValidEmail()
+                    },
                     validator = { it.isValidEmail() }
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
-                    onValueChange = { password = it },
+                    onValueChange = {
+                        password = it
+                        isPasswordValid = it.isValidPassword()
+                    },
                     validator = { it.isValidPassword() },
                     isPasswordField = true
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(
                     modifier = Modifier.fillMaxWidth(),
+                    enabled = isFormValid,
                     onClick = {
                         loginViewModel.logInClicked(
                             LoginUserInfo(
