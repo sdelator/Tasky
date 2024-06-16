@@ -26,8 +26,15 @@ class LoginViewModel @Inject constructor(
             val resource = userRemoteRepository.postRegisterCall(userInfo)
 
             when (resource) {
-                is Resource.Success -> println("success register!")
-                is Resource.Failure -> println("failed register :(")
+                is Resource.Success -> {
+                    println("success register!")
+                    // emit a viewState to show LoginScreen composable
+                }
+
+                is Resource.Failure -> {
+                    println("failed register :(")
+                    // emit a viewState to show ErrorMessage
+                }
             }
         }
     }
@@ -38,8 +45,15 @@ class LoginViewModel @Inject constructor(
             val resource = userRemoteRepository.postLoginCall(userCredentials)
 
             when (resource) {
-                is Resource.Success -> println("success login!")
-                is Resource.Failure -> println("failed login :(")
+                is Resource.Success -> {
+                    println("success login!")
+                    //emit a viewState to change to calendar composable
+                }
+
+                is Resource.Failure -> {
+                    println("failed login :(")
+                    //emit a viewState to show ErrorMessage
+                }
             }
         }
     }
