@@ -31,6 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.tasky.LoginNav
 import com.example.tasky.R
 import com.example.tasky.common.domain.isValidEmail
 import com.example.tasky.common.domain.isValidName
@@ -44,7 +46,7 @@ import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 
 @Composable
 @Preview
-fun RegisterAccountContent() {
+fun RegisterAccountContent(navController: NavController) {
     val loginViewModel: LoginViewModel = hiltViewModel()
     val viewState by loginViewModel.viewState.collectAsState()
 
@@ -115,6 +117,7 @@ fun RegisterAccountContent() {
                     modifier = Modifier.fillMaxWidth(),
                     enabled = isFormValid,
                     onClick = {
+                        loginViewModel.hideKeyboard()
                         loginViewModel.registerUserClicked(
                             RegisterUserInfo(
                                 name,
@@ -144,7 +147,8 @@ fun RegisterAccountContent() {
             }
 
             is AuthenticationViewState.Success -> {
-                // Handle success if needed
+                // Handle success by navigating to LoginScreen
+                navController.navigate(LoginNav)
             }
 
             is AuthenticationViewState.Failure -> {

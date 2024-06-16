@@ -29,6 +29,12 @@ class LoginViewModel @Inject constructor(
     val viewState: StateFlow<AuthenticationViewState?>
         get() = _viewState
 
+    fun hideKeyboard() {
+        //todo create a viewstate to hide this
+//        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    }
+
     fun registerUserClicked(userInfo: RegisterUserInfo) {
         Log.d(TAG, "registerUserClicked and userInfo is $userInfo")
         viewModelScope.launch {
