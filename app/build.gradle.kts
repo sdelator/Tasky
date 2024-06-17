@@ -17,7 +17,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("dagger.hilt.android.plugin")
     alias(libs.plugins.ksp)
-    kotlin("plugin.serialization") version "1.5.31"
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -69,24 +69,30 @@ android {
 }
 
 dependencies {
+    // Splash Screen
     implementation(libs.androidx.core.splashscreen)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Compose and UI tools
     implementation(libs.androidx.activity.compose)
     implementation(libs.ui)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation(libs.material)
+
+    // Room Database
+    implementation(libs.androidx.room.common)
 
     // ViewModel Compose
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Hilt dependencies
     implementation(libs.hilt.android)
-    implementation(libs.androidx.room.common)
-    implementation(libs.material)
     ksp(libs.dagger.hilt.compiler)
-    ksp("androidx.hilt:hilt-compiler:1.2.0")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    ksp(libs.android.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
 
     // Other dependencies
@@ -98,10 +104,11 @@ dependencies {
     debugImplementation(libs.ui.test.manifest)
 
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.3")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
 
+    // Navigation Compose
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 }
