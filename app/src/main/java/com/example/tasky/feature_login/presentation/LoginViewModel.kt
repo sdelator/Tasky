@@ -1,76 +1,42 @@
 package com.example.tasky.feature_login.presentation
-
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.tasky.common.model.Resource
-import com.example.tasky.feature_login.domain.model.AuthenticationViewState
-import com.example.tasky.feature_login.domain.model.LoginUserInfo
-import com.example.tasky.feature_login.domain.model.RegisterUserInfo
-import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.tasky.common.domain.isValidEmail
+import com.example.tasky.common.domain.isValidName
+import com.example.tasky.common.domain.isValidPassword
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class LoginViewModel @Inject constructor(
-    private val userRemoteRepository: UserRemoteRepository
-) : ViewModel() {
+class LoginViewModel : ViewModel() {
+    private val _name = MutableStateFlow("")
+    val name: StateFlow<String> get() = _name
 
-    companion object {
-        const val TAG = "LoginViewModel"
+    private val _email = MutableStateFlow("")
+    val email: StateFlow<String> get() = _email
+
+    private val _password = MutableStateFlow("")
+    val password: StateFlow<String> get() = _password
+
+    private val _isNameValid = MutableStateFlow(false)
+    val isNameValid: StateFlow<Boolean> get() = _isNameValid
+
+    private val _isEmailValid = MutableStateFlow(false)
+    val isEmailValid: StateFlow<Boolean> get() = _isEmailValid
+
+    private val _isPasswordValid = MutableStateFlow(false)
+    val isPasswordValid: StateFlow<Boolean> get() = _isPasswordValid
+
+    fun onNameChange(newName: String) {
+        _name.value = newName
+        _isNameValid.value = newName.isValidName()
     }
 
-    // viewState triggered by API response
-    private val _viewState =
-        MutableStateFlow<AuthenticationViewState?>(null)
-    val viewState: StateFlow<AuthenticationViewState?>
-        get() = _viewState
-
-
-    fun registerUserClicked(userInfo: RegisterUserInfo) {
-        Log.d(TAG, "registerUserClicked and userInfo is $userInfo")
-        viewModelScope.launch {
-            _viewState.emit(AuthenticationViewState.Loading)
-            val resource = userRemoteRepository.postRegisterCall(userInfo)
-
-            when (resource) {
-                is Resource.Success -> {
-                    println("success register!")
-                    // emit a viewState to show LoginScreen composable
-                    _viewState.emit(AuthenticationViewState.Success)
-                }
-
-                is Resource.Failure -> {
-                    println("failed register :(")
-                    // emit a viewState to show ErrorMessage
-                    _viewState.emit(AuthenticationViewState.Failure(resource.errorMessage.toString()))
-                }
-            }
-        }
+    fun onEmailChange(newEmail: String) {
+        _email.value = newEmail
+        _isEmailValid.value = newEmail.isValidEmail()
     }
 
-    fun logInClicked(userCredentials: LoginUserInfo) {
-        Log.d(TAG, "logInClicked and userCredentials is $userCredentials")
-        viewModelScope.launch {
-            _viewState.emit(AuthenticationViewState.Loading)
-            val resource = userRemoteRepository.postLoginCall(userCredentials)
-
-            when (resource) {
-                is Resource.Success -> {
-                    println("success login!")
-                    // emit a viewState to change to calendar composable
-                    _viewState.emit(AuthenticationViewState.Success)
-                }
-
-                is Resource.Failure -> {
-                    println("failed login :(")
-                    // emit a viewState to show ErrorMessage
-                    _viewState.emit(AuthenticationViewState.Failure(resource.errorMessage.toString()))
-                }
-            }
-        }
+    fun onPasswordChange(newPassword: String) {
+        _password.value = newPassword
+        _isPasswordValid.value = newPassword.isValidPassword()
     }
 }

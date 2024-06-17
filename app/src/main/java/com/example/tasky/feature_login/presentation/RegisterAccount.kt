@@ -44,20 +44,22 @@ import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 
 @Composable
 fun RegisterAccountContent(navController: NavController) {
+    // todo figure out why text fields are not saving w/orientation change
     val loginViewModel: LoginViewModel = hiltViewModel()
-    val viewState by loginViewModel.viewState.collectAsState()
+    val authenticationViewModel: AuthenticationViewModel = hiltViewModel()
 
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val viewState by authenticationViewModel.viewState.collectAsState()
+    val name by remember { mutableStateOf("") }
+    val email by remember { mutableStateOf("") }
+    val password by remember { mutableStateOf("") }
 
-    var isNameValid by remember { mutableStateOf(false) }
-    var isEmailValid by remember { mutableStateOf(false) }
-    var isPasswordValid by remember { mutableStateOf(false) }
+    val isNameValid by remember { mutableStateOf(false) }
+    val isEmailValid by remember { mutableStateOf(false) }
+    val isPasswordValid by remember { mutableStateOf(false) }
 
     val isFormValid = isNameValid && isEmailValid && isPasswordValid
 
-    var showDialog = remember { mutableStateOf(false) }
+    val showDialog = remember { mutableStateOf(false) }
     var dialogMessage by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
@@ -89,25 +91,19 @@ fun RegisterAccountContent(navController: NavController) {
                     .fillMaxWidth()
             ) {
                 TextBox(hintText = stringResource(R.string.name),
-                    onValueChange = {
-                        name = it
-                        isNameValid = it.isValidName()
-                    },
+                    text = name,
+                    onValueChange = { loginViewModel.onNameChange(it) },
                     validator = { it.isValidName() }
                 )
                 TextBox(hintText = stringResource(R.string.email),
-                    onValueChange = {
-                        email = it
-                        isEmailValid = it.isValidEmail()
-                    },
+                    text = email,
+                    onValueChange = { loginViewModel.onEmailChange(it) },
                     validator = { it.isValidEmail() }
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
-                    onValueChange = {
-                        password = it
-                        isPasswordValid = it.isValidPassword()
-                    },
+                    text = password,
+                    onValueChange = { loginViewModel.onPasswordChange(it) },
                     validator = { it.isValidPassword() },
                     isPasswordField = true
                 )
@@ -119,7 +115,7 @@ fun RegisterAccountContent(navController: NavController) {
                         // clear focus hides the keyboard
                         focusManager.clearFocus()
 
-                        loginViewModel.registerUserClicked(
+                        authenticationViewModel.registerUserClicked(
                             RegisterUserInfo(
                                 name,
                                 email,

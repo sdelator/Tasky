@@ -21,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -45,14 +44,16 @@ import com.example.tasky.feature_login.domain.model.LoginUserInfo
 
 @Composable
 fun LoginScreenContent(navController: NavController) {
+    // todo figure out why text fields are not saving w/orientation change
     val loginViewModel: LoginViewModel = hiltViewModel()
-    val viewState by loginViewModel.viewState.collectAsState()
+    val authenticationViewModel: AuthenticationViewModel = hiltViewModel()
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val viewState by authenticationViewModel.viewState.collectAsState()
+    val email by loginViewModel.email.collectAsState()
+    val password by loginViewModel.password.collectAsState()
 
-    var isEmailValid by remember { mutableStateOf(false) }
-    var isPasswordValid by remember { mutableStateOf(false) }
+    val isEmailValid by loginViewModel.isEmailValid.collectAsState()
+    val isPasswordValid by loginViewModel.isPasswordValid.collectAsState()
 
     val isFormValid = isEmailValid && isPasswordValid
 
@@ -66,8 +67,7 @@ fun LoginScreenContent(navController: NavController) {
             .fillMaxSize()
             .background(Color.Black)
             .padding(top = 70.dp)
-    )
-    {
+    ) {
         Header(title = stringResource(R.string.welcome_back))
         // White bottom sheet-like shape
         Card(
@@ -75,7 +75,7 @@ fun LoginScreenContent(navController: NavController) {
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(top = 100.dp)
-                .align(BottomCenter), // Align the card at the bottom center
+                .align(Alignment.BottomCenter), // Align the card at the bottom center
             shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White
@@ -87,19 +87,16 @@ fun LoginScreenContent(navController: NavController) {
                     .padding(16.dp)
                     .fillMaxWidth()
             ) {
-                TextBox(hintText = stringResource(R.string.email),
-                    onValueChange = {
-                        email = it
-                        isEmailValid = it.isValidEmail()
-                    },
+                TextBox(
+                    hintText = stringResource(R.string.email),
+                    text = email,
+                    onValueChange = { loginViewModel.onEmailChange(it) },
                     validator = { it.isValidEmail() }
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
-                    onValueChange = {
-                        password = it
-                        isPasswordValid = it.isValidPassword()
-                    },
+                    text = password,
+                    onValueChange = { loginViewModel.onPasswordChange(it) },
                     validator = { it.isValidPassword() },
                     isPasswordField = true
                 )
@@ -111,7 +108,7 @@ fun LoginScreenContent(navController: NavController) {
                         // clear focus hides the keyboard
                         focusManager.clearFocus()
 
-                        loginViewModel.logInClicked(
+                        authenticationViewModel.logInClicked(
                             LoginUserInfo(
                                 email = email,
                                 password = password

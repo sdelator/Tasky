@@ -28,18 +28,17 @@ import com.example.tasky.common.domain.isValidName
 @Composable
 fun TextBox(
     hintText: String,
+    text: String,
     onValueChange: (String) -> Unit,
     validator: (String) -> Boolean,
     isPasswordField: Boolean = false
 ) {
-    var isValid by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf("") }
+    var isValid by remember { mutableStateOf(validator(text)) }
     var passwordVisible by remember { mutableStateOf(false) }
 
     TextField(
         value = text,
         onValueChange = {
-            text = it
             onValueChange(it)
             isValid = validator(it)
         },
@@ -85,6 +84,7 @@ fun ViewTextField() {
 
     Column {
         TextBox(hintText = "Name",
+            text = "",
             onValueChange = { name = it },
             validator = { it.isValidName() })
     }
