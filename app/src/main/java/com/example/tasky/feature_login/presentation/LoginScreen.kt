@@ -57,7 +57,7 @@ fun LoginScreenContent(navController: NavController) {
 
     val isFormValid = isEmailValid && isPasswordValid
 
-    var showDialog = remember { mutableStateOf(false) }
+    val showDialog = remember { mutableStateOf(false) }
     var dialogMessage by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current

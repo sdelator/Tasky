@@ -18,6 +18,6 @@ class SplashViewModel @Inject constructor() : ViewModel() {
 
     fun isUserLoggedIn(): Boolean {
         Log.d(TAG, "check if user is logged in")
-        return true
+        return false
     }
 }

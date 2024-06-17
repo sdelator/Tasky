@@ -49,13 +49,13 @@ fun RegisterAccountContent(navController: NavController) {
     val authenticationViewModel: AuthenticationViewModel = hiltViewModel()
 
     val viewState by authenticationViewModel.viewState.collectAsState()
-    val name by remember { mutableStateOf("") }
-    val email by remember { mutableStateOf("") }
-    val password by remember { mutableStateOf("") }
+    val name by loginViewModel.name.collectAsState()
+    val email by loginViewModel.email.collectAsState()
+    val password by loginViewModel.password.collectAsState()
 
-    val isNameValid by remember { mutableStateOf(false) }
-    val isEmailValid by remember { mutableStateOf(false) }
-    val isPasswordValid by remember { mutableStateOf(false) }
+    val isNameValid by loginViewModel.isNameValid.collectAsState()
+    val isEmailValid by loginViewModel.isEmailValid.collectAsState()
+    val isPasswordValid by loginViewModel.isPasswordValid.collectAsState()
 
     val isFormValid = isNameValid && isEmailValid && isPasswordValid
 
