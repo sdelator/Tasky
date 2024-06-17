@@ -1,16 +1,9 @@
-import java.util.Properties
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 
 // build.gradle.kts (App-level)
 
-// Load local.properties file
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(localPropertiesFile.inputStream())
-}
-
 // Retrieve the API key
-val apiKey: String? = localProperties.getProperty("apiKey")
+val apiKey = gradleLocalProperties(rootProject.projectDir).getProperty("apiKey")
 
 plugins {
     alias(libs.plugins.android.application)
