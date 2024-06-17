@@ -23,7 +23,7 @@ class LoginViewModel @Inject constructor(
         const val TAG = "LoginViewModel"
     }
 
-
+    // viewState triggered by API response
     private val _viewState =
         MutableStateFlow<AuthenticationViewState?>(null)
     val viewState: StateFlow<AuthenticationViewState?>

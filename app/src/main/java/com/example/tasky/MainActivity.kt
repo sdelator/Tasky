@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
                         LoginScreenContent(navController = navController)
                     }
                     composable<CalendarNav> {
+                        // todo create Composable
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
