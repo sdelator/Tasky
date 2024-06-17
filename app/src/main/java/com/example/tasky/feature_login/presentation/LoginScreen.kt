@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.tasky.CalendarNav
+import com.example.tasky.AgendaNav
 import com.example.tasky.R
 import com.example.tasky.common.domain.isValidEmail
 import com.example.tasky.common.domain.isValidPassword
@@ -136,8 +136,8 @@ fun LoginScreenContent(navController: NavController) {
             }
 
             is AuthenticationViewState.Success -> {
-                // Handle success by navigating to CalendarScreen
-                navController.navigate(CalendarNav)
+                // Handle success by navigating to AgendaScreen
+                navController.navigate(AgendaNav)
             }
 
             is AuthenticationViewState.Failure -> {

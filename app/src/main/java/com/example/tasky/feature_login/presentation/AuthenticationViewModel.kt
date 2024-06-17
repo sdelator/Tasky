@@ -61,7 +61,7 @@ class AuthenticationViewModel @Inject constructor(
             when (resource) {
                 is Resource.Success -> {
                     println("success login!")
-                    // emit a viewState to change to calendar composable
+                    // emit a viewState to change to agenda composable
                     _viewState.emit(AuthenticationViewState.Success)
                 }
 

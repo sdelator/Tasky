@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                     composable<LoginNav> {
                         LoginScreenContent(navController = navController)
                     }
-                    composable<CalendarNav> {
+                    composable<AgendaNav> {
                         // todo create Composable
                         Box(
                             modifier = Modifier
@@ -80,4 +80,4 @@ object RegisterNav
 object LoginNav
 
 @Serializable
-object CalendarNav
+object AgendaNav
