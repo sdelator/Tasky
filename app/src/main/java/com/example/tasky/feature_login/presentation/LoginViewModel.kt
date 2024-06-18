@@ -1,12 +1,18 @@
 package com.example.tasky.feature_login.presentation
 import androidx.lifecycle.ViewModel
-import com.example.tasky.common.domain.isValidEmail
+import com.example.tasky.common.data.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.isValidName
 import com.example.tasky.common.domain.isValidPassword
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val emailPatternValidator: EmailPatternValidatorImpl
+) : ViewModel() {
+
     private val _name = MutableStateFlow("")
     val name: StateFlow<String> get() = _name
 
@@ -32,7 +38,7 @@ class LoginViewModel : ViewModel() {
 
     fun onEmailChange(newEmail: String) {
         _email.value = newEmail
-        _isEmailValid.value = newEmail.isValidEmail()
+        _isEmailValid.value = emailPatternValidator.isValidEmailPattern(newEmail)
     }
 
     fun onPasswordChange(newPassword: String) {

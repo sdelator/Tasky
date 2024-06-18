@@ -1,7 +1,9 @@
 package com.example.tasky.di
 
 import android.app.Application
+import com.example.tasky.common.data.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.Constants
+import com.example.tasky.common.domain.EmailPatternValidator
 import com.example.tasky.common.model.ResponseHandler
 import com.example.tasky.feature_login.data.remote.BaseHeaderInterceptor
 import com.example.tasky.feature_login.data.remote.TaskyApi
@@ -47,5 +49,10 @@ object AppModule {
         app: Application
     ): UserRemoteRepository {
         return UserRemoteRemoteRepositoryImpl(api, responseHandler, app)
+    }
+
+    @Provides
+    fun providesEmailPatternValidator(): EmailPatternValidator {
+        return EmailPatternValidatorImpl()
     }
 }

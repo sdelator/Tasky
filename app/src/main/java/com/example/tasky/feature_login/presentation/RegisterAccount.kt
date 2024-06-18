@@ -31,7 +31,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.tasky.LoginNav
 import com.example.tasky.R
-import com.example.tasky.common.domain.isValidEmail
 import com.example.tasky.common.domain.isValidName
 import com.example.tasky.common.domain.isValidPassword
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
@@ -98,7 +97,7 @@ fun RegisterAccountContent(navController: NavController) {
                 TextBox(hintText = stringResource(R.string.email),
                     text = email,
                     onValueChange = { loginViewModel.onEmailChange(it) },
-                    validator = { it.isValidEmail() }
+                    validator = { isEmailValid }
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),

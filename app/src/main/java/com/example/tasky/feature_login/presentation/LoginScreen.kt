@@ -32,7 +32,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.tasky.AgendaNav
 import com.example.tasky.R
-import com.example.tasky.common.domain.isValidEmail
 import com.example.tasky.common.domain.isValidPassword
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
@@ -91,7 +90,7 @@ fun LoginScreenContent(navController: NavController) {
                     hintText = stringResource(R.string.email),
                     text = email,
                     onValueChange = { loginViewModel.onEmailChange(it) },
-                    validator = { it.isValidEmail() }
+                    validator = { isEmailValid }
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
