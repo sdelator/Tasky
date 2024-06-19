@@ -5,7 +5,7 @@ import com.example.tasky.common.data.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.EmailPatternValidator
 import com.example.tasky.common.model.ResponseHandler
-import com.example.tasky.feature_login.data.remote.BaseHeaderInterceptor
+import com.example.tasky.feature_login.data.remote.ApiKeyInterceptor
 import com.example.tasky.feature_login.data.remote.TaskyApi
 import com.example.tasky.feature_login.data.repository.UserRemoteRemoteRepositoryImpl
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
@@ -26,7 +26,7 @@ object AppModule {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(BaseHeaderInterceptor())
+            .addInterceptor(ApiKeyInterceptor())
             .build()
     }
 
