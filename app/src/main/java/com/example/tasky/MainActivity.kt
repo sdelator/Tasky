@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
 
             TaskyTheme {
                 NavHost(navController, startDestination = startDestination) {
-                    navigation<AuthNavRoute>(startDestination = RegisterNav) {
+                    navigation<AuthNavRoute>(startDestination = LoginNav) {
                         authGraph(navController)
                     }
 

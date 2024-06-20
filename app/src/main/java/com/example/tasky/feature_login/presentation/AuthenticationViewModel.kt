@@ -3,7 +3,7 @@ package com.example.tasky.feature_login.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tasky.common.model.Resource
+import com.example.tasky.common.domain.util.Result
 import com.example.tasky.feature_login.domain.model.AuthenticationViewState
 import com.example.tasky.feature_login.domain.model.LoginUserInfo
 import com.example.tasky.feature_login.domain.model.RegisterUserInfo
@@ -34,19 +34,20 @@ class AuthenticationViewModel @Inject constructor(
         Log.d(TAG, "registerUserClicked and userInfo is $userInfo")
         viewModelScope.launch {
             _viewState.emit(AuthenticationViewState.Loading)
-            val resource = userRemoteRepository.postRegisterCall(userInfo)
+            val result = userRemoteRepository.postRegisterCall(userInfo)
 
-            when (resource) {
-                is Resource.Success -> {
+            when (result) {
+                is Result.Success -> {
                     println("success register!")
                     // emit a viewState to show LoginScreen composable
                     _viewState.emit(AuthenticationViewState.Success)
                 }
 
-                is Resource.Failure -> {
+                is Result.Error -> {
                     println("failed register :(")
                     // emit a viewState to show ErrorMessage
-                    _viewState.emit(AuthenticationViewState.Failure(resource.errorMessage.toString()))
+                    val errorMsg = result.error.formatErrorMessage()
+                    _viewState.emit(AuthenticationViewState.Failure(errorMsg))
                 }
             }
         }
@@ -56,19 +57,20 @@ class AuthenticationViewModel @Inject constructor(
         Log.d(TAG, "logInClicked and userCredentials is $userCredentials")
         viewModelScope.launch {
             _viewState.emit(AuthenticationViewState.Loading)
-            val resource = userRemoteRepository.postLoginCall(userCredentials)
+            val result = userRemoteRepository.postLoginCall(userCredentials)
 
-            when (resource) {
-                is Resource.Success -> {
+            when (result) {
+                is Result.Success -> {
                     println("success login!")
                     // emit a viewState to change to agenda composable
                     _viewState.emit(AuthenticationViewState.Success)
                 }
 
-                is Resource.Failure -> {
+                is Result.Error -> {
                     println("failed login :(")
                     // emit a viewState to show ErrorMessage
-                    _viewState.emit(AuthenticationViewState.Failure(resource.errorMessage.toString()))
+                    val errorMsg = result.error.formatErrorMessage()
+                    _viewState.emit(AuthenticationViewState.Failure(errorMsg))
                 }
             }
         }

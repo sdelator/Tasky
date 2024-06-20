@@ -4,7 +4,7 @@ import android.app.Application
 import com.example.tasky.common.data.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.EmailPatternValidator
-import com.example.tasky.common.model.ResponseHandler
+import com.example.tasky.common.domain.util.APIUtilFunctions
 import com.example.tasky.feature_login.data.remote.ApiKeyInterceptor
 import com.example.tasky.feature_login.data.remote.TaskyApi
 import com.example.tasky.feature_login.data.repository.UserRemoteRemoteRepositoryImpl
@@ -45,10 +45,10 @@ object AppModule {
     @Singleton
     fun provideUserRemoteRepository(
         api: TaskyApi,
-        responseHandler: ResponseHandler,
-        app: Application
+        app: Application,
+        apiUtilFunctions: APIUtilFunctions
     ): UserRemoteRepository {
-        return UserRemoteRemoteRepositoryImpl(api, responseHandler, app)
+        return UserRemoteRemoteRepositoryImpl(api, app, apiUtilFunctions)
     }
 
     @Provides
