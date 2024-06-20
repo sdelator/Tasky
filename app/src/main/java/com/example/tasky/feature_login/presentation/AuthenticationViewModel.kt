@@ -34,7 +34,7 @@ class AuthenticationViewModel @Inject constructor(
         Log.d(TAG, "registerUserClicked and userInfo is $userInfo")
         viewModelScope.launch {
             _viewState.emit(AuthenticationViewState.Loading)
-            val result = userRemoteRepository.postRegisterCall(userInfo)
+            val result = userRemoteRepository.registerUser(userInfo)
 
             when (result) {
                 is Result.Success -> {
@@ -57,7 +57,7 @@ class AuthenticationViewModel @Inject constructor(
         Log.d(TAG, "logInClicked and userCredentials is $userCredentials")
         viewModelScope.launch {
             _viewState.emit(AuthenticationViewState.Loading)
-            val result = userRemoteRepository.postLoginCall(userCredentials)
+            val result = userRemoteRepository.logInUser(userCredentials)
 
             when (result) {
                 is Result.Success -> {

@@ -24,7 +24,7 @@ class UserRemoteRemoteRepositoryImpl(
         println("hello from the repository. The appname is $appName")
     }
 
-    override suspend fun postRegisterCall(registerUserInfo: RegisterUserInfo): Result<Unit, DataError.Network> {
+    override suspend fun registerUser(registerUserInfo: RegisterUserInfo): Result<Unit, DataError.Network> {
         return try {
             val response = api.registerUser(registerUserInfo = registerUserInfo)
             if (response.isSuccessful) {
@@ -49,7 +49,7 @@ class UserRemoteRemoteRepositoryImpl(
         }
     }
 
-    override suspend fun postLoginCall(loginUserInfo: LoginUserInfo): Result<LoginUserResponse, DataError.Network> {
+    override suspend fun logInUser(loginUserInfo: LoginUserInfo): Result<LoginUserResponse, DataError.Network> {
         return try {
             val response = api.loginUser(loginUserInfo = loginUserInfo)
             val loginUserResponse = response.body()
