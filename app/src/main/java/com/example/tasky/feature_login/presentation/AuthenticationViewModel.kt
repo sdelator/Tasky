@@ -11,6 +11,7 @@ import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,6 +30,13 @@ class AuthenticationViewModel @Inject constructor(
     val viewState: StateFlow<AuthenticationViewState?>
         get() = _viewState
 
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    data class UiState(
+        val showErrorDialog: Boolean = false,
+        val dialogMessage: String = ""
+    )
 
     fun registerUserClicked(userInfo: RegisterUserInfo) {
         Log.d(TAG, "registerUserClicked and userInfo is $userInfo")
@@ -74,5 +82,13 @@ class AuthenticationViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onShowErrorDialog(message: String) {
+        _uiState.value = _uiState.value.copy(showErrorDialog = true, dialogMessage = message)
+    }
+
+    fun onDismissErrorDialog() {
+        _uiState.value = _uiState.value.copy(showErrorDialog = false)
     }
 }

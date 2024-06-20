@@ -17,9 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,9 +40,9 @@ import com.example.tasky.feature_login.domain.model.LoginUserInfo
 
 @Composable
 fun LoginScreenContent(navController: NavController) {
-    // todo figure out why text fields are not saving w/orientation change
     val loginViewModel: LoginViewModel = hiltViewModel()
     val authenticationViewModel: AuthenticationViewModel = hiltViewModel()
+    val uiState by authenticationViewModel.uiState.collectAsState()
 
     val viewState by authenticationViewModel.viewState.collectAsState()
     val email by loginViewModel.email.collectAsState()
@@ -55,9 +52,6 @@ fun LoginScreenContent(navController: NavController) {
     val isPasswordValid by loginViewModel.isPasswordValid.collectAsState()
 
     val isFormValid = isEmailValid && isPasswordValid
-
-    val showDialog = remember { mutableStateOf(false) }
-    var dialogMessage by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
 
@@ -143,16 +137,16 @@ fun LoginScreenContent(navController: NavController) {
                 // Show an Alert Dialog with API failure Error code/message
                 val message = (viewState as AuthenticationViewState.Failure).message
                 LaunchedEffect(message) {
-                    dialogMessage = message
-                    showDialog.value = true
+                    authenticationViewModel.onShowErrorDialog(message)
                 }
             }
         }
 
-        if (showDialog.value) {
+        if (uiState.showErrorDialog) {
             CreateErrorAlertDialog(
-                showDialog = showDialog,
-                dialogMessage = dialogMessage
+                showDialog = true,
+                dialogMessage = uiState.dialogMessage,
+                onDismiss = { authenticationViewModel.onDismissErrorDialog() }
             )
         }
     }
