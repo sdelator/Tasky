@@ -1,4 +1,4 @@
-package com.example.tasky.common.domain.util
+package com.example.tasky.common.data.util
 
 import com.google.gson.Gson
 import retrofit2.HttpException

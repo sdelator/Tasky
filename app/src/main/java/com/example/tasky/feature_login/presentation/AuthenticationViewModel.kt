@@ -3,7 +3,7 @@ package com.example.tasky.feature_login.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tasky.common.domain.util.Result
+import com.example.tasky.common.data.util.Result
 import com.example.tasky.feature_login.domain.model.AuthenticationViewState
 import com.example.tasky.feature_login.domain.model.LoginUserInfo
 import com.example.tasky.feature_login.domain.model.RegisterUserInfo

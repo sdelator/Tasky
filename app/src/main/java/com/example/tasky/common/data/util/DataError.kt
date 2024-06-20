@@ -1,4 +1,4 @@
-package com.example.tasky.common.domain.util
+package com.example.tasky.common.data.util
 
 sealed interface DataError : Error {
     sealed class Network(val code: Int, private val message: String = "") : DataError {

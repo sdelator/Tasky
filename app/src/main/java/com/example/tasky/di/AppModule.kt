@@ -2,9 +2,9 @@ package com.example.tasky.di
 
 import android.app.Application
 import com.example.tasky.common.data.EmailPatternValidatorImpl
+import com.example.tasky.common.data.util.APIUtilFunctions
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.EmailPatternValidator
-import com.example.tasky.common.domain.util.APIUtilFunctions
 import com.example.tasky.feature_login.data.remote.ApiKeyInterceptor
 import com.example.tasky.feature_login.data.remote.TaskyApi
 import com.example.tasky.feature_login.data.repository.UserRemoteRemoteRepositoryImpl
