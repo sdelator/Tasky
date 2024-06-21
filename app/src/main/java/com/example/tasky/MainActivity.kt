@@ -25,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.tasky.feature_login.presentation.LoginScreenContent
+import com.example.tasky.feature_login.presentation.LoginViewModel
 import com.example.tasky.feature_login.presentation.RegisterAccountContent
 import com.example.tasky.feature_splash.domain.SplashViewModel
 import com.example.tasky.ui.theme.TaskyTheme
@@ -35,6 +36,7 @@ import kotlinx.serialization.Serializable
 class MainActivity : ComponentActivity() {
 
     private val splashViewModel: SplashViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
     private val isLoggedInState = mutableStateOf(false)
 
     companion object {
@@ -61,7 +63,7 @@ class MainActivity : ComponentActivity() {
             TaskyTheme {
                 NavHost(navController, startDestination = startDestination) {
                     navigation<AuthNavRoute>(startDestination = LoginNav) {
-                        authGraph(navController)
+                        authGraph(navController, loginViewModel)
                     }
 
                     composable<AgendaNav> {
@@ -93,12 +95,12 @@ inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(navControll
     return viewModel(parentEntry)
 }
 
-fun NavGraphBuilder.authGraph(navController: NavController) {
+fun NavGraphBuilder.authGraph(navController: NavController, loginViewModel: LoginViewModel) {
     composable<RegisterNav> {
         RegisterAccountContent(navController = navController)
     }
     composable<LoginNav> {
-        LoginScreenContent(navController = navController)
+        LoginScreenContent(navController = navController, loginViewModel = loginViewModel)
     }
 }
 
