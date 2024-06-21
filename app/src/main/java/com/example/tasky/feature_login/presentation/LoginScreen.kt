@@ -36,16 +36,14 @@ import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 import com.example.tasky.feature_login.domain.model.AuthenticationViewState
-import com.example.tasky.feature_login.domain.model.LoginUserInfo
 
 
 @Composable
 fun LoginScreenContent(navController: NavController) {
     val loginViewModel: LoginViewModel = hiltViewModel()
-    val authenticationViewModel: AuthenticationViewModel = hiltViewModel()
-    val uiState by authenticationViewModel.uiState.collectAsState()
+    val uiState by loginViewModel.uiState.collectAsState()
 
-    val viewState by authenticationViewModel.viewState.collectAsState()
+    val viewState by loginViewModel.viewState.collectAsState()
     val email by loginViewModel.email.collectAsState()
     val password by loginViewModel.password.collectAsState()
 
@@ -106,12 +104,7 @@ fun LoginScreenContent(navController: NavController) {
                         // clear focus hides the keyboard
                         focusManager.clearFocus()
 
-                        authenticationViewModel.logInClicked(
-                            LoginUserInfo(
-                                email = email,
-                                password = password
-                            )
-                        )
+                        loginViewModel.logInClicked()
                     },
                     buttonName = stringResource(R.string.log_in)
                 )
@@ -142,7 +135,7 @@ fun LoginScreenContent(navController: NavController) {
                 // Show an Alert Dialog with API failure Error code/message
                 val message = (viewState as AuthenticationViewState.Failure).message
                 LaunchedEffect(message) {
-                    authenticationViewModel.onShowErrorDialog(message)
+                    loginViewModel.onShowErrorDialog(message)
                 }
             }
         }
@@ -151,7 +144,7 @@ fun LoginScreenContent(navController: NavController) {
             CreateErrorAlertDialog(
                 showDialog = true,
                 dialogMessage = uiState.dialogMessage,
-                onDismiss = { authenticationViewModel.onDismissErrorDialog() }
+                onDismiss = { loginViewModel.onDismissErrorDialog() }
             )
         }
     }

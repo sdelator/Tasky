@@ -35,17 +35,15 @@ import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 import com.example.tasky.feature_login.domain.model.AuthenticationViewState
-import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 
 
 @Composable
 fun RegisterAccountContent(navController: NavController) {
     // todo figure out why text fields are not saving w/orientation change
     val loginViewModel: LoginViewModel = hiltViewModel()
-    val authenticationViewModel: AuthenticationViewModel = hiltViewModel()
-    val uiState by authenticationViewModel.uiState.collectAsState()
+    val uiState by loginViewModel.uiState.collectAsState()
 
-    val viewState by authenticationViewModel.viewState.collectAsState()
+    val viewState by loginViewModel.viewState.collectAsState()
     val name by loginViewModel.name.collectAsState()
     val email by loginViewModel.email.collectAsState()
     val password by loginViewModel.password.collectAsState()
@@ -115,13 +113,7 @@ fun RegisterAccountContent(navController: NavController) {
                         // clear focus hides the keyboard
                         focusManager.clearFocus()
 
-                        authenticationViewModel.registerUserClicked(
-                            RegisterUserInfo(
-                                name,
-                                email,
-                                password
-                            )
-                        )
+                        loginViewModel.registerUserClicked()
                     },
                     buttonName = stringResource(R.string.get_started)
                 )
@@ -152,7 +144,7 @@ fun RegisterAccountContent(navController: NavController) {
                 // Show an Alert Dialog with API failure Error code/message
                 val message = (viewState as AuthenticationViewState.Failure).message
                 LaunchedEffect(message) {
-                    authenticationViewModel.onShowErrorDialog(message)
+                    loginViewModel.onShowErrorDialog(message)
                 }
             }
         }
@@ -161,7 +153,7 @@ fun RegisterAccountContent(navController: NavController) {
             CreateErrorAlertDialog(
                 showDialog = uiState.showErrorDialog,
                 dialogMessage = uiState.dialogMessage,
-                onDismiss = { authenticationViewModel.onDismissErrorDialog() }
+                onDismiss = { loginViewModel.onDismissErrorDialog() }
             )
         }
     }
