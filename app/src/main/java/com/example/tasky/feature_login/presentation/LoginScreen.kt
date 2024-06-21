@@ -85,13 +85,13 @@ fun LoginScreenContent(navController: NavController) {
                 TextBox(
                     hintText = stringResource(R.string.email),
                     text = email,
-                    isValid = authenticationViewModel.isEmailValid(email),
+                    isValid = isEmailValid,
                     onValueChange = { loginViewModel.onEmailChange(it) }
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
                     text = password,
-                    isValid = authenticationViewModel.isPasswordValid(password),
+                    isValid = isPasswordValid,
                     onValueChange = { loginViewModel.onPasswordChange(it) },
                     isPasswordField = true
                 )
