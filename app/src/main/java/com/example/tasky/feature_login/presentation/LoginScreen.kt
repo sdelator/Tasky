@@ -4,11 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -60,13 +60,13 @@ fun LoginScreenContent(navController: NavController) {
             .fillMaxSize()
             .background(Color.Black)
             .padding(top = 70.dp)
+            .safeDrawingPadding()
     ) {
         Header(title = stringResource(R.string.welcome_back))
         // White bottom sheet-like shape
         Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxSize()
                 .padding(top = 100.dp)
                 .align(Alignment.BottomCenter), // Align the card at the bottom center
             shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
