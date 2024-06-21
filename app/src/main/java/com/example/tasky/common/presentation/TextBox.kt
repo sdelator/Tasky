@@ -30,11 +30,11 @@ fun TextBox(
     hintText: String,
     text: String,
     isValid: Boolean,
-    onValueChange: (String) -> Unit,
-    isPasswordField: Boolean = false
+    isPasswordVisible: Boolean = false,
+    isPasswordField: Boolean = false,
+    onPasswordVisibilityClick: () -> Unit = {},
+    onValueChange: (String) -> Unit
 ) {
-    var passwordVisible by remember { mutableStateOf(false) }
-
     TextField(
         value = text,
         onValueChange = onValueChange,
@@ -55,15 +55,15 @@ fun TextBox(
                     tint = colorResource(id = R.color.tasky_green)
                 )
             } else if (isPasswordField) {
-                val image = if (passwordVisible) {
+                val image = if (isPasswordVisible) {
                     painterResource(id = R.drawable.ic_password_show)
                 } else {
                     painterResource(id = R.drawable.ic_password_hide)
                 }
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                IconButton(onClick = onPasswordVisibilityClick) {
                     Icon(
                         painter = image,
-                        contentDescription = if (passwordVisible) {
+                        contentDescription = if (isPasswordVisible) {
                             stringResource(R.string.hide_password)
                         } else {
                             stringResource(R.string.show_password)
@@ -73,7 +73,7 @@ fun TextBox(
                 }
             }
         },
-        visualTransformation = if (isPasswordField && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None
+        visualTransformation = if (isPasswordField && !isPasswordVisible) PasswordVisualTransformation() else VisualTransformation.None
     )
 }
 

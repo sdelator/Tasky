@@ -53,6 +53,7 @@ fun RegisterAccountContent(navController: NavController) {
     val isNameValid by loginViewModel.isNameValid.collectAsState()
     val isEmailValid by loginViewModel.isEmailValid.collectAsState()
     val isPasswordValid by loginViewModel.isPasswordValid.collectAsState()
+    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsState()
 
     val isFormValid = isNameValid && isEmailValid && isPasswordValid
 
@@ -102,7 +103,9 @@ fun RegisterAccountContent(navController: NavController) {
                     text = password,
                     isValid = isPasswordValid,
                     onValueChange = { loginViewModel.onPasswordChange(it) },
-                    isPasswordField = true
+                    isPasswordField = true,
+                    isPasswordVisible = isPasswordVisible,
+                    onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(

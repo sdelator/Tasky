@@ -26,6 +26,9 @@ class LoginViewModel @Inject constructor(
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> get() = _password
 
+    private val _isPasswordVisible = MutableStateFlow(false)
+    val isPasswordVisible: StateFlow<Boolean> get() = _isPasswordVisible
+
     val isNameValid = _name.map { name ->
         name.isValidName() // <- Each name emission is mapped to this boolean when it changes
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), false)
@@ -48,5 +51,9 @@ class LoginViewModel @Inject constructor(
 
     fun onPasswordChange(newPassword: String) {
         _password.value = newPassword
+    }
+
+    fun onPasswordVisibilityClick() {
+        _isPasswordVisible.value = !isPasswordVisible.value
     }
 }

@@ -51,6 +51,7 @@ fun LoginScreenContent(navController: NavController) {
 
     val isEmailValid by loginViewModel.isEmailValid.collectAsState()
     val isPasswordValid by loginViewModel.isPasswordValid.collectAsState()
+    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsState()
 
     val isFormValid = isEmailValid && isPasswordValid
 
@@ -93,7 +94,9 @@ fun LoginScreenContent(navController: NavController) {
                     text = password,
                     isValid = isPasswordValid,
                     onValueChange = { loginViewModel.onPasswordChange(it) },
-                    isPasswordField = true
+                    isPasswordField = true,
+                    isPasswordVisible = isPasswordVisible,
+                    onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(
