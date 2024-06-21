@@ -3,7 +3,10 @@ package com.example.tasky.feature_login.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasky.common.data.EmailPatternValidatorImpl
 import com.example.tasky.common.data.util.Result
+import com.example.tasky.common.domain.isValidName
+import com.example.tasky.common.domain.isValidPassword
 import com.example.tasky.feature_login.domain.model.AuthenticationViewState
 import com.example.tasky.feature_login.domain.model.LoginUserInfo
 import com.example.tasky.feature_login.domain.model.RegisterUserInfo
@@ -17,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(
-    private val userRemoteRepository: UserRemoteRepository
+    private val userRemoteRepository: UserRemoteRepository,
+    private val emailPatternValidator: EmailPatternValidatorImpl
 ) : ViewModel() {
 
     companion object {
@@ -90,5 +94,17 @@ class AuthenticationViewModel @Inject constructor(
 
     fun onDismissErrorDialog() {
         _uiState.value = _uiState.value.copy(showErrorDialog = false)
+    }
+
+    fun isNameValid(name: String): Boolean {
+        return name.isValidName()
+    }
+
+    fun isEmailValid(email: String): Boolean {
+        return emailPatternValidator.isValidEmailPattern(email)
+    }
+
+    fun isPasswordValid(password: String): Boolean {
+        return password.isValidPassword()
     }
 }

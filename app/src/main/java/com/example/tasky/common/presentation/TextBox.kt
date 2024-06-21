@@ -24,25 +24,20 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tasky.R
-import com.example.tasky.common.domain.isValidName
 
 @Composable
 fun TextBox(
     hintText: String,
     text: String,
+    isValid: Boolean,
     onValueChange: (String) -> Unit,
-    validator: (String) -> Boolean,
     isPasswordField: Boolean = false
 ) {
-    var isValid by remember { mutableStateOf(validator(text)) }
     var passwordVisible by remember { mutableStateOf(false) }
 
     TextField(
         value = text,
-        onValueChange = {
-            onValueChange(it)
-            isValid = validator(it)
-        },
+        onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp, start = 16.dp, end = 16.dp),
@@ -71,9 +66,7 @@ fun TextBox(
                         contentDescription = if (passwordVisible) {
                             stringResource(R.string.hide_password)
                         } else {
-                            stringResource(
-                                R.string.show_password
-                            )
+                            stringResource(R.string.show_password)
                         },
                         tint = colorResource(id = R.color.gray)
                     )
@@ -90,9 +83,11 @@ fun ViewTextField() {
     var name by remember { mutableStateOf("") }
 
     Column {
-        TextBox(hintText = "Name",
+        TextBox(
+            hintText = "Name",
             text = "",
-            onValueChange = { name = it },
-            validator = { it.isValidName() })
+            isValid = true,
+            onValueChange = { name = it }
+        )
     }
 }

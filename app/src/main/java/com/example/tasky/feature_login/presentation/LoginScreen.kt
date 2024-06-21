@@ -31,7 +31,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.tasky.AgendaNav
 import com.example.tasky.R
-import com.example.tasky.common.domain.isValidPassword
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
@@ -86,14 +85,14 @@ fun LoginScreenContent(navController: NavController) {
                 TextBox(
                     hintText = stringResource(R.string.email),
                     text = email,
-                    onValueChange = { loginViewModel.onEmailChange(it) },
-                    validator = { isEmailValid }
+                    isValid = authenticationViewModel.isEmailValid(email),
+                    onValueChange = { loginViewModel.onEmailChange(it) }
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
                     text = password,
+                    isValid = authenticationViewModel.isPasswordValid(password),
                     onValueChange = { loginViewModel.onPasswordChange(it) },
-                    validator = { it.isValidPassword() },
                     isPasswordField = true
                 )
                 Spacer(modifier = Modifier.height(16.dp))

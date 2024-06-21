@@ -30,8 +30,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.tasky.LoginNav
 import com.example.tasky.R
-import com.example.tasky.common.domain.isValidName
-import com.example.tasky.common.domain.isValidPassword
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
@@ -87,21 +85,23 @@ fun RegisterAccountContent(navController: NavController) {
                     .padding(16.dp)
                     .fillMaxWidth()
             ) {
-                TextBox(hintText = stringResource(R.string.name),
+                TextBox(
+                    hintText = stringResource(R.string.name),
                     text = name,
-                    onValueChange = { loginViewModel.onNameChange(it) },
-                    validator = { it.isValidName() }
+                    isValid = authenticationViewModel.isNameValid(name),
+                    onValueChange = { loginViewModel.onNameChange(it) }
                 )
-                TextBox(hintText = stringResource(R.string.email),
+                TextBox(
+                    hintText = stringResource(R.string.email),
                     text = email,
-                    onValueChange = { loginViewModel.onEmailChange(it) },
-                    validator = { isEmailValid }
+                    isValid = authenticationViewModel.isEmailValid(email),
+                    onValueChange = { loginViewModel.onEmailChange(it) }
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
                     text = password,
+                    isValid = authenticationViewModel.isPasswordValid(password),
                     onValueChange = { loginViewModel.onPasswordChange(it) },
-                    validator = { it.isValidPassword() },
                     isPasswordField = true
                 )
                 Spacer(modifier = Modifier.height(16.dp))
