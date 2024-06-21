@@ -1,4 +1,4 @@
-package com.example.tasky.feature_login.domain.model
+package com.example.tasky.feature_login.data.model
 
 data class RegisterUserInfo(
     val fullName: String,

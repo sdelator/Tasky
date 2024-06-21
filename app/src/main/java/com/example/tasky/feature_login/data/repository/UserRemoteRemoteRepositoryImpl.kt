@@ -5,10 +5,10 @@ import com.example.tasky.R
 import com.example.tasky.common.data.util.APIUtilFunctions
 import com.example.tasky.common.data.util.DataError
 import com.example.tasky.common.data.util.Result
+import com.example.tasky.feature_login.data.model.LoginUserInfo
+import com.example.tasky.feature_login.data.model.LoginUserResponse
+import com.example.tasky.feature_login.data.model.RegisterUserInfo
 import com.example.tasky.feature_login.data.remote.TaskyApi
-import com.example.tasky.feature_login.domain.model.LoginUserInfo
-import com.example.tasky.feature_login.domain.model.LoginUserResponse
-import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import okio.IOException
 import retrofit2.HttpException
