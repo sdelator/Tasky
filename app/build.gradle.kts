@@ -1,9 +1,23 @@
+import java.util.Properties
+
 // build.gradle.kts (App-level)
+
+// Load local.properties file
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+// Retrieve the API key
+val apiKey: String? = localProperties.getProperty("apiKey")
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("dagger.hilt.android.plugin")
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -19,6 +33,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        // Add the API key to build config fields
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -39,6 +56,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {
@@ -51,17 +69,31 @@ android {
 }
 
 dependencies {
+    // Splash Screen
     implementation(libs.androidx.core.splashscreen)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Compose and UI tools
     implementation(libs.androidx.activity.compose)
     implementation(libs.ui)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation(libs.material)
+
+    // Room Database
+    implementation(libs.androidx.room.common)
+
+    // ViewModel Compose
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Hilt dependencies
     implementation(libs.hilt.android)
     ksp(libs.dagger.hilt.compiler)
+    ksp(libs.android.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
 
     // Other dependencies
     testImplementation(libs.junit)
@@ -70,4 +102,13 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
+
+    // Navigation Compose
+    implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 }

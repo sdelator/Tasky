@@ -12,22 +12,58 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.tasky.LoginNav
 import com.example.tasky.R
+import com.example.tasky.common.domain.isValidEmail
+import com.example.tasky.common.domain.isValidName
+import com.example.tasky.common.domain.isValidPassword
+import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
+import com.example.tasky.feature_login.domain.model.AuthenticationViewState
+import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 
 
 @Composable
-@Preview
-fun RegisterAccountContent() {
+fun RegisterAccountContent(navController: NavController) {
+    // todo figure out why text fields are not saving w/orientation change
+    val loginViewModel: LoginViewModel = hiltViewModel()
+    val authenticationViewModel: AuthenticationViewModel = hiltViewModel()
+
+    val viewState by authenticationViewModel.viewState.collectAsState()
+    val name by loginViewModel.name.collectAsState()
+    val email by loginViewModel.email.collectAsState()
+    val password by loginViewModel.password.collectAsState()
+
+    val isNameValid by loginViewModel.isNameValid.collectAsState()
+    val isEmailValid by loginViewModel.isEmailValid.collectAsState()
+    val isPasswordValid by loginViewModel.isPasswordValid.collectAsState()
+
+    val isFormValid = isNameValid && isEmailValid && isPasswordValid
+
+    val showDialog = remember { mutableStateOf(false) }
+    var dialogMessage by remember { mutableStateOf("") }
+
+    val focusManager = LocalFocusManager.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -54,17 +90,80 @@ fun RegisterAccountContent() {
                     .padding(16.dp)
                     .fillMaxWidth()
             ) {
-                TextBox(hintText = stringResource(R.string.name))
-                TextBox(hintText = stringResource(R.string.email))
-                TextBox(hintText = stringResource(R.string.password))
-
+                TextBox(hintText = stringResource(R.string.name),
+                    text = name,
+                    onValueChange = { loginViewModel.onNameChange(it) },
+                    validator = { it.isValidName() }
+                )
+                TextBox(hintText = stringResource(R.string.email),
+                    text = email,
+                    onValueChange = { loginViewModel.onEmailChange(it) },
+                    validator = { it.isValidEmail() }
+                )
+                TextBox(
+                    hintText = stringResource(R.string.password),
+                    text = password,
+                    onValueChange = { loginViewModel.onPasswordChange(it) },
+                    validator = { it.isValidPassword() },
+                    isPasswordField = true
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { /*TODO*/ },
+                    enabled = isFormValid,
+                    onClick = {
+                        // clear focus hides the keyboard
+                        focusManager.clearFocus()
+
+                        authenticationViewModel.registerUserClicked(
+                            RegisterUserInfo(
+                                name,
+                                email,
+                                password
+                            )
+                        )
+                    },
                     buttonName = stringResource(R.string.get_started)
                 )
             }
+        }
+
+        when (viewState) {
+            is AuthenticationViewState.Loading -> {
+                // Show a loading indicator
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f))
+                        .align(Alignment.Center)
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
+
+            is AuthenticationViewState.Success -> {
+                // Handle success by navigating to LoginScreen
+                navController.navigate(LoginNav)
+            }
+
+            is AuthenticationViewState.Failure -> {
+                // Show an Alert Dialog with API failure Error code/message
+                val message = (viewState as AuthenticationViewState.Failure).message
+                LaunchedEffect(message) {
+                    dialogMessage = message
+                    showDialog.value = true
+                }
+            }
+        }
+
+
+        if (showDialog.value) {
+            CreateErrorAlertDialog(
+                showDialog = showDialog,
+                dialogMessage = dialogMessage
+            )
         }
     }
 }
