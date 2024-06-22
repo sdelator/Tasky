@@ -1,4 +1,4 @@
-package com.example.tasky.feature_splash.domain
+package com.example.tasky.feature_splash.presentation
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
