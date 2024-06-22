@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -143,10 +144,10 @@ class LoginViewModel @Inject constructor(
     }
 
     fun onShowErrorDialog(message: String) {
-        _uiState.value = _uiState.value.copy(showErrorDialog = true, dialogMessage = message)
+        _uiState.update { it.copy(showErrorDialog = true, dialogMessage = message) }
     }
 
     fun onDismissErrorDialog() {
-        _uiState.value = _uiState.value.copy(showErrorDialog = false)
+        _uiState.update { it.copy(showErrorDialog = false) }
     }
 }
