@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-open class APIUtilFunctions @Inject constructor() {
+class APIUtilFunctions @Inject constructor() {
     fun parseErrorResponse(errorBody: String?): String {
         return if (errorBody != null) {
             try {
