@@ -1,6 +1,5 @@
 package com.example.tasky.feature_login.presentation
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,8 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val emailPatternValidator: EmailPatternValidatorImpl,
-    private val userRemoteRepository: UserRemoteRepository,
-    private val application: Application
+    private val userRemoteRepository: UserRemoteRepository
 ) : ViewModel() {
 
     companion object {
