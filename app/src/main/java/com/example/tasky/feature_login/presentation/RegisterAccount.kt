@@ -166,7 +166,9 @@ fun RegisterAccountContent(navController: NavController) {
 }
 
 fun DataError.toRegisterErrorMessage(context: Context): String {
-    return if (this == DataError.Network.UNAUTHORIZED) {
-        context.getString(R.string.email_is_already_in_use)
-    } else context.getString(R.string.unknown_error)
+    return when (this) {
+        DataError.Network.UNAUTHORIZED -> context.getString(R.string.email_is_already_in_use)
+        DataError.Network.NO_INTERNET -> context.getString(R.string.no_internet_connection)
+        else -> context.getString(R.string.unknown_error)
+    }
 }

@@ -160,9 +160,11 @@ fun LoginScreenContent(
 }
 
 fun DataError.toLoginErrorMessage(context: Context): String {
-    return if (this == DataError.Network.UNAUTHORIZED) {
-        context.getString(R.string.incorrect_credentials)
-    } else context.getString(R.string.unknown_error)
+    return when (this) {
+        DataError.Network.UNAUTHORIZED -> context.getString(R.string.incorrect_credentials)
+        DataError.Network.NO_INTERNET -> context.getString(R.string.no_internet_connection)
+        else -> context.getString(R.string.unknown_error)
+    }
 }
 
 @Composable
