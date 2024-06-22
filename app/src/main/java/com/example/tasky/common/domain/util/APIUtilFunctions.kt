@@ -1,5 +1,6 @@
-package com.example.tasky.common.data.util
+package com.example.tasky.common.domain.util
 
+import com.example.tasky.common.domain.error.DataError
 import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -1,4 +1,6 @@
-package com.example.tasky.common.data.util
+package com.example.tasky.common.domain
+
+import com.example.tasky.common.domain.error.Error
 
 typealias RootError = Error
 

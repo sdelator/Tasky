@@ -2,9 +2,9 @@ package com.example.tasky.feature_login.data.repository
 
 import android.app.Application
 import com.example.tasky.R
-import com.example.tasky.common.data.util.APIUtilFunctions
-import com.example.tasky.common.data.util.DataError
-import com.example.tasky.common.data.util.Result
+import com.example.tasky.common.domain.Result
+import com.example.tasky.common.domain.error.DataError
+import com.example.tasky.common.domain.util.APIUtilFunctions
 import com.example.tasky.feature_login.data.model.LoginUserInfo
 import com.example.tasky.feature_login.data.model.LoginUserResponse
 import com.example.tasky.feature_login.data.model.RegisterUserInfo
