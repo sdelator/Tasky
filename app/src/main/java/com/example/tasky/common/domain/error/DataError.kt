@@ -1,4 +1,4 @@
-package com.example.tasky.common.data.util
+package com.example.tasky.common.domain.error
 
 sealed interface DataError : Error {
     enum class Network : DataError {

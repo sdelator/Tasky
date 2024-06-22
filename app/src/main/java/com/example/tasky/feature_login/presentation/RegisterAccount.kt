@@ -32,7 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.LoginNav
 import com.example.tasky.R
-import com.example.tasky.common.data.util.DataError
+import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
