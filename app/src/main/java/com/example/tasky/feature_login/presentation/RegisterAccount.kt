@@ -37,7 +37,6 @@ import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
-import com.example.tasky.feature_login.domain.model.AuthenticationViewState
 
 
 @Composable

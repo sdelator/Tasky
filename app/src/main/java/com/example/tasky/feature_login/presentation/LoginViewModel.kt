@@ -7,7 +7,6 @@ import com.example.tasky.common.data.EmailPatternValidatorImpl
 import com.example.tasky.common.data.util.Result
 import com.example.tasky.common.domain.isValidName
 import com.example.tasky.common.domain.isValidPassword
-import com.example.tasky.feature_login.domain.model.AuthenticationViewState
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
