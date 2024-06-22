@@ -11,7 +11,6 @@ import com.example.tasky.feature_login.data.model.RegisterUserInfo
 import com.example.tasky.feature_login.data.remote.TaskyApi
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import okio.IOException
-import retrofit2.HttpException
 
 class UserRemoteRemoteRepositoryImpl(
     private val api: TaskyApi,
@@ -43,9 +42,6 @@ class UserRemoteRemoteRepositoryImpl(
                 }
                 Result.Error(error)
             }
-        } catch (e: HttpException) {
-            val error = apiUtilFunctions.getHttpErrorMessage(e)
-            Result.Error(error)
         } catch (e: IOException) {
             Result.Error(DataError.Network.NO_INTERNET)
         }
@@ -69,9 +65,6 @@ class UserRemoteRemoteRepositoryImpl(
                 }
                 Result.Error(error)
             }
-        } catch (e: HttpException) {
-            val error = apiUtilFunctions.getHttpErrorMessage(e)
-            Result.Error(error)
         } catch (e: IOException) {
             Result.Error(DataError.Network.NO_INTERNET)
         }
