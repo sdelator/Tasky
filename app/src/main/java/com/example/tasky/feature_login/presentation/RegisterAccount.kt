@@ -152,6 +152,8 @@ fun RegisterAccountContent(navController: NavController) {
                     loginViewModel.onShowErrorDialog(message)
                 }
             }
+
+            null -> println("no action")
         }
 
         if (uiState.showErrorDialog) {

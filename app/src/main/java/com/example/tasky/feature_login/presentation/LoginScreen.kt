@@ -145,6 +145,8 @@ fun LoginScreenContent(
                     loginViewModel.onShowErrorDialog(message)
                 }
             }
+
+            null -> println("no action")
         }
 
         if (uiState.showErrorDialog) {

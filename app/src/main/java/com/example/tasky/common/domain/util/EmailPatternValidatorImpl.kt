@@ -1,4 +1,4 @@
-package com.example.tasky.common.data
+package com.example.tasky.common.domain.util
 
 import android.util.Patterns
 import com.example.tasky.common.domain.EmailPatternValidator
