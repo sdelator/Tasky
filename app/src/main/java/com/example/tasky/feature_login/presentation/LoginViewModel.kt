@@ -7,8 +7,6 @@ import com.example.tasky.common.data.EmailPatternValidatorImpl
 import com.example.tasky.common.data.util.Result
 import com.example.tasky.common.domain.isValidName
 import com.example.tasky.common.domain.isValidPassword
-import com.example.tasky.feature_login.data.model.LoginUserInfo
-import com.example.tasky.feature_login.data.model.RegisterUserInfo
 import com.example.tasky.feature_login.domain.model.AuthenticationViewState
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,13 +16,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val emailPatternValidator: EmailPatternValidatorImpl,
-    private val userRemoteRepository: UserRemoteRepository,
+    private val userRemoteRepository: UserRemoteRepository
 ) : ViewModel() {
 
     companion object {
@@ -93,7 +92,7 @@ class LoginViewModel @Inject constructor(
         )
         viewModelScope.launch {
             _viewState.emit(AuthenticationViewState.Loading)
-            val result = userRemoteRepository.logInUser(LoginUserInfo(email.value, password.value))
+            val result = userRemoteRepository.logInUser(email.value, password.value)
 
             when (result) {
                 is Result.Success -> {
@@ -105,8 +104,7 @@ class LoginViewModel @Inject constructor(
                 is Result.Error -> {
                     println("failed login :(")
                     // emit a viewState to show ErrorMessage
-                    val errorMsg = result.error.formatErrorMessage()
-                    _viewState.emit(AuthenticationViewState.Failure(errorMsg))
+                    _viewState.emit(AuthenticationViewState.Failure(result.error))
                 }
             }
         }
@@ -119,13 +117,7 @@ class LoginViewModel @Inject constructor(
         )
         viewModelScope.launch {
             _viewState.emit(AuthenticationViewState.Loading)
-            val result = userRemoteRepository.registerUser(
-                RegisterUserInfo(
-                    name.value,
-                    email.value,
-                    password.value
-                )
-            )
+            val result = userRemoteRepository.registerUser(name.value, email.value, password.value)
 
             when (result) {
                 is Result.Success -> {
@@ -137,18 +129,17 @@ class LoginViewModel @Inject constructor(
                 is Result.Error -> {
                     println("failed register :(")
                     // emit a viewState to show ErrorMessage
-                    val errorMsg = result.error.formatErrorMessage()
-                    _viewState.emit(AuthenticationViewState.Failure(errorMsg))
+                    _viewState.emit(AuthenticationViewState.Failure(result.error))
                 }
             }
         }
     }
 
     fun onShowErrorDialog(message: String) {
-        _uiState.value = _uiState.value.copy(showErrorDialog = true, dialogMessage = message)
+        _uiState.update { it.copy(showErrorDialog = true, dialogMessage = message) }
     }
 
     fun onDismissErrorDialog() {
-        _uiState.value = _uiState.value.copy(showErrorDialog = false)
+        _uiState.update { it.copy(showErrorDialog = false) }
     }
 }

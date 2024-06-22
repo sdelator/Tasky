@@ -1,5 +1,6 @@
 package com.example.tasky.feature_login.presentation
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,11 +18,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.tasky.AgendaNav
 import com.example.tasky.R
+import com.example.tasky.common.data.util.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
@@ -47,12 +49,12 @@ fun LoginScreenContent(
     val uiState by loginViewModel.uiState.collectAsStateWithLifecycle()
     val viewState by loginViewModel.viewState.collectAsStateWithLifecycle()
 
-    val email by loginViewModel.email.collectAsState()
-    val password by loginViewModel.password.collectAsState()
+    val email by loginViewModel.email.collectAsStateWithLifecycle()
+    val password by loginViewModel.password.collectAsStateWithLifecycle()
 
-    val isEmailValid by loginViewModel.isEmailValid.collectAsState()
-    val isPasswordValid by loginViewModel.isPasswordValid.collectAsState()
-    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsState()
+    val isEmailValid by loginViewModel.isEmailValid.collectAsStateWithLifecycle()
+    val isPasswordValid by loginViewModel.isPasswordValid.collectAsStateWithLifecycle()
+    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsStateWithLifecycle()
 
     val isFormValid = isEmailValid && isPasswordValid
 
@@ -136,7 +138,10 @@ fun LoginScreenContent(
 
             is AuthenticationViewState.Failure -> {
                 // Show an Alert Dialog with API failure Error code/message
-                val message = (viewState as AuthenticationViewState.Failure).message
+                val message =
+                    (viewState as AuthenticationViewState.Failure).dataError.toLoginErrorMessage(
+                        context = LocalContext.current
+                    )
                 LaunchedEffect(message) {
                     loginViewModel.onShowErrorDialog(message)
                 }
@@ -151,6 +156,12 @@ fun LoginScreenContent(
             )
         }
     }
+}
+
+fun DataError.toLoginErrorMessage(context: Context): String {
+    return if (this == DataError.Network.UNAUTHORIZED) {
+        context.getString(R.string.incorrect_credentials)
+    } else context.getString(R.string.unknown_error)
 }
 
 @Composable
