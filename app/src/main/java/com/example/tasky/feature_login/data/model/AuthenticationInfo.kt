@@ -11,14 +11,6 @@ data class LoginUserInfo(
     val password: String
 )
 
-data class LoginUserResponse(
-    val accessToken: String,
-    val refreshToken: String,
-    val fullName: String,
-    val userId: String,
-    val accessTokenExpirationTimestamp: Long
-)
-
 data class AccessToken(
     val refreshToken: String,
     val userId: String

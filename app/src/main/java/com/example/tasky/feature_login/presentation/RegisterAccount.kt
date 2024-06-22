@@ -41,7 +41,6 @@ import com.example.tasky.common.presentation.TextBox
 
 @Composable
 fun RegisterAccountContent(navController: NavController) {
-    // todo figure out why text fields are not saving w/orientation change
     val loginViewModel: LoginViewModel = hiltViewModel()
     val uiState by loginViewModel.uiState.collectAsStateWithLifecycle()
 
