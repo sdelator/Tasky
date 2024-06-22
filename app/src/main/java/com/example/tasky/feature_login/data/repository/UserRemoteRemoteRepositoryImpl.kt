@@ -30,22 +30,19 @@ class UserRemoteRemoteRepositoryImpl(
             if (response.isSuccessful) {
                 Result.Success(Unit)
             } else {
-                val errorMessage =
-                    apiUtilFunctions.parseErrorResponse(response.errorBody()?.string())
                 val error = when (response.code()) {
-                    401 -> DataError.Network.Unauthorized(errorMessage)
-                    408 -> DataError.Network.RequestTimeout(errorMessage)
-                    413 -> DataError.Network.PayloadTooLarge(errorMessage)
-                    else -> DataError.Network.Unknown(errorMessage)
+                    401 -> DataError.Network.UNAUTHORIZED
+                    408 -> DataError.Network.REQUEST_TIMEOUT
+                    413 -> DataError.Network.PAYLOAD_TOO_LARGE
+                    else -> DataError.Network.UNKNOWN
                 }
-
                 Result.Error(error)
             }
         } catch (e: HttpException) {
             val error = apiUtilFunctions.getHttpErrorMessage(e)
             Result.Error(error)
         } catch (e: IOException) {
-            Result.Error(DataError.Network.NoInternet(e.message ?: ""))
+            Result.Error(DataError.Network.NO_INTERNET)
         }
     }
 
@@ -56,22 +53,19 @@ class UserRemoteRemoteRepositoryImpl(
             if (response.isSuccessful && loginUserResponse != null) {
                 Result.Success(loginUserResponse)
             } else {
-                val errorMessage =
-                    apiUtilFunctions.parseErrorResponse(response.errorBody()?.string())
                 val error = when (response.code()) {
-                    401 -> DataError.Network.Unauthorized(errorMessage)
-                    408 -> DataError.Network.RequestTimeout(errorMessage)
-                    413 -> DataError.Network.PayloadTooLarge(errorMessage)
-                    else -> DataError.Network.Unknown(errorMessage)
+                    401 -> DataError.Network.UNAUTHORIZED
+                    408 -> DataError.Network.REQUEST_TIMEOUT
+                    413 -> DataError.Network.PAYLOAD_TOO_LARGE
+                    else -> DataError.Network.UNKNOWN
                 }
-
                 Result.Error(error)
             }
         } catch (e: HttpException) {
             val error = apiUtilFunctions.getHttpErrorMessage(e)
             Result.Error(error)
         } catch (e: IOException) {
-            Result.Error(DataError.Network.NoInternet(e.message ?: ""))
+            Result.Error(DataError.Network.NO_INTERNET)
         }
     }
 }

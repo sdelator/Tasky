@@ -105,7 +105,7 @@ class LoginViewModel @Inject constructor(
                 is Result.Error -> {
                     println("failed login :(")
                     // emit a viewState to show ErrorMessage
-                    val errorMsg = result.error.formatErrorMessage()
+                    val errorMsg = ""//result.error.formatErrorMessage()
                     _viewState.emit(AuthenticationViewState.Failure(errorMsg))
                 }
             }
@@ -137,7 +137,7 @@ class LoginViewModel @Inject constructor(
                 is Result.Error -> {
                     println("failed register :(")
                     // emit a viewState to show ErrorMessage
-                    val errorMsg = result.error.formatErrorMessage()
+                    val errorMsg = ""//result.error.formatErrorMessage()
                     _viewState.emit(AuthenticationViewState.Failure(errorMsg))
                 }
             }
