@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -17,9 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
@@ -31,24 +30,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.tasky.LoginNav
 import com.example.tasky.R
-import com.example.tasky.common.domain.isValidEmail
-import com.example.tasky.common.domain.isValidName
-import com.example.tasky.common.domain.isValidPassword
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 import com.example.tasky.feature_login.domain.model.AuthenticationViewState
-import com.example.tasky.feature_login.domain.model.RegisterUserInfo
 
 
 @Composable
 fun RegisterAccountContent(navController: NavController) {
     // todo figure out why text fields are not saving w/orientation change
     val loginViewModel: LoginViewModel = hiltViewModel()
-    val authenticationViewModel: AuthenticationViewModel = hiltViewModel()
+    val uiState by loginViewModel.uiState.collectAsState()
 
-    val viewState by authenticationViewModel.viewState.collectAsState()
+    val viewState by loginViewModel.viewState.collectAsState()
     val name by loginViewModel.name.collectAsState()
     val email by loginViewModel.email.collectAsState()
     val password by loginViewModel.password.collectAsState()
@@ -56,11 +51,9 @@ fun RegisterAccountContent(navController: NavController) {
     val isNameValid by loginViewModel.isNameValid.collectAsState()
     val isEmailValid by loginViewModel.isEmailValid.collectAsState()
     val isPasswordValid by loginViewModel.isPasswordValid.collectAsState()
+    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsState()
 
     val isFormValid = isNameValid && isEmailValid && isPasswordValid
-
-    val showDialog = remember { mutableStateOf(false) }
-    var dialogMessage by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
 
@@ -69,14 +62,15 @@ fun RegisterAccountContent(navController: NavController) {
             .fillMaxSize()
             .background(Color.Black)
             .padding(top = 70.dp)
+            .safeDrawingPadding()
     )
     {
         Header(title = stringResource(R.string.create_your_account))
         // White bottom sheet-like shape
         Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(top = 100.dp)
                 .align(BottomCenter), // Align the card at the bottom center
             shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
@@ -90,22 +84,26 @@ fun RegisterAccountContent(navController: NavController) {
                     .padding(16.dp)
                     .fillMaxWidth()
             ) {
-                TextBox(hintText = stringResource(R.string.name),
+                TextBox(
+                    hintText = stringResource(R.string.name),
                     text = name,
-                    onValueChange = { loginViewModel.onNameChange(it) },
-                    validator = { it.isValidName() }
+                    isValid = isNameValid,
+                    onValueChange = { loginViewModel.onNameChange(it) }
                 )
-                TextBox(hintText = stringResource(R.string.email),
+                TextBox(
+                    hintText = stringResource(R.string.email),
                     text = email,
-                    onValueChange = { loginViewModel.onEmailChange(it) },
-                    validator = { it.isValidEmail() }
+                    isValid = isEmailValid,
+                    onValueChange = { loginViewModel.onEmailChange(it) }
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
                     text = password,
+                    isValid = isPasswordValid,
                     onValueChange = { loginViewModel.onPasswordChange(it) },
-                    validator = { it.isValidPassword() },
-                    isPasswordField = true
+                    isPasswordField = true,
+                    isPasswordVisible = isPasswordVisible,
+                    onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(
@@ -115,13 +113,7 @@ fun RegisterAccountContent(navController: NavController) {
                         // clear focus hides the keyboard
                         focusManager.clearFocus()
 
-                        authenticationViewModel.registerUserClicked(
-                            RegisterUserInfo(
-                                name,
-                                email,
-                                password
-                            )
-                        )
+                        loginViewModel.registerUserClicked()
                     },
                     buttonName = stringResource(R.string.get_started)
                 )
@@ -152,17 +144,16 @@ fun RegisterAccountContent(navController: NavController) {
                 // Show an Alert Dialog with API failure Error code/message
                 val message = (viewState as AuthenticationViewState.Failure).message
                 LaunchedEffect(message) {
-                    dialogMessage = message
-                    showDialog.value = true
+                    loginViewModel.onShowErrorDialog(message)
                 }
             }
         }
 
-
-        if (showDialog.value) {
+        if (uiState.showErrorDialog) {
             CreateErrorAlertDialog(
-                showDialog = showDialog,
-                dialogMessage = dialogMessage
+                showDialog = uiState.showErrorDialog,
+                dialogMessage = uiState.dialogMessage,
+                onDismiss = { loginViewModel.onDismissErrorDialog() }
             )
         }
     }

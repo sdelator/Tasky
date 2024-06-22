@@ -4,7 +4,7 @@ import com.example.tasky.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class BaseHeaderInterceptor : Interceptor {
+class ApiKeyInterceptor : Interceptor {
     companion object {
         const val API_KEY = "x-api-key"
     }

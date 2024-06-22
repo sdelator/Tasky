@@ -1,10 +1,10 @@
 package com.example.tasky.feature_login.data.remote
 
-import com.example.tasky.feature_login.domain.model.AccessToken
-import com.example.tasky.feature_login.domain.model.AccessTokenResponse
-import com.example.tasky.feature_login.domain.model.LoginUserInfo
-import com.example.tasky.feature_login.domain.model.LoginUserResponse
-import com.example.tasky.feature_login.domain.model.RegisterUserInfo
+import com.example.tasky.feature_login.data.model.AccessToken
+import com.example.tasky.feature_login.data.model.AccessTokenResponse
+import com.example.tasky.feature_login.data.model.LoginUserInfo
+import com.example.tasky.feature_login.data.model.LoginUserResponse
+import com.example.tasky.feature_login.data.model.RegisterUserInfo
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

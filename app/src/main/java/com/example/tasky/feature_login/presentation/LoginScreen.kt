@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -17,9 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,37 +27,34 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.tasky.CalendarNav
+import com.example.tasky.AgendaNav
 import com.example.tasky.R
-import com.example.tasky.common.domain.isValidEmail
-import com.example.tasky.common.domain.isValidPassword
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 import com.example.tasky.feature_login.domain.model.AuthenticationViewState
-import com.example.tasky.feature_login.domain.model.LoginUserInfo
 
 
 @Composable
-fun LoginScreenContent(navController: NavController) {
-    // todo figure out why text fields are not saving w/orientation change
-    val loginViewModel: LoginViewModel = hiltViewModel()
-    val authenticationViewModel: AuthenticationViewModel = hiltViewModel()
+fun LoginScreenContent(
+    navController: NavController,
+    loginViewModel: LoginViewModel = hiltViewModel()
+) {
+    val uiState by loginViewModel.uiState.collectAsStateWithLifecycle()
+    val viewState by loginViewModel.viewState.collectAsStateWithLifecycle()
 
-    val viewState by authenticationViewModel.viewState.collectAsState()
     val email by loginViewModel.email.collectAsState()
     val password by loginViewModel.password.collectAsState()
 
     val isEmailValid by loginViewModel.isEmailValid.collectAsState()
     val isPasswordValid by loginViewModel.isPasswordValid.collectAsState()
+    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsState()
 
     val isFormValid = isEmailValid && isPasswordValid
-
-    val showDialog = remember { mutableStateOf(false) }
-    var dialogMessage by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
 
@@ -67,13 +63,14 @@ fun LoginScreenContent(navController: NavController) {
             .fillMaxSize()
             .background(Color.Black)
             .padding(top = 70.dp)
+            .safeDrawingPadding()
     ) {
         Header(title = stringResource(R.string.welcome_back))
         // White bottom sheet-like shape
         Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(top = 100.dp)
                 .align(Alignment.BottomCenter), // Align the card at the bottom center
             shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
@@ -90,15 +87,17 @@ fun LoginScreenContent(navController: NavController) {
                 TextBox(
                     hintText = stringResource(R.string.email),
                     text = email,
-                    onValueChange = { loginViewModel.onEmailChange(it) },
-                    validator = { it.isValidEmail() }
+                    isValid = isEmailValid,
+                    onValueChange = { loginViewModel.onEmailChange(it) }
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
                     text = password,
+                    isValid = isPasswordValid,
                     onValueChange = { loginViewModel.onPasswordChange(it) },
-                    validator = { it.isValidPassword() },
-                    isPasswordField = true
+                    isPasswordField = true,
+                    isPasswordVisible = isPasswordVisible,
+                    onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(
@@ -108,12 +107,7 @@ fun LoginScreenContent(navController: NavController) {
                         // clear focus hides the keyboard
                         focusManager.clearFocus()
 
-                        authenticationViewModel.logInClicked(
-                            LoginUserInfo(
-                                email = email,
-                                password = password
-                            )
-                        )
+                        loginViewModel.logInClicked()
                     },
                     buttonName = stringResource(R.string.log_in)
                 )
@@ -136,24 +130,24 @@ fun LoginScreenContent(navController: NavController) {
             }
 
             is AuthenticationViewState.Success -> {
-                // Handle success by navigating to CalendarScreen
-                navController.navigate(CalendarNav)
+                // Handle success by navigating to AgendaScreen
+                navController.navigate(AgendaNav)
             }
 
             is AuthenticationViewState.Failure -> {
                 // Show an Alert Dialog with API failure Error code/message
                 val message = (viewState as AuthenticationViewState.Failure).message
                 LaunchedEffect(message) {
-                    dialogMessage = message
-                    showDialog.value = true
+                    loginViewModel.onShowErrorDialog(message)
                 }
             }
         }
 
-        if (showDialog.value) {
+        if (uiState.showErrorDialog) {
             CreateErrorAlertDialog(
-                showDialog = showDialog,
-                dialogMessage = dialogMessage
+                showDialog = true,
+                dialogMessage = uiState.dialogMessage,
+                onDismiss = { loginViewModel.onDismissErrorDialog() }
             )
         }
     }

@@ -3,7 +3,7 @@ package com.example.tasky.common.model
 import android.content.Context
 import androidx.annotation.StringRes
 
-interface ResolvableResource {
+sealed interface ResolvableResource {
     fun resolve(context: Context): String
 }
 

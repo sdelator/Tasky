@@ -1,15 +1,13 @@
 package com.example.tasky.common.domain
 
-import android.util.Patterns
-
 
 fun String.isValidPassword(): Boolean {
-    val passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{9,}$"
-    return this.matches(passwordPattern.toRegex())
-}
+    val hasLowerCase = this.any { it.isLowerCase() }
+    val hasUpperCase = this.any { it.isUpperCase() }
+    val hasDigit = this.any { it.isDigit() }
+    val hasValidLength = this.length > 8
 
-fun String.isValidEmail(): Boolean {
-    return Patterns.EMAIL_ADDRESS.matcher(this).matches()
+    return hasLowerCase && hasUpperCase && hasDigit && hasValidLength
 }
 
 fun String.isValidName(): Boolean {
