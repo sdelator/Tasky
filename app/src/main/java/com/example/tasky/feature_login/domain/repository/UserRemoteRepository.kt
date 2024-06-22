@@ -2,7 +2,7 @@ package com.example.tasky.feature_login.domain.repository
 
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
-import com.example.tasky.feature_login.data.model.LoginUserResponse
+import com.example.tasky.feature_login.domain.model.LoginUserResponse
 
 interface UserRemoteRepository {
     suspend fun registerUser(
