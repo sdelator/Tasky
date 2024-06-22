@@ -1,5 +1,6 @@
 package com.example.tasky.feature_login.presentation
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -30,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.tasky.LoginNav
 import com.example.tasky.R
+import com.example.tasky.common.data.util.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
@@ -142,7 +145,10 @@ fun RegisterAccountContent(navController: NavController) {
 
             is AuthenticationViewState.Failure -> {
                 // Show an Alert Dialog with API failure Error code/message
-                val message = (viewState as AuthenticationViewState.Failure).message
+                val message =
+                    (viewState as AuthenticationViewState.Failure).dataError.toRegisterErrorMessage(
+                        context = LocalContext.current
+                    )
                 LaunchedEffect(message) {
                     loginViewModel.onShowErrorDialog(message)
                 }
@@ -157,4 +163,10 @@ fun RegisterAccountContent(navController: NavController) {
             )
         }
     }
+}
+
+fun DataError.toRegisterErrorMessage(context: Context): String {
+    return if (this == DataError.Network.UNAUTHORIZED) {
+        context.getString(R.string.email_is_already_in_use)
+    } else context.getString(R.string.unknown_error)
 }

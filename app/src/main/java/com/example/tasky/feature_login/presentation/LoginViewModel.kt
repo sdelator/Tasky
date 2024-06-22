@@ -1,5 +1,6 @@
 package com.example.tasky.feature_login.presentation
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +26,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val emailPatternValidator: EmailPatternValidatorImpl,
     private val userRemoteRepository: UserRemoteRepository,
+    private val application: Application
 ) : ViewModel() {
 
     companion object {
@@ -105,8 +107,7 @@ class LoginViewModel @Inject constructor(
                 is Result.Error -> {
                     println("failed login :(")
                     // emit a viewState to show ErrorMessage
-                    val errorMsg = ""//result.error.formatErrorMessage()
-                    _viewState.emit(AuthenticationViewState.Failure(errorMsg))
+                    _viewState.emit(AuthenticationViewState.Failure(result.error))
                 }
             }
         }
@@ -137,8 +138,7 @@ class LoginViewModel @Inject constructor(
                 is Result.Error -> {
                     println("failed register :(")
                     // emit a viewState to show ErrorMessage
-                    val errorMsg = ""//result.error.formatErrorMessage()
-                    _viewState.emit(AuthenticationViewState.Failure(errorMsg))
+                    _viewState.emit(AuthenticationViewState.Failure(result.error))
                 }
             }
         }
