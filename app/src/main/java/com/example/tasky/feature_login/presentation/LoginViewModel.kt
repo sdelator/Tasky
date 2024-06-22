@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.data.EmailPatternValidatorImpl
+import com.example.tasky.common.data.isValidName
+import com.example.tasky.common.data.isValidPassword
 import com.example.tasky.common.domain.Result
-import com.example.tasky.common.domain.isValidName
-import com.example.tasky.common.domain.isValidPassword
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
