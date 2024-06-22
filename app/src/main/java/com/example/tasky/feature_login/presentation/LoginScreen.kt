@@ -18,7 +18,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,12 +49,12 @@ fun LoginScreenContent(
     val uiState by loginViewModel.uiState.collectAsStateWithLifecycle()
     val viewState by loginViewModel.viewState.collectAsStateWithLifecycle()
 
-    val email by loginViewModel.email.collectAsState()
-    val password by loginViewModel.password.collectAsState()
+    val email by loginViewModel.email.collectAsStateWithLifecycle()
+    val password by loginViewModel.password.collectAsStateWithLifecycle()
 
-    val isEmailValid by loginViewModel.isEmailValid.collectAsState()
-    val isPasswordValid by loginViewModel.isPasswordValid.collectAsState()
-    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsState()
+    val isEmailValid by loginViewModel.isEmailValid.collectAsStateWithLifecycle()
+    val isPasswordValid by loginViewModel.isPasswordValid.collectAsStateWithLifecycle()
+    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsStateWithLifecycle()
 
     val isFormValid = isEmailValid && isPasswordValid
 

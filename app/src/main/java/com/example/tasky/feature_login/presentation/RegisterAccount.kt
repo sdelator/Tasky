@@ -18,7 +18,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
@@ -29,6 +28,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.LoginNav
 import com.example.tasky.R
@@ -44,17 +44,17 @@ import com.example.tasky.feature_login.domain.model.AuthenticationViewState
 fun RegisterAccountContent(navController: NavController) {
     // todo figure out why text fields are not saving w/orientation change
     val loginViewModel: LoginViewModel = hiltViewModel()
-    val uiState by loginViewModel.uiState.collectAsState()
+    val uiState by loginViewModel.uiState.collectAsStateWithLifecycle()
 
-    val viewState by loginViewModel.viewState.collectAsState()
-    val name by loginViewModel.name.collectAsState()
-    val email by loginViewModel.email.collectAsState()
-    val password by loginViewModel.password.collectAsState()
+    val viewState by loginViewModel.viewState.collectAsStateWithLifecycle()
+    val name by loginViewModel.name.collectAsStateWithLifecycle()
+    val email by loginViewModel.email.collectAsStateWithLifecycle()
+    val password by loginViewModel.password.collectAsStateWithLifecycle()
 
-    val isNameValid by loginViewModel.isNameValid.collectAsState()
-    val isEmailValid by loginViewModel.isEmailValid.collectAsState()
-    val isPasswordValid by loginViewModel.isPasswordValid.collectAsState()
-    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsState()
+    val isNameValid by loginViewModel.isNameValid.collectAsStateWithLifecycle()
+    val isEmailValid by loginViewModel.isEmailValid.collectAsStateWithLifecycle()
+    val isPasswordValid by loginViewModel.isPasswordValid.collectAsStateWithLifecycle()
+    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsStateWithLifecycle()
 
     val isFormValid = isNameValid && isEmailValid && isPasswordValid
 
