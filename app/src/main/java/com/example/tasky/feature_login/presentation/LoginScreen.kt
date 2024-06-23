@@ -16,6 +16,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,14 +27,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withLink
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.tasky.AgendaNav
 import com.example.tasky.R
+import com.example.tasky.RegisterNav
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
@@ -70,10 +76,8 @@ fun LoginScreenContent(
         // White bottom sheet-like shape
         Card(
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
                 .padding(top = 100.dp)
-                .align(Alignment.BottomCenter), // Align the card at the bottom center
+                .fillMaxSize(),
             shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White
@@ -83,7 +87,9 @@ fun LoginScreenContent(
             Column(
                 modifier = Modifier
                     .padding(16.dp)
-                    .fillMaxWidth()
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TextBox(
                     hintText = stringResource(R.string.email),
@@ -111,6 +117,10 @@ fun LoginScreenContent(
                         loginViewModel.logInClicked()
                     },
                     buttonName = stringResource(R.string.log_in)
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                AnnotatedSignUpText(
+                    onClick = { navController.navigate(RegisterNav) }
                 )
             }
         }
@@ -168,8 +178,23 @@ fun DataError.toLoginErrorMessage(context: Context): String {
 }
 
 @Composable
-@Preview
-private fun ViewLoginScreen() {
-    val navController = rememberNavController()
-    LoginScreenContent(navController = navController)
+fun AnnotatedSignUpText(onClick: () -> Unit) {
+    Text(
+        text = buildAnnotatedString {
+            withStyle(style = SpanStyle(color = Color.LightGray)) {
+                append(stringResource(R.string.dont_have_an_account))
+            }
+            append(" ")
+            withLink(
+                LinkAnnotation.Clickable(
+                    tag = stringResource(R.string.sign_up),
+                    style = SpanStyle(color = MaterialTheme.colorScheme.primary),
+                    linkInteractionListener = { onClick() }
+                )
+            ) {
+                append(stringResource(R.string.sign_up))
+            }
+        },
+        modifier = Modifier.padding(bottom = 50.dp, top = 50.dp)
+    )
 }
