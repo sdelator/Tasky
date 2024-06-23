@@ -33,12 +33,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.tasky.AgendaNav
 import com.example.tasky.R
-import com.example.tasky.common.data.util.DataError
+import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
-import com.example.tasky.feature_login.domain.model.AuthenticationViewState
 
 
 @Composable
@@ -146,6 +145,8 @@ fun LoginScreenContent(
                     loginViewModel.onShowErrorDialog(message)
                 }
             }
+
+            null -> println("no action")
         }
 
         if (uiState.showErrorDialog) {
@@ -159,9 +160,11 @@ fun LoginScreenContent(
 }
 
 fun DataError.toLoginErrorMessage(context: Context): String {
-    return if (this == DataError.Network.UNAUTHORIZED) {
-        context.getString(R.string.incorrect_credentials)
-    } else context.getString(R.string.unknown_error)
+    return when (this) {
+        DataError.Network.UNAUTHORIZED -> context.getString(R.string.incorrect_credentials)
+        DataError.Network.NO_INTERNET -> context.getString(R.string.no_internet_connection)
+        else -> context.getString(R.string.unknown_error)
+    }
 }
 
 @Composable

@@ -22,7 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.tasky.feature_login.presentation.LoginScreenContent
 import com.example.tasky.feature_login.presentation.LoginViewModel
 import com.example.tasky.feature_login.presentation.RegisterAccountContent
-import com.example.tasky.feature_splash.domain.SplashViewModel
+import com.example.tasky.feature_splash.presentation.SplashViewModel
 import com.example.tasky.ui.theme.TaskyTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.Serializable

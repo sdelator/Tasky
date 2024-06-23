@@ -1,4 +1,4 @@
-package com.example.tasky.common.domain
+package com.example.tasky.common.domain.util
 
 
 fun String.isValidPassword(): Boolean {

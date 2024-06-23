@@ -32,17 +32,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.LoginNav
 import com.example.tasky.R
-import com.example.tasky.common.data.util.DataError
+import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
-import com.example.tasky.feature_login.domain.model.AuthenticationViewState
 
 
 @Composable
 fun RegisterAccountContent(navController: NavController) {
-    // todo figure out why text fields are not saving w/orientation change
     val loginViewModel: LoginViewModel = hiltViewModel()
     val uiState by loginViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -153,6 +151,8 @@ fun RegisterAccountContent(navController: NavController) {
                     loginViewModel.onShowErrorDialog(message)
                 }
             }
+
+            null -> println("no action")
         }
 
         if (uiState.showErrorDialog) {
@@ -166,7 +166,9 @@ fun RegisterAccountContent(navController: NavController) {
 }
 
 fun DataError.toRegisterErrorMessage(context: Context): String {
-    return if (this == DataError.Network.UNAUTHORIZED) {
-        context.getString(R.string.email_is_already_in_use)
-    } else context.getString(R.string.unknown_error)
+    return when (this) {
+        DataError.Network.UNAUTHORIZED -> context.getString(R.string.email_is_already_in_use)
+        DataError.Network.NO_INTERNET -> context.getString(R.string.no_internet_connection)
+        else -> context.getString(R.string.unknown_error)
+    }
 }
