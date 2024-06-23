@@ -37,6 +37,7 @@ class UserRemoteRemoteRepositoryImpl(
                 val error = when (response.code()) {
                     401 -> DataError.Network.UNAUTHORIZED
                     408 -> DataError.Network.REQUEST_TIMEOUT
+                    409 -> DataError.Network.CONFLICT
                     413 -> DataError.Network.PAYLOAD_TOO_LARGE
                     else -> DataError.Network.UNKNOWN
                 }

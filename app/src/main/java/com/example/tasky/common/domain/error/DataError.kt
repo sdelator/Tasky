@@ -8,7 +8,8 @@ sealed interface DataError : Error {
         PAYLOAD_TOO_LARGE,
         UNAUTHORIZED,
         SERVER_ERROR,
-        UNKNOWN
+        UNKNOWN,
+        CONFLICT
     }
 
     enum class Local : DataError {
