@@ -32,7 +32,7 @@ fun CreateErrorAlertDialog(
 @Composable
 fun PreviewRegisterAccountContent() {
     val showDialog = true
-    val dialogMessage = "A user with that email already exists."
+    val dialogMessage = stringResource(R.string.email_is_already_in_use)
 
     CreateErrorAlertDialog(
         showDialog = showDialog,
