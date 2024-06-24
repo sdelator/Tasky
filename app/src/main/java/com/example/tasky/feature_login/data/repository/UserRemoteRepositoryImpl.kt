@@ -5,6 +5,7 @@ import com.example.tasky.R
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.util.APIUtilFunctions
+import com.example.tasky.common.domain.util.toNetworkErrorType
 import com.example.tasky.feature_login.data.model.LoginUserInfo
 import com.example.tasky.feature_login.data.model.RegisterUserInfo
 import com.example.tasky.feature_login.data.remote.TaskyApi
@@ -34,13 +35,7 @@ class UserRemoteRemoteRepositoryImpl(
             if (response.isSuccessful) {
                 Result.Success(Unit)
             } else {
-                val error = when (response.code()) {
-                    401 -> DataError.Network.UNAUTHORIZED
-                    408 -> DataError.Network.REQUEST_TIMEOUT
-                    409 -> DataError.Network.CONFLICT
-                    413 -> DataError.Network.PAYLOAD_TOO_LARGE
-                    else -> DataError.Network.UNKNOWN
-                }
+                val error = response.code().toNetworkErrorType()
                 Result.Error(error)
             }
         } catch (e: IOException) {
@@ -58,12 +53,21 @@ class UserRemoteRemoteRepositoryImpl(
             if (response.isSuccessful && loginUserResponse != null) {
                 Result.Success(loginUserResponse)
             } else {
-                val error = when (response.code()) {
-                    401 -> DataError.Network.UNAUTHORIZED
-                    408 -> DataError.Network.REQUEST_TIMEOUT
-                    413 -> DataError.Network.PAYLOAD_TOO_LARGE
-                    else -> DataError.Network.UNKNOWN
-                }
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
+
+    override suspend fun logOutUser(): Result<Unit, DataError.Network> {
+        return try {
+            val response = api.logout()
+            if (response.isSuccessful) {
+                Result.Success(Unit)
+            } else {
+                val error = response.code().toNetworkErrorType()
                 Result.Error(error)
             }
         } catch (e: IOException) {

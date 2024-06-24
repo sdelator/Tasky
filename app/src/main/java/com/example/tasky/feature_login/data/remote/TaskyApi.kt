@@ -28,5 +28,5 @@ interface TaskyApi {
     suspend fun checkAuthentication()
 
     @GET("/logout")
-    suspend fun logout()
+    suspend fun logout(): Response<Unit>
 }
