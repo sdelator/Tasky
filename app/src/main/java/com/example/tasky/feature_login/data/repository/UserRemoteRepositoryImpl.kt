@@ -4,7 +4,6 @@ import android.app.Application
 import com.example.tasky.R
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
-import com.example.tasky.common.domain.util.APIUtilFunctions
 import com.example.tasky.common.domain.util.toNetworkErrorType
 import com.example.tasky.feature_login.data.model.LoginUserInfo
 import com.example.tasky.feature_login.data.model.RegisterUserInfo
@@ -15,8 +14,7 @@ import okio.IOException
 
 class UserRemoteRemoteRepositoryImpl(
     private val api: TaskyApi,
-    private val appContext: Application,
-    private val apiUtilFunctions: APIUtilFunctions
+    private val appContext: Application
 ) : UserRemoteRepository {
 
     init {
