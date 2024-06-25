@@ -26,7 +26,6 @@ fun AgendaToolbar(onProfileClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Color.Red)
             .padding(start = 16.dp, end = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -73,7 +72,6 @@ fun PreviewAgendaToolbar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Color.Red)
             .padding(start = 16.dp, end = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically

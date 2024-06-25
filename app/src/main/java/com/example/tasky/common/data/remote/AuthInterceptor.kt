@@ -9,7 +9,7 @@ class AuthInterceptor : Interceptor {
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val accessToken = ""
+        val accessToken = "" // todo get from sharedPref
         val request = chain.request().newBuilder()
             .addHeader(AUTH, "Bearer $accessToken")
             .build()
