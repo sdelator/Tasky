@@ -1,4 +1,4 @@
-package com.example.tasky.feature_login.data.remote
+package com.example.tasky.common.data.remote
 
 import com.example.tasky.feature_login.data.model.AccessToken
 import com.example.tasky.feature_login.data.model.AccessTokenResponse
