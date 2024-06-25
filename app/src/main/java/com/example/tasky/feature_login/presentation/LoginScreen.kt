@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.tasky.AgendaNav
+import com.example.tasky.CalendarNavRoute
 import com.example.tasky.R
 import com.example.tasky.RegisterNav
 import com.example.tasky.common.domain.error.DataError
@@ -142,7 +142,7 @@ fun LoginScreenContent(
 
             is AuthenticationViewState.Success -> {
                 // Handle success by navigating to AgendaScreen
-                navController.navigate(AgendaNav)
+                navController.navigate(CalendarNavRoute)
             }
 
             is AuthenticationViewState.Failure -> {
