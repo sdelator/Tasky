@@ -60,7 +60,7 @@ class AgendaViewModel @Inject constructor(
 
     fun getInitials(): String {
         // todo grab user name stored in shared pref and parse firstName.first() lastName.first()
-        return "SO"
+        return "AB"
     }
 
     fun onShowErrorDialog(message: String) {
