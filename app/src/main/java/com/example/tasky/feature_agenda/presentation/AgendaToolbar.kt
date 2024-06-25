@@ -1,6 +1,7 @@
 package com.example.tasky.feature_agenda.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -21,8 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 
 @Composable
-@Preview
-fun AgendaToolbar() {
+fun AgendaToolbar(onProfileClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -32,19 +32,24 @@ fun AgendaToolbar() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = "March", color = Color.White)
-        ProfileIcon("AB")
+        ProfileIcon(
+            initials = "AB",
+            onProfileClick = onProfileClick
+        )
     }
 }
 
 @Composable
 fun ProfileIcon(
     initials: String = "",
+    onProfileClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .padding(top = 8.dp, bottom = 8.dp)
             .background(color = colorResource(id = R.color.light_gray), shape = CircleShape)
-            .size(34.dp),
+            .size(34.dp)
+            .clickable { onProfileClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -59,5 +64,24 @@ fun ProfileIcon(
 @Composable
 @Preview
 fun PreviewProfileIcon() {
-    ProfileIcon("AB")
+    ProfileIcon("AB") { }
+}
+
+@Composable
+@Preview
+fun PreviewAgendaToolbar() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.Red)
+            .padding(start = 16.dp, end = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = "March", color = Color.White)
+        ProfileIcon(
+            initials = "AB",
+            onProfileClick = { }
+        )
+    }
 }
