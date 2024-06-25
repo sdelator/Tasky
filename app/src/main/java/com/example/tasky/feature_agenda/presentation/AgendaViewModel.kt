@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -55,5 +56,18 @@ class AgendaViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getInitials(): String {
+        // todo grab user name stored in shared pref and parse firstName.first() lastName.first()
+        return "SO"
+    }
+
+    fun onShowErrorDialog(message: String) {
+        _uiState.update { it.copy(showErrorDialog = true, dialogMessage = message) }
+    }
+
+    fun onDismissErrorDialog() {
+        _uiState.update { it.copy(showErrorDialog = false) }
     }
 }

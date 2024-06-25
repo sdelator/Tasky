@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.tasky.feature_agenda.presentation.AgendaContent
+import com.example.tasky.feature_agenda.presentation.AgendaViewModel
 import com.example.tasky.feature_login.presentation.LoginScreenContent
 import com.example.tasky.feature_login.presentation.LoginViewModel
 import com.example.tasky.feature_login.presentation.RegisterAccountContent
@@ -28,6 +29,7 @@ class MainActivity : ComponentActivity() {
 
     private val splashViewModel: SplashViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
+    private val agendaViewModel: AgendaViewModel by viewModels()
     private val isLoggedInState = mutableStateOf(false)
 
     companion object {
@@ -58,7 +60,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     navigation<CalendarNavRoute>(startDestination = AgendaNav) {
-                        calendarGraph()
+                        calendarGraph(navController, agendaViewModel)
                     }
                 }
             }
@@ -75,9 +77,9 @@ fun NavGraphBuilder.authGraph(navController: NavController, loginViewModel: Logi
     }
 }
 
-fun NavGraphBuilder.calendarGraph() {
+fun NavGraphBuilder.calendarGraph(navController: NavController, agendaViewModel: AgendaViewModel) {
     composable<AgendaNav> {
-        AgendaContent()
+        AgendaContent(navController = navController, agendaViewModel = agendaViewModel)
     }
 }
 

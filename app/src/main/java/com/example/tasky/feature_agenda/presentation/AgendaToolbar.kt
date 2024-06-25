@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 
 @Composable
-fun AgendaToolbar(onProfileClick: () -> Unit) {
+fun AgendaToolbar(initials: String, onProfileClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -30,9 +30,9 @@ fun AgendaToolbar(onProfileClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "March", color = Color.White)
+        Text(text = "March", color = Color.White) // todo make this month composable
         ProfileIcon(
-            initials = "AB",
+            initials = initials,
             onProfileClick = onProfileClick
         )
     }
@@ -40,7 +40,7 @@ fun AgendaToolbar(onProfileClick: () -> Unit) {
 
 @Composable
 fun ProfileIcon(
-    initials: String = "",
+    initials: String,
     onProfileClick: () -> Unit
 ) {
     Box(
