@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
+import com.example.tasky.common.domain.TaskyState
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.util.isValidPassword
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
@@ -21,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val emailPatternValidator: EmailPatternValidatorImpl,
-    private val userRemoteRepository: UserRemoteRepository
+    private val userRemoteRepository: UserRemoteRepository,
+    private val taskyState: TaskyState
 ) : ViewModel() {
 
     companion object {
@@ -85,6 +87,9 @@ class LoginViewModel @Inject constructor(
                     println("success login!")
                     // emit a viewState to change to agenda composable
                     _viewEvent.send(LoginViewEvent.NavigateToAgenda)
+                    Log.d("sandra", "login response ${result.data}")
+                    taskyState.setRefreshToken(result.data.refreshToken)
+                    println("taskyState = ${taskyState.getRefreshToken()}")
                 }
 
                 is Result.Error -> {
