@@ -8,8 +8,6 @@ import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,9 +25,6 @@ class AgendaViewModel @Inject constructor(
         MutableStateFlow<AgendaViewState?>(null)
     val viewState: StateFlow<AgendaViewState?>
         get() = _viewState
-
-    private val _uiState = MutableStateFlow(UiState())
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     data class UiState(
         val showErrorDialog: Boolean = false,
@@ -60,14 +55,15 @@ class AgendaViewModel @Inject constructor(
 
     fun getInitials(): String {
         // todo grab user name stored in shared pref and parse firstName.first() lastName.first()
+        // taskyState.getName()
         return "AB"
     }
 
     fun onShowErrorDialog(message: String) {
-        _uiState.update { it.copy(showErrorDialog = true, dialogMessage = message) }
+        //_viewState.update { it.copy(showErrorDialog = true, dialogMessage = message) }
     }
 
     fun onDismissErrorDialog() {
-        _uiState.update { it.copy(showErrorDialog = false) }
+        //_uiState.update { it.copy(showErrorDialog = false) }
     }
 }
