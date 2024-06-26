@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 
 object PreferencesKeys {
     val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
+    val NAME = stringPreferencesKey("name")
     val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
     val USER_AGE = intPreferencesKey("user_age")
 }

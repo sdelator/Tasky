@@ -21,5 +21,13 @@ class TaskyStateImpl @Inject constructor(
         return appPreferences.get(PreferencesKeys.REFRESH_TOKEN).first() ?: ""
     }
 
+    override suspend fun setName(name: String) {
+        appPreferences.put(PreferencesKeys.NAME, name)
+    }
+
+    override suspend fun getName(): String {
+        return appPreferences.get(PreferencesKeys.NAME).first() ?: ""
+    }
+
 
 }

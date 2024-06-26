@@ -89,6 +89,7 @@ class LoginViewModel @Inject constructor(
                     _viewEvent.send(LoginViewEvent.NavigateToAgenda)
                     Log.d("sandra", "login response ${result.data}")
                     taskyState.setRefreshToken(result.data.refreshToken)
+                    taskyState.setName(result.data.fullName)
                     println("taskyState = ${taskyState.getRefreshToken()}")
                 }
 
