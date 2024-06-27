@@ -14,8 +14,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.tasky.AuthNavRoute
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
@@ -37,6 +36,9 @@ fun AgendaRoot(
     agendaViewModel: AgendaViewModel = hiltViewModel()
 ) {
     val viewState by agendaViewModel.viewState.collectAsStateWithLifecycle()
+    val viewEvent by agendaViewModel.viewEvent.observeAsState(null)
+
+    val showDialog by agendaViewModel.showDialog.collectAsStateWithLifecycle()
 
     AgendaContent(
         getInitials = { agendaViewModel.getInitials() },
@@ -44,37 +46,33 @@ fun AgendaRoot(
     )
 
     when (viewState) {
-        is AgendaViewState.Loading -> {
+        is AgendaViewState.LoadingSpinner -> {
             // Show a loading indicator
             LoadingSpinner()
         }
 
-        is AgendaViewState.Success -> {
-            // Handle success by navigating to LoginScreen
-            navController.navigate(AuthNavRoute)
-        }
-
-        is AgendaViewState.Failure -> {
+        is AgendaViewState.ErrorDialog -> {
             // Show an Alert Dialog with API failure Error code/message
             val message =
-                (viewState as AgendaViewState.Failure).dataError.toLogOutErrorMessage(
+                (viewState as AgendaViewState.ErrorDialog).dataError.toLogOutErrorMessage(
                     context = LocalContext.current
                 )
-            LaunchedEffect(message) {
-                agendaViewModel.onShowErrorDialog(message)
-            }
-        }
 
-        is AgendaViewState.ErrorDialog -> {
             CreateErrorAlertDialog(
-                showDialog = true,
-                dialogMessage = "test",//viewState.dialogMessage,
-                onDismiss = { agendaViewModel.onDismissErrorDialog() }
+                showDialog = showDialog,
+                dialogMessage = message,
+                onDismiss = { agendaViewModel.onErrorDialogDismissed() }
             )
+
         }
 
         null -> println("no action")
     }
+
+    //when viewEvent         is AgendaViewState.NavigateToLoginScreen -> {
+    //            // Handle success by navigating to LoginScreen
+    //            navController.navigate(AuthNavRoute)
+    //        }
 }
 
 @Composable

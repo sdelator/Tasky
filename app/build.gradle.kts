@@ -81,12 +81,14 @@ dependencies {
     // ViewModel Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
+    // Live Data
+    implementation(libs.androidx.runtime.livedata)
+
     // Hilt dependencies
     implementation(libs.hilt.android)
     ksp(libs.dagger.hilt.compiler)
     ksp(libs.android.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-
 
     // Other dependencies
     testImplementation(libs.junit)

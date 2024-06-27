@@ -1,6 +1,8 @@
 package com.example.tasky.feature_agenda.presentation
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
@@ -26,28 +28,32 @@ class AgendaViewModel @Inject constructor(
     val viewState: StateFlow<AgendaViewState?>
         get() = _viewState
 
-    data class UiState(
-        val showErrorDialog: Boolean = false,
-        val dialogMessage: String = ""
-    )
+    // viewEvent triggered by API response
+    private val _viewEvent = MutableLiveData<AgendaViewEvent>()
+    val viewEvent: LiveData<AgendaViewEvent> = _viewEvent
+
+    // UI changes via Composable
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> get() = _showDialog
 
     fun logOutClicked() {
         Log.d(TAG, "logOutClicked redirect user to login page")
         viewModelScope.launch {
-            _viewState.emit(AgendaViewState.Loading)
+            _viewState.emit(AgendaViewState.LoadingSpinner)
             val result = userRemoteRepository.logOutUser()
 
             when (result) {
                 is Result.Success -> {
                     println("success logout!")
                     // emit a viewState to show LoginScreen composable
-                    _viewState.emit(AgendaViewState.Success)
+                    _viewEvent.value = AgendaViewEvent.NavigateToLoginScreen
                 }
 
                 is Result.Error -> {
                     println("failed logout :(")
                     // emit a viewState to show ErrorMessage
-                    _viewState.emit(AgendaViewState.Failure(result.error))
+                    _showDialog.value = true
+                    _viewState.emit(AgendaViewState.ErrorDialog(result.error))
                 }
             }
         }
@@ -55,15 +61,10 @@ class AgendaViewModel @Inject constructor(
 
     fun getInitials(): String {
         // todo grab user name stored in shared pref and parse firstName.first() lastName.first()
-        // taskyState.getName()
         return "AB"
     }
 
-    fun onShowErrorDialog(message: String) {
-        //_viewState.update { it.copy(showErrorDialog = true, dialogMessage = message) }
-    }
-
-    fun onDismissErrorDialog() {
-        //_uiState.update { it.copy(showErrorDialog = false) }
+    fun onErrorDialogDismissed() {
+        _showDialog.value = false
     }
 }
