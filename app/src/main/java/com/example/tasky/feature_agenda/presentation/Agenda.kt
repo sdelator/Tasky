@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,7 +37,6 @@ fun AgendaRoot(
     agendaViewModel: AgendaViewModel = hiltViewModel()
 ) {
     val viewState by agendaViewModel.viewState.collectAsStateWithLifecycle()
-    val viewEvent by agendaViewModel.viewEvent.observeAsState(null)
 
     val showDialog by agendaViewModel.showDialog.collectAsStateWithLifecycle()
 
@@ -69,9 +67,11 @@ fun AgendaRoot(
         null -> println("no action")
     }
 
-    LaunchedEffect(viewEvent) {
-        if (viewEvent is AgendaViewEvent.NavigateToLoginScreen) {
-            navController.navigate(AuthNavRoute)
+    LaunchedEffect(Unit) {
+        agendaViewModel.viewEvent.collect { event ->
+            if (event is AgendaViewEvent.NavigateToLoginScreen) {
+                navController.navigate(AuthNavRoute)
+            }
         }
     }
 }
