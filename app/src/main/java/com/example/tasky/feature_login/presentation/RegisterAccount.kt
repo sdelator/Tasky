@@ -16,24 +16,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.tasky.LoginNav
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
-import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
-import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 
@@ -41,7 +36,6 @@ import com.example.tasky.common.presentation.TextBox
 @Composable
 fun RegisterAccountContent(navController: NavController) {
     val loginViewModel: LoginViewModel = hiltViewModel()
-    val uiState by loginViewModel.uiState.collectAsStateWithLifecycle()
 
     val viewState by loginViewModel.viewState.collectAsStateWithLifecycle()
     val name by loginViewModel.name.collectAsStateWithLifecycle()
@@ -120,38 +114,38 @@ fun RegisterAccountContent(navController: NavController) {
             }
         }
 
-        when (viewState) {
-            is AuthenticationViewState.Loading -> {
-                // Show a loading indicator
-                LoadingSpinner()
-            }
-
-            is AuthenticationViewState.Success -> {
-                // Handle success by navigating to LoginScreen
-                navController.navigate(LoginNav)
-            }
-
-            is AuthenticationViewState.Failure -> {
-                // Show an Alert Dialog with API failure Error code/message
-                val message =
-                    (viewState as AuthenticationViewState.Failure).dataError.toRegisterErrorMessage(
-                        context = LocalContext.current
-                    )
-                LaunchedEffect(message) {
-                    loginViewModel.onShowErrorDialog(message)
-                }
-            }
-
-            null -> println("no action")
-        }
-
-        if (uiState.showErrorDialog) {
-            CreateErrorAlertDialog(
-                showDialog = uiState.showErrorDialog,
-                dialogMessage = uiState.dialogMessage,
-                onDismiss = { loginViewModel.onDismissErrorDialog() }
-            )
-        }
+//        when (viewState) {
+//            is AuthenticationViewState.LoadingSpinner -> {
+//                // Show a loading indicator
+//                LoadingSpinner()
+//            }
+//
+//            is AuthenticationViewState.Success -> {
+//                // Handle success by navigating to LoginScreen
+//                navController.navigate(LoginNav)
+//            }
+//
+//            is AuthenticationViewState.Failure -> {
+//                // Show an Alert Dialog with API failure Error code/message
+//                val message =
+//                    (viewState as AuthenticationViewState.Failure).dataError.toRegisterErrorMessage(
+//                        context = LocalContext.current
+//                    )
+//                LaunchedEffect(message) {
+//                    loginViewModel.onShowErrorDialog(message)
+//                }
+//            }
+//
+//            null -> println("no action")
+//        }
+//
+//        if (uiState.showErrorDialog) {
+//            CreateErrorAlertDialog(
+//                showDialog = uiState.showErrorDialog,
+//                dialogMessage = uiState.dialogMessage,
+//                onDismiss = { loginViewModel.onDismissErrorDialog() }
+//            )
+//        }
     }
 }
 

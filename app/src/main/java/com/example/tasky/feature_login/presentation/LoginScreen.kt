@@ -18,8 +18,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.CalendarNavRoute
+import com.example.tasky.LoginNav
 import com.example.tasky.R
 import com.example.tasky.RegisterNav
 import com.example.tasky.common.domain.error.DataError
@@ -51,8 +52,8 @@ fun LoginScreenContent(
     navController: NavController,
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
-    val uiState by loginViewModel.uiState.collectAsStateWithLifecycle()
     val viewState by loginViewModel.viewState.collectAsStateWithLifecycle()
+    val viewEvent by loginViewModel.viewEvent.observeAsState()
 
     val email by loginViewModel.email.collectAsStateWithLifecycle()
     val password by loginViewModel.password.collectAsStateWithLifecycle()
@@ -62,6 +63,8 @@ fun LoginScreenContent(
     val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsStateWithLifecycle()
 
     val isFormValid = isEmailValid && isPasswordValid
+
+    val showDialog by loginViewModel.showDialog.collectAsStateWithLifecycle()
 
     val focusManager = LocalFocusManager.current
 
@@ -125,37 +128,37 @@ fun LoginScreenContent(
             }
         }
 
+        when (viewEvent) {
+            is LoginViewEvent.NavigateToLogin -> {
+                navController.navigate(LoginNav)
+            }
+
+            is LoginViewEvent.NavigateToAgenda -> {
+                navController.navigate(CalendarNavRoute)
+            }
+
+            null -> println("cannot find type viewEvent")
+        }
+
         when (viewState) {
-            is AuthenticationViewState.Loading -> {
+            is AuthenticationViewState.LoadingSpinner -> {
                 // Show a loading indicator
                 LoadingSpinner()
             }
 
-            is AuthenticationViewState.Success -> {
-                // Handle success by navigating to AgendaScreen
-                navController.navigate(CalendarNavRoute)
-            }
-
-            is AuthenticationViewState.Failure -> {
+            is AuthenticationViewState.ErrorDialog -> {
                 // Show an Alert Dialog with API failure Error code/message
                 val message =
-                    (viewState as AuthenticationViewState.Failure).dataError.toLoginErrorMessage(
+                    (viewState as AuthenticationViewState.ErrorDialog).dataError.toLoginErrorMessage(
                         context = LocalContext.current
                     )
-                LaunchedEffect(message) {
-                    loginViewModel.onShowErrorDialog(message)
-                }
+                CreateErrorAlertDialog(
+                    showDialog = showDialog,
+                    dialogMessage = message,
+                    onDismiss = { loginViewModel.onErrorDialogDismissed() }
+                )
             }
-
             null -> println("no action")
-        }
-
-        if (uiState.showErrorDialog) {
-            CreateErrorAlertDialog(
-                showDialog = true,
-                dialogMessage = uiState.dialogMessage,
-                onDismiss = { loginViewModel.onDismissErrorDialog() }
-            )
         }
     }
 }

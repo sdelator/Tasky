@@ -63,9 +63,7 @@ fun AgendaRoot(
                 dialogMessage = message,
                 onDismiss = { agendaViewModel.onErrorDialogDismissed() }
             )
-
         }
-
         null -> println("no action")
     }
 

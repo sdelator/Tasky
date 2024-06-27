@@ -1,6 +1,8 @@
 package com.example.tasky.feature_login.presentation
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
@@ -12,10 +14,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,14 +34,6 @@ class LoginViewModel @Inject constructor(
         MutableStateFlow<AuthenticationViewState?>(null)
     val viewState: StateFlow<AuthenticationViewState?>
         get() = _viewState
-
-    private val _uiState = MutableStateFlow(UiState())
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
-
-    data class UiState(
-        val showErrorDialog: Boolean = false,
-        val dialogMessage: String = ""
-    )
 
     // UI changes via Composable
     private val _name = MutableStateFlow("")
@@ -68,6 +60,13 @@ class LoginViewModel @Inject constructor(
         password.isValidPassword() // <- Each password emission is mapped to this boolean when it changes
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), false)
 
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> get() = _showDialog
+
+    // viewEvent triggered by API response
+    private val _viewEvent = MutableLiveData<LoginViewEvent>()
+    val viewEvent: LiveData<LoginViewEvent> = _viewEvent
+
     fun onNameChange(newName: String) {
         _name.value = newName
     }
@@ -90,20 +89,20 @@ class LoginViewModel @Inject constructor(
             "logInClicked and userCredentials is email: ${email.value} and password: ${password.value}"
         )
         viewModelScope.launch {
-            _viewState.emit(AuthenticationViewState.Loading)
+            _viewState.emit(AuthenticationViewState.LoadingSpinner)
             val result = userRemoteRepository.logInUser(email.value, password.value)
 
             when (result) {
                 is Result.Success -> {
                     println("success login!")
                     // emit a viewState to change to agenda composable
-                    _viewState.emit(AuthenticationViewState.Success)
+                    _viewEvent.value = LoginViewEvent.NavigateToAgenda
                 }
 
                 is Result.Error -> {
                     println("failed login :(")
                     // emit a viewState to show ErrorMessage
-                    _viewState.emit(AuthenticationViewState.Failure(result.error))
+                    _viewState.emit(AuthenticationViewState.ErrorDialog(result.error))
                 }
             }
         }
@@ -115,30 +114,26 @@ class LoginViewModel @Inject constructor(
             "registerUserClicked and userInfo is name: ${name.value}, email: ${email.value}, password: ${password.value}"
         )
         viewModelScope.launch {
-            _viewState.emit(AuthenticationViewState.Loading)
+            _viewState.emit(AuthenticationViewState.LoadingSpinner)
             val result = userRemoteRepository.registerUser(name.value, email.value, password.value)
 
             when (result) {
                 is Result.Success -> {
                     println("success register!")
                     // emit a viewState to show LoginScreen composable
-                    _viewState.emit(AuthenticationViewState.Success)
+                    _viewEvent.value = LoginViewEvent.NavigateToLogin
                 }
 
                 is Result.Error -> {
                     println("failed register :(")
                     // emit a viewState to show ErrorMessage
-                    _viewState.emit(AuthenticationViewState.Failure(result.error))
+                    _viewState.emit(AuthenticationViewState.ErrorDialog(result.error))
                 }
             }
         }
     }
 
-    fun onShowErrorDialog(message: String) {
-        _uiState.update { it.copy(showErrorDialog = true, dialogMessage = message) }
-    }
-
-    fun onDismissErrorDialog() {
-        _uiState.update { it.copy(showErrorDialog = false) }
+    fun onErrorDialogDismissed() {
+        _showDialog.value = false
     }
 }
