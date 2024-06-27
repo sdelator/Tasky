@@ -14,6 +14,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.tasky.AuthNavRoute
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
@@ -67,10 +69,11 @@ fun AgendaRoot(
         null -> println("no action")
     }
 
-    //when viewEvent         is AgendaViewState.NavigateToLoginScreen -> {
-    //            // Handle success by navigating to LoginScreen
-    //            navController.navigate(AuthNavRoute)
-    //        }
+    LaunchedEffect(viewEvent) {
+        if (viewEvent is AgendaViewEvent.NavigateToLoginScreen) {
+            navController.navigate(AuthNavRoute)
+        }
+    }
 }
 
 @Composable
