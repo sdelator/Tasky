@@ -18,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -36,7 +37,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.CalendarNavRoute
-import com.example.tasky.LoginNav
 import com.example.tasky.R
 import com.example.tasky.RegisterNav
 import com.example.tasky.common.domain.error.DataError
@@ -123,21 +123,23 @@ fun LoginScreenContent(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 AnnotatedSignUpText(
-                    onClick = { navController.navigate(RegisterNav) }
+                    onClick = { loginViewModel.onSignUpClick() }
                 )
             }
         }
 
-        when (viewEvent) {
-            is LoginViewEvent.NavigateToLogin -> {
-                navController.navigate(LoginNav)
-            }
+        LaunchedEffect(viewEvent) {
+            when (viewEvent) {
+                is LoginViewEvent.NavigateToAgenda -> {
+                    navController.navigate(CalendarNavRoute)
+                }
 
-            is LoginViewEvent.NavigateToAgenda -> {
-                navController.navigate(CalendarNavRoute)
-            }
+                is LoginViewEvent.NavigateToRegister -> {
+                    navController.navigate(RegisterNav)
+                }
 
-            null -> println("cannot find type viewEvent")
+                else -> println("cannot find type viewEvent")
+            }
         }
 
         when (viewState) {
@@ -158,6 +160,7 @@ fun LoginScreenContent(
                     onDismiss = { loginViewModel.onErrorDialogDismissed() }
                 )
             }
+
             null -> println("no action")
         }
     }

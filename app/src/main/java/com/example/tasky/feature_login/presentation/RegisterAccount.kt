@@ -17,9 +17,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,7 +30,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
+import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
+import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 
@@ -38,6 +42,8 @@ fun RegisterAccountContent(navController: NavController) {
     val loginViewModel: LoginViewModel = hiltViewModel()
 
     val viewState by loginViewModel.viewState.collectAsStateWithLifecycle()
+    val viewEvent by loginViewModel.viewEvent.observeAsState()
+
     val name by loginViewModel.name.collectAsStateWithLifecycle()
     val email by loginViewModel.email.collectAsStateWithLifecycle()
     val password by loginViewModel.password.collectAsStateWithLifecycle()
@@ -48,6 +54,8 @@ fun RegisterAccountContent(navController: NavController) {
     val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsStateWithLifecycle()
 
     val isFormValid = isNameValid && isEmailValid && isPasswordValid
+
+    val showDialog by loginViewModel.showDialog.collectAsStateWithLifecycle()
 
     val focusManager = LocalFocusManager.current
 
@@ -114,38 +122,27 @@ fun RegisterAccountContent(navController: NavController) {
             }
         }
 
-//        when (viewState) {
-//            is AuthenticationViewState.LoadingSpinner -> {
-//                // Show a loading indicator
-//                LoadingSpinner()
-//            }
-//
-//            is AuthenticationViewState.Success -> {
-//                // Handle success by navigating to LoginScreen
-//                navController.navigate(LoginNav)
-//            }
-//
-//            is AuthenticationViewState.Failure -> {
-//                // Show an Alert Dialog with API failure Error code/message
-//                val message =
-//                    (viewState as AuthenticationViewState.Failure).dataError.toRegisterErrorMessage(
-//                        context = LocalContext.current
-//                    )
-//                LaunchedEffect(message) {
-//                    loginViewModel.onShowErrorDialog(message)
-//                }
-//            }
-//
-//            null -> println("no action")
-//        }
-//
-//        if (uiState.showErrorDialog) {
-//            CreateErrorAlertDialog(
-//                showDialog = uiState.showErrorDialog,
-//                dialogMessage = uiState.dialogMessage,
-//                onDismiss = { loginViewModel.onDismissErrorDialog() }
-//            )
-//        }
+        when (viewState) {
+            is AuthenticationViewState.LoadingSpinner -> {
+                // Show a loading indicator
+                LoadingSpinner()
+            }
+
+            is AuthenticationViewState.ErrorDialog -> {
+                // Show an Alert Dialog with API failure Error code/message
+                val message =
+                    (viewState as AuthenticationViewState.ErrorDialog).dataError.toRegisterErrorMessage(
+                        context = LocalContext.current
+                    )
+                CreateErrorAlertDialog(
+                    showDialog = showDialog,
+                    dialogMessage = message,
+                    onDismiss = { loginViewModel.onErrorDialogDismissed() }
+                )
+            }
+
+            null -> println("no action")
+        }
     }
 }
 

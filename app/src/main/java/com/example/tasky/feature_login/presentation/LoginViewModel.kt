@@ -133,6 +133,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun onSignUpClick() {
+        _viewEvent.value = LoginViewEvent.NavigateToRegister
+    }
+
     fun onErrorDialogDismissed() {
         _showDialog.value = false
     }
