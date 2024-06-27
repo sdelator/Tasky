@@ -30,8 +30,8 @@ class RegisterViewModel @Inject constructor(
 
     // viewState triggered by API response
     private val _viewState =
-        MutableStateFlow<AuthenticationViewState?>(null)
-    val viewState: StateFlow<AuthenticationViewState?>
+        MutableStateFlow<RegisterViewState?>(null)
+    val viewState: StateFlow<RegisterViewState?>
         get() = _viewState
 
     // UI changes via Composable
@@ -63,8 +63,8 @@ class RegisterViewModel @Inject constructor(
     val showDialog: StateFlow<Boolean> get() = _showDialog
 
     // viewEvent triggered by API response
-    private val _viewEvent = MutableLiveData<LoginViewEvent>()
-    val viewEvent: LiveData<LoginViewEvent> = _viewEvent
+    private val _viewEvent = MutableLiveData<RegisterViewEvent>()
+    val viewEvent: LiveData<RegisterViewEvent> = _viewEvent
 
     fun onNameChange(newName: String) {
         _name.value = newName
@@ -88,21 +88,21 @@ class RegisterViewModel @Inject constructor(
             "registerUserClicked and userInfo is name: ${name.value}, email: ${email.value}, password: ${password.value}"
         )
         viewModelScope.launch {
-            _viewState.emit(AuthenticationViewState.LoadingSpinner)
+            _viewState.emit(RegisterViewState.LoadingSpinner)
             val result = userRemoteRepository.registerUser(name.value, email.value, password.value)
 
             when (result) {
                 is Result.Success -> {
                     println("success register!")
                     // emit a viewState to show LoginScreen composable
-                    _viewEvent.value = LoginViewEvent.NavigateToLogin
+                    _viewEvent.value = RegisterViewEvent.NavigateToLogin
                 }
 
                 is Result.Error -> {
                     println("failed register :(")
                     // emit a viewState to show ErrorMessage
                     _showDialog.value = true
-                    _viewState.emit(AuthenticationViewState.ErrorDialog(result.error))
+                    _viewState.emit(RegisterViewState.ErrorDialog(result.error))
                 }
             }
         }

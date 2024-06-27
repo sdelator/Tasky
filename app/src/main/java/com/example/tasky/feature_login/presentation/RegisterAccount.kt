@@ -44,7 +44,7 @@ fun RegisterAccountRoot(
 ) {
 
     val viewState by registerViewModel.viewState.collectAsStateWithLifecycle()
-    val viewEvent by registerViewModel.viewEvent.observeAsState()
+    val viewEvent by registerViewModel.viewEvent.observeAsState(null)
 
     val name by registerViewModel.name.collectAsStateWithLifecycle()
     val email by registerViewModel.email.collectAsStateWithLifecycle()
@@ -81,15 +81,15 @@ fun RegisterAccountRoot(
     )
 
     when (viewState) {
-        is AuthenticationViewState.LoadingSpinner -> {
+        is RegisterViewState.LoadingSpinner -> {
             // Show a loading indicator
             LoadingSpinner()
         }
 
-        is AuthenticationViewState.ErrorDialog -> {
+        is RegisterViewState.ErrorDialog -> {
             // Show an Alert Dialog with API failure Error code/message
             val message =
-                (viewState as AuthenticationViewState.ErrorDialog).dataError.toRegisterErrorMessage(
+                (viewState as RegisterViewState.ErrorDialog).dataError.toRegisterErrorMessage(
                     context = LocalContext.current
                 )
             CreateErrorAlertDialog(
@@ -104,7 +104,7 @@ fun RegisterAccountRoot(
 
     LaunchedEffect(viewEvent) {
         when (viewEvent) {
-            is LoginViewEvent.NavigateToLogin -> {
+            is RegisterViewEvent.NavigateToLogin -> {
                 navController.popBackStack()
             }
 

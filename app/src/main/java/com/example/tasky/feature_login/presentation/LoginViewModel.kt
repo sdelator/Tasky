@@ -1,8 +1,6 @@
 package com.example.tasky.feature_login.presentation
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
@@ -10,7 +8,9 @@ import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.util.isValidPassword
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -56,8 +56,8 @@ class LoginViewModel @Inject constructor(
     val showDialog: StateFlow<Boolean> get() = _showDialog
 
     // viewEvent triggered by API response
-    private val _viewEvent = MutableLiveData<LoginViewEvent>()
-    val viewEvent: LiveData<LoginViewEvent> = _viewEvent
+    private val _viewEvent = MutableSharedFlow<LoginViewEvent>()
+    val viewEvent: SharedFlow<LoginViewEvent> = _viewEvent
 
     fun onEmailChange(newEmail: String) {
         _email.value = newEmail
@@ -69,6 +69,12 @@ class LoginViewModel @Inject constructor(
 
     fun onPasswordVisibilityClick() {
         _isPasswordVisible.value = !isPasswordVisible.value
+    }
+
+    fun onEvent(event: LoginViewEvent) {
+        viewModelScope.launch {
+            _viewEvent.emit(event)
+        }
     }
 
     fun logInClicked() {
@@ -84,7 +90,7 @@ class LoginViewModel @Inject constructor(
                 is Result.Success -> {
                     println("success login!")
                     // emit a viewState to change to agenda composable
-                    _viewEvent.value = LoginViewEvent.NavigateToAgenda
+                    _viewEvent.emit(LoginViewEvent.NavigateToAgenda)
                 }
 
                 is Result.Error -> {
@@ -98,7 +104,9 @@ class LoginViewModel @Inject constructor(
     }
 
     fun onSignUpClick() {
-        _viewEvent.value = LoginViewEvent.NavigateToRegister
+        viewModelScope.launch {
+            _viewEvent.emit(LoginViewEvent.NavigateToRegister)
+        }
     }
 
     fun onErrorDialogDismissed() {

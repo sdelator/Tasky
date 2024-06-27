@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,7 +52,6 @@ fun LoginRoot(
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val viewState by loginViewModel.viewState.collectAsStateWithLifecycle()
-    val viewEvent by loginViewModel.viewEvent.observeAsState()
 
     val email by loginViewModel.email.collectAsStateWithLifecycle()
     val password by loginViewModel.password.collectAsStateWithLifecycle()
@@ -107,17 +105,17 @@ fun LoginRoot(
         null -> println("no action")
     }
 
-    LaunchedEffect(viewEvent) {
-        when (viewEvent) {
-            is LoginViewEvent.NavigateToAgenda -> {
-                navController.navigate(CalendarNavRoute)
-            }
+    LaunchedEffect(Unit) {
+        loginViewModel.viewEvent.collect { event ->
+            when (event) {
+                is LoginViewEvent.NavigateToAgenda -> {
+                    navController.navigate(CalendarNavRoute)
+                }
 
-            is LoginViewEvent.NavigateToRegister -> {
-                navController.navigate(RegisterNav)
+                is LoginViewEvent.NavigateToRegister -> {
+                    navController.navigate(RegisterNav)
+                }
             }
-
-            else -> println("cannot find type viewEvent")
         }
     }
 }
