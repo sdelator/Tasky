@@ -32,6 +32,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,9 +47,8 @@ import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 
-
 @Composable
-fun LoginScreenContent(
+fun LoginRoot(
     navController: NavController,
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
@@ -68,6 +68,74 @@ fun LoginScreenContent(
 
     val focusManager = LocalFocusManager.current
 
+    when (viewState) {
+        is AuthenticationViewState.LoadingSpinner -> {
+            // Show a loading indicator
+            LoadingSpinner()
+        }
+
+        is AuthenticationViewState.ErrorDialog -> {
+            // Show an Alert Dialog with API failure Error code/message
+            val message =
+                (viewState as AuthenticationViewState.ErrorDialog).dataError.toLoginErrorMessage(
+                    context = LocalContext.current
+                )
+            CreateErrorAlertDialog(
+                showDialog = showDialog,
+                dialogMessage = message,
+                onDismiss = { loginViewModel.onErrorDialogDismissed() }
+            )
+        }
+
+        null -> println("no action")
+    }
+
+    LaunchedEffect(viewEvent) {
+        when (viewEvent) {
+            is LoginViewEvent.NavigateToAgenda -> {
+                navController.navigate(CalendarNavRoute)
+            }
+
+            is LoginViewEvent.NavigateToRegister -> {
+                navController.navigate(RegisterNav)
+            }
+
+            else -> println("cannot find type viewEvent")
+        }
+    }
+
+    LoginScreenContent(
+        email = email,
+        password = password,
+        isEmailValid = isEmailValid,
+        isPasswordValid = isPasswordValid,
+        isPasswordVisible = isPasswordVisible,
+        isFormValid = isFormValid,
+        onEmailChange = { loginViewModel.onEmailChange(it) },
+        onPasswordChange = { loginViewModel.onPasswordChange(it) },
+        onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() },
+        onLoginClick = {
+            focusManager.clearFocus()
+            loginViewModel.logInClicked()
+        },
+        onSignUpClick = { loginViewModel.onSignUpClick() }
+    )
+}
+
+@Composable
+fun LoginScreenContent(
+    email: String,
+    password: String,
+    isEmailValid: Boolean,
+    isPasswordValid: Boolean,
+    isPasswordVisible: Boolean,
+    isFormValid: Boolean,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onPasswordVisibilityClick: () -> Unit,
+    onLoginClick: () -> Unit,
+    onSignUpClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -98,70 +166,29 @@ fun LoginScreenContent(
                     hintText = stringResource(R.string.email),
                     text = email,
                     isValid = isEmailValid,
-                    onValueChange = { loginViewModel.onEmailChange(it) }
+                    onValueChange = onEmailChange
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
                     text = password,
                     isValid = isPasswordValid,
-                    onValueChange = { loginViewModel.onPasswordChange(it) },
+                    onValueChange = onPasswordChange,
                     isPasswordField = true,
                     isPasswordVisible = isPasswordVisible,
-                    onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() }
+                    onPasswordVisibilityClick = onPasswordVisibilityClick
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = isFormValid,
-                    onClick = {
-                        // clear focus hides the keyboard
-                        focusManager.clearFocus()
-
-                        loginViewModel.logInClicked()
-                    },
+                    onClick = onLoginClick,
                     buttonName = stringResource(R.string.log_in)
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 AnnotatedSignUpText(
-                    onClick = { loginViewModel.onSignUpClick() }
+                    onClick = onSignUpClick
                 )
             }
-        }
-
-        LaunchedEffect(viewEvent) {
-            when (viewEvent) {
-                is LoginViewEvent.NavigateToAgenda -> {
-                    navController.navigate(CalendarNavRoute)
-                }
-
-                is LoginViewEvent.NavigateToRegister -> {
-                    navController.navigate(RegisterNav)
-                }
-
-                else -> println("cannot find type viewEvent")
-            }
-        }
-
-        when (viewState) {
-            is AuthenticationViewState.LoadingSpinner -> {
-                // Show a loading indicator
-                LoadingSpinner()
-            }
-
-            is AuthenticationViewState.ErrorDialog -> {
-                // Show an Alert Dialog with API failure Error code/message
-                val message =
-                    (viewState as AuthenticationViewState.ErrorDialog).dataError.toLoginErrorMessage(
-                        context = LocalContext.current
-                    )
-                CreateErrorAlertDialog(
-                    showDialog = showDialog,
-                    dialogMessage = message,
-                    onDismiss = { loginViewModel.onErrorDialogDismissed() }
-                )
-            }
-
-            null -> println("no action")
         }
     }
 }
@@ -194,4 +221,28 @@ fun AnnotatedSignUpText(onClick: () -> Unit) {
         },
         modifier = Modifier.padding(bottom = 50.dp, top = 50.dp)
     )
+}
+
+@Composable
+@Preview
+fun PreviewLoginContent() {
+    LoginScreenContent(
+        email = "",
+        password = "",
+        isEmailValid = true,
+        isPasswordValid = false,
+        isPasswordVisible = true,
+        isFormValid = false,
+        onEmailChange = { },
+        onPasswordChange = { },
+        onPasswordVisibilityClick = { },
+        onLoginClick = { },
+        onSignUpClick = { }
+    )
+}
+
+@Composable
+@Preview
+fun PreviewAnnotatedSignUpText() {
+    AnnotatedSignUpText(onClick = { })
 }

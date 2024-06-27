@@ -16,7 +16,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.tasky.feature_agenda.presentation.AgendaRoot
 import com.example.tasky.feature_agenda.presentation.AgendaViewModel
-import com.example.tasky.feature_login.presentation.LoginScreenContent
+import com.example.tasky.feature_login.presentation.LoginRoot
 import com.example.tasky.feature_login.presentation.LoginViewModel
 import com.example.tasky.feature_login.presentation.RegisterAccountContent
 import com.example.tasky.feature_splash.presentation.SplashViewModel
@@ -73,7 +73,7 @@ fun NavGraphBuilder.authGraph(navController: NavController, loginViewModel: Logi
         RegisterAccountContent(navController = navController)
     }
     composable<LoginNav> {
-        LoginScreenContent(navController = navController, loginViewModel = loginViewModel)
+        LoginRoot(navController = navController, loginViewModel = loginViewModel)
     }
 }
 
