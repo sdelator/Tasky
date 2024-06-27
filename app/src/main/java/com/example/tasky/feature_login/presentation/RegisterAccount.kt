@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment.Companion.BottomCenter
@@ -24,10 +25,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.tasky.LoginNav
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
@@ -36,10 +38,11 @@ import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 
-
 @Composable
-fun RegisterAccountContent(navController: NavController) {
-    val loginViewModel: LoginViewModel = hiltViewModel()
+fun RegisterAccountRoot(
+    navController: NavController,
+    loginViewModel: LoginViewModel
+) {
 
     val viewState by loginViewModel.viewState.collectAsStateWithLifecycle()
     val viewEvent by loginViewModel.viewEvent.observeAsState()
@@ -59,6 +62,74 @@ fun RegisterAccountContent(navController: NavController) {
 
     val focusManager = LocalFocusManager.current
 
+    RegisterAccountContent(
+        name = name,
+        email = email,
+        password = password,
+        isNameValid = isNameValid,
+        isEmailValid = isEmailValid,
+        isPasswordValid = isPasswordValid,
+        isPasswordVisible = isPasswordVisible,
+        isFormValid = isFormValid,
+        onNameChange = { loginViewModel.onNameChange(it) },
+        onEmailChange = { loginViewModel.onEmailChange(it) },
+        onPasswordChange = { loginViewModel.onPasswordChange(it) },
+        onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() },
+        onRegisterClick = {
+            focusManager.clearFocus()
+            loginViewModel.registerUserClicked()
+        }
+    )
+
+    when (viewState) {
+        is AuthenticationViewState.LoadingSpinner -> {
+            // Show a loading indicator
+            LoadingSpinner()
+        }
+
+        is AuthenticationViewState.ErrorDialog -> {
+            // Show an Alert Dialog with API failure Error code/message
+            val message =
+                (viewState as AuthenticationViewState.ErrorDialog).dataError.toRegisterErrorMessage(
+                    context = LocalContext.current
+                )
+            CreateErrorAlertDialog(
+                showDialog = showDialog,
+                dialogMessage = message,
+                onDismiss = { loginViewModel.onErrorDialogDismissed() }
+            )
+        }
+
+        null -> println("no action")
+    }
+
+    LaunchedEffect(viewEvent) {
+        when (viewEvent) {
+            is LoginViewEvent.NavigateToLogin -> {
+                navController.navigate(LoginNav)
+            }
+
+            else -> println("cannot find type viewEvent")
+        }
+    }
+}
+
+@Composable
+fun RegisterAccountContent(
+    name: String,
+    email: String,
+    password: String,
+    isNameValid: Boolean,
+    isEmailValid: Boolean,
+    isPasswordValid: Boolean,
+    isPasswordVisible: Boolean,
+    isFormValid: Boolean,
+    onNameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onPasswordVisibilityClick: () -> Unit,
+    onRegisterClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -90,58 +161,31 @@ fun RegisterAccountContent(navController: NavController) {
                     hintText = stringResource(R.string.name),
                     text = name,
                     isValid = isNameValid,
-                    onValueChange = { loginViewModel.onNameChange(it) }
+                    onValueChange = onNameChange
                 )
                 TextBox(
                     hintText = stringResource(R.string.email),
                     text = email,
                     isValid = isEmailValid,
-                    onValueChange = { loginViewModel.onEmailChange(it) }
+                    onValueChange = onEmailChange
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
                     text = password,
                     isValid = isPasswordValid,
-                    onValueChange = { loginViewModel.onPasswordChange(it) },
+                    onValueChange = onPasswordChange,
                     isPasswordField = true,
                     isPasswordVisible = isPasswordVisible,
-                    onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() }
+                    onPasswordVisibilityClick = onPasswordVisibilityClick
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = isFormValid,
-                    onClick = {
-                        // clear focus hides the keyboard
-                        focusManager.clearFocus()
-
-                        loginViewModel.registerUserClicked()
-                    },
+                    onClick = onRegisterClick,
                     buttonName = stringResource(R.string.get_started)
                 )
             }
-        }
-
-        when (viewState) {
-            is AuthenticationViewState.LoadingSpinner -> {
-                // Show a loading indicator
-                LoadingSpinner()
-            }
-
-            is AuthenticationViewState.ErrorDialog -> {
-                // Show an Alert Dialog with API failure Error code/message
-                val message =
-                    (viewState as AuthenticationViewState.ErrorDialog).dataError.toRegisterErrorMessage(
-                        context = LocalContext.current
-                    )
-                CreateErrorAlertDialog(
-                    showDialog = showDialog,
-                    dialogMessage = message,
-                    onDismiss = { loginViewModel.onErrorDialogDismissed() }
-                )
-            }
-
-            null -> println("no action")
         }
     }
 }
@@ -153,4 +197,24 @@ fun DataError.toRegisterErrorMessage(context: Context): String {
         DataError.Network.CONFLICT -> context.getString(R.string.email_is_already_in_use)
         else -> context.getString(R.string.unknown_error)
     }
+}
+
+@Composable
+@Preview
+fun PreviewRegisterAccountContent() {
+    RegisterAccountContent(
+        name = "firstName LastName",
+        email = "",
+        password = "",
+        isNameValid = true,
+        isEmailValid = false,
+        isPasswordValid = false,
+        isPasswordVisible = true,
+        isFormValid = true,
+        onNameChange = { },
+        onEmailChange = { },
+        onPasswordChange = { },
+        onPasswordVisibilityClick = { },
+        onRegisterClick = { }
+    )
 }

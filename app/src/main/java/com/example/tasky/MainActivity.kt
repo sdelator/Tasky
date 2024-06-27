@@ -18,7 +18,7 @@ import com.example.tasky.feature_agenda.presentation.AgendaRoot
 import com.example.tasky.feature_agenda.presentation.AgendaViewModel
 import com.example.tasky.feature_login.presentation.LoginRoot
 import com.example.tasky.feature_login.presentation.LoginViewModel
-import com.example.tasky.feature_login.presentation.RegisterAccountContent
+import com.example.tasky.feature_login.presentation.RegisterAccountRoot
 import com.example.tasky.feature_splash.presentation.SplashViewModel
 import com.example.tasky.ui.theme.TaskyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
 
 fun NavGraphBuilder.authGraph(navController: NavController, loginViewModel: LoginViewModel) {
     composable<RegisterNav> {
-        RegisterAccountContent(navController = navController)
+        RegisterAccountRoot(navController = navController, loginViewModel)
     }
     composable<LoginNav> {
         LoginRoot(navController = navController, loginViewModel = loginViewModel)
