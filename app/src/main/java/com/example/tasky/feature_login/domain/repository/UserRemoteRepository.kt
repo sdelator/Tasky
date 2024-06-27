@@ -15,4 +15,6 @@ interface UserRemoteRepository {
         email: String,
         password: String
     ): Result<LoginUserResponse, DataError.Network>
+
+    suspend fun logOutUser(): Result<Unit, DataError.Network>
 }

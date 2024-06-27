@@ -6,12 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -19,6 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.example.tasky.feature_agenda.presentation.AgendaContent
+import com.example.tasky.feature_agenda.presentation.AgendaViewModel
 import com.example.tasky.feature_login.presentation.LoginScreenContent
 import com.example.tasky.feature_login.presentation.LoginViewModel
 import com.example.tasky.feature_login.presentation.RegisterAccountContent
@@ -32,6 +29,7 @@ class MainActivity : ComponentActivity() {
 
     private val splashViewModel: SplashViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
+    private val agendaViewModel: AgendaViewModel by viewModels()
     private val isLoggedInState = mutableStateOf(false)
 
     companion object {
@@ -61,20 +59,9 @@ class MainActivity : ComponentActivity() {
                         authGraph(navController, loginViewModel)
                     }
 
-                    composable<AgendaNav> {
-                        // todo create Composable
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Green)
-                        )
+                    navigation<CalendarNavRoute>(startDestination = AgendaNav) {
+                        calendarGraph(navController, agendaViewModel)
                     }
-
-                    // todo add other screens
-//                    navigation(
-//                        startDestination = "agenda",
-//                        route = "calendar"
-//                    )
                 }
             }
         }
@@ -90,9 +77,20 @@ fun NavGraphBuilder.authGraph(navController: NavController, loginViewModel: Logi
     }
 }
 
+fun NavGraphBuilder.calendarGraph(navController: NavController, agendaViewModel: AgendaViewModel) {
+    composable<AgendaNav> {
+        AgendaContent(navController = navController, agendaViewModel = agendaViewModel)
+    }
+}
+
+// routes
 @Serializable
 object AuthNavRoute
 
+@Serializable
+object CalendarNavRoute
+
+// composable nav
 @Serializable
 object RegisterNav
 

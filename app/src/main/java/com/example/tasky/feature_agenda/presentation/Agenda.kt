@@ -1,0 +1,115 @@
+package com.example.tasky.feature_agenda.presentation
+
+import android.content.Context
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import com.example.tasky.AuthNavRoute
+import com.example.tasky.R
+import com.example.tasky.common.domain.error.DataError
+import com.example.tasky.common.presentation.CreateErrorAlertDialog
+import com.example.tasky.common.presentation.LoadingSpinner
+
+@Composable
+fun AgendaContent(
+    navController: NavController,
+    agendaViewModel: AgendaViewModel = hiltViewModel()
+) {
+    val uiState by agendaViewModel.uiState.collectAsStateWithLifecycle()
+    val viewState by agendaViewModel.viewState.collectAsStateWithLifecycle()
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .safeDrawingPadding()
+    ) {
+        AgendaToolbar(
+            initials = agendaViewModel.getInitials(),
+            onProfileClick = { agendaViewModel.logOutClicked() }
+        )
+
+        Card(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 75.dp),
+            shape = RoundedCornerShape(
+                topStart = 30.dp, topEnd = 30.dp
+            ),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Top Text")
+            }
+        }
+
+        when (viewState) {
+            is AgendaViewState.Loading -> {
+                // Show a loading indicator
+                LoadingSpinner()
+            }
+
+            is AgendaViewState.Success -> {
+                // Handle success by navigating to LoginScreen
+                navController.navigate(AuthNavRoute)
+            }
+
+            is AgendaViewState.Failure -> {
+                // Show an Alert Dialog with API failure Error code/message
+                val message =
+                    (viewState as AgendaViewState.Failure).dataError.toLogOutErrorMessage(
+                        context = LocalContext.current
+                    )
+                LaunchedEffect(message) {
+                    agendaViewModel.onShowErrorDialog(message)
+                }
+            }
+
+            null -> println("no action")
+        }
+
+        if (uiState.showErrorDialog) {
+            CreateErrorAlertDialog(
+                showDialog = true,
+                dialogMessage = uiState.dialogMessage,
+                onDismiss = { agendaViewModel.onDismissErrorDialog() }
+            )
+        }
+    }
+}
+
+fun DataError.toLogOutErrorMessage(context: Context): String {
+    return when (this) {
+        DataError.Network.UNAUTHORIZED -> context.getString(R.string.invalid_or_missing_token_or_api_key)
+        DataError.Network.NO_INTERNET -> context.getString(R.string.no_internet_connection)
+        else -> context.getString(R.string.unknown_error)
+    }
+}

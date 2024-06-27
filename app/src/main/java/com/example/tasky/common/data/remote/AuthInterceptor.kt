@@ -1,17 +1,17 @@
-package com.example.tasky.feature_login.data.remote
+package com.example.tasky.common.data.remote
 
-import com.example.tasky.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class ApiKeyInterceptor : Interceptor {
+class AuthInterceptor : Interceptor {
     companion object {
-        const val API_KEY = "x-api-key"
+        const val AUTH = "Authorization"
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {
+        val accessToken = "" // todo get from sharedPref
         val request = chain.request().newBuilder()
-            .addHeader(API_KEY, BuildConfig.API_KEY)
+            .addHeader(AUTH, "Bearer $accessToken")
             .build()
         return chain.proceed(request)
     }

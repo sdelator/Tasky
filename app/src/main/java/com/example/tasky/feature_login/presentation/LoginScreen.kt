@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,12 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.tasky.AgendaNav
+import com.example.tasky.CalendarNavRoute
 import com.example.tasky.R
 import com.example.tasky.RegisterNav
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
+import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 
@@ -128,21 +128,12 @@ fun LoginScreenContent(
         when (viewState) {
             is AuthenticationViewState.Loading -> {
                 // Show a loading indicator
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.5f))
-                        .align(Alignment.Center)
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
+                LoadingSpinner()
             }
 
             is AuthenticationViewState.Success -> {
                 // Handle success by navigating to AgendaScreen
-                navController.navigate(AgendaNav)
+                navController.navigate(CalendarNavRoute)
             }
 
             is AuthenticationViewState.Failure -> {
