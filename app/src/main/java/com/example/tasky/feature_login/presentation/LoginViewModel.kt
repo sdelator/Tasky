@@ -102,6 +102,7 @@ class LoginViewModel @Inject constructor(
                 is Result.Error -> {
                     println("failed login :(")
                     // emit a viewState to show ErrorMessage
+                    _showDialog.value = true
                     _viewState.emit(AuthenticationViewState.ErrorDialog(result.error))
                 }
             }
@@ -127,6 +128,7 @@ class LoginViewModel @Inject constructor(
                 is Result.Error -> {
                     println("failed register :(")
                     // emit a viewState to show ErrorMessage
+                    _showDialog.value = true
                     _viewState.emit(AuthenticationViewState.ErrorDialog(result.error))
                 }
             }

@@ -68,6 +68,23 @@ fun LoginRoot(
 
     val focusManager = LocalFocusManager.current
 
+    LoginScreenContent(
+        email = email,
+        password = password,
+        isEmailValid = isEmailValid,
+        isPasswordValid = isPasswordValid,
+        isPasswordVisible = isPasswordVisible,
+        isFormValid = isFormValid,
+        onEmailChange = { loginViewModel.onEmailChange(it) },
+        onPasswordChange = { loginViewModel.onPasswordChange(it) },
+        onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() },
+        onLoginClick = {
+            focusManager.clearFocus()
+            loginViewModel.logInClicked()
+        },
+        onSignUpClick = { loginViewModel.onSignUpClick() }
+    )
+
     when (viewState) {
         is AuthenticationViewState.LoadingSpinner -> {
             // Show a loading indicator
@@ -103,23 +120,6 @@ fun LoginRoot(
             else -> println("cannot find type viewEvent")
         }
     }
-
-    LoginScreenContent(
-        email = email,
-        password = password,
-        isEmailValid = isEmailValid,
-        isPasswordValid = isPasswordValid,
-        isPasswordVisible = isPasswordVisible,
-        isFormValid = isFormValid,
-        onEmailChange = { loginViewModel.onEmailChange(it) },
-        onPasswordChange = { loginViewModel.onPasswordChange(it) },
-        onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() },
-        onLoginClick = {
-            focusManager.clearFocus()
-            loginViewModel.logInClicked()
-        },
-        onSignUpClick = { loginViewModel.onSignUpClick() }
-    )
 }
 
 @Composable
