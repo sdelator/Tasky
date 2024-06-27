@@ -29,7 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.tasky.LoginNav
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
@@ -41,24 +40,24 @@ import com.example.tasky.common.presentation.TextBox
 @Composable
 fun RegisterAccountRoot(
     navController: NavController,
-    loginViewModel: LoginViewModel
+    registerViewModel: RegisterViewModel
 ) {
 
-    val viewState by loginViewModel.viewState.collectAsStateWithLifecycle()
-    val viewEvent by loginViewModel.viewEvent.observeAsState()
+    val viewState by registerViewModel.viewState.collectAsStateWithLifecycle()
+    val viewEvent by registerViewModel.viewEvent.observeAsState()
 
-    val name by loginViewModel.name.collectAsStateWithLifecycle()
-    val email by loginViewModel.email.collectAsStateWithLifecycle()
-    val password by loginViewModel.password.collectAsStateWithLifecycle()
+    val name by registerViewModel.name.collectAsStateWithLifecycle()
+    val email by registerViewModel.email.collectAsStateWithLifecycle()
+    val password by registerViewModel.password.collectAsStateWithLifecycle()
 
-    val isNameValid by loginViewModel.isNameValid.collectAsStateWithLifecycle()
-    val isEmailValid by loginViewModel.isEmailValid.collectAsStateWithLifecycle()
-    val isPasswordValid by loginViewModel.isPasswordValid.collectAsStateWithLifecycle()
-    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsStateWithLifecycle()
+    val isNameValid by registerViewModel.isNameValid.collectAsStateWithLifecycle()
+    val isEmailValid by registerViewModel.isEmailValid.collectAsStateWithLifecycle()
+    val isPasswordValid by registerViewModel.isPasswordValid.collectAsStateWithLifecycle()
+    val isPasswordVisible by registerViewModel.isPasswordVisible.collectAsStateWithLifecycle()
 
     val isFormValid = isNameValid && isEmailValid && isPasswordValid
 
-    val showDialog by loginViewModel.showDialog.collectAsStateWithLifecycle()
+    val showDialog by registerViewModel.showDialog.collectAsStateWithLifecycle()
 
     val focusManager = LocalFocusManager.current
 
@@ -71,13 +70,13 @@ fun RegisterAccountRoot(
         isPasswordValid = isPasswordValid,
         isPasswordVisible = isPasswordVisible,
         isFormValid = isFormValid,
-        onNameChange = { loginViewModel.onNameChange(it) },
-        onEmailChange = { loginViewModel.onEmailChange(it) },
-        onPasswordChange = { loginViewModel.onPasswordChange(it) },
-        onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() },
+        onNameChange = { registerViewModel.onNameChange(it) },
+        onEmailChange = { registerViewModel.onEmailChange(it) },
+        onPasswordChange = { registerViewModel.onPasswordChange(it) },
+        onPasswordVisibilityClick = { registerViewModel.onPasswordVisibilityClick() },
         onRegisterClick = {
             focusManager.clearFocus()
-            loginViewModel.registerUserClicked()
+            registerViewModel.registerUserClicked()
         }
     )
 
@@ -96,7 +95,7 @@ fun RegisterAccountRoot(
             CreateErrorAlertDialog(
                 showDialog = showDialog,
                 dialogMessage = message,
-                onDismiss = { loginViewModel.onErrorDialogDismissed() }
+                onDismiss = { registerViewModel.onErrorDialogDismissed() }
             )
         }
 
@@ -106,7 +105,7 @@ fun RegisterAccountRoot(
     LaunchedEffect(viewEvent) {
         when (viewEvent) {
             is LoginViewEvent.NavigateToLogin -> {
-                navController.navigate(LoginNav)
+                navController.popBackStack()
             }
 
             else -> println("cannot find type viewEvent")
