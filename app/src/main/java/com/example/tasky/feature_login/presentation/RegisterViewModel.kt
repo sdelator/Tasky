@@ -1,8 +1,6 @@
 package com.example.tasky.feature_login.presentation
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
@@ -11,7 +9,9 @@ import com.example.tasky.common.domain.util.isValidName
 import com.example.tasky.common.domain.util.isValidPassword
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -63,8 +63,8 @@ class RegisterViewModel @Inject constructor(
     val showDialog: StateFlow<Boolean> get() = _showDialog
 
     // viewEvent triggered by API response
-    private val _viewEvent = MutableLiveData<RegisterViewEvent>()
-    val viewEvent: LiveData<RegisterViewEvent> = _viewEvent
+    private val _viewEvent = MutableSharedFlow<RegisterViewEvent>()
+    val viewEvent: SharedFlow<RegisterViewEvent> = _viewEvent
 
     fun onNameChange(newName: String) {
         _name.value = newName
@@ -95,7 +95,7 @@ class RegisterViewModel @Inject constructor(
                 is Result.Success -> {
                     println("success register!")
                     // emit a viewState to show LoginScreen composable
-                    _viewEvent.value = RegisterViewEvent.NavigateToLogin
+                    _viewEvent.emit(RegisterViewEvent.NavigateToLogin)
                 }
 
                 is Result.Error -> {

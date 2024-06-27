@@ -71,12 +71,6 @@ class LoginViewModel @Inject constructor(
         _isPasswordVisible.value = !isPasswordVisible.value
     }
 
-    fun onEvent(event: LoginViewEvent) {
-        viewModelScope.launch {
-            _viewEvent.emit(event)
-        }
-    }
-
     fun logInClicked() {
         Log.d(
             TAG,

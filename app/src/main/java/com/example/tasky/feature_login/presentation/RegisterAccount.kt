@@ -18,7 +18,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,9 +41,7 @@ fun RegisterAccountRoot(
     navController: NavController,
     registerViewModel: RegisterViewModel
 ) {
-
     val viewState by registerViewModel.viewState.collectAsStateWithLifecycle()
-    val viewEvent by registerViewModel.viewEvent.observeAsState(null)
 
     val name by registerViewModel.name.collectAsStateWithLifecycle()
     val email by registerViewModel.email.collectAsStateWithLifecycle()
@@ -102,13 +99,13 @@ fun RegisterAccountRoot(
         null -> println("no action")
     }
 
-    LaunchedEffect(viewEvent) {
-        when (viewEvent) {
-            is RegisterViewEvent.NavigateToLogin -> {
-                navController.popBackStack()
+    LaunchedEffect(Unit) {
+        registerViewModel.viewEvent.collect { event ->
+            when (event) {
+                is RegisterViewEvent.NavigateToLogin -> {
+                    navController.popBackStack()
+                }
             }
-
-            else -> println("cannot find type viewEvent")
         }
     }
 }
