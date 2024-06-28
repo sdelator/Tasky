@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
+import com.example.tasky.common.domain.TaskyState
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
-    private val userRemoteRepository: UserRemoteRepository
+    private val userRemoteRepository: UserRemoteRepository,
+    private val taskyState: TaskyState
 ) : ViewModel() {
 
     companion object {
@@ -35,6 +37,13 @@ class AgendaViewModel @Inject constructor(
     // UI changes via Composable
     private val _showDialog = MutableStateFlow(false)
     val showDialog: StateFlow<Boolean> get() = _showDialog
+
+    private val _initials = MutableStateFlow<String>("")
+    val initials: StateFlow<String> get() = _initials
+
+    init {
+        getInitials()
+    }
 
     fun logOutClicked() {
         Log.d(TAG, "logOutClicked redirect user to login page")
@@ -59,9 +68,24 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    fun getInitials(): String {
-        // todo grab user name stored in shared pref and parse firstName.first() lastName.first()
-        return "AB"
+    fun getInitials() {
+        viewModelScope.launch {
+            val fullName = taskyState.getName()
+            val nameSplit = fullName.split(" ")
+            var initials = ""
+
+            if (nameSplit.size == 1) {
+                val name = nameSplit.first()
+                initials = "${name[0]}${name[1]}"
+            } else {
+                for (i in nameSplit.indices) {
+                    if (i == 0 || i == nameSplit.lastIndex) {
+                        initials += nameSplit[i].first()
+                    }
+                }
+            }
+            _initials.value = initials.uppercase()
+        }
     }
 
     fun onErrorDialogDismissed() {

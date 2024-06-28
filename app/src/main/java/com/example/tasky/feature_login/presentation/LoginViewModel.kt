@@ -86,11 +86,10 @@ class LoginViewModel @Inject constructor(
                 is Result.Success -> {
                     println("success login!")
                     // emit a viewState to change to agenda composable
-                    _viewEvent.send(LoginViewEvent.NavigateToAgenda)
-                    Log.d("sandra", "login response ${result.data}")
                     taskyState.setRefreshToken(result.data.refreshToken)
                     taskyState.setName(result.data.fullName)
-                    println("taskyState = ${taskyState.getRefreshToken()}")
+                    Log.d(TAG, "taskyState.name ${taskyState.getName()}")
+                    _viewEvent.send(LoginViewEvent.NavigateToAgenda)
                 }
 
                 is Result.Error -> {
