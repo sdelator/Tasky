@@ -16,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Modifier
@@ -33,6 +32,7 @@ import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.LoadingSpinner
+import com.example.tasky.common.presentation.ObserveAsEvents
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 
@@ -99,12 +99,10 @@ fun RegisterAccountRoot(
         null -> println("no action")
     }
 
-    LaunchedEffect(Unit) {
-        registerViewModel.viewEvent.collect { event ->
-            when (event) {
-                is RegisterViewEvent.NavigateToLogin -> {
-                    navController.popBackStack()
-                }
+    ObserveAsEvents(flow = registerViewModel.viewEvent) { event ->
+        when (event) {
+            is RegisterViewEvent.NavigateToLogin -> {
+                navController.popBackStack()
             }
         }
     }

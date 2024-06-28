@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,8 +29,8 @@ class AgendaViewModel @Inject constructor(
         get() = _viewState
 
     // viewEvent triggered by API response
-    private val _viewEvent = MutableSharedFlow<AgendaViewEvent>()
-    val viewEvent: SharedFlow<AgendaViewEvent> = _viewEvent
+    private val _viewEvent = Channel<AgendaViewEvent>()
+    val viewEvent = _viewEvent.receiveAsFlow()
 
     // UI changes via Composable
     private val _showDialog = MutableStateFlow(false)
@@ -46,7 +46,7 @@ class AgendaViewModel @Inject constructor(
                 is Result.Success -> {
                     println("success logout!")
                     // emit a viewState to show LoginScreen composable
-                    _viewEvent.emit(AgendaViewEvent.NavigateToLoginScreen)
+                    _viewEvent.send(AgendaViewEvent.NavigateToLoginScreen)
                 }
 
                 is Result.Error -> {

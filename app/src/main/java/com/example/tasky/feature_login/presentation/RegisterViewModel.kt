@@ -9,12 +9,12 @@ import com.example.tasky.common.domain.util.isValidName
 import com.example.tasky.common.domain.util.isValidPassword
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -63,8 +63,8 @@ class RegisterViewModel @Inject constructor(
     val showDialog: StateFlow<Boolean> get() = _showDialog
 
     // viewEvent triggered by API response
-    private val _viewEvent = MutableSharedFlow<RegisterViewEvent>()
-    val viewEvent: SharedFlow<RegisterViewEvent> = _viewEvent
+    private val _viewEvent = Channel<RegisterViewEvent>()
+    val viewEvent = _viewEvent.receiveAsFlow()
 
     fun onNameChange(newName: String) {
         _name.value = newName
@@ -95,7 +95,7 @@ class RegisterViewModel @Inject constructor(
                 is Result.Success -> {
                     println("success register!")
                     // emit a viewState to show LoginScreen composable
-                    _viewEvent.emit(RegisterViewEvent.NavigateToLogin)
+                    _viewEvent.send(RegisterViewEvent.NavigateToLogin)
                 }
 
                 is Result.Error -> {

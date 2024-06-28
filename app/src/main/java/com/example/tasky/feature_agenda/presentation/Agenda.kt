@@ -14,7 +14,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +29,7 @@ import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.LoadingSpinner
+import com.example.tasky.common.presentation.ObserveAsEvents
 
 @Composable
 fun AgendaRoot(
@@ -67,9 +67,9 @@ fun AgendaRoot(
         null -> println("no action")
     }
 
-    LaunchedEffect(Unit) {
-        agendaViewModel.viewEvent.collect { event ->
-            if (event is AgendaViewEvent.NavigateToLoginScreen) {
+    ObserveAsEvents(flow = agendaViewModel.viewEvent) { event ->
+        when (event) {
+            is AgendaViewEvent.NavigateToLoginScreen -> {
                 navController.navigate(AuthNavRoute)
             }
         }

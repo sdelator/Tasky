@@ -18,7 +18,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.tasky.AuthNavRoute
 import com.example.tasky.CalendarNavRoute
 import com.example.tasky.R
 import com.example.tasky.RegisterNav
@@ -43,6 +43,7 @@ import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.Header
 import com.example.tasky.common.presentation.LoadingSpinner
+import com.example.tasky.common.presentation.ObserveAsEvents
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 
@@ -105,16 +106,18 @@ fun LoginRoot(
         null -> println("no action")
     }
 
-    LaunchedEffect(Unit) {
-        loginViewModel.viewEvent.collect { event ->
-            when (event) {
-                is LoginViewEvent.NavigateToAgenda -> {
-                    navController.navigate(CalendarNavRoute)
+    ObserveAsEvents(flow = loginViewModel.viewEvent) { event ->
+        when (event) {
+            is LoginViewEvent.NavigateToAgenda -> {
+                navController.navigate(CalendarNavRoute) {
+                    popUpTo(AuthNavRoute) {
+                        inclusive = true
+                    }
                 }
+            }
 
-                is LoginViewEvent.NavigateToRegister -> {
-                    navController.navigate(RegisterNav)
-                }
+            is LoginViewEvent.NavigateToRegister -> {
+                navController.navigate(RegisterNav)
             }
         }
     }
