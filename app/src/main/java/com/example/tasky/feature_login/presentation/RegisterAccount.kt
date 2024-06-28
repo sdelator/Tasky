@@ -24,11 +24,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.tasky.LoginNav
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
@@ -37,26 +36,96 @@ import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.SimpleButton
 import com.example.tasky.common.presentation.TextBox
 
-
 @Composable
-fun RegisterAccountContent(navController: NavController) {
-    val loginViewModel: LoginViewModel = hiltViewModel()
-    val uiState by loginViewModel.uiState.collectAsStateWithLifecycle()
+fun RegisterAccountRoot(
+    navController: NavController,
+    registerViewModel: RegisterViewModel
+) {
+    val viewState by registerViewModel.viewState.collectAsStateWithLifecycle()
 
-    val viewState by loginViewModel.viewState.collectAsStateWithLifecycle()
-    val name by loginViewModel.name.collectAsStateWithLifecycle()
-    val email by loginViewModel.email.collectAsStateWithLifecycle()
-    val password by loginViewModel.password.collectAsStateWithLifecycle()
+    val name by registerViewModel.name.collectAsStateWithLifecycle()
+    val email by registerViewModel.email.collectAsStateWithLifecycle()
+    val password by registerViewModel.password.collectAsStateWithLifecycle()
 
-    val isNameValid by loginViewModel.isNameValid.collectAsStateWithLifecycle()
-    val isEmailValid by loginViewModel.isEmailValid.collectAsStateWithLifecycle()
-    val isPasswordValid by loginViewModel.isPasswordValid.collectAsStateWithLifecycle()
-    val isPasswordVisible by loginViewModel.isPasswordVisible.collectAsStateWithLifecycle()
+    val isNameValid by registerViewModel.isNameValid.collectAsStateWithLifecycle()
+    val isEmailValid by registerViewModel.isEmailValid.collectAsStateWithLifecycle()
+    val isPasswordValid by registerViewModel.isPasswordValid.collectAsStateWithLifecycle()
+    val isPasswordVisible by registerViewModel.isPasswordVisible.collectAsStateWithLifecycle()
 
     val isFormValid = isNameValid && isEmailValid && isPasswordValid
 
+    val showDialog by registerViewModel.showDialog.collectAsStateWithLifecycle()
+
     val focusManager = LocalFocusManager.current
 
+    RegisterAccountContent(
+        name = name,
+        email = email,
+        password = password,
+        isNameValid = isNameValid,
+        isEmailValid = isEmailValid,
+        isPasswordValid = isPasswordValid,
+        isPasswordVisible = isPasswordVisible,
+        isFormValid = isFormValid,
+        onNameChange = { registerViewModel.onNameChange(it) },
+        onEmailChange = { registerViewModel.onEmailChange(it) },
+        onPasswordChange = { registerViewModel.onPasswordChange(it) },
+        onPasswordVisibilityClick = { registerViewModel.onPasswordVisibilityClick() },
+        onRegisterClick = {
+            focusManager.clearFocus()
+            registerViewModel.registerUserClicked()
+        }
+    )
+
+    when (viewState) {
+        is RegisterViewState.LoadingSpinner -> {
+            // Show a loading indicator
+            LoadingSpinner()
+        }
+
+        is RegisterViewState.ErrorDialog -> {
+            // Show an Alert Dialog with API failure Error code/message
+            val message =
+                (viewState as RegisterViewState.ErrorDialog).dataError.toRegisterErrorMessage(
+                    context = LocalContext.current
+                )
+            CreateErrorAlertDialog(
+                showDialog = showDialog,
+                dialogMessage = message,
+                onDismiss = { registerViewModel.onErrorDialogDismissed() }
+            )
+        }
+
+        null -> println("no action")
+    }
+
+    LaunchedEffect(Unit) {
+        registerViewModel.viewEvent.collect { event ->
+            when (event) {
+                is RegisterViewEvent.NavigateToLogin -> {
+                    navController.popBackStack()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun RegisterAccountContent(
+    name: String,
+    email: String,
+    password: String,
+    isNameValid: Boolean,
+    isEmailValid: Boolean,
+    isPasswordValid: Boolean,
+    isPasswordVisible: Boolean,
+    isFormValid: Boolean,
+    onNameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onPasswordVisibilityClick: () -> Unit,
+    onRegisterClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -88,69 +157,31 @@ fun RegisterAccountContent(navController: NavController) {
                     hintText = stringResource(R.string.name),
                     text = name,
                     isValid = isNameValid,
-                    onValueChange = { loginViewModel.onNameChange(it) }
+                    onValueChange = onNameChange
                 )
                 TextBox(
                     hintText = stringResource(R.string.email),
                     text = email,
                     isValid = isEmailValid,
-                    onValueChange = { loginViewModel.onEmailChange(it) }
+                    onValueChange = onEmailChange
                 )
                 TextBox(
                     hintText = stringResource(R.string.password),
                     text = password,
                     isValid = isPasswordValid,
-                    onValueChange = { loginViewModel.onPasswordChange(it) },
+                    onValueChange = onPasswordChange,
                     isPasswordField = true,
                     isPasswordVisible = isPasswordVisible,
-                    onPasswordVisibilityClick = { loginViewModel.onPasswordVisibilityClick() }
+                    onPasswordVisibilityClick = onPasswordVisibilityClick
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SimpleButton(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = isFormValid,
-                    onClick = {
-                        // clear focus hides the keyboard
-                        focusManager.clearFocus()
-
-                        loginViewModel.registerUserClicked()
-                    },
+                    onClick = onRegisterClick,
                     buttonName = stringResource(R.string.get_started)
                 )
             }
-        }
-
-        when (viewState) {
-            is AuthenticationViewState.Loading -> {
-                // Show a loading indicator
-                LoadingSpinner()
-            }
-
-            is AuthenticationViewState.Success -> {
-                // Handle success by navigating to LoginScreen
-                navController.navigate(LoginNav)
-            }
-
-            is AuthenticationViewState.Failure -> {
-                // Show an Alert Dialog with API failure Error code/message
-                val message =
-                    (viewState as AuthenticationViewState.Failure).dataError.toRegisterErrorMessage(
-                        context = LocalContext.current
-                    )
-                LaunchedEffect(message) {
-                    loginViewModel.onShowErrorDialog(message)
-                }
-            }
-
-            null -> println("no action")
-        }
-
-        if (uiState.showErrorDialog) {
-            CreateErrorAlertDialog(
-                showDialog = uiState.showErrorDialog,
-                dialogMessage = uiState.dialogMessage,
-                onDismiss = { loginViewModel.onDismissErrorDialog() }
-            )
         }
     }
 }
@@ -162,4 +193,24 @@ fun DataError.toRegisterErrorMessage(context: Context): String {
         DataError.Network.CONFLICT -> context.getString(R.string.email_is_already_in_use)
         else -> context.getString(R.string.unknown_error)
     }
+}
+
+@Composable
+@Preview
+fun PreviewRegisterAccountContent() {
+    RegisterAccountContent(
+        name = "firstName LastName",
+        email = "",
+        password = "",
+        isNameValid = true,
+        isEmailValid = false,
+        isPasswordValid = false,
+        isPasswordVisible = true,
+        isFormValid = true,
+        onNameChange = { },
+        onEmailChange = { },
+        onPasswordChange = { },
+        onPasswordVisibilityClick = { },
+        onRegisterClick = { }
+    )
 }

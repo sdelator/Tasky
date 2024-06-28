@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,31 +28,32 @@ class AgendaViewModel @Inject constructor(
     val viewState: StateFlow<AgendaViewState?>
         get() = _viewState
 
-    private val _uiState = MutableStateFlow(UiState())
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+    // viewEvent triggered by API response
+    private val _viewEvent = MutableSharedFlow<AgendaViewEvent>()
+    val viewEvent: SharedFlow<AgendaViewEvent> = _viewEvent
 
-    data class UiState(
-        val showErrorDialog: Boolean = false,
-        val dialogMessage: String = ""
-    )
+    // UI changes via Composable
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> get() = _showDialog
 
     fun logOutClicked() {
         Log.d(TAG, "logOutClicked redirect user to login page")
         viewModelScope.launch {
-            _viewState.emit(AgendaViewState.Loading)
+            _viewState.emit(AgendaViewState.LoadingSpinner)
             val result = userRemoteRepository.logOutUser()
 
             when (result) {
                 is Result.Success -> {
                     println("success logout!")
                     // emit a viewState to show LoginScreen composable
-                    _viewState.emit(AgendaViewState.Success)
+                    _viewEvent.emit(AgendaViewEvent.NavigateToLoginScreen)
                 }
 
                 is Result.Error -> {
                     println("failed logout :(")
                     // emit a viewState to show ErrorMessage
-                    _viewState.emit(AgendaViewState.Failure(result.error))
+                    _showDialog.value = true
+                    _viewState.emit(AgendaViewState.ErrorDialog(result.error))
                 }
             }
         }
@@ -63,11 +64,7 @@ class AgendaViewModel @Inject constructor(
         return "AB"
     }
 
-    fun onShowErrorDialog(message: String) {
-        _uiState.update { it.copy(showErrorDialog = true, dialogMessage = message) }
-    }
-
-    fun onDismissErrorDialog() {
-        _uiState.update { it.copy(showErrorDialog = false) }
+    fun onErrorDialogDismissed() {
+        _showDialog.value = false
     }
 }

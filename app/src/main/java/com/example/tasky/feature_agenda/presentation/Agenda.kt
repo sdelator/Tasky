@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,13 +32,55 @@ import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.LoadingSpinner
 
 @Composable
-fun AgendaContent(
+fun AgendaRoot(
     navController: NavController,
     agendaViewModel: AgendaViewModel = hiltViewModel()
 ) {
-    val uiState by agendaViewModel.uiState.collectAsStateWithLifecycle()
     val viewState by agendaViewModel.viewState.collectAsStateWithLifecycle()
 
+    val showDialog by agendaViewModel.showDialog.collectAsStateWithLifecycle()
+
+    AgendaContent(
+        getInitials = { agendaViewModel.getInitials() },
+        onProfileClick = { agendaViewModel.logOutClicked() }
+    )
+
+    when (viewState) {
+        is AgendaViewState.LoadingSpinner -> {
+            // Show a loading indicator
+            LoadingSpinner()
+        }
+
+        is AgendaViewState.ErrorDialog -> {
+            // Show an Alert Dialog with API failure Error code/message
+            val message =
+                (viewState as AgendaViewState.ErrorDialog).dataError.toLogOutErrorMessage(
+                    context = LocalContext.current
+                )
+
+            CreateErrorAlertDialog(
+                showDialog = showDialog,
+                dialogMessage = message,
+                onDismiss = { agendaViewModel.onErrorDialogDismissed() }
+            )
+        }
+        null -> println("no action")
+    }
+
+    LaunchedEffect(Unit) {
+        agendaViewModel.viewEvent.collect { event ->
+            if (event is AgendaViewEvent.NavigateToLoginScreen) {
+                navController.navigate(AuthNavRoute)
+            }
+        }
+    }
+}
+
+@Composable
+fun AgendaContent(
+    getInitials: () -> String,
+    onProfileClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -45,8 +88,8 @@ fun AgendaContent(
             .safeDrawingPadding()
     ) {
         AgendaToolbar(
-            initials = agendaViewModel.getInitials(),
-            onProfileClick = { agendaViewModel.logOutClicked() }
+            initials = getInitials,
+            onProfileClick = onProfileClick
         )
 
         Card(
@@ -70,40 +113,13 @@ fun AgendaContent(
                 Text("Top Text")
             }
         }
-
-        when (viewState) {
-            is AgendaViewState.Loading -> {
-                // Show a loading indicator
-                LoadingSpinner()
-            }
-
-            is AgendaViewState.Success -> {
-                // Handle success by navigating to LoginScreen
-                navController.navigate(AuthNavRoute)
-            }
-
-            is AgendaViewState.Failure -> {
-                // Show an Alert Dialog with API failure Error code/message
-                val message =
-                    (viewState as AgendaViewState.Failure).dataError.toLogOutErrorMessage(
-                        context = LocalContext.current
-                    )
-                LaunchedEffect(message) {
-                    agendaViewModel.onShowErrorDialog(message)
-                }
-            }
-
-            null -> println("no action")
-        }
-
-        if (uiState.showErrorDialog) {
-            CreateErrorAlertDialog(
-                showDialog = true,
-                dialogMessage = uiState.dialogMessage,
-                onDismiss = { agendaViewModel.onDismissErrorDialog() }
-            )
-        }
     }
+}
+
+@Composable
+@Preview
+fun PreviewAgendaContent() {
+    AgendaContent(getInitials = { "AB" }, onProfileClick = { })
 }
 
 fun DataError.toLogOutErrorMessage(context: Context): String {

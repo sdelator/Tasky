@@ -14,11 +14,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.tasky.feature_agenda.presentation.AgendaContent
+import com.example.tasky.feature_agenda.presentation.AgendaRoot
 import com.example.tasky.feature_agenda.presentation.AgendaViewModel
-import com.example.tasky.feature_login.presentation.LoginScreenContent
+import com.example.tasky.feature_login.presentation.LoginRoot
 import com.example.tasky.feature_login.presentation.LoginViewModel
-import com.example.tasky.feature_login.presentation.RegisterAccountContent
+import com.example.tasky.feature_login.presentation.RegisterAccountRoot
+import com.example.tasky.feature_login.presentation.RegisterViewModel
 import com.example.tasky.feature_splash.presentation.SplashViewModel
 import com.example.tasky.ui.theme.TaskyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +30,7 @@ class MainActivity : ComponentActivity() {
 
     private val splashViewModel: SplashViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
+    private val registerViewModel: RegisterViewModel by viewModels()
     private val agendaViewModel: AgendaViewModel by viewModels()
     private val isLoggedInState = mutableStateOf(false)
 
@@ -56,7 +58,7 @@ class MainActivity : ComponentActivity() {
             TaskyTheme {
                 NavHost(navController, startDestination = startDestination) {
                     navigation<AuthNavRoute>(startDestination = LoginNav) {
-                        authGraph(navController, loginViewModel)
+                        authGraph(navController, loginViewModel, registerViewModel)
                     }
 
                     navigation<CalendarNavRoute>(startDestination = AgendaNav) {
@@ -68,18 +70,22 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun NavGraphBuilder.authGraph(navController: NavController, loginViewModel: LoginViewModel) {
+fun NavGraphBuilder.authGraph(
+    navController: NavController,
+    loginViewModel: LoginViewModel,
+    registerViewModel: RegisterViewModel
+) {
     composable<RegisterNav> {
-        RegisterAccountContent(navController = navController)
+        RegisterAccountRoot(navController = navController, registerViewModel = registerViewModel)
     }
     composable<LoginNav> {
-        LoginScreenContent(navController = navController, loginViewModel = loginViewModel)
+        LoginRoot(navController = navController, loginViewModel = loginViewModel)
     }
 }
 
 fun NavGraphBuilder.calendarGraph(navController: NavController, agendaViewModel: AgendaViewModel) {
     composable<AgendaNav> {
-        AgendaContent(navController = navController, agendaViewModel = agendaViewModel)
+        AgendaRoot(navController = navController, agendaViewModel = agendaViewModel)
     }
 }
 
