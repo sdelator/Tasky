@@ -2,6 +2,7 @@
 agp = "8.2.2"
 converterGson = "2.9.0"
 datastorePreferences = "1.1.1"
+kotlinxCoroutinesTest = "1.7.3"
 ksp = "1.9.0-1.0.13"
 coreSplashscreen = "1.2.0-alpha01"
 gradle = "8.2.2"
@@ -19,6 +20,7 @@ lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.8.0"
 composeBom = "2023.08.00"
 lifecycleViewmodelCompose = "2.8.2"
+mockk = "1.13.2"
 okhttp = "5.0.0-alpha.3"
 retrofit = "2.9.0"
 roomCommon = "2.6.1"
@@ -59,7 +61,9 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
