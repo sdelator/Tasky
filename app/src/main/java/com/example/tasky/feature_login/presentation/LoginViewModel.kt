@@ -8,12 +8,12 @@ import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.util.isValidPassword
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -56,8 +56,8 @@ class LoginViewModel @Inject constructor(
     val showDialog: StateFlow<Boolean> get() = _showDialog
 
     // viewEvent triggered by API response
-    private val _viewEvent = MutableSharedFlow<LoginViewEvent>()
-    val viewEvent: SharedFlow<LoginViewEvent> = _viewEvent
+    private val _viewEvent = Channel<LoginViewEvent>()
+    val viewEvent = _viewEvent.receiveAsFlow()
 
     fun onEmailChange(newEmail: String) {
         _email.value = newEmail
@@ -84,7 +84,7 @@ class LoginViewModel @Inject constructor(
                 is Result.Success -> {
                     println("success login!")
                     // emit a viewState to change to agenda composable
-                    _viewEvent.emit(LoginViewEvent.NavigateToAgenda)
+                    _viewEvent.send(LoginViewEvent.NavigateToAgenda)
                 }
 
                 is Result.Error -> {
@@ -99,7 +99,7 @@ class LoginViewModel @Inject constructor(
 
     fun onSignUpClick() {
         viewModelScope.launch {
-            _viewEvent.emit(LoginViewEvent.NavigateToRegister)
+            _viewEvent.send(LoginViewEvent.NavigateToRegister)
         }
     }
 
