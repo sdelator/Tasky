@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.tasky.AuthNavRoute
 import com.example.tasky.CalendarNavRoute
 import com.example.tasky.R
 import com.example.tasky.RegisterNav
@@ -109,7 +110,11 @@ fun LoginRoot(
         loginViewModel.viewEvent.collect { event ->
             when (event) {
                 is LoginViewEvent.NavigateToAgenda -> {
-                    navController.navigate(CalendarNavRoute)
+                    navController.navigate(CalendarNavRoute) {
+                        popUpTo(AuthNavRoute) {
+                            inclusive = true
+                        }
+                    }
                 }
 
                 is LoginViewEvent.NavigateToRegister -> {
