@@ -1,17 +1,19 @@
 package com.example.tasky.feature_agenda.presentation
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -24,12 +26,11 @@ class AgendaViewModelTest {
 
     private lateinit var viewModel: AgendaViewModel
 
-    private val testDispatcher = StandardTestDispatcher()
-    private val testScope = TestScope(testDispatcher)
-
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
+        val testDispatcher = StandardTestDispatcher()
+
         MockKAnnotations.init(this, relaxUnitFun = true)
         Dispatchers.setMain(testDispatcher)
         viewModel =
@@ -39,6 +40,12 @@ class AgendaViewModelTest {
             )
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
     @Test
     fun formatInitials_given_firstName() {
         // given
@@ -46,12 +53,12 @@ class AgendaViewModelTest {
 
         // when
         runTest {
-            viewModel.getInitials()
+            viewModel
         }
-        val initials = viewModel.initials.value
 
         // then
-        assertEquals("FI", initials)
+        val initials = viewModel.initials.value
+        assertThat(initials).isEqualTo("FI")
     }
 
     @Test
@@ -61,12 +68,12 @@ class AgendaViewModelTest {
 
         // when
         runTest {
-            viewModel.getInitials()
+            viewModel
         }
         val initials = viewModel.initials.value
 
         // then
-        assertEquals("FL", initials)
+        assertThat(initials).isEqualTo("FL")
     }
 
     @Test
@@ -76,11 +83,11 @@ class AgendaViewModelTest {
 
         // when
         runTest {
-            viewModel.getInitials()
+            viewModel
         }
         val initials = viewModel.initials.value
 
         // then
-        assertEquals("FL", initials)
+        assertThat(initials).isEqualTo("FL")
     }
 }
