@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
+import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -42,7 +43,7 @@ class AgendaViewModel @Inject constructor(
     val initials: StateFlow<String> get() = _initials
 
     init {
-        getInitials()
+        getProfileInitials()
     }
 
     fun logOutClicked() {
@@ -68,27 +69,14 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    fun getInitials() {
-        viewModelScope.launch {
-            val fullName = sessionStateManager.getName()
-            val nameSplit = fullName.split(" ")
-            var initials = ""
-
-            if (nameSplit.size == 1) {
-                val name = nameSplit.first()
-                initials = "${name[0]}${name[1]}"
-            } else {
-                for (i in nameSplit.indices) {
-                    if (i == 0 || i == nameSplit.lastIndex) {
-                        initials += nameSplit[i].first()
-                    }
-                }
-            }
-            _initials.value = initials.uppercase()
-        }
-    }
-
     fun onErrorDialogDismissed() {
         _showDialog.value = false
+    }
+
+    private fun getProfileInitials() {
+        viewModelScope.launch {
+            val fullName = sessionStateManager.getName()
+            _initials.value = ProfileUtils.getInitials(fullName)
+        }
     }
 }
