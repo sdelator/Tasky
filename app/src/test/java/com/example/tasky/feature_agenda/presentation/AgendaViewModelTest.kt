@@ -29,6 +29,15 @@ class AgendaViewModelTest {
         Dispatchers.setMain(testDispatcher)
         sessionStateManager = FakeSessionStateManager()
         userRemoteRepository = FakeUserRemoteRepository()
+
+        runTest {
+            sessionStateManager.setName("test")
+        }
+
+        viewModel = AgendaViewModel(
+            userRemoteRepository = userRemoteRepository,
+            sessionStateManager = sessionStateManager
+        )
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -38,20 +47,13 @@ class AgendaViewModelTest {
     }
 
     @Test
-    fun setInitials_given_firstName() {
-        runTest {
-            // Given
-            sessionStateManager.setName("firstName")
+    fun logOutClicked_navigate_login() {
+        // given
+        // when
+        viewModel.logOutClicked()
 
-            // When
-            viewModel = AgendaViewModel(
-                userRemoteRepository = userRemoteRepository,
-                sessionStateManager = sessionStateManager
-            )
-        }
-
-        // Then
-        val initials = viewModel.initials.value
-        assertThat(initials).isEqualTo("FI")
+        // then
+        val event = viewModel.viewEvent
+        assertThat(event).isEqualTo(AgendaViewEvent.NavigateToLoginScreen)
     }
 }
