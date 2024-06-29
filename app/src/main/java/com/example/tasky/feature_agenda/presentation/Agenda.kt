@@ -39,9 +39,10 @@ fun AgendaRoot(
     val viewState by agendaViewModel.viewState.collectAsStateWithLifecycle()
 
     val showDialog by agendaViewModel.showDialog.collectAsStateWithLifecycle()
+    val initials by agendaViewModel.initials.collectAsStateWithLifecycle()
 
     AgendaContent(
-        getInitials = { agendaViewModel.getInitials() },
+        initials = initials,
         onProfileClick = { agendaViewModel.logOutClicked() }
     )
 
@@ -78,7 +79,7 @@ fun AgendaRoot(
 
 @Composable
 fun AgendaContent(
-    getInitials: () -> String,
+    initials: String,
     onProfileClick: () -> Unit
 ) {
     Box(
@@ -88,7 +89,7 @@ fun AgendaContent(
             .safeDrawingPadding()
     ) {
         AgendaToolbar(
-            initials = getInitials,
+            initials = initials,
             onProfileClick = onProfileClick
         )
 
@@ -119,7 +120,7 @@ fun AgendaContent(
 @Composable
 @Preview
 fun PreviewAgendaContent() {
-    AgendaContent(getInitials = { "AB" }, onProfileClick = { })
+    AgendaContent(initials = "AB", onProfileClick = { })
 }
 
 fun DataError.toLogOutErrorMessage(context: Context): String {

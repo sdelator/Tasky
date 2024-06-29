@@ -89,6 +89,8 @@ dependencies {
 
     // Other dependencies
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.ui.test.junit4)
@@ -103,4 +105,7 @@ dependencies {
     // Navigation Compose
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
 }
