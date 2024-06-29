@@ -1,6 +1,6 @@
 package com.example.tasky.feature_agenda.presentation
 
-import com.example.tasky.common.domain.TaskyState
+import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -17,7 +17,7 @@ import org.junit.Test
 
 class AgendaViewModelTest {
     @RelaxedMockK
-    private lateinit var taskyState: TaskyState
+    private lateinit var sessionStateManager: SessionStateManager
 
     @RelaxedMockK
     private lateinit var userRemoteRepository: UserRemoteRepository
@@ -33,13 +33,16 @@ class AgendaViewModelTest {
         MockKAnnotations.init(this, relaxUnitFun = true)
         Dispatchers.setMain(testDispatcher)
         viewModel =
-            AgendaViewModel(userRemoteRepository = userRemoteRepository, taskyState = taskyState)
+            AgendaViewModel(
+                userRemoteRepository = userRemoteRepository,
+                sessionStateManager = sessionStateManager
+            )
     }
 
     @Test
     fun formatInitials_given_firstName() {
         // given
-        coEvery { taskyState.getName() } returns "firstName"
+        coEvery { sessionStateManager.getName() } returns "firstName"
 
         // when
         runTest {
@@ -54,7 +57,7 @@ class AgendaViewModelTest {
     @Test
     fun formatInitials_given_firstLastName() {
         // given
-        coEvery { taskyState.getName() } returns "firstName lastName"
+        coEvery { sessionStateManager.getName() } returns "firstName lastName"
 
         // when
         runTest {
@@ -69,7 +72,7 @@ class AgendaViewModelTest {
     @Test
     fun formatInitials_given_firstMiddleLastName() {
         // given
-        coEvery { taskyState.getName() } returns "firstName middleName lastName"
+        coEvery { sessionStateManager.getName() } returns "firstName middleName lastName"
 
         // when
         runTest {

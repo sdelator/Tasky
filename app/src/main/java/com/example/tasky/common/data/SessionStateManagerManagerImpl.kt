@@ -1,16 +1,16 @@
 package com.example.tasky.common.data
 
-import com.example.tasky.common.domain.TaskyState
+import com.example.tasky.common.domain.SessionStateManager
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TaskyStateImpl @Inject constructor(
+class SessionStateManagerManagerImpl @Inject constructor(
     private val appPreferences: PreferenceHelper,
-) : TaskyState {
+) : SessionStateManager {
     companion object {
-        private const val TAG = "TaskyState"
+        private const val TAG = "SessionStateManager"
     }
 
     override suspend fun setRefreshToken(refreshToken: String) {

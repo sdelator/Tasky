@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
-import com.example.tasky.common.domain.TaskyState
+import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
     private val userRemoteRepository: UserRemoteRepository,
-    private val taskyState: TaskyState
+    private val sessionStateManager: SessionStateManager
 ) : ViewModel() {
 
     companion object {
@@ -70,7 +70,7 @@ class AgendaViewModel @Inject constructor(
 
     fun getInitials() {
         viewModelScope.launch {
-            val fullName = taskyState.getName()
+            val fullName = sessionStateManager.getName()
             val nameSplit = fullName.split(" ")
             var initials = ""
 

@@ -1,6 +1,6 @@
 package com.example.tasky.common.domain
 
-interface TaskyState {
+interface SessionStateManager {
     suspend fun setRefreshToken(refreshToken: String)
     suspend fun getRefreshToken(): String
 

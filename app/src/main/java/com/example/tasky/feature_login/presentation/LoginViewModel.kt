@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
-import com.example.tasky.common.domain.TaskyState
+import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.util.isValidPassword
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val emailPatternValidator: EmailPatternValidatorImpl,
     private val userRemoteRepository: UserRemoteRepository,
-    private val taskyState: TaskyState
+    private val sessionStateManager: SessionStateManager
 ) : ViewModel() {
 
     companion object {
@@ -86,9 +86,9 @@ class LoginViewModel @Inject constructor(
                 is Result.Success -> {
                     println("success login!")
                     // emit a viewState to change to agenda composable
-                    taskyState.setRefreshToken(result.data.refreshToken)
-                    taskyState.setName(result.data.fullName)
-                    Log.d(TAG, "taskyState.name ${taskyState.getName()}")
+                    sessionStateManager.setRefreshToken(result.data.refreshToken)
+                    sessionStateManager.setName(result.data.fullName)
+                    Log.d(TAG, "sessionStateManager.name ${sessionStateManager.getName()}")
                     _viewEvent.send(LoginViewEvent.NavigateToAgenda)
                 }
 
