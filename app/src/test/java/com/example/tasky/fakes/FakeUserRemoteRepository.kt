@@ -6,6 +6,7 @@ import com.example.tasky.feature_login.domain.model.LoginUserResponse
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 
 class FakeUserRemoteRepository : UserRemoteRepository {
+    var shouldReturnSuccess = false
     override suspend fun registerUser(
         name: String,
         email: String,
@@ -22,6 +23,10 @@ class FakeUserRemoteRepository : UserRemoteRepository {
     }
 
     override suspend fun logOutUser(): Result<Unit, DataError.Network> {
-        return Result.Success(Unit)
+        return if (shouldReturnSuccess) {
+            Result.Success(Unit)
+        } else {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
     }
 }
