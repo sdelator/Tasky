@@ -75,4 +75,12 @@ class AgendaViewModelTest {
             assertThat(state).isEqualTo(AgendaViewState.ErrorDialog(DataError.Network.NO_INTERNET))
         }
     }
+
+    @Test
+    fun check_value_profileInitials() {
+        runTest {
+            val result = viewModel.initials.first()
+            assertThat(result).isEqualTo("TN")
+        }
+    }
 }
