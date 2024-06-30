@@ -1,7 +1,6 @@
 package com.example.tasky.common.data.remote
 
 import com.example.tasky.common.domain.SessionStateManager
-import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
@@ -14,9 +13,7 @@ class AuthInterceptor @Inject constructor(
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val accessToken = runBlocking {
-            sessionStateManager.getAccessToken()
-        }
+        val accessToken = sessionStateManager.getAccessToken()
         val request = chain.request().newBuilder()
             .addHeader(AUTH, "Bearer $accessToken")
             .build()
