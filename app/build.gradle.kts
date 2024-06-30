@@ -59,6 +59,10 @@ android {
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
+
+    testOptions {
+        unitTests { isReturnDefaultValues = true }
+    }
 }
 
 dependencies {
@@ -90,6 +94,8 @@ dependencies {
     // Other dependencies
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
+    testImplementation(libs.assertk)
+    androidTestImplementation(libs.assertk)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

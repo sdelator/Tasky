@@ -1,83 +1,86 @@
 package com.example.tasky.feature_agenda.presentation
 
-import com.example.tasky.common.domain.TaskyState
-import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertEquals
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import com.example.tasky.common.domain.error.DataError
+import com.example.tasky.fakes.FakeSessionStateManager
+import com.example.tasky.fakes.FakeUserRemoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
 class AgendaViewModelTest {
-    @RelaxedMockK
-    private lateinit var taskyState: TaskyState
-
-    @RelaxedMockK
-    private lateinit var userRemoteRepository: UserRemoteRepository
-
+    private lateinit var sessionStateManager: FakeSessionStateManager
+    private lateinit var userRemoteRepository: FakeUserRemoteRepository
     private lateinit var viewModel: AgendaViewModel
-
-    private val testDispatcher = StandardTestDispatcher()
-    private val testScope = TestScope(testDispatcher)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
-        MockKAnnotations.init(this, relaxUnitFun = true)
+        val testDispatcher = StandardTestDispatcher()
+
         Dispatchers.setMain(testDispatcher)
-        viewModel =
-            AgendaViewModel(userRemoteRepository = userRemoteRepository, taskyState = taskyState)
+        sessionStateManager = FakeSessionStateManager()
+        userRemoteRepository = FakeUserRemoteRepository()
+
+        runTest {
+            sessionStateManager.setName("test name")
+        }
+
+        viewModel = AgendaViewModel(
+            userRemoteRepository = userRemoteRepository,
+            sessionStateManager = sessionStateManager
+        )
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
-    fun formatInitials_given_firstName() {
-        // given
-        coEvery { taskyState.getName() } returns "firstName"
+    fun logOutClicked_success_navigateToLoginScreen(): Unit = runBlocking {
+        // Given
+        userRemoteRepository.shouldReturnSuccess = true
 
-        // when
+        // When
+        viewModel.logOutClicked()
+
+        // Then
         runTest {
-            viewModel.getInitials()
+            assertThat(viewModel.viewEvent.first()).isEqualTo(AgendaViewEvent.NavigateToLoginScreen)
         }
-        val initials = viewModel.initials.value
-
-        // then
-        assertEquals("FI", initials)
     }
 
     @Test
-    fun formatInitials_given_firstLastName() {
-        // given
-        coEvery { taskyState.getName() } returns "firstName lastName"
+    fun logOutClicked_failure_showErrorDialog() = runBlocking {
+        // Given
+        userRemoteRepository.shouldReturnSuccess = false
 
-        // when
+        // When
+        viewModel.logOutClicked()
+
+        // Then
         runTest {
-            viewModel.getInitials()
+            val state = viewModel.viewState.first()
+            assertThat(state).isEqualTo(AgendaViewState.ErrorDialog(DataError.Network.NO_INTERNET))
         }
-        val initials = viewModel.initials.value
-
-        // then
-        assertEquals("FL", initials)
     }
 
     @Test
-    fun formatInitials_given_firstMiddleLastName() {
-        // given
-        coEvery { taskyState.getName() } returns "firstName middleName lastName"
-
-        // when
+    fun check_value_profileInitials() {
         runTest {
-            viewModel.getInitials()
+            val result = viewModel.initials.first()
+            assertThat(result).isEqualTo("TN")
         }
-        val initials = viewModel.initials.value
-
-        // then
-        assertEquals("FL", initials)
     }
 }

@@ -2,12 +2,12 @@ package com.example.tasky.di
 
 import android.app.Application
 import com.example.tasky.common.data.PreferenceHelper
-import com.example.tasky.common.data.TaskyStateImpl
+import com.example.tasky.common.data.SessionStateManagerManagerImpl
 import com.example.tasky.common.data.remote.ApiKeyInterceptor
 import com.example.tasky.common.data.remote.TaskyApi
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.EmailPatternValidator
-import com.example.tasky.common.domain.TaskyState
+import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
 import com.example.tasky.feature_login.data.repository.UserRemoteRemoteRepositoryImpl
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
@@ -59,9 +59,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideTaskyState(
+    fun provideSessionStateManager(
         appPreferences: PreferenceHelper
-    ): TaskyState {
-        return TaskyStateImpl(appPreferences)
+    ): SessionStateManager {
+        return SessionStateManagerManagerImpl(appPreferences)
     }
 }
