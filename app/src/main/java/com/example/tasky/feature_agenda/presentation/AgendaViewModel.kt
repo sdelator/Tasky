@@ -74,8 +74,8 @@ class AgendaViewModel @Inject constructor(
     }
 
     private fun getProfileInitials() {
-        viewModelScope.launch {
-            val fullName = sessionStateManager.getName()
+        val fullName = sessionStateManager.getName()
+        if (fullName != null) {
             _initials.value = ProfileUtils.getInitials(fullName)
         }
     }

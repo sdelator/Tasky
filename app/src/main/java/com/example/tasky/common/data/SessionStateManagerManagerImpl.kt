@@ -2,6 +2,7 @@ package com.example.tasky.common.data
 
 import com.example.tasky.common.domain.SessionStateManager
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,16 +18,20 @@ class SessionStateManagerManagerImpl @Inject constructor(
         appPreferences.put(PreferencesKeys.REFRESH_TOKEN, refreshToken)
     }
 
-    override suspend fun getRefreshToken(): String {
-        return appPreferences.get(PreferencesKeys.REFRESH_TOKEN).first() ?: ""
+    override fun getRefreshToken(): String? {
+        return runBlocking {
+            appPreferences.get(PreferencesKeys.REFRESH_TOKEN).first()
+        }
     }
 
     override suspend fun setName(name: String) {
         appPreferences.put(PreferencesKeys.NAME, name)
     }
 
-    override suspend fun getName(): String {
-        return appPreferences.get(PreferencesKeys.NAME).first() ?: ""
+    override fun getName(): String? {
+        return runBlocking {
+            appPreferences.get(PreferencesKeys.NAME).first()
+        }
     }
 
 
