@@ -2,7 +2,7 @@ package com.example.tasky.common.domain
 
 interface SessionStateManager {
     suspend fun setAccessToken(accessToken: String)
-    suspend fun getAccessToken(): String
+    fun getAccessToken(): String?
     suspend fun setRefreshToken(refreshToken: String)
     suspend fun getRefreshToken(): String
 
