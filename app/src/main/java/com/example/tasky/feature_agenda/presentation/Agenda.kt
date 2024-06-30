@@ -30,6 +30,7 @@ import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
+import com.example.tasky.feature_agenda.presentation.datepicker.DatePickerTest
 
 @Composable
 fun AgendaRoot(
@@ -122,6 +123,7 @@ fun AgendaContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Top Text")
+                DatePickerTest()
             }
         }
     }
