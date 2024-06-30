@@ -13,6 +13,14 @@ class SessionStateManagerManagerImpl @Inject constructor(
         private const val TAG = "SessionStateManager"
     }
 
+    override suspend fun setAccessToken(accessToken: String) {
+        appPreferences.put(PreferencesKeys.ACCESS_TOKEN, accessToken)
+    }
+
+    override suspend fun getAccessToken(): String {
+        return appPreferences.get(PreferencesKeys.ACCESS_TOKEN).first() ?: ""
+    }
+
     override suspend fun setRefreshToken(refreshToken: String) {
         appPreferences.put(PreferencesKeys.REFRESH_TOKEN, refreshToken)
     }

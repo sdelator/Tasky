@@ -6,14 +6,15 @@ import com.example.tasky.common.data.remote.TaskyApi
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.util.toNetworkErrorType
+import com.example.tasky.di.DefaultApi
 import com.example.tasky.feature_login.data.model.LoginUserInfo
 import com.example.tasky.feature_login.data.model.RegisterUserInfo
 import com.example.tasky.feature_login.domain.model.LoginUserResponse
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import okio.IOException
 
-class UserRemoteRemoteRepositoryImpl(
-    private val api: TaskyApi,
+class UserRemoteRepositoryImpl(
+    @DefaultApi private val api: TaskyApi,
     private val appContext: Application
 ) : UserRemoteRepository {
 
@@ -50,20 +51,6 @@ class UserRemoteRemoteRepositoryImpl(
             val loginUserResponse = response.body()
             if (response.isSuccessful && loginUserResponse != null) {
                 Result.Success(loginUserResponse)
-            } else {
-                val error = response.code().toNetworkErrorType()
-                Result.Error(error)
-            }
-        } catch (e: IOException) {
-            Result.Error(DataError.Network.NO_INTERNET)
-        }
-    }
-
-    override suspend fun logOutUser(): Result<Unit, DataError.Network> {
-        return try {
-            val response = api.logout()
-            if (response.isSuccessful) {
-                Result.Success(Unit)
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)
