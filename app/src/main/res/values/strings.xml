@@ -21,4 +21,5 @@
     <string name="dont_have_an_account">DON\'T HAVE AN ACCOUNT?</string>
     <string name="sign_up">SIGN UP</string>
     <string name="invalid_or_missing_token_or_api_key">Invalid or missing token or API key</string>
+    <string name="logout">Logout</string>
 </resources>
