@@ -5,11 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -25,12 +23,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tasky.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -38,7 +34,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerTest() {
+fun MonthPickerOnToolbar() {
     // Initial state setup for the DatePickerDialog. Specifies to show the picker initially
     val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     // State to hold the selected date as a String
@@ -50,20 +46,17 @@ fun DatePickerTest() {
 
     // Layout for displaying the button and the selected date
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.background(Color.Black),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         // Button to open the DatePickerDialog
-        Button(
+        MonthIconSelectionText(
+            monthSelected = selectedDateLabel.value,
             onClick = {
                 openDialog.value = !openDialog.value
             }
-        ) {
-            Text("Open Date Picker")
-        }
-        // Displays the selected date
-        Text("Selected Date: ${selectedDateLabel.value}")
+        )
     }
 
     // Conditional display of the DatePickerDialog based on the openDialog state
@@ -131,23 +124,18 @@ fun Long.convertMillisToDate(): String {
     return sdf.format(calendar.time)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun PreviewDatePicker() {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        val state = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
-        DatePicker(state = state, modifier = Modifier.padding(16.dp))
-    }
-}
-
-@Composable
-fun MonthIconSelectionText(onClick: () -> Unit) {
+fun MonthIconSelectionText(
+    monthSelected: String,
+    onClick: () -> Unit
+) {
     Row(
-        modifier = Modifier.background(color = Color.Black)
+        modifier = Modifier
+            .background(color = Color.Black)
+            .clickable { onClick() }
     ) {
         Text(
-            text = stringResource(R.string.month),
+            text = monthSelected,
             color = Color.White,
             fontWeight = FontWeight.Bold,
             fontSize = 19.sp
@@ -156,7 +144,6 @@ fun MonthIconSelectionText(onClick: () -> Unit) {
             imageVector = Icons.Default.ArrowDropDown,
             contentDescription = null,
             modifier = Modifier
-                .clickable { onClick() }
                 .background(Color.Black),
             tint = Color.White
         )
@@ -167,6 +154,23 @@ fun MonthIconSelectionText(onClick: () -> Unit) {
 @Preview
 fun PreviewMonthIconSelectionText() {
     MonthIconSelectionText(
+        monthSelected = "MARCH",
         onClick = { }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+fun PreviewDatePicker() {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        val state = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
+        DatePicker(state = state, modifier = Modifier.padding(16.dp))
+    }
+}
+
+@Preview
+@Composable
+fun PreviewMonthPickerToolbar() {
+    MonthPickerOnToolbar()
 }
