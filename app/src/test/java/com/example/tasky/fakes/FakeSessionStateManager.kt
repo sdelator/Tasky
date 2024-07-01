@@ -2,7 +2,6 @@ package com.example.tasky.fakes
 
 import com.example.tasky.common.domain.SessionStateManager
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
 
 class FakeSessionStateManager : SessionStateManager {
     private val refreshTokenFlow = MutableStateFlow<String?>(null)
@@ -12,16 +11,16 @@ class FakeSessionStateManager : SessionStateManager {
         refreshTokenFlow.value = refreshToken
     }
 
-    override suspend fun getRefreshToken(): String {
-        return refreshTokenFlow.first() ?: ""
+    override fun getRefreshToken(): String? {
+        return refreshTokenFlow.value
     }
 
     override suspend fun setName(name: String) {
         nameFlow.value = name
     }
 
-    override suspend fun getName(): String {
-        return nameFlow.first() ?: ""
+    override fun getName(): String? {
+        return nameFlow.value
     }
 }
 

@@ -5,29 +5,24 @@ import assertk.assertions.isEqualTo
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.fakes.FakeSessionStateManager
 import com.example.tasky.fakes.FakeUserRemoteRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.example.tasky.util.MainCoroutineRule
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class AgendaViewModelTest {
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule()
+
     private lateinit var sessionStateManager: FakeSessionStateManager
     private lateinit var userRemoteRepository: FakeUserRemoteRepository
     private lateinit var viewModel: AgendaViewModel
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
-        val testDispatcher = StandardTestDispatcher()
-
-        Dispatchers.setMain(testDispatcher)
         sessionStateManager = FakeSessionStateManager()
         userRemoteRepository = FakeUserRemoteRepository()
 
@@ -39,12 +34,6 @@ class AgendaViewModelTest {
             userRemoteRepository = userRemoteRepository,
             sessionStateManager = sessionStateManager
         )
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test
