@@ -2,7 +2,8 @@ package com.example.tasky.common.data
 
 import com.example.tasky.common.domain.SessionStateManager
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
