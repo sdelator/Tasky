@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.presentation.util.ProfileUtils
-import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
+import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
-    private val userRemoteRepository: UserRemoteRepository,
+    private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
     private val sessionStateManager: SessionStateManager
 ) : ViewModel() {
 
@@ -46,11 +46,14 @@ class AgendaViewModel @Inject constructor(
         getProfileInitials()
     }
 
+    private val _showLogoutDropdown = MutableStateFlow(false)
+    val showLogoutDropdown: StateFlow<Boolean> get() = _showLogoutDropdown
+
     fun logOutClicked() {
         Log.d(TAG, "logOutClicked redirect user to login page")
         viewModelScope.launch {
             _viewState.emit(AgendaViewState.LoadingSpinner)
-            val result = userRemoteRepository.logOutUser()
+            val result = authenticatedRemoteRepository.logOutUser()
 
             when (result) {
                 is Result.Success -> {
@@ -78,5 +81,9 @@ class AgendaViewModel @Inject constructor(
         if (fullName != null) {
             _initials.value = ProfileUtils.getInitials(fullName)
         }
+    }
+
+    fun toggleLogoutDropdownVisibility() {
+        _showLogoutDropdown.value = !_showLogoutDropdown.value
     }
 }

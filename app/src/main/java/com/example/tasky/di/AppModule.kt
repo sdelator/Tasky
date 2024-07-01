@@ -4,12 +4,15 @@ import android.app.Application
 import com.example.tasky.common.data.PreferenceHelper
 import com.example.tasky.common.data.SessionStateManagerManagerImpl
 import com.example.tasky.common.data.remote.ApiKeyInterceptor
+import com.example.tasky.common.data.remote.AuthInterceptor
 import com.example.tasky.common.data.remote.TaskyApi
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.EmailPatternValidator
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
-import com.example.tasky.feature_login.data.repository.UserRemoteRemoteRepositoryImpl
+import com.example.tasky.feature_agenda.data.repository.AuthenticatedRemoteRepositoryImpl
+import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
+import com.example.tasky.feature_login.data.repository.UserRemoteRepositoryImpl
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.Module
 import dagger.Provides
@@ -26,6 +29,13 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideAuthInterceptor(sessionStateManager: SessionStateManager): AuthInterceptor {
+        return AuthInterceptor(sessionStateManager)
+    }
+
+    @Provides
+    @Singleton
+    @DefaultClient
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(ApiKeyInterceptor())
@@ -34,7 +44,30 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideTaskyApi(okHttpClient: OkHttpClient): TaskyApi {
+    @AuthenticatedClient
+    fun provideAuthenticatedOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(ApiKeyInterceptor())
+            .addInterceptor(authInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @DefaultApi
+    fun provideTaskyApi(@DefaultClient okHttpClient: OkHttpClient): TaskyApi {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(TaskyApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @AuthenticatedApi
+    fun provideAuthenticatedTaskyApi(@AuthenticatedClient okHttpClient: OkHttpClient): TaskyApi {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .client(okHttpClient)
@@ -46,10 +79,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUserRemoteRepository(
-        api: TaskyApi,
+        @DefaultApi api: TaskyApi,
         app: Application
     ): UserRemoteRepository {
-        return UserRemoteRemoteRepositoryImpl(api, app)
+        return UserRemoteRepositoryImpl(api, app)
     }
 
     @Provides
@@ -63,5 +96,13 @@ object AppModule {
         appPreferences: PreferenceHelper
     ): SessionStateManager {
         return SessionStateManagerManagerImpl(appPreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthenticatedRemoteRepository(
+        @AuthenticatedApi api: TaskyApi
+    ): AuthenticatedRemoteRepository {
+        return AuthenticatedRemoteRepositoryImpl(api)
     }
 }

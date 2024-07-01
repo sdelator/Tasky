@@ -40,10 +40,14 @@ fun AgendaRoot(
 
     val showDialog by agendaViewModel.showDialog.collectAsStateWithLifecycle()
     val initials by agendaViewModel.initials.collectAsStateWithLifecycle()
+    val showLogoutDropdown by agendaViewModel.showLogoutDropdown.collectAsStateWithLifecycle()
 
     AgendaContent(
         initials = initials,
-        onProfileClick = { agendaViewModel.logOutClicked() }
+        onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
+        showLogoutDropdown = showLogoutDropdown,
+        onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
+        onLogoutClick = { agendaViewModel.logOutClicked() }
     )
 
     when (viewState) {
@@ -80,7 +84,10 @@ fun AgendaRoot(
 @Composable
 fun AgendaContent(
     initials: String,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
+    showLogoutDropdown: Boolean,
+    onDismissRequest: () -> Unit,
+    onLogoutClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -90,7 +97,10 @@ fun AgendaContent(
     ) {
         AgendaToolbar(
             initials = initials,
-            onProfileClick = onProfileClick
+            onProfileClick = onProfileClick,
+            showLogoutDropdown = showLogoutDropdown,
+            onDismissRequest = onDismissRequest,
+            onLogoutClick = onLogoutClick
         )
 
         Card(
@@ -120,7 +130,13 @@ fun AgendaContent(
 @Composable
 @Preview
 fun PreviewAgendaContent() {
-    AgendaContent(initials = "AB", onProfileClick = { })
+    AgendaContent(
+        initials = "AB",
+        onProfileClick = { },
+        showLogoutDropdown = true,
+        onDismissRequest = { },
+        onLogoutClick = { }
+    )
 }
 
 fun DataError.toLogOutErrorMessage(context: Context): String {
