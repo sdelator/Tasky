@@ -7,6 +7,7 @@ import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
+import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +48,9 @@ class AgendaViewModel @Inject constructor(
 
     private val _monthSelected = MutableStateFlow<String>(getCurrentMonth())
     val monthSelected: StateFlow<String> get() = _monthSelected
+
+    private val _dateDialogState = MutableStateFlow<MaterialDialogState>(MaterialDialogState())
+    val dateDialogState: StateFlow<MaterialDialogState> get() = _dateDialogState
 
     init {
         getProfileInitials()
@@ -93,8 +97,12 @@ class AgendaViewModel @Inject constructor(
         _showLogoutDropdown.value = !_showLogoutDropdown.value
     }
 
-    fun onMonthSelected(month: String) {
+    fun updateMonthSelected(month: String) {
         _monthSelected.value = month
+    }
+
+    fun updateDateDialogState(dialogState: MaterialDialogState) {
+        _dateDialogState.value = dialogState
     }
 
     private fun getCurrentMonth(): String {

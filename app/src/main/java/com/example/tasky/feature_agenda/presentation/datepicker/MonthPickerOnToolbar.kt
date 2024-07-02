@@ -148,7 +148,8 @@ fun PreviewMonthIconSelectionText() {
 fun MonthPickerOnToolbar(
     monthSelected: String,
     onMonthSelected: (String) -> Unit,
-    dialogState: MaterialDialogState
+    dialogState: MaterialDialogState,
+    onDialogStateChange: (MaterialDialogState) -> Unit
 ) {
     Column(
         modifier = Modifier.background(Color.Black),
@@ -158,7 +159,10 @@ fun MonthPickerOnToolbar(
         // Button to open the DatePickerDialog
         MonthTextWithIcon(
             monthSelected = monthSelected,
-            onClick = { dialogState.show() }
+            onClick = {
+                dialogState.show()
+                onDialogStateChange(dialogState)
+            }
         )
     }
 
@@ -181,6 +185,7 @@ fun MonthPickerOnToolbar(
         ) { date ->
             onMonthSelected(date.month.toString())
             dialogState.hide()
+            onDialogStateChange(dialogState)
         }
     }
 }

@@ -33,6 +33,7 @@ fun AgendaToolbar(
     showLogoutDropdown: Boolean,
     onDismissRequest: () -> Unit,
     dialogState: MaterialDialogState,
+    onDialogStateChange: (MaterialDialogState) -> Unit,
     onLogoutClick: () -> Unit
 ) {
     Row(
@@ -45,7 +46,8 @@ fun AgendaToolbar(
         MonthPickerOnToolbar(
             monthSelected = monthSelected,
             onMonthSelected = onMonthSelected,
-            dialogState = dialogState
+            dialogState = dialogState,
+            onDialogStateChange = onDialogStateChange
         )
         ProfileIcon(
             initials = initials,
@@ -115,7 +117,8 @@ fun PreviewAgendaToolbar() {
         MonthPickerOnToolbar(
             "MARCH",
             onMonthSelected = { },
-            dialogState = MaterialDialogState()
+            dialogState = MaterialDialogState(),
+            onDialogStateChange = { }
         )
         ProfileIcon(
             initials = "AB",
