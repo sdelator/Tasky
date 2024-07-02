@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,6 +44,12 @@ class AgendaViewModel @Inject constructor(
 
     private val _initials = MutableStateFlow<String>("")
     val initials: StateFlow<String> get() = _initials
+
+    private val _monthSelected = MutableStateFlow<String>(getCurrentMonth())
+    val monthSelected: StateFlow<String> get() = _monthSelected
+
+    private val _openDatePickerDialog = MutableStateFlow(false)
+    val openDatePickerDialog: StateFlow<Boolean> get() = _openDatePickerDialog
 
     init {
         getProfileInitials()
@@ -85,5 +94,18 @@ class AgendaViewModel @Inject constructor(
 
     fun toggleLogoutDropdownVisibility() {
         _showLogoutDropdown.value = !_showLogoutDropdown.value
+    }
+
+    fun toggleOpenDatePickerVisibility() {
+        _openDatePickerDialog.value = !_openDatePickerDialog.value
+    }
+
+    fun onMonthSelected(month: String) {
+        _monthSelected.value = month
+    }
+
+    private fun getCurrentMonth(): String {
+        val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault())
+        return dateFormat.format(Date())
     }
 }
