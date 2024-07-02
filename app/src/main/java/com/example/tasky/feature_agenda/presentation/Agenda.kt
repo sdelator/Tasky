@@ -44,14 +44,11 @@ fun AgendaRoot(
     val initials by agendaViewModel.initials.collectAsStateWithLifecycle()
     val showLogoutDropdown by agendaViewModel.showLogoutDropdown.collectAsStateWithLifecycle()
     val monthSelected by agendaViewModel.monthSelected.collectAsStateWithLifecycle()
-    val openDatePickerDialog by agendaViewModel.openDatePickerDialog.collectAsStateWithLifecycle()
     val dialogState = rememberMaterialDialogState()
 
     AgendaContent(
         monthSelected = monthSelected,
         initials = initials,
-        openDatePickerDialog = openDatePickerDialog,
-        onMonthClick = { agendaViewModel.toggleOpenDatePickerVisibility() },
         onMonthSelected = { agendaViewModel.onMonthSelected(it) },
         onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
         showLogoutDropdown = showLogoutDropdown,
@@ -96,8 +93,6 @@ fun AgendaRoot(
 fun AgendaContent(
     monthSelected: String,
     initials: String,
-    openDatePickerDialog: Boolean,
-    onMonthClick: () -> Unit,
     onMonthSelected: (String) -> Unit,
     onProfileClick: () -> Unit,
     showLogoutDropdown: Boolean,
@@ -114,8 +109,6 @@ fun AgendaContent(
         AgendaToolbar(
             monthSelected = monthSelected,
             initials = initials,
-            openDatePickerDialog = openDatePickerDialog,
-            onMonthClick = onMonthClick,
             onMonthSelected = onMonthSelected,
             onProfileClick = onProfileClick,
             showLogoutDropdown = showLogoutDropdown,
@@ -154,8 +147,6 @@ fun PreviewAgendaContent() {
     AgendaContent(
         monthSelected = "MARCH",
         initials = "AB",
-        openDatePickerDialog = true,
-        onMonthClick = { },
         onMonthSelected = { },
         onProfileClick = { },
         showLogoutDropdown = true,

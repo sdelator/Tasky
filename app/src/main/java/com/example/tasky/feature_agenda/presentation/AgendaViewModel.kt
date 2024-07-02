@@ -48,9 +48,6 @@ class AgendaViewModel @Inject constructor(
     private val _monthSelected = MutableStateFlow<String>(getCurrentMonth())
     val monthSelected: StateFlow<String> get() = _monthSelected
 
-    private val _openDatePickerDialog = MutableStateFlow(false)
-    val openDatePickerDialog: StateFlow<Boolean> get() = _openDatePickerDialog
-
     init {
         getProfileInitials()
     }
@@ -94,10 +91,6 @@ class AgendaViewModel @Inject constructor(
 
     fun toggleLogoutDropdownVisibility() {
         _showLogoutDropdown.value = !_showLogoutDropdown.value
-    }
-
-    fun toggleOpenDatePickerVisibility() {
-        _openDatePickerDialog.value = !_openDatePickerDialog.value
     }
 
     fun onMonthSelected(month: String) {

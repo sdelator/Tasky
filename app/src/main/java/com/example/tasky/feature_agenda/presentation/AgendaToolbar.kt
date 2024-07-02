@@ -28,8 +28,6 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 fun AgendaToolbar(
     monthSelected: String,
     initials: String,
-    openDatePickerDialog: Boolean,
-    onMonthClick: () -> Unit,
     onMonthSelected: (String) -> Unit,
     onProfileClick: () -> Unit,
     showLogoutDropdown: Boolean,
