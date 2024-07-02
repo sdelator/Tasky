@@ -151,20 +151,15 @@ fun MonthPickerOnToolbar(
     dialogState: MaterialDialogState,
     onDialogStateChange: (MaterialDialogState) -> Unit
 ) {
-    Column(
-        modifier = Modifier.background(Color.Black),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        // Button to open the DatePickerDialog
-        MonthTextWithIcon(
-            monthSelected = monthSelected,
-            onClick = {
-                dialogState.show()
-                onDialogStateChange(dialogState)
-            }
-        )
-    }
+
+    // Button to open the DatePickerDialog
+    MonthTextWithIcon(
+        monthSelected = monthSelected,
+        onClick = {
+            dialogState.show()
+            onDialogStateChange(dialogState)
+        }
+    )
 
     MaterialDialog(
         dialogState = dialogState,
