@@ -116,5 +116,5 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     // DatePicker
-    implementation("io.github.vanpra.compose-material-dialogs:datetime:0.9.0")
+    implementation(libs.datetime)
 }
