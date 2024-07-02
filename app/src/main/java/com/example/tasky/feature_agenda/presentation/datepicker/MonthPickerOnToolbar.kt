@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DatePicker
@@ -23,14 +22,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import com.example.tasky.R
+import com.example.tasky.common.domain.util.convertMillisToMonth
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,8 +42,6 @@ fun MonthPickerOnToolbar(
     val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     // State to hold the selected date as a String
     val selectedDateLabel = remember { mutableStateOf(monthSelected) }
-    // State to control the visibility of the DatePickerDialog
-    // val openDialog = remember { mutableStateOf(false) } //TODO openDatePickerDialog
     // Define the main color for the calendar picker
     val calendarPickerMainColor = Color(0xFF722276)
 
@@ -81,13 +76,13 @@ fun MonthPickerOnToolbar(
                         onMonthClick()
                     }
                 ) {
-                    Text("OK", color = calendarPickerMainColor)
+                    Text(stringResource(id = R.string.ok), color = calendarPickerMainColor)
                 }
             },
             dismissButton = {
                 // Dismiss button to close the dialog without selecting a date
                 TextButton(onClick = onMonthClick) {
-                    Text("CANCEL", color = calendarPickerMainColor)
+                    Text(stringResource(R.string.cancel), color = calendarPickerMainColor)
                 }
             }
         ) {
@@ -105,25 +100,6 @@ fun MonthPickerOnToolbar(
             )
         }
     }
-}
-
-fun Long.convertMillisToMonth(): String {
-    val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault())
-    return dateFormat.format(Date(this))
-}
-
-fun Long.convertMillisToDate(): String {
-    // Create a calendar instance in the default time zone
-    val calendar = Calendar.getInstance().apply {
-        timeInMillis = this@convertMillisToDate
-        // Adjust for the time zone offset to get the correct local date
-        val zoneOffset = get(Calendar.ZONE_OFFSET)
-        val dstOffset = get(Calendar.DST_OFFSET)
-        add(Calendar.MILLISECOND, -(zoneOffset + dstOffset))
-    }
-    // Format the calendar time in the specified format
-    val sdf = SimpleDateFormat("MMM dd, yyyy", Locale.US)
-    return sdf.format(calendar.time)
 }
 
 @Composable
@@ -161,16 +137,6 @@ fun PreviewMonthIconSelectionText() {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
-@Composable
-fun PreviewDatePicker() {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        val state = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
-        DatePicker(state = state, modifier = Modifier.padding(16.dp))
-    }
-}
-
 @Preview
 @Composable
 fun PreviewMonthPickerToolbar() {
@@ -180,4 +146,36 @@ fun PreviewMonthPickerToolbar() {
         onMonthClick = { },
         onMonthSelected = { }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+fun TestOtherDatePicker() {
+//    MaterialDialogScope.datePicker(
+//        initialDate = LocalDate.now(),
+//        title = "SELECT DATE",
+//        colors = DatePickerDefaults.colors(),
+//        yearRange = IntRange(2020, 2025),
+//        waitForPositiveButton = true,
+//        allowedDateValidator = { true },
+//        locale = Locale.getDefault(),
+//        onDateChange = {}
+//    )
+
+//    val dialogState = rememberMaterialDialogState()
+//    MaterialDialog(
+//        dialogState = dialogState,
+//        buttons = {
+//            positiveButton("Ok")
+//            negativeButton("Cancel")
+//        }
+//    ) {
+//        datepicker { date ->
+//            // Do stuff with java.time.LocalDate object which is passed in
+//        }
+//    }
+//
+//    /* This should be called in an onClick or an Effect */
+//    dialogState.show()
 }
