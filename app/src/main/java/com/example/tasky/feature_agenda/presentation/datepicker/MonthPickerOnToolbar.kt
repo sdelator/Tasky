@@ -31,11 +31,12 @@ import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 import com.example.tasky.common.domain.util.convertMillisToMonth
 import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
 
-//TODO use Material3 date picker
+//TODO not used, but maybe in future use Material3 date picker
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Material3MonthPickerOnToolbar(
@@ -65,7 +66,7 @@ fun Material3MonthPickerOnToolbar(
     }
 
     // Conditional display of the DatePickerDialog based on the openDialog state
-    if (openDatePickerDialog) { //todo openDialog.value
+    if (openDatePickerDialog) {
         // DatePickerDialog component with custom colors and button behaviors
         DatePickerDialog(
             colors = DatePickerDefaults.colors(
@@ -143,33 +144,12 @@ fun PreviewMonthIconSelectionText() {
     )
 }
 
-@Preview
-@Composable
-fun PreviewMonthPickerToolbar() {
-    MonthPickerOnToolbar(
-        monthSelected = "MARCH",
-        onMonthSelected = { }
-    )
-}
-
-
-/*  MaterialDialogScope.datePicker(
-        initialDate = LocalDate.now(),
-        title = "SELECT DATE",
-        colors = DatePickerDefaults.colors(),
-        yearRange = IntRange(2020, 2025),
-        waitForPositiveButton = true,
-        allowedDateValidator = { true },
-        locale = Locale.getDefault(),
-        onDateChange = {}
-    )*/
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonthPickerOnToolbar(
     monthSelected: String,
-    onMonthSelected: (String) -> Unit
+    onMonthSelected: (String) -> Unit,
+    dialogState: MaterialDialogState
 ) {
-    val dialogState = rememberMaterialDialogState()
     Column(
         modifier = Modifier.background(Color.Black),
         horizontalAlignment = Alignment.CenterHorizontally,

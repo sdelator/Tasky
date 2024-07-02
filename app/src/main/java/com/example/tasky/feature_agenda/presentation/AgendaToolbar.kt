@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 import com.example.tasky.common.presentation.LogoutDropdownRoot
 import com.example.tasky.feature_agenda.presentation.datepicker.MonthPickerOnToolbar
+import com.vanpra.composematerialdialogs.MaterialDialogState
 
 @Composable
 fun AgendaToolbar(
@@ -33,7 +34,8 @@ fun AgendaToolbar(
     onProfileClick: () -> Unit,
     showLogoutDropdown: Boolean,
     onDismissRequest: () -> Unit,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    dialogState: MaterialDialogState
 ) {
     Row(
         modifier = Modifier
@@ -44,7 +46,8 @@ fun AgendaToolbar(
     ) {
         MonthPickerOnToolbar(
             monthSelected = monthSelected,
-            onMonthSelected = onMonthSelected
+            onMonthSelected = onMonthSelected,
+            dialogState = dialogState
         )
         ProfileIcon(
             initials = initials,
@@ -113,7 +116,8 @@ fun PreviewAgendaToolbar() {
     ) {
         MonthPickerOnToolbar(
             "MARCH",
-            onMonthSelected = { }
+            onMonthSelected = { },
+            dialogState = MaterialDialogState()
         )
         ProfileIcon(
             initials = "AB",

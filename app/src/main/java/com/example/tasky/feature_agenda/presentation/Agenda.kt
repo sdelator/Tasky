@@ -30,6 +30,8 @@ import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
 @Composable
 fun AgendaRoot(
@@ -43,6 +45,7 @@ fun AgendaRoot(
     val showLogoutDropdown by agendaViewModel.showLogoutDropdown.collectAsStateWithLifecycle()
     val monthSelected by agendaViewModel.monthSelected.collectAsStateWithLifecycle()
     val openDatePickerDialog by agendaViewModel.openDatePickerDialog.collectAsStateWithLifecycle()
+    val dialogState = rememberMaterialDialogState()
 
     AgendaContent(
         monthSelected = monthSelected,
@@ -53,7 +56,8 @@ fun AgendaRoot(
         onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
         showLogoutDropdown = showLogoutDropdown,
         onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
-        onLogoutClick = { agendaViewModel.logOutClicked() }
+        onLogoutClick = { agendaViewModel.logOutClicked() },
+        dialogState = dialogState
     )
 
     when (viewState) {
@@ -98,7 +102,8 @@ fun AgendaContent(
     onProfileClick: () -> Unit,
     showLogoutDropdown: Boolean,
     onDismissRequest: () -> Unit,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    dialogState: MaterialDialogState
 ) {
     Box(
         modifier = Modifier
@@ -115,7 +120,8 @@ fun AgendaContent(
             onProfileClick = onProfileClick,
             showLogoutDropdown = showLogoutDropdown,
             onDismissRequest = onDismissRequest,
-            onLogoutClick = onLogoutClick
+            onLogoutClick = onLogoutClick,
+            dialogState = dialogState
         )
 
         Card(
@@ -154,7 +160,8 @@ fun PreviewAgendaContent() {
         onProfileClick = { },
         showLogoutDropdown = true,
         onDismissRequest = { },
-        onLogoutClick = { }
+        onLogoutClick = { },
+        dialogState = MaterialDialogState()
     )
 }
 
