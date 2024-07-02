@@ -35,80 +35,6 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
-
-//TODO not used, but maybe in future use Material3 date picker
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Material3MonthPickerOnToolbar(
-    monthSelected: String,
-    openDatePickerDialog: Boolean,
-    onMonthClick: () -> Unit,
-    onMonthSelected: (String) -> Unit
-) {
-    // Initial state setup for the DatePickerDialog. Specifies to show the picker initially
-    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
-    // State to hold the selected date as a String
-    val selectedDateLabel = remember { mutableStateOf(monthSelected) }
-    // Define the main color for the calendar picker
-    val calendarPickerMainColor = Color(0xFF722276)
-
-    // Layout for displaying the button and the selected date
-    Column(
-        modifier = Modifier.background(Color.Black),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        // Button to open the DatePickerDialog
-        MonthTextWithIcon(
-            monthSelected = selectedDateLabel.value,
-            onClick = onMonthClick
-        )
-    }
-
-    // Conditional display of the DatePickerDialog based on the openDialog state
-    if (openDatePickerDialog) {
-        // DatePickerDialog component with custom colors and button behaviors
-        DatePickerDialog(
-            colors = DatePickerDefaults.colors(
-                containerColor = Color(0xFFF5F0FF),
-            ),
-            onDismissRequest = onMonthClick,
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        // Action to set the selected date and close the dialog
-                        selectedDateLabel.value =
-                            datePickerState.selectedDateMillis?.convertMillisToMonth() ?: ""
-                        onMonthSelected(selectedDateLabel.value)
-                        onMonthClick()
-                    }
-                ) {
-                    Text(stringResource(id = R.string.ok), color = calendarPickerMainColor)
-                }
-            },
-            dismissButton = {
-                // Dismiss button to close the dialog without selecting a date
-                TextButton(onClick = onMonthClick) {
-                    Text(stringResource(R.string.cancel), color = calendarPickerMainColor)
-                }
-            }
-        ) {
-            // The actual DatePicker component within the dialog
-            DatePicker(
-                state = datePickerState,
-                colors = DatePickerDefaults.colors(
-                    selectedDayContainerColor = calendarPickerMainColor,
-                    selectedDayContentColor = Color.White,
-                    selectedYearContainerColor = calendarPickerMainColor,
-                    selectedYearContentColor = Color.White,
-                    todayContentColor = calendarPickerMainColor,
-                    todayDateBorderColor = calendarPickerMainColor
-                )
-            )
-        }
-    }
-}
-
 @Composable
 fun MonthTextWithIcon(
     monthSelected: String,
@@ -217,6 +143,79 @@ fun CalendarDatePicker() {
     }
     /* This should be called in an onClick or an Effect */
     dialogState.show()
+}
+
+//TODO not used, but maybe in future use Material3 date picker
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Material3MonthPickerOnToolbar(
+    monthSelected: String,
+    openDatePickerDialog: Boolean,
+    onMonthClick: () -> Unit,
+    onMonthSelected: (String) -> Unit
+) {
+    // Initial state setup for the DatePickerDialog. Specifies to show the picker initially
+    val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
+    // State to hold the selected date as a String
+    val selectedDateLabel = remember { mutableStateOf(monthSelected) }
+    // Define the main color for the calendar picker
+    val calendarPickerMainColor = Color(0xFF722276)
+
+    // Layout for displaying the button and the selected date
+    Column(
+        modifier = Modifier.background(Color.Black),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        // Button to open the DatePickerDialog
+        MonthTextWithIcon(
+            monthSelected = selectedDateLabel.value,
+            onClick = onMonthClick
+        )
+    }
+
+    // Conditional display of the DatePickerDialog based on the openDialog state
+    if (openDatePickerDialog) {
+        // DatePickerDialog component with custom colors and button behaviors
+        DatePickerDialog(
+            colors = DatePickerDefaults.colors(
+                containerColor = Color(0xFFF5F0FF),
+            ),
+            onDismissRequest = onMonthClick,
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        // Action to set the selected date and close the dialog
+                        selectedDateLabel.value =
+                            datePickerState.selectedDateMillis?.convertMillisToMonth() ?: ""
+                        onMonthSelected(selectedDateLabel.value)
+                        onMonthClick()
+                    }
+                ) {
+                    Text(stringResource(id = R.string.ok), color = calendarPickerMainColor)
+                }
+            },
+            dismissButton = {
+                // Dismiss button to close the dialog without selecting a date
+                TextButton(onClick = onMonthClick) {
+                    Text(stringResource(R.string.cancel), color = calendarPickerMainColor)
+                }
+            }
+        ) {
+            // The actual DatePicker component within the dialog
+            DatePicker(
+                state = datePickerState,
+                colors = DatePickerDefaults.colors(
+                    selectedDayContainerColor = calendarPickerMainColor,
+                    selectedDayContentColor = Color.White,
+                    selectedYearContainerColor = calendarPickerMainColor,
+                    selectedYearContentColor = Color.White,
+                    todayContentColor = calendarPickerMainColor,
+                    todayDateBorderColor = calendarPickerMainColor
+                )
+            )
+        }
+    }
 }
 
 @Composable
