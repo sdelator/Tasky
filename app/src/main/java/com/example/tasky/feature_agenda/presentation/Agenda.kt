@@ -56,8 +56,8 @@ fun AgendaRoot(
         onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
         showLogoutDropdown = showLogoutDropdown,
         onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
-        onLogoutClick = { agendaViewModel.logOutClicked() },
-        dialogState = dialogState
+        dialogState = dialogState,
+        onLogoutClick = { agendaViewModel.logOutClicked() }
     )
 
     when (viewState) {
@@ -102,8 +102,8 @@ fun AgendaContent(
     onProfileClick: () -> Unit,
     showLogoutDropdown: Boolean,
     onDismissRequest: () -> Unit,
-    onLogoutClick: () -> Unit,
-    dialogState: MaterialDialogState
+    dialogState: MaterialDialogState,
+    onLogoutClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -120,8 +120,8 @@ fun AgendaContent(
             onProfileClick = onProfileClick,
             showLogoutDropdown = showLogoutDropdown,
             onDismissRequest = onDismissRequest,
-            onLogoutClick = onLogoutClick,
-            dialogState = dialogState
+            dialogState = dialogState,
+            onLogoutClick = onLogoutClick
         )
 
         Card(
@@ -160,8 +160,8 @@ fun PreviewAgendaContent() {
         onProfileClick = { },
         showLogoutDropdown = true,
         onDismissRequest = { },
-        onLogoutClick = { },
-        dialogState = MaterialDialogState()
+        dialogState = MaterialDialogState(),
+        onLogoutClick = { }
     )
 }
 

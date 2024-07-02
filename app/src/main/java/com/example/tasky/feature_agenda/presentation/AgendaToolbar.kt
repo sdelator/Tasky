@@ -34,8 +34,8 @@ fun AgendaToolbar(
     onProfileClick: () -> Unit,
     showLogoutDropdown: Boolean,
     onDismissRequest: () -> Unit,
-    onLogoutClick: () -> Unit,
-    dialogState: MaterialDialogState
+    dialogState: MaterialDialogState,
+    onLogoutClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
