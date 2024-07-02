@@ -44,9 +44,7 @@ fun AgendaToolbar(
     ) {
         MonthPickerOnToolbar(
             monthSelected = monthSelected,
-            onMonthClick = onMonthClick,
-            onMonthSelected = onMonthSelected,
-            openDatePickerDialog = openDatePickerDialog
+            onMonthSelected = onMonthSelected
         )
         ProfileIcon(
             initials = initials,
@@ -115,8 +113,6 @@ fun PreviewAgendaToolbar() {
     ) {
         MonthPickerOnToolbar(
             "MARCH",
-            openDatePickerDialog = true,
-            onMonthClick = { },
             onMonthSelected = { }
         )
         ProfileIcon(

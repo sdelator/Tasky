@@ -22,17 +22,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 import com.example.tasky.common.domain.util.convertMillisToMonth
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
 
+//TODO use Material3 date picker
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MonthPickerOnToolbar(
+fun Material3MonthPickerOnToolbar(
     monthSelected: String,
     openDatePickerDialog: Boolean,
     onMonthClick: () -> Unit,
@@ -52,7 +58,7 @@ fun MonthPickerOnToolbar(
         verticalArrangement = Arrangement.Center
     ) {
         // Button to open the DatePickerDialog
-        MonthIconSelectionText(
+        MonthTextWithIcon(
             monthSelected = selectedDateLabel.value,
             onClick = onMonthClick
         )
@@ -103,7 +109,7 @@ fun MonthPickerOnToolbar(
 }
 
 @Composable
-fun MonthIconSelectionText(
+fun MonthTextWithIcon(
     monthSelected: String,
     onClick: () -> Unit
 ) {
@@ -131,7 +137,7 @@ fun MonthIconSelectionText(
 @Composable
 @Preview
 fun PreviewMonthIconSelectionText() {
-    MonthIconSelectionText(
+    MonthTextWithIcon(
         monthSelected = "MARCH",
         onClick = { }
     )
@@ -142,40 +148,103 @@ fun PreviewMonthIconSelectionText() {
 fun PreviewMonthPickerToolbar() {
     MonthPickerOnToolbar(
         monthSelected = "MARCH",
-        openDatePickerDialog = true,
-        onMonthClick = { },
         onMonthSelected = { }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview
-@Composable
-fun TestOtherDatePicker() {
-//    MaterialDialogScope.datePicker(
-//        initialDate = LocalDate.now(),
-//        title = "SELECT DATE",
-//        colors = DatePickerDefaults.colors(),
-//        yearRange = IntRange(2020, 2025),
-//        waitForPositiveButton = true,
-//        allowedDateValidator = { true },
-//        locale = Locale.getDefault(),
-//        onDateChange = {}
-//    )
 
-//    val dialogState = rememberMaterialDialogState()
-//    MaterialDialog(
-//        dialogState = dialogState,
-//        buttons = {
-//            positiveButton("Ok")
-//            negativeButton("Cancel")
-//        }
-//    ) {
-//        datepicker { date ->
-//            // Do stuff with java.time.LocalDate object which is passed in
-//        }
-//    }
-//
-//    /* This should be called in an onClick or an Effect */
-//    dialogState.show()
+/*  MaterialDialogScope.datePicker(
+        initialDate = LocalDate.now(),
+        title = "SELECT DATE",
+        colors = DatePickerDefaults.colors(),
+        yearRange = IntRange(2020, 2025),
+        waitForPositiveButton = true,
+        allowedDateValidator = { true },
+        locale = Locale.getDefault(),
+        onDateChange = {}
+    )*/
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MonthPickerOnToolbar(
+    monthSelected: String,
+    onMonthSelected: (String) -> Unit
+) {
+    val dialogState = rememberMaterialDialogState()
+    Column(
+        modifier = Modifier.background(Color.Black),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        // Button to open the DatePickerDialog
+        MonthTextWithIcon(
+            monthSelected = monthSelected,
+            onClick = { dialogState.show() }
+        )
+    }
+
+    MaterialDialog(
+        dialogState = dialogState,
+        buttons = {
+            positiveButton(
+                stringResource(id = R.string.ok),
+                textStyle = TextStyle(color = Color.Black)
+            )
+            negativeButton(
+                stringResource(id = R.string.cancel),
+                textStyle = TextStyle(color = Color.Black)
+            )
+        }
+    ) {
+        datepicker(
+            yearRange = IntRange(2023, 2030),
+            colors = customDatePickerColors()
+        ) { date ->
+            onMonthSelected(date.month.toString())
+            dialogState.hide()
+        }
+    }
+}
+
+@Composable
+fun customDatePickerColors(): com.vanpra.composematerialdialogs.datetime.date.DatePickerColors {
+    return com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults.colors(
+        headerBackgroundColor = colorResource(id = R.color.tasky_green),
+        headerTextColor = Color.White,
+        calendarHeaderTextColor = Color.Black,
+        dateActiveBackgroundColor = colorResource(id = R.color.sea_foam_green),
+        dateInactiveBackgroundColor = Color.White,
+        dateActiveTextColor = Color.Black,
+        dateInactiveTextColor = Color.Black
+    )
+}
+
+@Composable
+@Preview
+fun CalendarDatePicker() {
+    val dialogState = rememberMaterialDialogState()
+    MaterialDialog(
+        dialogState = dialogState,
+        buttons = {
+            positiveButton(stringResource(id = R.string.ok))
+            negativeButton(stringResource(id = R.string.cancel))
+        }
+    ) {
+        datepicker(
+            yearRange = IntRange(2023, 2030)
+        ) { date ->
+            dialogState.hide()
+        }
+    }
+    /* This should be called in an onClick or an Effect */
+    dialogState.show()
+}
+
+@Composable
+@Preview
+fun Material3ComposableDatePicker() {
+    Material3MonthPickerOnToolbar(
+        monthSelected = "March",
+        openDatePickerDialog = true,
+        onMonthClick = { /*TODO*/ }) {
+    }
 }
