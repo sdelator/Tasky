@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,13 +21,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 import com.example.tasky.common.presentation.LogoutDropdownRoot
+import com.example.tasky.feature_agenda.presentation.datepicker.MonthPickerOnToolbar
+import com.vanpra.composematerialdialogs.MaterialDialogState
 
 @Composable
 fun AgendaToolbar(
+    monthSelected: String,
     initials: String,
+    onMonthSelected: (String) -> Unit,
     onProfileClick: () -> Unit,
     showLogoutDropdown: Boolean,
     onDismissRequest: () -> Unit,
+    dialogState: MaterialDialogState,
+    onDialogStateChange: (MaterialDialogState) -> Unit,
     onLogoutClick: () -> Unit
 ) {
     Row(
@@ -38,7 +43,12 @@ fun AgendaToolbar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "March", color = Color.White) // todo make this month composable
+        MonthPickerOnToolbar(
+            monthSelected = monthSelected,
+            onMonthSelected = onMonthSelected,
+            dialogState = dialogState,
+            onDialogStateChange = onDialogStateChange
+        )
         ProfileIcon(
             initials = initials,
             onProfileClick = onProfileClick,
@@ -104,7 +114,12 @@ fun PreviewAgendaToolbar() {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "March", color = Color.White)
+        MonthPickerOnToolbar(
+            "MARCH",
+            onMonthSelected = { },
+            dialogState = MaterialDialogState(),
+            onDialogStateChange = { }
+        )
         ProfileIcon(
             initials = "AB",
             onProfileClick = { },

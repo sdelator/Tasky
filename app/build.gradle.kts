@@ -114,4 +114,7 @@ dependencies {
 
     // DataStore
     implementation(libs.androidx.datastore.preferences)
+
+    // DatePicker
+    implementation(libs.datetime)
 }

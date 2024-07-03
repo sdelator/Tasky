@@ -7,12 +7,16 @@ import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
+import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,6 +45,12 @@ class AgendaViewModel @Inject constructor(
 
     private val _initials = MutableStateFlow<String>("")
     val initials: StateFlow<String> get() = _initials
+
+    private val _monthSelected = MutableStateFlow<String>(getCurrentMonth())
+    val monthSelected: StateFlow<String> get() = _monthSelected
+
+    private val _dateDialogState = MutableStateFlow<MaterialDialogState>(MaterialDialogState())
+    val dateDialogState: StateFlow<MaterialDialogState> get() = _dateDialogState
 
     init {
         getProfileInitials()
@@ -85,5 +95,18 @@ class AgendaViewModel @Inject constructor(
 
     fun toggleLogoutDropdownVisibility() {
         _showLogoutDropdown.value = !_showLogoutDropdown.value
+    }
+
+    fun updateMonthSelected(month: String) {
+        _monthSelected.value = month
+    }
+
+    fun updateDateDialogState(dialogState: MaterialDialogState) {
+        _dateDialogState.value = dialogState
+    }
+
+    private fun getCurrentMonth(): String {
+        val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault())
+        return dateFormat.format(Date())
     }
 }

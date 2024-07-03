@@ -3,8 +3,8 @@ package com.example.tasky.feature_agenda.presentation
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.example.tasky.common.domain.error.DataError
+import com.example.tasky.fakes.FakeAuthenticatedRemoteRepository
 import com.example.tasky.fakes.FakeSessionStateManager
-import com.example.tasky.fakes.FakeUserRemoteRepository
 import com.example.tasky.util.MainCoroutineRule
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -18,20 +18,20 @@ class AgendaViewModelTest {
     val mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var sessionStateManager: FakeSessionStateManager
-    private lateinit var userRemoteRepository: FakeUserRemoteRepository
+    private lateinit var authenticatedRemoteRepository: FakeAuthenticatedRemoteRepository
     private lateinit var viewModel: AgendaViewModel
 
     @Before
     fun setUp() {
         sessionStateManager = FakeSessionStateManager()
-        userRemoteRepository = FakeUserRemoteRepository()
+        authenticatedRemoteRepository = FakeAuthenticatedRemoteRepository()
 
         runTest {
             sessionStateManager.setName("test name")
         }
 
         viewModel = AgendaViewModel(
-            userRemoteRepository = userRemoteRepository,
+            authenticatedRemoteRepository = authenticatedRemoteRepository,
             sessionStateManager = sessionStateManager
         )
     }
@@ -39,7 +39,7 @@ class AgendaViewModelTest {
     @Test
     fun logOutClicked_success_navigateToLoginScreen(): Unit = runBlocking {
         // Given
-        userRemoteRepository.shouldReturnSuccess = true
+        authenticatedRemoteRepository.shouldReturnSuccess = true
 
         // When
         viewModel.logOutClicked()
@@ -53,7 +53,7 @@ class AgendaViewModelTest {
     @Test
     fun logOutClicked_failure_showErrorDialog() = runBlocking {
         // Given
-        userRemoteRepository.shouldReturnSuccess = false
+        authenticatedRemoteRepository.shouldReturnSuccess = false
 
         // When
         viewModel.logOutClicked()

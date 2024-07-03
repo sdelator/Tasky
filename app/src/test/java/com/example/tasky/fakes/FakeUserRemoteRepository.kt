@@ -21,12 +21,4 @@ class FakeUserRemoteRepository : UserRemoteRepository {
     ): Result<LoginUserResponse, DataError.Network> {
         TODO("Not yet implemented")
     }
-
-    override suspend fun logOutUser(): Result<Unit, DataError.Network> {
-        return if (shouldReturnSuccess) {
-            Result.Success(Unit)
-        } else {
-            Result.Error(DataError.Network.NO_INTERNET)
-        }
-    }
 }
