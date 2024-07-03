@@ -14,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,6 +29,7 @@ import com.example.tasky.AuthNavRoute
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
+import com.example.tasky.common.presentation.HeaderSmall
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
@@ -146,6 +146,7 @@ fun AgendaContent(
                 Button(onClick = checkAuthenticationClick) {
                     Text("Authenticated?", color = Color.White)
                 }
+                HeaderSmall(title = "Today")
             }
         }
     }
