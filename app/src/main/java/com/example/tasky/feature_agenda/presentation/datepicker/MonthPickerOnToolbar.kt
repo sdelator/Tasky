@@ -154,14 +154,10 @@ fun Material3MonthPickerOnToolbar(
     onMonthClick: () -> Unit,
     onMonthSelected: (String) -> Unit
 ) {
-    // Initial state setup for the DatePickerDialog. Specifies to show the picker initially
     val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
-    // State to hold the selected date as a String
     val selectedDateLabel = remember { mutableStateOf(monthSelected) }
-    // Define the main color for the calendar picker
     val calendarPickerMainColor = Color(0xFF722276)
 
-    // Layout for displaying the button and the selected date
     Column(
         modifier = Modifier.background(Color.Black),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -174,9 +170,7 @@ fun Material3MonthPickerOnToolbar(
         )
     }
 
-    // Conditional display of the DatePickerDialog based on the openDialog state
     if (openDatePickerDialog) {
-        // DatePickerDialog component with custom colors and button behaviors
         DatePickerDialog(
             colors = DatePickerDefaults.colors(
                 containerColor = Color(0xFFF5F0FF),
@@ -196,13 +190,11 @@ fun Material3MonthPickerOnToolbar(
                 }
             },
             dismissButton = {
-                // Dismiss button to close the dialog without selecting a date
                 TextButton(onClick = onMonthClick) {
                     Text(stringResource(R.string.cancel), color = calendarPickerMainColor)
                 }
             }
         ) {
-            // The actual DatePicker component within the dialog
             DatePicker(
                 state = datePickerState,
                 colors = DatePickerDefaults.colors(
