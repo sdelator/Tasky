@@ -24,8 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 
 @Composable
-@Preview
-fun ActionCard() {
+fun ActionCard(isChecked: Boolean) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,8 +39,8 @@ fun ActionCard() {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CustomCheckbox(isChecked = true)
-            HeaderMedium(title = "Meeting")
+            CustomCheckbox(isChecked = isChecked)
+            HeaderMedium(title = "Meeting", isChecked = isChecked)
         }
         CardDetails(details = "Amet minim mollit non deserunt")
         DateOfAction(date = "Mar 5, 10:30 - Mar 5, 11:00")
@@ -59,12 +58,6 @@ fun CustomCheckbox(isChecked: Boolean) {
         modifier = Modifier.padding(end = 8.dp),
         contentDescription = "Checkbox circle icon"
     )
-}
-
-@Composable
-@Preview
-fun PreviewCustomCheckbox() {
-    CustomCheckbox(isChecked = true)
 }
 
 @Composable
@@ -93,4 +86,16 @@ fun DateOfAction(date: String) {
         ),
         textAlign = TextAlign.End
     )
+}
+
+@Composable
+@Preview
+fun PreviewActionCard() {
+    ActionCard(isChecked = true)
+}
+
+@Composable
+@Preview
+fun PreviewCustomCheckbox() {
+    CustomCheckbox(isChecked = true)
 }

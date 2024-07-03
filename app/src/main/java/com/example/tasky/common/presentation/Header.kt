@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 
@@ -28,13 +29,14 @@ fun HeaderLarge(title: String) {
 }
 
 @Composable
-fun HeaderMedium(title: String) {
+fun HeaderMedium(title: String, isChecked: Boolean) {
     Text(
         text = title,
         style = TextStyle(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = Color.Black,
+            textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
         ),
         textAlign = TextAlign.Center
     )
@@ -65,7 +67,7 @@ fun ViewHeaderLarge() {
 @Preview
 fun ViewHeaderMedium() {
     Column {
-        HeaderMedium(title = "HEADLINE MEDIUM")
+        HeaderMedium(title = "HEADLINE MEDIUM", isChecked = true)
     }
 }
 
