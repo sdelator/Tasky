@@ -1,7 +1,10 @@
 package com.example.tasky.common.domain.util
 
 import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -11,15 +14,7 @@ fun Long.convertMillisToMonth(): String {
 }
 
 fun Long.convertMillisToDate(): String {
-    // Create a calendar instance in the default time zone
-    val calendar = Calendar.getInstance().apply {
-        timeInMillis = this@convertMillisToDate
-        // Adjust for the time zone offset to get the correct local date
-        val zoneOffset = get(Calendar.ZONE_OFFSET)
-        val dstOffset = get(Calendar.DST_OFFSET)
-        add(Calendar.MILLISECOND, -(zoneOffset + dstOffset))
-    }
-    // Format the calendar time in the specified format
-    val sdf = SimpleDateFormat("MMM dd, yyyy", Locale.US)
-    return sdf.format(calendar.time)
+    val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.of("UTC"))
+    val formattedDateTime = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateTime)
+    return formattedDateTime
 }
