@@ -1,6 +1,7 @@
 package com.example.tasky.common.presentation
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,31 +26,60 @@ import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 
 @Composable
-fun ActionCard(isChecked: Boolean) {
+fun ActionCard(
+    cardType: Action,
+    isChecked: Boolean
+) {
+    var cardColor = CardDefaults.cardColors()
+    var textColor = colorResource(id = R.color.dark_gray)
+    var headerColor = Color.Black
+
+    when (cardType) {
+        Action.Event -> {
+            cardColor = CardDefaults.cardColors(
+                containerColor = colorResource(id = R.color.event_light_green)
+            )
+        }
+
+        Action.Task -> {
+            cardColor = CardDefaults.cardColors(
+                containerColor = colorResource(id = R.color.tasky_green)
+            )
+            textColor = Color.White
+            headerColor = Color.White
+        }
+
+        Action.Reminder -> {
+            cardColor = CardDefaults.cardColors(
+                containerColor = colorResource(id = R.color.reminder_gray)
+            )
+        }
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
             .padding(8.dp),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        )
+        colors = cardColor
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CustomCheckbox(isChecked = isChecked)
-            HeaderMedium(title = "Meeting", isChecked = isChecked)
+            CustomCheckbox(isChecked = isChecked, color = headerColor)
+            HeaderMedium(title = "Meeting", isChecked = isChecked, textColor = headerColor)
+            Spacer(modifier = Modifier.weight(1f))
+            HorizontalEllipsisIcon()
         }
-        CardDetails(details = "Amet minim mollit non deserunt")
-        DateOfAction(date = "Mar 5, 10:30 - Mar 5, 11:00")
+        CardDetails(details = "Amet minim mollit non deserunt", textColor = textColor)
+        DateOfAction(date = "Mar 5, 10:30 - Mar 5, 11:00", textColor = textColor)
     }
 }
 
 @Composable
-fun CustomCheckbox(isChecked: Boolean) {
+fun CustomCheckbox(isChecked: Boolean, color: Color) {
     Icon(
         painter = if (isChecked) {
             painterResource(id = R.drawable.ic_closed_checkbox)
@@ -56,25 +87,34 @@ fun CustomCheckbox(isChecked: Boolean) {
             painterResource(id = R.drawable.ic_open_checkbox)
         },
         modifier = Modifier.padding(end = 8.dp),
-        contentDescription = "Checkbox circle icon"
+        contentDescription = "Checkbox circle icon",
+        tint = color
     )
 }
 
 @Composable
-fun CardDetails(details: String) {
+fun HorizontalEllipsisIcon() {
+    Icon(
+        painter = painterResource(id = R.drawable.ic_more_horizontal),
+        contentDescription = stringResource(R.string.more_options)
+    )
+}
+
+@Composable
+fun CardDetails(details: String, textColor: Color) {
     Text(
         text = details,
         modifier = Modifier.padding(start = 40.dp, end = 30.dp, bottom = 30.dp),
         style = TextStyle(
             fontSize = 14.sp,
-            color = colorResource(id = R.color.dark_gray)
+            color = textColor
         ),
         textAlign = TextAlign.Center
     )
 }
 
 @Composable
-fun DateOfAction(date: String) {
+fun DateOfAction(date: String, textColor: Color) {
     Text(
         text = date,
         modifier = Modifier
@@ -82,7 +122,7 @@ fun DateOfAction(date: String) {
             .padding(top = 10.dp, end = 16.dp, bottom = 10.dp),
         style = TextStyle(
             fontSize = 14.sp,
-            color = colorResource(id = R.color.dark_gray)
+            color = textColor
         ),
         textAlign = TextAlign.End
     )
@@ -90,12 +130,37 @@ fun DateOfAction(date: String) {
 
 @Composable
 @Preview
-fun PreviewActionCard() {
-    ActionCard(isChecked = true)
+fun PreviewEventCard() {
+    ActionCard(
+        cardType = Action.Event,
+        isChecked = true
+    )
+}
+
+@Composable
+@Preview
+fun PreviewTaskCard() {
+    ActionCard(
+        cardType = Action.Task,
+        isChecked = false
+    )
+}
+
+@Composable
+@Preview
+fun PreviewReminderCard() {
+    ActionCard(
+        cardType = Action.Reminder,
+        isChecked = true
+    )
 }
 
 @Composable
 @Preview
 fun PreviewCustomCheckbox() {
-    CustomCheckbox(isChecked = true)
+    CustomCheckbox(isChecked = true, color = Color.White)
+}
+
+enum class Action {
+    Event, Task, Reminder
 }

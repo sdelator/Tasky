@@ -29,13 +29,13 @@ fun HeaderLarge(title: String) {
 }
 
 @Composable
-fun HeaderMedium(title: String, isChecked: Boolean) {
+fun HeaderMedium(title: String, isChecked: Boolean, textColor: Color) {
     Text(
         text = title,
         style = TextStyle(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = textColor,
             textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
         ),
         textAlign = TextAlign.Center
@@ -67,7 +67,11 @@ fun ViewHeaderLarge() {
 @Preview
 fun ViewHeaderMedium() {
     Column {
-        HeaderMedium(title = "HEADLINE MEDIUM", isChecked = true)
+        HeaderMedium(
+            title = "HEADLINE MEDIUM",
+            isChecked = true,
+            textColor = Color.Black
+        )
     }
 }
 

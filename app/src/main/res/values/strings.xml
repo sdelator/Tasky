@@ -23,4 +23,5 @@
     <string name="invalid_or_missing_token_or_api_key">Invalid or missing token or API key</string>
     <string name="logout">Logout</string>
     <string name="cancel">CANCEL</string>
+    <string name="more_options">More options</string>
 </resources>
