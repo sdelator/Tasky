@@ -145,7 +145,12 @@ fun AgendaContent(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                HorizontalCalendar(month = monthSelected, day = daySelected, year = yearSelected)
+                HorizontalCalendar(
+                    month = monthSelected,
+                    day = daySelected,
+                    year = yearSelected,
+                    updateDateSelected = updateDateSelected
+                )
             }
         }
     }

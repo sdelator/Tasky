@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,8 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,9 +25,14 @@ import java.time.LocalDate
 import java.util.Locale
 
 @Composable
-fun HorizontalCalendar(year: Int, month: Int, day: Int) {
+fun HorizontalCalendar(
+    year: Int,
+    month: Int,
+    day: Int,
+    updateDateSelected: (LocalDate) -> Unit
+) {
     val calendarDays = getCalendarDaysForMonth(year = year, month = month)
-    val selectedDate = remember { mutableStateOf<Int?>(null) }
+    // val selectedDate = remember { mutableStateOf(day) }
     val lazyListState = rememberLazyListState()
 
     LaunchedEffect(day) {
@@ -41,12 +45,13 @@ fun HorizontalCalendar(year: Int, month: Int, day: Int) {
             horizontalArrangement = Arrangement.SpaceEvenly,
             state = lazyListState
         ) {
-            items(calendarDays) { day ->
+            items(calendarDays) { calendarDay ->
                 CalendarDayItem(
-                    day = day,
-                    isSelected = selectedDate.value == day.date,
+                    day = calendarDay,
+                    isSelected = day == calendarDay.date,
                     onClick = {
-                        selectedDate.value = day.date
+                        val date = LocalDate.of(year, month, calendarDay.date)
+                        updateDateSelected(date)
                     }
                 )
             }
@@ -100,7 +105,7 @@ fun DateText(date: Int) {
 @Composable
 @Preview
 fun PreviewHorizontalCalendar() {
-    HorizontalCalendar(year = 2024, month = 7, day = 9)
+    HorizontalCalendar(year = 2024, month = 7, day = 9, updateDateSelected = { })
 }
 
 fun getCalendarDaysForMonth(year: Int, month: Int): List<CalendarDay> {
