@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
+import com.example.tasky.common.presentation.model.Action
 
 @Composable
 fun ActionCard(
@@ -159,8 +160,4 @@ fun PreviewReminderCard() {
 @Preview
 fun PreviewCustomCheckbox() {
     CustomCheckbox(isChecked = true, color = Color.White)
-}
-
-enum class Action {
-    Event, Task, Reminder
 }
