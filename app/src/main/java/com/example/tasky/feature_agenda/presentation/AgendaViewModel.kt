@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -46,8 +47,14 @@ class AgendaViewModel @Inject constructor(
     private val _initials = MutableStateFlow<String>("")
     val initials: StateFlow<String> get() = _initials
 
-    private val _monthSelected = MutableStateFlow<String>(getCurrentMonth())
-    val monthSelected: StateFlow<String> get() = _monthSelected
+    private val _monthSelected = MutableStateFlow<Int>(LocalDate.now().monthValue)
+    val monthSelected: StateFlow<Int> get() = _monthSelected
+
+    private val _daySelected = MutableStateFlow<Int>(LocalDate.now().dayOfMonth)
+    val daySelected: StateFlow<Int> get() = _daySelected
+
+    private val _yearSelected = MutableStateFlow<Int>(LocalDate.now().year)
+    val yearSelected: StateFlow<Int> get() = _yearSelected
 
     private val _dateDialogState = MutableStateFlow<MaterialDialogState>(MaterialDialogState())
     val dateDialogState: StateFlow<MaterialDialogState> get() = _dateDialogState
@@ -97,7 +104,7 @@ class AgendaViewModel @Inject constructor(
         _showLogoutDropdown.value = !_showLogoutDropdown.value
     }
 
-    fun updateMonthSelected(month: String) {
+    fun updateMonthSelected(month: Int) {
         _monthSelected.value = month
     }
 
@@ -108,5 +115,11 @@ class AgendaViewModel @Inject constructor(
     private fun getCurrentMonth(): String {
         val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault())
         return dateFormat.format(Date())
+    }
+
+    fun updateDateSelected(date: LocalDate) {
+        _monthSelected.value = date.monthValue
+        _daySelected.value = date.dayOfMonth
+        _yearSelected.value = date.year
     }
 }

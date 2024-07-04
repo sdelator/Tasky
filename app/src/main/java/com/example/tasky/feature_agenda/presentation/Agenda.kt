@@ -31,6 +31,7 @@ import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import java.time.LocalDate
 
 @Composable
 fun AgendaRoot(
@@ -43,12 +44,17 @@ fun AgendaRoot(
     val initials by agendaViewModel.initials.collectAsStateWithLifecycle()
     val showLogoutDropdown by agendaViewModel.showLogoutDropdown.collectAsStateWithLifecycle()
     val monthSelected by agendaViewModel.monthSelected.collectAsStateWithLifecycle()
+    val daySelected by agendaViewModel.daySelected.collectAsStateWithLifecycle()
+    val yearSelected by agendaViewModel.yearSelected.collectAsStateWithLifecycle()
     val dialogState by agendaViewModel.dateDialogState.collectAsStateWithLifecycle()
+    //todo use viewevents?
 
     AgendaContent(
         monthSelected = monthSelected,
+        daySelected = daySelected,
+        yearSelected = yearSelected,
         initials = initials,
-        updateMonthSelected = { agendaViewModel.updateMonthSelected(it) },
+        updateDateSelected = { agendaViewModel.updateDateSelected(it) },
         onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
         showLogoutDropdown = showLogoutDropdown,
         onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
@@ -91,9 +97,11 @@ fun AgendaRoot(
 
 @Composable
 fun AgendaContent(
-    monthSelected: String,
+    monthSelected: Int,
+    daySelected: Int,
+    yearSelected: Int,
     initials: String,
-    updateMonthSelected: (String) -> Unit,
+    updateDateSelected: (LocalDate) -> Unit,
     onProfileClick: () -> Unit,
     showLogoutDropdown: Boolean,
     onDismissRequest: () -> Unit,
@@ -110,7 +118,7 @@ fun AgendaContent(
         AgendaToolbar(
             monthSelected = monthSelected,
             initials = initials,
-            onMonthSelected = updateMonthSelected,
+            onDateSelected = updateDateSelected,
             onProfileClick = onProfileClick,
             showLogoutDropdown = showLogoutDropdown,
             onDismissRequest = onDismissRequest,
@@ -137,7 +145,7 @@ fun AgendaContent(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                HorizontalCalendar(month = 7, year = 2024)
+                HorizontalCalendar(month = monthSelected, day = daySelected, year = yearSelected)
             }
         }
     }
@@ -147,9 +155,11 @@ fun AgendaContent(
 @Preview
 fun PreviewAgendaContent() {
     AgendaContent(
-        monthSelected = "MARCH",
+        monthSelected = 3,
+        daySelected = 9,
+        yearSelected = 2024,
         initials = "AB",
-        updateMonthSelected = { },
+        updateDateSelected = { },
         onProfileClick = { },
         showLogoutDropdown = true,
         onDismissRequest = { },

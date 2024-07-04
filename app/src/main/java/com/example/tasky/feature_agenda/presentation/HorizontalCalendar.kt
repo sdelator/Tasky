@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,14 +26,20 @@ import java.time.LocalDate
 import java.util.Locale
 
 @Composable
-fun HorizontalCalendar(year: Int, month: Int) {
-    val calendarDays = getCalendarDaysForMonth(year, month)
+fun HorizontalCalendar(year: Int, month: Int, day: Int) {
+    val calendarDays = getCalendarDaysForMonth(year = year, month = month)
     val selectedDate = remember { mutableStateOf<Int?>(null) }
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(day) {
+        lazyListState.scrollToItem(day - 1) // subtract 1 because indices start at 0
+    }
 
     Column {
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            state = lazyListState
         ) {
             items(calendarDays) { day ->
                 CalendarDayItem(
@@ -92,7 +100,7 @@ fun DateText(date: Int) {
 @Composable
 @Preview
 fun PreviewHorizontalCalendar() {
-    HorizontalCalendar(year = 2024, month = 7)
+    HorizontalCalendar(year = 2024, month = 7, day = 9)
 }
 
 fun getCalendarDaysForMonth(year: Int, month: Int): List<CalendarDay> {
