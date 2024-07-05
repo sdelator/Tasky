@@ -30,6 +30,7 @@ import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
+import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import java.time.LocalDate
 
@@ -47,9 +48,12 @@ fun AgendaRoot(
     val daySelected by agendaViewModel.daySelected.collectAsStateWithLifecycle()
     val yearSelected by agendaViewModel.yearSelected.collectAsStateWithLifecycle()
     val dialogState by agendaViewModel.dateDialogState.collectAsStateWithLifecycle()
+    val calendarDays by agendaViewModel.calendarDays.collectAsStateWithLifecycle()
     //todo use viewevents?
+    agendaViewModel.getCalendarDaysForMonth(year = yearSelected, month = monthSelected)
 
     AgendaContent(
+        calendarDays = calendarDays,
         monthSelected = monthSelected,
         daySelected = daySelected,
         yearSelected = yearSelected,
@@ -97,6 +101,7 @@ fun AgendaRoot(
 
 @Composable
 fun AgendaContent(
+    calendarDays: List<CalendarDay>,
     monthSelected: Int,
     daySelected: Int,
     yearSelected: Int,
@@ -146,6 +151,7 @@ fun AgendaContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 HorizontalCalendar(
+                    calendarDays = calendarDays,
                     month = monthSelected,
                     day = daySelected,
                     year = yearSelected,
@@ -160,6 +166,7 @@ fun AgendaContent(
 @Preview
 fun PreviewAgendaContent() {
     AgendaContent(
+        calendarDays = listOf(),
         monthSelected = 3,
         daySelected = 9,
         yearSelected = 2024,

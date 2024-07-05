@@ -21,17 +21,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
+import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import java.time.LocalDate
-import java.util.Locale
 
 @Composable
 fun HorizontalCalendar(
+    calendarDays: List<CalendarDay>,
     year: Int,
     month: Int,
     day: Int,
     updateDateSelected: (LocalDate) -> Unit
 ) {
-    val calendarDays = getCalendarDaysForMonth(year = year, month = month)
     val lazyListState = rememberLazyListState()
 
     LaunchedEffect(day) {
@@ -110,24 +110,10 @@ fun DateText(date: Int) {
 @Composable
 @Preview
 fun PreviewHorizontalCalendar() {
-    HorizontalCalendar(year = 2024, month = 7, day = 9, updateDateSelected = { })
+    HorizontalCalendar(
+        calendarDays = listOf(),
+        year = 2024,
+        month = 7,
+        day = 9,
+        updateDateSelected = { })
 }
-
-fun getCalendarDaysForMonth(year: Int, month: Int): List<CalendarDay> {
-    val firstDayOfMonth = LocalDate.of(year, month, 1)
-    val daysInMonth = firstDayOfMonth.lengthOfMonth()
-
-    val calendarDays = mutableListOf<CalendarDay>()
-    for (date in 1..daysInMonth) {
-        val currentDate = firstDayOfMonth.withDayOfMonth(date)
-        val dayOfWeek = currentDate.dayOfWeek.getDisplayName(
-            java.time.format.TextStyle.NARROW,
-            Locale.getDefault()
-        )
-        calendarDays.add(CalendarDay(dayOfWeek, date))
-    }
-
-    return calendarDays
-}
-
-data class CalendarDay(val dayOfWeek: String, val date: Int)

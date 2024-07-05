@@ -1,11 +1,13 @@
 package com.example.tasky.di
 
 import android.app.Application
+import com.example.tasky.common.data.CalendarHelperImpl
 import com.example.tasky.common.data.PreferenceHelper
 import com.example.tasky.common.data.SessionStateManagerManagerImpl
 import com.example.tasky.common.data.remote.ApiKeyInterceptor
 import com.example.tasky.common.data.remote.AuthInterceptor
 import com.example.tasky.common.data.remote.TaskyApi
+import com.example.tasky.common.domain.CalendarHelper
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.EmailPatternValidator
 import com.example.tasky.common.domain.SessionStateManager
@@ -88,6 +90,11 @@ object AppModule {
     @Provides
     fun providesEmailPatternValidator(): EmailPatternValidator {
         return EmailPatternValidatorImpl()
+    }
+
+    @Provides
+    fun providesCalendarHelper(): CalendarHelper {
+        return CalendarHelperImpl()
     }
 
     @Provides

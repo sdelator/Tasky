@@ -3,10 +3,12 @@ package com.example.tasky.feature_agenda.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasky.common.domain.CalendarHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
+import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -23,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
     private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
-    private val sessionStateManager: SessionStateManager
+    private val sessionStateManager: SessionStateManager,
+    private val calendarHelper: CalendarHelper
 ) : ViewModel() {
 
     companion object {
@@ -58,6 +61,9 @@ class AgendaViewModel @Inject constructor(
 
     private val _dateDialogState = MutableStateFlow<MaterialDialogState>(MaterialDialogState())
     val dateDialogState: StateFlow<MaterialDialogState> get() = _dateDialogState
+
+    private val _calendarDays = MutableStateFlow<List<CalendarDay>>(emptyList())
+    val calendarDays: StateFlow<List<CalendarDay>> get() = _calendarDays
 
     init {
         getProfileInitials()
@@ -121,5 +127,11 @@ class AgendaViewModel @Inject constructor(
         _monthSelected.value = date.monthValue
         _daySelected.value = date.dayOfMonth
         _yearSelected.value = date.year
+    }
+
+    fun getCalendarDaysForMonth(year: Int, month: Int) {
+        viewModelScope.launch {
+            _calendarDays.value = calendarHelper.getCalendarDaysForMonth(year, month)
+        }
     }
 }
