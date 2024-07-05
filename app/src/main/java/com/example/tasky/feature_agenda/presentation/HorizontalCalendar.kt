@@ -32,11 +32,16 @@ fun HorizontalCalendar(
     updateDateSelected: (LocalDate) -> Unit
 ) {
     val calendarDays = getCalendarDaysForMonth(year = year, month = month)
-    // val selectedDate = remember { mutableStateOf(day) }
     val lazyListState = rememberLazyListState()
 
     LaunchedEffect(day) {
-        lazyListState.scrollToItem(day - 1) // subtract 1 because indices start at 0
+        val layoutInfo = lazyListState.layoutInfo
+        val visibleItems = layoutInfo.visibleItemsInfo
+        val targetIndex = day - 1 // subtract 1 because indices start at 0
+
+        if (!visibleItems.any { it.index == targetIndex }) {
+            lazyListState.scrollToItem(targetIndex)
+        }
     }
 
     Column {
