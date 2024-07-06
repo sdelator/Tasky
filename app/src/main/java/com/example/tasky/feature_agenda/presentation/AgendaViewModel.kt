@@ -71,8 +71,7 @@ class AgendaViewModel @Inject constructor(
                     println("failed logout :(")
                     _viewState.value = _viewState.value.copy(
                         showLoadingSpinner = false,
-                        showErrorDialog = true,
-                        showDialog = true // Show error dialog
+                        showErrorDialog = true
                     )
                 }
             }
@@ -80,7 +79,7 @@ class AgendaViewModel @Inject constructor(
     }
 
     fun onErrorDialogDismissed() {
-        _viewState.value = _viewState.value.copy(showDialog = false, showErrorDialog = false)
+        _viewState.value = _viewState.value.copy(showErrorDialog = false)
     }
 
     fun toggleLogoutDropdownVisibility() {

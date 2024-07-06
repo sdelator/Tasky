@@ -8,7 +8,6 @@ import java.time.LocalDate
 // define viewState as something that can change throughout app usage
 data class AgendaViewState(
      val datePickerDialogState: MaterialDialogState = MaterialDialogState(),
-     val showDialog: Boolean = false,
      val showLogoutDropdown: Boolean = false,
      val monthSelected: Int = LocalDate.now().monthValue,
      val daySelected: Int = LocalDate.now().dayOfMonth,

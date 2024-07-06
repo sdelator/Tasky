@@ -65,7 +65,7 @@ fun AgendaRoot(
     if (viewState.showErrorDialog) {
         val message = viewState.dataError.toLogOutErrorMessage(context = LocalContext.current)
         CreateErrorAlertDialog(
-            showDialog = viewState.showDialog,
+            showDialog = true,
             dialogMessage = message,
             onDismiss = { agendaViewModel.onErrorDialogDismissed() }
         )
