@@ -29,17 +29,15 @@ class AgendaViewModel @Inject constructor(
         const val TAG = "AgendaViewModel"
     }
 
-    // viewState triggered by API response
     private val _viewState =
         MutableStateFlow<AgendaViewState?>(null)
     val viewState: StateFlow<AgendaViewState?>
         get() = _viewState
 
-    // viewEvent triggered by API response
     private val _viewEvent = Channel<AgendaViewEvent>()
     val viewEvent = _viewEvent.receiveAsFlow()
 
-    // UI changes via Composable
+    // UI does not change
     val initials: String = sessionStateManager.getName()?.let { ProfileUtils.getInitials(it) } ?: ""
 
     // not displayed on screen; only necessary for business logic
@@ -82,7 +80,6 @@ class AgendaViewModel @Inject constructor(
     }
 
     fun onErrorDialogDismissed() {
-//        _showDialog.value = false
         _viewState.value = null//AgendaViewState.Content
     }
     fun toggleLogoutDropdownVisibility() {
@@ -98,13 +95,11 @@ class AgendaViewModel @Inject constructor(
     fun updateDateSelected(date: LocalDate) {
         val currentState = _viewState.value as? AgendaViewState.Content ?: return
 
-        // if month or year changed then update calendar days for month
         val calendarDays =
             if (currentState.monthSelected != date.monthValue || yearSelected.value != date.year) {
                 calendarHelper.getCalendarDaysForMonth(date.year, date.monthValue)
             } else currentState.calendarDays
 
-        // update month, day, year
         _viewState.value = currentState.copy(
             monthSelected = date.monthValue,
             daySelected = date.dayOfMonth,

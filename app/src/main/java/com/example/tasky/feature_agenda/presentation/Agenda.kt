@@ -97,8 +97,6 @@ fun AgendaRoot(
                 updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
                 onLogoutClick = { agendaViewModel.logOutClicked() }
             )
-
-            //agendaViewModel.getCalendarDaysForMonth(year = yearSelected, month = contentState.monthSelected)
         }
         null -> println("no action")
         else -> {}
