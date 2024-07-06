@@ -41,8 +41,7 @@ fun AgendaRoot(
 ) {
     val viewState by agendaViewModel.viewState.collectAsStateWithLifecycle()
 
-    val showDialog by agendaViewModel.showDialog.collectAsStateWithLifecycle()
-    val initials by agendaViewModel.initials.collectAsStateWithLifecycle()
+    val initials = agendaViewModel.initials
     val showLogoutDropdown by agendaViewModel.showLogoutDropdown.collectAsStateWithLifecycle()
     val monthSelected by agendaViewModel.monthSelected.collectAsStateWithLifecycle()
     val daySelected by agendaViewModel.daySelected.collectAsStateWithLifecycle()
@@ -81,7 +80,7 @@ fun AgendaRoot(
                 )
 
             CreateErrorAlertDialog(
-                showDialog = showDialog,
+                showDialog = (viewState as AgendaViewState.ErrorDialog).showDialog,
                 dialogMessage = message,
                 onDismiss = { agendaViewModel.onErrorDialogDismissed() }
             )

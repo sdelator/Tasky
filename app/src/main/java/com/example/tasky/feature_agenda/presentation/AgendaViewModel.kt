@@ -44,11 +44,7 @@ class AgendaViewModel @Inject constructor(
     val viewEvent = _viewEvent.receiveAsFlow()
 
     // UI changes via Composable
-    private val _showDialog = MutableStateFlow(false)
-    val showDialog: StateFlow<Boolean> get() = _showDialog
-
-    private val _initials = MutableStateFlow<String>("")
-    val initials: StateFlow<String> get() = _initials
+    val initials: String = sessionStateManager.getName()?.let { ProfileUtils.getInitials(it) } ?: ""
 
     private val _monthSelected = MutableStateFlow<Int>(LocalDate.now().monthValue)
     val monthSelected: StateFlow<Int> get() = _monthSelected
@@ -64,10 +60,6 @@ class AgendaViewModel @Inject constructor(
 
     private val _calendarDays = MutableStateFlow<List<CalendarDay>>(emptyList())
     val calendarDays: StateFlow<List<CalendarDay>> get() = _calendarDays
-
-    init {
-        getProfileInitials()
-    }
 
     private val _showLogoutDropdown = MutableStateFlow(false)
     val showLogoutDropdown: StateFlow<Boolean> get() = _showLogoutDropdown
@@ -88,7 +80,7 @@ class AgendaViewModel @Inject constructor(
                 is Result.Error -> {
                     println("failed logout :(")
                     // emit a viewState to show ErrorMessage
-                    _showDialog.value = true
+//                    _showDialog.value = true
                     _viewState.emit(AgendaViewState.ErrorDialog(result.error))
                 }
             }
@@ -96,14 +88,8 @@ class AgendaViewModel @Inject constructor(
     }
 
     fun onErrorDialogDismissed() {
-        _showDialog.value = false
-    }
-
-    private fun getProfileInitials() {
-        val fullName = sessionStateManager.getName()
-        if (fullName != null) {
-            _initials.value = ProfileUtils.getInitials(fullName)
-        }
+//        _showDialog.value = false
+        _viewState.value = null
     }
 
     fun toggleLogoutDropdownVisibility() {
