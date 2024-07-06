@@ -71,7 +71,8 @@ class AgendaViewModel @Inject constructor(
                     println("failed logout :(")
                     _viewState.value = _viewState.value.copy(
                         showLoadingSpinner = false,
-                        showErrorDialog = true
+                        showErrorDialog = true,
+                        dataError = result.error
                     )
                 }
             }
