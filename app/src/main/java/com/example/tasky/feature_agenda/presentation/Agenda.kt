@@ -50,9 +50,8 @@ fun AgendaRoot(
         yearSelected = yearSelected,
         initials = initials,
         updateDateSelected = { agendaViewModel.updateDateSelected(it) },
-        onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
+        toggleLogoutDropdownVisibility = { agendaViewModel.toggleLogoutDropdownVisibility() },
         showLogoutDropdown = viewState.showLogoutDropdown,
-        onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
         dialogState = viewState.datePickerDialogState,
         updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
         onLogoutClick = { agendaViewModel.logOutClicked() }
@@ -89,9 +88,8 @@ fun AgendaContent(
     yearSelected: Int,
     initials: String,
     updateDateSelected: (LocalDate) -> Unit,
-    onProfileClick: () -> Unit,
+    toggleLogoutDropdownVisibility: () -> Unit,
     showLogoutDropdown: Boolean,
-    onDismissRequest: () -> Unit,
     dialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
     onLogoutClick: () -> Unit
@@ -106,9 +104,8 @@ fun AgendaContent(
             monthSelected = monthSelected,
             initials = initials,
             onDateSelected = updateDateSelected,
-            onProfileClick = onProfileClick,
+            toggleLogoutDropdownVisibility = toggleLogoutDropdownVisibility,
             showLogoutDropdown = showLogoutDropdown,
-            onDismissRequest = onDismissRequest,
             dialogState = dialogState,
             onDialogStateChange = updateDateDialogState,
             onLogoutClick = onLogoutClick
@@ -154,9 +151,8 @@ fun PreviewAgendaContent() {
         yearSelected = 2024,
         initials = "AB",
         updateDateSelected = { },
-        onProfileClick = { },
+        toggleLogoutDropdownVisibility = { },
         showLogoutDropdown = true,
-        onDismissRequest = { },
         dialogState = MaterialDialogState(),
         updateDateDialogState = { },
         onLogoutClick = { }
