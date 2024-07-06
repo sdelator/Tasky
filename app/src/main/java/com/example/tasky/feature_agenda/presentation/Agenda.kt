@@ -42,7 +42,7 @@ fun AgendaRoot(
     val viewState by agendaViewModel.viewState.collectAsStateWithLifecycle()
 
     val initials = agendaViewModel.initials
-    val showLogoutDropdown by agendaViewModel.showLogoutDropdown.collectAsStateWithLifecycle()
+
     val monthSelected by agendaViewModel.monthSelected.collectAsStateWithLifecycle()
     val daySelected by agendaViewModel.daySelected.collectAsStateWithLifecycle()
     val yearSelected by agendaViewModel.yearSelected.collectAsStateWithLifecycle()
@@ -51,20 +51,20 @@ fun AgendaRoot(
     //todo use viewevents?
     agendaViewModel.getCalendarDaysForMonth(year = yearSelected, month = monthSelected)
 
-    AgendaContent(
-        calendarDays = calendarDays,
-        monthSelected = monthSelected,
-        daySelected = daySelected,
-        yearSelected = yearSelected,
-        initials = initials,
-        updateDateSelected = { agendaViewModel.updateDateSelected(it) },
-        onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
-        showLogoutDropdown = showLogoutDropdown,
-        onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
-        dialogState = dialogState,
-        updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
-        onLogoutClick = { agendaViewModel.logOutClicked() }
-    )
+//    AgendaContent(
+//        calendarDays = calendarDays,
+//        monthSelected = monthSelected,
+//        daySelected = daySelected,
+//        yearSelected = yearSelected,
+//        initials = initials,
+//        updateDateSelected = { agendaViewModel.updateDateSelected(it) },
+//        onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
+//        showLogoutDropdown = showLogoutDropdown,
+//        onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
+//        dialogState = dialogState,
+//        updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
+//        onLogoutClick = { agendaViewModel.logOutClicked() }
+//    )
 
     when (viewState) {
         is AgendaViewState.LoadingSpinner -> {
@@ -86,7 +86,25 @@ fun AgendaRoot(
             )
         }
 
+        is AgendaViewState.Content -> {
+            val contentState = viewState as AgendaViewState.Content
+            AgendaContent(
+                calendarDays = calendarDays,
+                monthSelected = monthSelected,
+                daySelected = daySelected,
+                yearSelected = yearSelected,
+                initials = initials,
+                updateDateSelected = { agendaViewModel.updateDateSelected(it) },
+                onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
+                showLogoutDropdown = contentState.showLogoutDropdown,
+                onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
+                dialogState = dialogState,
+                updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
+                onLogoutClick = { agendaViewModel.logOutClicked() }
+            )
+        }
         null -> println("no action")
+        else -> {}
     }
 
     ObserveAsEvents(flow = agendaViewModel.viewEvent) { event ->

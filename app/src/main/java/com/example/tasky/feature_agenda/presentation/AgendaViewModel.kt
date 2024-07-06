@@ -61,8 +61,11 @@ class AgendaViewModel @Inject constructor(
     private val _calendarDays = MutableStateFlow<List<CalendarDay>>(emptyList())
     val calendarDays: StateFlow<List<CalendarDay>> get() = _calendarDays
 
-    private val _showLogoutDropdown = MutableStateFlow(false)
-    val showLogoutDropdown: StateFlow<Boolean> get() = _showLogoutDropdown
+    init {
+        viewModelScope.launch {
+            _viewState.emit(AgendaViewState.Content())
+        }
+    }
 
     fun logOutClicked() {
         Log.d(TAG, "logOutClicked redirect user to login page")
@@ -89,12 +92,15 @@ class AgendaViewModel @Inject constructor(
 
     fun onErrorDialogDismissed() {
 //        _showDialog.value = false
-        _viewState.value = null
+        _viewState.value = null//AgendaViewState.Content
     }
-
     fun toggleLogoutDropdownVisibility() {
-        _showLogoutDropdown.value = !_showLogoutDropdown.value
+        val currentState = _viewState.value as? AgendaViewState.Content ?: return
+        _viewState.value = currentState.copy(showLogoutDropdown = !currentState.showLogoutDropdown)
     }
+//    fun toggleLogoutDropdownVisibility() {
+////        _showLogoutDropdown.value = !_showLogoutDropdown.value
+//    }
 
     fun updateMonthSelected(month: Int) {
         _monthSelected.value = month
