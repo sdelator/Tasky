@@ -40,66 +40,35 @@ fun AgendaRoot(
     agendaViewModel: AgendaViewModel = hiltViewModel()
 ) {
     val viewState by agendaViewModel.viewState.collectAsStateWithLifecycle()
-
     val initials = agendaViewModel.initials
-
     val yearSelected by agendaViewModel.yearSelected.collectAsStateWithLifecycle()
-    //todo use viewevents?
 
-//    AgendaContent(
-//        calendarDays = calendarDays,
-//        monthSelected = monthSelected,
-//        daySelected = daySelected,
-//        yearSelected = yearSelected,
-//        initials = initials,
-//        updateDateSelected = { agendaViewModel.updateDateSelected(it) },
-//        onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
-//        showLogoutDropdown = showLogoutDropdown,
-//        onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
-//        dialogState = dialogState,
-//        updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
-//        onLogoutClick = { agendaViewModel.logOutClicked() }
-//    )
+    AgendaContent(
+        calendarDays = viewState.calendarDays,
+        monthSelected = viewState.monthSelected,
+        daySelected = viewState.daySelected,
+        yearSelected = yearSelected,
+        initials = initials,
+        updateDateSelected = { agendaViewModel.updateDateSelected(it) },
+        onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
+        showLogoutDropdown = viewState.showLogoutDropdown,
+        onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
+        dialogState = viewState.datePickerDialogState,
+        updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
+        onLogoutClick = { agendaViewModel.logOutClicked() }
+    )
 
-    when (viewState) {
-        is AgendaViewState.LoadingSpinner -> {
-            // Show a loading indicator
-            LoadingSpinner()
-        }
+    if (viewState.showLoadingSpinner) {
+        LoadingSpinner()
+    }
 
-        is AgendaViewState.ErrorDialog -> {
-            // Show an Alert Dialog with API failure Error code/message
-            val message =
-                (viewState as AgendaViewState.ErrorDialog).dataError.toLogOutErrorMessage(
-                    context = LocalContext.current
-                )
-
-            CreateErrorAlertDialog(
-                showDialog = (viewState as AgendaViewState.ErrorDialog).showDialog,
-                dialogMessage = message,
-                onDismiss = { agendaViewModel.onErrorDialogDismissed() }
-            )
-        }
-
-        is AgendaViewState.Content -> {
-            val contentState = viewState as AgendaViewState.Content
-            AgendaContent(
-                calendarDays = contentState.calendarDays,
-                monthSelected = contentState.monthSelected,
-                daySelected = contentState.daySelected,
-                yearSelected = yearSelected,
-                initials = initials,
-                updateDateSelected = { agendaViewModel.updateDateSelected(it) },
-                onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
-                showLogoutDropdown = contentState.showLogoutDropdown,
-                onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
-                dialogState = contentState.datePickerDialogState,
-                updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
-                onLogoutClick = { agendaViewModel.logOutClicked() }
-            )
-        }
-        null -> println("no action")
-        else -> {}
+    if (viewState.showErrorDialog) {
+        val message = viewState.dataError.toLogOutErrorMessage(context = LocalContext.current)
+        CreateErrorAlertDialog(
+            showDialog = viewState.showDialog,
+            dialogMessage = message,
+            onDismiss = { agendaViewModel.onErrorDialogDismissed() }
+        )
     }
 
     ObserveAsEvents(flow = agendaViewModel.viewEvent) { event ->
@@ -110,6 +79,7 @@ fun AgendaRoot(
         }
     }
 }
+
 
 @Composable
 fun AgendaContent(
