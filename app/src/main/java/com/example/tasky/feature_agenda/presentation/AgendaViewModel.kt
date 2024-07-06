@@ -8,7 +8,6 @@ import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
-import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -16,10 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,24 +42,20 @@ class AgendaViewModel @Inject constructor(
     // UI changes via Composable
     val initials: String = sessionStateManager.getName()?.let { ProfileUtils.getInitials(it) } ?: ""
 
-    private val _monthSelected = MutableStateFlow<Int>(LocalDate.now().monthValue)
-    val monthSelected: StateFlow<Int> get() = _monthSelected
-
-    private val _daySelected = MutableStateFlow<Int>(LocalDate.now().dayOfMonth)
-    val daySelected: StateFlow<Int> get() = _daySelected
-
+    // not displayed on screen; only necessary for business logic
     private val _yearSelected = MutableStateFlow<Int>(LocalDate.now().year)
     val yearSelected: StateFlow<Int> get() = _yearSelected
 
-    private val _dateDialogState = MutableStateFlow<MaterialDialogState>(MaterialDialogState())
-    val dateDialogState: StateFlow<MaterialDialogState> get() = _dateDialogState
-
-    private val _calendarDays = MutableStateFlow<List<CalendarDay>>(emptyList())
-    val calendarDays: StateFlow<List<CalendarDay>> get() = _calendarDays
-
     init {
         viewModelScope.launch {
-            _viewState.emit(AgendaViewState.Content())
+            _viewState.emit(
+                AgendaViewState.Content(
+                    calendarDays = calendarHelper.getCalendarDaysForMonth(
+                        LocalDate.now().year,
+                        LocalDate.now().monthValue
+                    )
+                )
+            )
         }
     }
 
@@ -83,7 +75,6 @@ class AgendaViewModel @Inject constructor(
                 is Result.Error -> {
                     println("failed logout :(")
                     // emit a viewState to show ErrorMessage
-//                    _showDialog.value = true
                     _viewState.emit(AgendaViewState.ErrorDialog(result.error))
                 }
             }
@@ -98,32 +89,27 @@ class AgendaViewModel @Inject constructor(
         val currentState = _viewState.value as? AgendaViewState.Content ?: return
         _viewState.value = currentState.copy(showLogoutDropdown = !currentState.showLogoutDropdown)
     }
-//    fun toggleLogoutDropdownVisibility() {
-////        _showLogoutDropdown.value = !_showLogoutDropdown.value
-//    }
-
-    fun updateMonthSelected(month: Int) {
-        _monthSelected.value = month
-    }
 
     fun updateDateDialogState(dialogState: MaterialDialogState) {
-        _dateDialogState.value = dialogState
-    }
-
-    private fun getCurrentMonth(): String {
-        val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault())
-        return dateFormat.format(Date())
+        val currentState = _viewState.value as? AgendaViewState.Content ?: return
+        _viewState.value = currentState.copy(datePickerDialogState = dialogState)
     }
 
     fun updateDateSelected(date: LocalDate) {
-        _monthSelected.value = date.monthValue
-        _daySelected.value = date.dayOfMonth
-        _yearSelected.value = date.year
-    }
+        val currentState = _viewState.value as? AgendaViewState.Content ?: return
 
-    fun getCalendarDaysForMonth(year: Int, month: Int) {
-        viewModelScope.launch {
-            _calendarDays.value = calendarHelper.getCalendarDaysForMonth(year, month)
-        }
+        // if month or year changed then update calendar days for month
+        val calendarDays =
+            if (currentState.monthSelected != date.monthValue || yearSelected.value != date.year) {
+                calendarHelper.getCalendarDaysForMonth(date.year, date.monthValue)
+            } else currentState.calendarDays
+
+        // update month, day, year
+        _viewState.value = currentState.copy(
+            monthSelected = date.monthValue,
+            daySelected = date.dayOfMonth,
+            calendarDays = calendarDays
+        )
+        _yearSelected.value = date.year
     }
 }

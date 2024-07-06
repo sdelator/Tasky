@@ -43,13 +43,8 @@ fun AgendaRoot(
 
     val initials = agendaViewModel.initials
 
-    val monthSelected by agendaViewModel.monthSelected.collectAsStateWithLifecycle()
-    val daySelected by agendaViewModel.daySelected.collectAsStateWithLifecycle()
     val yearSelected by agendaViewModel.yearSelected.collectAsStateWithLifecycle()
-    val dialogState by agendaViewModel.dateDialogState.collectAsStateWithLifecycle()
-    val calendarDays by agendaViewModel.calendarDays.collectAsStateWithLifecycle()
     //todo use viewevents?
-    agendaViewModel.getCalendarDaysForMonth(year = yearSelected, month = monthSelected)
 
 //    AgendaContent(
 //        calendarDays = calendarDays,
@@ -89,19 +84,21 @@ fun AgendaRoot(
         is AgendaViewState.Content -> {
             val contentState = viewState as AgendaViewState.Content
             AgendaContent(
-                calendarDays = calendarDays,
-                monthSelected = monthSelected,
-                daySelected = daySelected,
+                calendarDays = contentState.calendarDays,
+                monthSelected = contentState.monthSelected,
+                daySelected = contentState.daySelected,
                 yearSelected = yearSelected,
                 initials = initials,
                 updateDateSelected = { agendaViewModel.updateDateSelected(it) },
                 onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
                 showLogoutDropdown = contentState.showLogoutDropdown,
                 onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
-                dialogState = dialogState,
+                dialogState = contentState.datePickerDialogState,
                 updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
                 onLogoutClick = { agendaViewModel.logOutClicked() }
             )
+
+            //agendaViewModel.getCalendarDaysForMonth(year = yearSelected, month = contentState.monthSelected)
         }
         null -> println("no action")
         else -> {}
