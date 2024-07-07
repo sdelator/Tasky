@@ -23,15 +23,15 @@ import com.example.tasky.R
 import com.example.tasky.common.presentation.LogoutDropdownRoot
 import com.example.tasky.feature_agenda.presentation.datepicker.MonthPickerOnToolbar
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import java.time.LocalDate
 
 @Composable
 fun AgendaToolbar(
-    monthSelected: String,
+    monthSelected: Int,
     initials: String,
-    onMonthSelected: (String) -> Unit,
-    onProfileClick: () -> Unit,
+    onDateSelected: (LocalDate) -> Unit,
+    toggleLogoutDropdownVisibility: () -> Unit,
     showLogoutDropdown: Boolean,
-    onDismissRequest: () -> Unit,
     dialogState: MaterialDialogState,
     onDialogStateChange: (MaterialDialogState) -> Unit,
     onLogoutClick: () -> Unit
@@ -45,15 +45,14 @@ fun AgendaToolbar(
     ) {
         MonthPickerOnToolbar(
             monthSelected = monthSelected,
-            onMonthSelected = onMonthSelected,
+            onDateSelected = onDateSelected,
             dialogState = dialogState,
             onDialogStateChange = onDialogStateChange
         )
         ProfileIcon(
             initials = initials,
-            onProfileClick = onProfileClick,
+            toggleLogoutDropdownVisibility = toggleLogoutDropdownVisibility,
             showDropdown = showLogoutDropdown,
-            onDismissRequest = onDismissRequest,
             onLogoutClick = onLogoutClick
         )
     }
@@ -62,9 +61,8 @@ fun AgendaToolbar(
 @Composable
 fun ProfileIcon(
     initials: String,
-    onProfileClick: () -> Unit,
+    toggleLogoutDropdownVisibility: () -> Unit,
     showDropdown: Boolean,
-    onDismissRequest: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
     Box(
@@ -73,7 +71,7 @@ fun ProfileIcon(
             .padding(top = 8.dp, bottom = 8.dp)
             .background(color = colorResource(id = R.color.light_gray), shape = CircleShape)
             .size(34.dp)
-            .clickable { onProfileClick() },
+            .clickable { toggleLogoutDropdownVisibility() },
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -85,7 +83,7 @@ fun ProfileIcon(
 
         LogoutDropdownRoot(
             showLogoutDropdown = showDropdown,
-            onDismissRequest = onDismissRequest,
+            toggleLogoutDropdownVisibility = toggleLogoutDropdownVisibility,
             onLogoutClick = onLogoutClick,
             modifier = Modifier.align(Alignment.TopEnd)
         )
@@ -97,9 +95,8 @@ fun ProfileIcon(
 fun PreviewProfileIcon() {
     ProfileIcon(
         initials = "AB",
-        onProfileClick = { },
+        toggleLogoutDropdownVisibility = { },
         showDropdown = true,
-        onDismissRequest = { },
         onLogoutClick = { }
     )
 }
@@ -115,16 +112,15 @@ fun PreviewAgendaToolbar() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         MonthPickerOnToolbar(
-            "MARCH",
-            onMonthSelected = { },
+            3,
+            onDateSelected = { },
             dialogState = MaterialDialogState(),
             onDialogStateChange = { }
         )
         ProfileIcon(
             initials = "AB",
-            onProfileClick = { },
+            toggleLogoutDropdownVisibility = { },
             showDropdown = true,
-            onDismissRequest = { },
             onLogoutClick = { }
         )
     }

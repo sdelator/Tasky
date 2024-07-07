@@ -15,19 +15,19 @@ import com.example.tasky.R
 @Composable
 fun LogoutDropdownRoot(
     showLogoutDropdown: Boolean,
-    onDismissRequest: () -> Unit,
+    toggleLogoutDropdownVisibility: () -> Unit,
     onLogoutClick: () -> Unit,
     modifier: Modifier
 ) {
     DropdownMenu(
         expanded = showLogoutDropdown,
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = toggleLogoutDropdownVisibility,
         modifier = modifier
     ) {
         DropdownMenuItem(
             text = { Text(stringResource(R.string.logout)) },
             onClick = {
-                onDismissRequest()
+                toggleLogoutDropdownVisibility()
                 onLogoutClick()
             }
         )
@@ -40,7 +40,7 @@ fun PreviewDropdownMenu() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         LogoutDropdownRoot(
             showLogoutDropdown = true,
-            onDismissRequest = { },
+            toggleLogoutDropdownVisibility = { },
             onLogoutClick = { },
             modifier = Modifier.align(Alignment.TopEnd)
         )

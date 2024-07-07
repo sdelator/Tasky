@@ -3,6 +3,7 @@ package com.example.tasky.feature_agenda.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasky.common.domain.CalendarHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.presentation.util.ProfileUtils
@@ -14,99 +15,96 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
     private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
-    private val sessionStateManager: SessionStateManager
+    private val sessionStateManager: SessionStateManager,
+    private val calendarHelper: CalendarHelper
 ) : ViewModel() {
 
     companion object {
         const val TAG = "AgendaViewModel"
     }
 
-    // viewState triggered by API response
-    private val _viewState =
-        MutableStateFlow<AgendaViewState?>(null)
-    val viewState: StateFlow<AgendaViewState?>
-        get() = _viewState
+    private val _viewState = MutableStateFlow(AgendaViewState())
+    val viewState: StateFlow<AgendaViewState> = _viewState
 
-    // viewEvent triggered by API response
     private val _viewEvent = Channel<AgendaViewEvent>()
     val viewEvent = _viewEvent.receiveAsFlow()
 
-    // UI changes via Composable
-    private val _showDialog = MutableStateFlow(false)
-    val showDialog: StateFlow<Boolean> get() = _showDialog
+    // UI does not change
+    val initials: String = sessionStateManager.getName()?.let { ProfileUtils.getInitials(it) } ?: ""
 
-    private val _initials = MutableStateFlow<String>("")
-    val initials: StateFlow<String> get() = _initials
-
-    private val _monthSelected = MutableStateFlow<String>(getCurrentMonth())
-    val monthSelected: StateFlow<String> get() = _monthSelected
-
-    private val _dateDialogState = MutableStateFlow<MaterialDialogState>(MaterialDialogState())
-    val dateDialogState: StateFlow<MaterialDialogState> get() = _dateDialogState
+    // not displayed on screen; only necessary for business logic
+    private val _yearSelected = MutableStateFlow(LocalDate.now().year)
+    val yearSelected: StateFlow<Int> get() = _yearSelected
 
     init {
-        getProfileInitials()
+        viewModelScope.launch {
+            _viewState.emit(
+                AgendaViewState(
+                    calendarDays = calendarHelper.getCalendarDaysForMonth(
+                        LocalDate.now().year,
+                        LocalDate.now().monthValue
+                    )
+                )
+            )
+        }
     }
-
-    private val _showLogoutDropdown = MutableStateFlow(false)
-    val showLogoutDropdown: StateFlow<Boolean> get() = _showLogoutDropdown
 
     fun logOutClicked() {
         Log.d(TAG, "logOutClicked redirect user to login page")
         viewModelScope.launch {
-            _viewState.emit(AgendaViewState.LoadingSpinner)
+            _viewState.value = _viewState.value.copy(showLoadingSpinner = true)
             val result = authenticatedRemoteRepository.logOutUser()
 
             when (result) {
                 is Result.Success -> {
                     println("success logout!")
-                    // emit a viewState to show LoginScreen composable
                     _viewEvent.send(AgendaViewEvent.NavigateToLoginScreen)
                 }
 
                 is Result.Error -> {
                     println("failed logout :(")
-                    // emit a viewState to show ErrorMessage
-                    _showDialog.value = true
-                    _viewState.emit(AgendaViewState.ErrorDialog(result.error))
+                    _viewState.value = _viewState.value.copy(
+                        showLoadingSpinner = false,
+                        showErrorDialog = true,
+                        dataError = result.error
+                    )
                 }
             }
         }
     }
 
     fun onErrorDialogDismissed() {
-        _showDialog.value = false
-    }
-
-    private fun getProfileInitials() {
-        val fullName = sessionStateManager.getName()
-        if (fullName != null) {
-            _initials.value = ProfileUtils.getInitials(fullName)
-        }
+        _viewState.value = _viewState.value.copy(showErrorDialog = false)
     }
 
     fun toggleLogoutDropdownVisibility() {
-        _showLogoutDropdown.value = !_showLogoutDropdown.value
-    }
-
-    fun updateMonthSelected(month: String) {
-        _monthSelected.value = month
+        _viewState.value =
+            _viewState.value.copy(showLogoutDropdown = !_viewState.value.showLogoutDropdown)
     }
 
     fun updateDateDialogState(dialogState: MaterialDialogState) {
-        _dateDialogState.value = dialogState
+        _viewState.value = _viewState.value.copy(datePickerDialogState = dialogState)
     }
 
-    private fun getCurrentMonth(): String {
-        val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault())
-        return dateFormat.format(Date())
+    fun updateDateSelected(date: LocalDate) {
+        val calendarDays =
+            if (_viewState.value.monthSelected != date.monthValue || _yearSelected.value != date.year) {
+                calendarHelper.getCalendarDaysForMonth(date.year, date.monthValue)
+            } else {
+                _viewState.value.calendarDays
+            }
+
+        _viewState.value = _viewState.value.copy(
+            monthSelected = date.monthValue,
+            daySelected = date.dayOfMonth,
+            calendarDays = calendarDays
+        )
+        _yearSelected.value = date.year
     }
 }

@@ -1,5 +1,6 @@
 package com.example.tasky.feature_agenda.presentation
 
+import HorizontalCalendar
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,7 +30,9 @@ import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
+import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import java.time.LocalDate
 
 @Composable
 fun AgendaRoot(
@@ -38,46 +40,34 @@ fun AgendaRoot(
     agendaViewModel: AgendaViewModel = hiltViewModel()
 ) {
     val viewState by agendaViewModel.viewState.collectAsStateWithLifecycle()
-
-    val showDialog by agendaViewModel.showDialog.collectAsStateWithLifecycle()
-    val initials by agendaViewModel.initials.collectAsStateWithLifecycle()
-    val showLogoutDropdown by agendaViewModel.showLogoutDropdown.collectAsStateWithLifecycle()
-    val monthSelected by agendaViewModel.monthSelected.collectAsStateWithLifecycle()
-    val dialogState by agendaViewModel.dateDialogState.collectAsStateWithLifecycle()
+    val initials = agendaViewModel.initials
+    val yearSelected by agendaViewModel.yearSelected.collectAsStateWithLifecycle()
 
     AgendaContent(
-        monthSelected = monthSelected,
+        calendarDays = viewState.calendarDays,
+        monthSelected = viewState.monthSelected,
+        daySelected = viewState.daySelected,
+        yearSelected = yearSelected,
         initials = initials,
-        updateMonthSelected = { agendaViewModel.updateMonthSelected(it) },
-        onProfileClick = { agendaViewModel.toggleLogoutDropdownVisibility() },
-        showLogoutDropdown = showLogoutDropdown,
-        onDismissRequest = { agendaViewModel.toggleLogoutDropdownVisibility() },
-        dialogState = dialogState,
+        updateDateSelected = { agendaViewModel.updateDateSelected(it) },
+        toggleLogoutDropdownVisibility = { agendaViewModel.toggleLogoutDropdownVisibility() },
+        showLogoutDropdown = viewState.showLogoutDropdown,
+        dialogState = viewState.datePickerDialogState,
         updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
         onLogoutClick = { agendaViewModel.logOutClicked() }
     )
 
-    when (viewState) {
-        is AgendaViewState.LoadingSpinner -> {
-            // Show a loading indicator
-            LoadingSpinner()
-        }
+    if (viewState.showLoadingSpinner) {
+        LoadingSpinner()
+    }
 
-        is AgendaViewState.ErrorDialog -> {
-            // Show an Alert Dialog with API failure Error code/message
-            val message =
-                (viewState as AgendaViewState.ErrorDialog).dataError.toLogOutErrorMessage(
-                    context = LocalContext.current
-                )
-
-            CreateErrorAlertDialog(
-                showDialog = showDialog,
-                dialogMessage = message,
-                onDismiss = { agendaViewModel.onErrorDialogDismissed() }
-            )
-        }
-
-        null -> println("no action")
+    if (viewState.showErrorDialog) {
+        val message = viewState.dataError.toLogOutErrorMessage(context = LocalContext.current)
+        CreateErrorAlertDialog(
+            showDialog = true,
+            dialogMessage = message,
+            onDismiss = { agendaViewModel.onErrorDialogDismissed() }
+        )
     }
 
     ObserveAsEvents(flow = agendaViewModel.viewEvent) { event ->
@@ -89,14 +79,17 @@ fun AgendaRoot(
     }
 }
 
+
 @Composable
 fun AgendaContent(
-    monthSelected: String,
+    calendarDays: List<CalendarDay>,
+    monthSelected: Int,
+    daySelected: Int,
+    yearSelected: Int,
     initials: String,
-    updateMonthSelected: (String) -> Unit,
-    onProfileClick: () -> Unit,
+    updateDateSelected: (LocalDate) -> Unit,
+    toggleLogoutDropdownVisibility: () -> Unit,
     showLogoutDropdown: Boolean,
-    onDismissRequest: () -> Unit,
     dialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
     onLogoutClick: () -> Unit
@@ -110,10 +103,9 @@ fun AgendaContent(
         AgendaToolbar(
             monthSelected = monthSelected,
             initials = initials,
-            onMonthSelected = updateMonthSelected,
-            onProfileClick = onProfileClick,
+            onDateSelected = updateDateSelected,
+            toggleLogoutDropdownVisibility = toggleLogoutDropdownVisibility,
             showLogoutDropdown = showLogoutDropdown,
-            onDismissRequest = onDismissRequest,
             dialogState = dialogState,
             onDialogStateChange = updateDateDialogState,
             onLogoutClick = onLogoutClick
@@ -137,7 +129,13 @@ fun AgendaContent(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Top Text")
+                HorizontalCalendar(
+                    calendarDays = calendarDays,
+                    month = monthSelected,
+                    day = daySelected,
+                    year = yearSelected,
+                    updateDateSelected = updateDateSelected
+                )
             }
         }
     }
@@ -147,12 +145,14 @@ fun AgendaContent(
 @Preview
 fun PreviewAgendaContent() {
     AgendaContent(
-        monthSelected = "MARCH",
+        calendarDays = listOf(),
+        monthSelected = 3,
+        daySelected = 9,
+        yearSelected = 2024,
         initials = "AB",
-        updateMonthSelected = { },
-        onProfileClick = { },
+        updateDateSelected = { },
+        toggleLogoutDropdownVisibility = { },
         showLogoutDropdown = true,
-        onDismissRequest = { },
         dialogState = MaterialDialogState(),
         updateDateDialogState = { },
         onLogoutClick = { }

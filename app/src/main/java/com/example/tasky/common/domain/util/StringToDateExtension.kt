@@ -5,6 +5,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
 import java.util.Date
 import java.util.Locale
 
@@ -17,4 +18,8 @@ fun Long.convertMillisToDate(): String {
     val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.of("UTC"))
     val formattedDateTime = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateTime)
     return formattedDateTime
+}
+
+fun Int.convertMonthToString(): String {
+    return java.time.Month.of(this).getDisplayName(TextStyle.FULL, Locale.getDefault()).uppercase()
 }
