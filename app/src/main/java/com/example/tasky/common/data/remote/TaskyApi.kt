@@ -1,7 +1,7 @@
 package com.example.tasky.common.data.remote
 
+import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.feature_login.data.model.AccessToken
-import com.example.tasky.feature_login.data.model.AccessTokenResponse
 import com.example.tasky.feature_login.data.model.LoginUserInfo
 import com.example.tasky.feature_login.data.model.RegisterUserInfo
 import com.example.tasky.feature_login.domain.model.LoginUserResponse
@@ -22,10 +22,10 @@ interface TaskyApi {
     ): Response<LoginUserResponse>
 
     @POST("/accessToken")
-    suspend fun getNewAccessToken(@Body accessToken: AccessToken): AccessTokenResponse
+    suspend fun refreshSession(@Body accessToken: AccessToken): Response<AccessTokenResponse>
 
     @GET("/authenticate")
-    suspend fun checkAuthentication()
+    suspend fun checkAuthentication(): Response<Unit>
 
     @GET("/logout")
     suspend fun logout(): Response<Unit>

@@ -8,6 +8,12 @@ interface SessionStateManager {
     suspend fun setRefreshToken(refreshToken: String)
     fun getRefreshToken(): String?
 
+    suspend fun setAccessTokenExpiration(accessTokenExpiration: Long)
+    fun getAccessTokenExpiration(): Flow<Long?>
+
+    suspend fun setUserId(userId: String)
+    fun getUserId(): Flow<String?>
+
     suspend fun setName(name: String)
     fun getName(): String?
 }
