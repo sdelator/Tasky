@@ -1,15 +1,11 @@
-package com.example.tasky.common.data
+package com.example.tasky.common.presentation.util
 
-import com.example.tasky.common.domain.CalendarHelper
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import java.time.LocalDate
 import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class CalendarHelperImpl @Inject constructor() : CalendarHelper {
-    override fun getCalendarDaysForMonth(year: Int, month: Int): List<CalendarDay> {
+object CalendarHelper {
+    fun getCalendarDaysForMonth(year: Int, month: Int): List<CalendarDay> {
         val firstDayOfMonth = LocalDate.of(year, month, 1)
         val daysInMonth = firstDayOfMonth.lengthOfMonth()
 

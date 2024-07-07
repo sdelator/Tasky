@@ -3,9 +3,9 @@ package com.example.tasky.feature_agenda.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tasky.common.domain.CalendarHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
+import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -22,8 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
     private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
-    private val sessionStateManager: SessionStateManager,
-    private val calendarHelper: CalendarHelper
+    private val sessionStateManager: SessionStateManager
 ) : ViewModel() {
 
     companion object {
@@ -47,7 +46,7 @@ class AgendaViewModel @Inject constructor(
         viewModelScope.launch {
             _viewState.emit(
                 AgendaViewState(
-                    calendarDays = calendarHelper.getCalendarDaysForMonth(
+                    calendarDays = CalendarHelper.getCalendarDaysForMonth(
                         LocalDate.now().year,
                         LocalDate.now().monthValue
                     )
@@ -107,7 +106,7 @@ class AgendaViewModel @Inject constructor(
         val date = LocalDate.of(selectedYear, month, day)
         val calendarDays =
             if (_viewState.value.monthSelected != date.monthValue || _yearSelected.value != date.year) {
-                calendarHelper.getCalendarDaysForMonth(date.year, date.monthValue)
+                CalendarHelper.getCalendarDaysForMonth(date.year, date.monthValue)
             } else {
                 _viewState.value.calendarDays
             }
