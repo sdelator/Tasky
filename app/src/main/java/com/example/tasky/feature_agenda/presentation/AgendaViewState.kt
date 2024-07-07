@@ -5,7 +5,7 @@ import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import java.time.LocalDate
 
-// define viewState as something that can change throughout app usage
+/* define viewState as UI elements that change throughout app usage */
 data class AgendaViewState(
      val datePickerDialogState: MaterialDialogState = MaterialDialogState(),
      val showLogoutDropdown: Boolean = false,
