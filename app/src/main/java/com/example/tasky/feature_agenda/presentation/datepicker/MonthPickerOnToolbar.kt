@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
+import com.example.tasky.common.domain.util.convertMillisToMonth
 import com.example.tasky.common.domain.util.convertMonthToString
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -150,10 +151,10 @@ fun CalendarDatePicker() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Material3MonthPickerOnToolbar(
-    monthSelected: Int,
+    monthSelected: String,
     openDatePickerDialog: Boolean,
     onMonthClick: () -> Unit,
-    onMonthSelected: (Int) -> Unit
+    onMonthSelected: (String) -> Unit
 ) {
     val datePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     val selectedDateLabel = remember { mutableStateOf(monthSelected) }
@@ -166,7 +167,7 @@ fun Material3MonthPickerOnToolbar(
     ) {
         // Button to open the DatePickerDialog
         MonthTextWithIcon(
-            monthSelected = selectedDateLabel.value,
+            monthSelected = selectedDateLabel.value.toInt(),
             onClick = onMonthClick
         )
     }
@@ -181,8 +182,8 @@ fun Material3MonthPickerOnToolbar(
                 TextButton(
                     onClick = {
                         // Action to set the selected date and close the dialog
-                        selectedDateLabel.value = 3
-//                            datePickerState.selectedDateMillis?.convertMillisToMonth() ?: ""
+                        selectedDateLabel.value =
+                            datePickerState.selectedDateMillis?.convertMillisToMonth() ?: ""
                         onMonthSelected(selectedDateLabel.value)
                         onMonthClick()
                     }
@@ -215,7 +216,7 @@ fun Material3MonthPickerOnToolbar(
 @Preview
 fun Material3ComposableDatePicker() {
     Material3MonthPickerOnToolbar(
-        monthSelected = 3,
+        monthSelected = "March",
         openDatePickerDialog = true,
         onMonthClick = { /*TODO*/ }) {
     }
