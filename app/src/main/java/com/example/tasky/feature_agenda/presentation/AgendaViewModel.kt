@@ -14,6 +14,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -58,7 +59,7 @@ class AgendaViewModel @Inject constructor(
     fun logOutClicked() {
         Log.d(TAG, "logOutClicked redirect user to login page")
         viewModelScope.launch {
-            _viewState.value = _viewState.value.copy(showLoadingSpinner = true)
+            _viewState.update { it.copy(showLoadingSpinner = true) }
             val result = authenticatedRemoteRepository.logOutUser()
 
             when (result) {
@@ -69,27 +70,34 @@ class AgendaViewModel @Inject constructor(
 
                 is Result.Error -> {
                     println("failed logout :(")
-                    _viewState.value = _viewState.value.copy(
-                        showLoadingSpinner = false,
-                        showErrorDialog = true,
-                        dataError = result.error
-                    )
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
                 }
             }
         }
     }
 
     fun onErrorDialogDismissed() {
-        _viewState.value = _viewState.value.copy(showErrorDialog = false)
+        _viewState.update {
+            it.copy(showErrorDialog = false)
+        }
     }
 
     fun toggleLogoutDropdownVisibility() {
-        _viewState.value =
-            _viewState.value.copy(showLogoutDropdown = !_viewState.value.showLogoutDropdown)
+        _viewState.update {
+            it.copy(showLogoutDropdown = !_viewState.value.showLogoutDropdown)
+        }
     }
 
     fun updateDateDialogState(dialogState: MaterialDialogState) {
-        _viewState.value = _viewState.value.copy(datePickerDialogState = dialogState)
+        _viewState.update {
+            it.copy(datePickerDialogState = dialogState)
+        }
     }
 
     fun updateDateSelected(date: LocalDate) {
@@ -100,11 +108,13 @@ class AgendaViewModel @Inject constructor(
                 _viewState.value.calendarDays
             }
 
-        _viewState.value = _viewState.value.copy(
-            monthSelected = date.monthValue,
-            daySelected = date.dayOfMonth,
-            calendarDays = calendarDays
-        )
+        _viewState.update {
+            it.copy(
+                monthSelected = date.monthValue,
+                daySelected = date.dayOfMonth,
+                calendarDays = calendarDays
+            )
+        }
         _yearSelected.value = date.year
     }
 }
