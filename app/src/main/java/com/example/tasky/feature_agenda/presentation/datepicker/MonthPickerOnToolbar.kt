@@ -35,7 +35,6 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import java.time.LocalDate
 
 @Composable
 fun MonthTextWithIcon(
@@ -75,7 +74,7 @@ fun PreviewMonthIconSelectionText() {
 @Composable
 fun MonthPickerOnToolbar(
     monthSelected: Int,
-    onDateSelected: (LocalDate) -> Unit,
+    updateDateSelected: (Int, Int, Int) -> Unit,
     dialogState: MaterialDialogState,
     onDialogStateChange: (MaterialDialogState) -> Unit
 ) {
@@ -106,7 +105,7 @@ fun MonthPickerOnToolbar(
             yearRange = IntRange(2023, 2030),
             colors = customDatePickerColors()
         ) { date ->
-            onDateSelected(date)
+            updateDateSelected(date.monthValue, date.dayOfMonth, date.year)
             dialogState.hide()
             onDialogStateChange(dialogState)
         }

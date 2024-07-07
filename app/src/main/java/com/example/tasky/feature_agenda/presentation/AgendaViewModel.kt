@@ -100,7 +100,11 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    fun updateDateSelected(date: LocalDate) {
+    fun updateDateSelected(month: Int, day: Int, year: Int? = null) {
+        // year is only null for horizontal calendar; populated by datePicker on toolbar month selection
+        val selectedYear = year ?: _yearSelected.value
+
+        val date = LocalDate.of(selectedYear, month, day)
         val calendarDays =
             if (_viewState.value.monthSelected != date.monthValue || _yearSelected.value != date.year) {
                 calendarHelper.getCalendarDaysForMonth(date.year, date.monthValue)

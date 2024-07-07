@@ -32,7 +32,6 @@ import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
-import java.time.LocalDate
 
 @Composable
 fun AgendaRoot(
@@ -41,15 +40,17 @@ fun AgendaRoot(
 ) {
     val viewState by agendaViewModel.viewState.collectAsStateWithLifecycle()
     val initials = agendaViewModel.initials
-    val yearSelected by agendaViewModel.yearSelected.collectAsStateWithLifecycle()
+
+    val updateDateSelected: (Int, Int, Int?) -> Unit = { month, day, year ->
+        agendaViewModel.updateDateSelected(month, day, year)
+    }
 
     AgendaContent(
         calendarDays = viewState.calendarDays,
         monthSelected = viewState.monthSelected,
         daySelected = viewState.daySelected,
-        yearSelected = yearSelected,
         initials = initials,
-        updateDateSelected = { agendaViewModel.updateDateSelected(it) },
+        updateDateSelected = updateDateSelected,
         toggleLogoutDropdownVisibility = { agendaViewModel.toggleLogoutDropdownVisibility() },
         showLogoutDropdown = viewState.showLogoutDropdown,
         dialogState = viewState.datePickerDialogState,
@@ -85,9 +86,8 @@ fun AgendaContent(
     calendarDays: List<CalendarDay>,
     monthSelected: Int,
     daySelected: Int,
-    yearSelected: Int,
     initials: String,
-    updateDateSelected: (LocalDate) -> Unit,
+    updateDateSelected: (Int, Int, Int?) -> Unit,
     toggleLogoutDropdownVisibility: () -> Unit,
     showLogoutDropdown: Boolean,
     dialogState: MaterialDialogState,
@@ -103,7 +103,7 @@ fun AgendaContent(
         AgendaToolbar(
             monthSelected = monthSelected,
             initials = initials,
-            onDateSelected = updateDateSelected,
+            updateDateSelected = updateDateSelected,
             toggleLogoutDropdownVisibility = toggleLogoutDropdownVisibility,
             showLogoutDropdown = showLogoutDropdown,
             dialogState = dialogState,
@@ -133,8 +133,9 @@ fun AgendaContent(
                     calendarDays = calendarDays,
                     month = monthSelected,
                     day = daySelected,
-                    year = yearSelected,
-                    updateDateSelected = updateDateSelected
+                    updateDateSelected = { month, day ->
+                        updateDateSelected(month, day, null)
+                    }
                 )
             }
         }
@@ -148,9 +149,8 @@ fun PreviewAgendaContent() {
         calendarDays = listOf(),
         monthSelected = 3,
         daySelected = 9,
-        yearSelected = 2024,
         initials = "AB",
-        updateDateSelected = { },
+        updateDateSelected = { month, day, year -> },
         toggleLogoutDropdownVisibility = { },
         showLogoutDropdown = true,
         dialogState = MaterialDialogState(),

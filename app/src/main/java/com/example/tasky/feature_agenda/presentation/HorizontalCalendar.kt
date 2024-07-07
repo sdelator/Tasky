@@ -22,15 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
-import java.time.LocalDate
 
 @Composable
 fun HorizontalCalendar(
     calendarDays: List<CalendarDay>,
-    year: Int,
     month: Int,
     day: Int,
-    updateDateSelected: (LocalDate) -> Unit
+    updateDateSelected: (Int, Int) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -55,8 +53,7 @@ fun HorizontalCalendar(
                     day = calendarDay,
                     isSelected = day == calendarDay.date,
                     onClick = {
-                        val date = LocalDate.of(year, month, calendarDay.date)
-                        updateDateSelected(date)
+                        updateDateSelected(month, day)
                     }
                 )
             }
@@ -112,8 +109,7 @@ fun DateText(date: Int) {
 fun PreviewHorizontalCalendar() {
     HorizontalCalendar(
         calendarDays = listOf(),
-        year = 2024,
         month = 7,
         day = 9,
-        updateDateSelected = { })
+        updateDateSelected = { month, day -> })
 }
