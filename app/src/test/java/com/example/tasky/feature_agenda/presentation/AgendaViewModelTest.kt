@@ -2,6 +2,8 @@ package com.example.tasky.feature_agenda.presentation
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import com.example.tasky.common.data.CalendarHelperImpl
+import com.example.tasky.common.domain.CalendarHelper
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.fakes.FakeAuthenticatedRemoteRepository
 import com.example.tasky.fakes.FakeSessionStateManager
@@ -12,6 +14,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.time.LocalDate
 
 class AgendaViewModelTest {
     @get:Rule
@@ -20,9 +23,11 @@ class AgendaViewModelTest {
     private lateinit var sessionStateManager: FakeSessionStateManager
     private lateinit var authenticatedRemoteRepository: FakeAuthenticatedRemoteRepository
     private lateinit var viewModel: AgendaViewModel
+    private lateinit var calendarHelper: CalendarHelper
 
     @Before
     fun setUp() {
+        calendarHelper = CalendarHelperImpl()
         sessionStateManager = FakeSessionStateManager()
         authenticatedRemoteRepository = FakeAuthenticatedRemoteRepository()
 
@@ -32,8 +37,19 @@ class AgendaViewModelTest {
 
         viewModel = AgendaViewModel(
             authenticatedRemoteRepository = authenticatedRemoteRepository,
-            sessionStateManager = sessionStateManager
+            sessionStateManager = sessionStateManager,
+            calendarHelper = calendarHelper
         )
+    }
+
+    @Test
+    fun getInitialState() = runTest {
+        val viewState = viewModel.viewState.first()
+        assertThat(LocalDate.now().monthValue).isEqualTo(viewState.monthSelected)
+        assertThat(LocalDate.now().dayOfMonth).isEqualTo(viewState.daySelected)
+        val expectedCalendarDays =
+            calendarHelper.getCalendarDaysForMonth(LocalDate.now().year, LocalDate.now().monthValue)
+        assertThat(expectedCalendarDays).isEqualTo(viewState.calendarDays)
     }
 
     @Test
@@ -61,14 +77,15 @@ class AgendaViewModelTest {
         // Then
         runTest {
             val state = viewModel.viewState.first()
-            assertThat(state).isEqualTo(AgendaViewState.ErrorDialog(DataError.Network.NO_INTERNET))
+            assertThat(state.showErrorDialog).isEqualTo(true)
+            assertThat(state.dataError).isEqualTo(DataError.Network.NO_INTERNET)
         }
     }
 
     @Test
     fun check_value_profileInitials() {
         runTest {
-            val result = viewModel.initials.first()
+            val result = viewModel.initials
             assertThat(result).isEqualTo("TN")
         }
     }
