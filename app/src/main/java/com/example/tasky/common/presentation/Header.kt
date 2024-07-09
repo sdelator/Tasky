@@ -43,9 +43,10 @@ fun HeaderMedium(title: String, isChecked: Boolean, textColor: Color) {
 }
 
 @Composable
-fun HeaderSmall(title: String) {
+fun HeaderSmall(title: String, modifier: Modifier) {
     Text(
         text = title,
+        modifier = modifier,
         style = TextStyle(
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
@@ -79,6 +80,6 @@ fun ViewHeaderMedium() {
 @Preview
 fun ViewHeaderSmall() {
     Column {
-        HeaderSmall(title = "HEADLINE SMALL")
+        HeaderSmall(title = "HEADLINE SMALL", modifier = Modifier)
     }
 }
