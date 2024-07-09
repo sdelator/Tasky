@@ -25,4 +25,18 @@ class AuthenticatedRemoteRepositoryImpl(
             Result.Error(DataError.Network.NO_INTERNET)
         }
     }
+
+    override suspend fun authenticate(): Result<Unit, DataError.Network> {
+        return try {
+            val response = api.checkAuthentication()
+            if (response.isSuccessful) {
+                Result.Success(Unit)
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
 }

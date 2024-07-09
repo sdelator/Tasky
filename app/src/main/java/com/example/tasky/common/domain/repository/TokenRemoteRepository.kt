@@ -9,6 +9,4 @@ interface TokenRemoteRepository {
         refreshToken: String,
         userId: String
     ): Result<AccessTokenResponse, DataError.Network>
-
-    suspend fun checkAuthentication(): Result<Unit, DataError.Network>
 }

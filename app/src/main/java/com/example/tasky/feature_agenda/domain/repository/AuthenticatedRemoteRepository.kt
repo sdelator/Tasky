@@ -5,4 +5,5 @@ import com.example.tasky.common.domain.error.DataError
 
 interface AuthenticatedRemoteRepository {
     suspend fun logOutUser(): Result<Unit, DataError.Network>
+    suspend fun authenticate(): Result<Unit, DataError.Network>
 }
