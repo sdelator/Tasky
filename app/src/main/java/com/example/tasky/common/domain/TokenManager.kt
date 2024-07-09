@@ -35,6 +35,7 @@ class TokenManager @Inject constructor(
             is Result.Success -> {
                 println("Success refresh token!")
                 sessionStateManager.setAccessToken(result.data.accessToken)
+                sessionStateManager.setAccessTokenExpiration(result.data.expirationTimestamp)
             }
 
             is Result.Error -> {

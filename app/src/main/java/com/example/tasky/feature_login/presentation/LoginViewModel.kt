@@ -86,6 +86,7 @@ class LoginViewModel @Inject constructor(
                 is Result.Success -> {
                     println("success login!")
                     // emit a viewState to change to agenda composable
+                    sessionStateManager.setUserId(result.data.userId)
                     sessionStateManager.setAccessToken(result.data.accessToken)
                     sessionStateManager.setAccessTokenExpiration(result.data.accessTokenExpirationTimestamp)
                     sessionStateManager.setRefreshToken(result.data.refreshToken)
