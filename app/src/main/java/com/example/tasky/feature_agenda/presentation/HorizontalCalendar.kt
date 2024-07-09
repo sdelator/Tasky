@@ -53,7 +53,7 @@ fun HorizontalCalendar(
                     day = calendarDay,
                     isSelected = day == calendarDay.date,
                     onClick = {
-                        updateDateSelected(month, day)
+                        updateDateSelected(month, calendarDay.date)
                     }
                 )
             }
