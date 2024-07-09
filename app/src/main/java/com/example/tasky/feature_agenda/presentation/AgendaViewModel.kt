@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
+import com.example.tasky.common.domain.repository.TokenRemoteRepository
 import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
     private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
+    private val tokenRemoteRepository: TokenRemoteRepository,
     private val sessionStateManager: SessionStateManager
 ) : ViewModel() {
 
@@ -119,5 +121,34 @@ class AgendaViewModel @Inject constructor(
             )
         }
         _yearSelected.value = date.year
+    }
+
+    fun checkAuthentication() {
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = authenticatedRemoteRepository.authenticate()
+
+            when (result) {
+                is Result.Success -> {
+                    println("success authentication!")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false
+                        )
+                    }
+                }
+
+                is Result.Error -> {
+                    println("failed authentication :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 }

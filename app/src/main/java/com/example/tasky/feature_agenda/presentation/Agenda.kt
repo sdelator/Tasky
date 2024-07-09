@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -55,7 +57,8 @@ fun AgendaRoot(
         showLogoutDropdown = viewState.showLogoutDropdown,
         dialogState = viewState.datePickerDialogState,
         updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
-        onLogoutClick = { agendaViewModel.logOutClicked() }
+        onLogoutClick = { agendaViewModel.logOutClicked() },
+        checkAuthenticationClick = { agendaViewModel.checkAuthentication() }
     )
 
     if (viewState.showLoadingSpinner) {
@@ -92,7 +95,8 @@ fun AgendaContent(
     showLogoutDropdown: Boolean,
     dialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    checkAuthenticationClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -137,6 +141,11 @@ fun AgendaContent(
                         updateDateSelected(month, day, null)
                     }
                 )
+
+                //todo remove temp
+                Button(onClick = checkAuthenticationClick) {
+                    Text("Authenticated?", color = Color.White)
+                }
             }
         }
     }
@@ -155,7 +164,8 @@ fun PreviewAgendaContent() {
         showLogoutDropdown = true,
         dialogState = MaterialDialogState(),
         updateDateDialogState = { },
-        onLogoutClick = { }
+        onLogoutClick = { },
+        checkAuthenticationClick = { }
     )
 }
 

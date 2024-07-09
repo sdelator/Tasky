@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SessionStateManagerManagerImpl @Inject constructor(
+class SessionStateManagerImpl @Inject constructor(
     private val appPreferences: PreferenceHelper,
 ) : SessionStateManager {
     companion object {
@@ -31,6 +31,22 @@ class SessionStateManagerManagerImpl @Inject constructor(
         return runBlocking {
             appPreferences.get(PreferencesKeys.REFRESH_TOKEN).firstOrNull()
         }
+    }
+
+    override suspend fun setAccessTokenExpiration(accessTokenExpiration: Long) {
+        appPreferences.put(PreferencesKeys.ACCESS_TOKEN_EXPIRATION, accessTokenExpiration)
+    }
+
+    override fun getAccessTokenExpiration(): Flow<Long?> {
+        return appPreferences.get(PreferencesKeys.ACCESS_TOKEN_EXPIRATION)
+    }
+
+    override suspend fun setUserId(userId: String) {
+        appPreferences.put(PreferencesKeys.USER_ID, userId)
+    }
+
+    override fun getUserId(): Flow<String?> {
+        return appPreferences.get(PreferencesKeys.USER_ID)
     }
 
     override suspend fun setName(name: String) {

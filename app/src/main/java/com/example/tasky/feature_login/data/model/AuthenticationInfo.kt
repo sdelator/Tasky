@@ -15,8 +15,3 @@ data class AccessToken(
     val refreshToken: String,
     val userId: String
 )
-
-data class AccessTokenResponse(
-    val accessToken: String,
-    val expirationTimestamp: Long
-)
