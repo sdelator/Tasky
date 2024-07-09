@@ -29,8 +29,8 @@ class TokenRemoteRepositoryImpl(
             if (response.isSuccessful) {
                 Result.Success(
                     AccessTokenResponse(
-                        response.body()!!.accessToken,
-                        response.body()!!.expirationTimestamp
+                        response.body()?.accessToken ?: "",
+                        response.body()?.expirationTimestamp ?: 0L
                     )
                 )
             } else {
