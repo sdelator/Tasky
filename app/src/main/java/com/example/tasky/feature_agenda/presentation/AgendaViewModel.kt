@@ -3,9 +3,9 @@ package com.example.tasky.feature_agenda.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tasky.common.domain.CalendarHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
+import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -14,6 +14,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -21,8 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
     private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
-    private val sessionStateManager: SessionStateManager,
-    private val calendarHelper: CalendarHelper
+    private val sessionStateManager: SessionStateManager
 ) : ViewModel() {
 
     companion object {
@@ -46,7 +46,7 @@ class AgendaViewModel @Inject constructor(
         viewModelScope.launch {
             _viewState.emit(
                 AgendaViewState(
-                    calendarDays = calendarHelper.getCalendarDaysForMonth(
+                    calendarDays = CalendarHelper.getCalendarDaysForMonth(
                         LocalDate.now().year,
                         LocalDate.now().monthValue
                     )
@@ -58,7 +58,7 @@ class AgendaViewModel @Inject constructor(
     fun logOutClicked() {
         Log.d(TAG, "logOutClicked redirect user to login page")
         viewModelScope.launch {
-            _viewState.value = _viewState.value.copy(showLoadingSpinner = true)
+            _viewState.update { it.copy(showLoadingSpinner = true) }
             val result = authenticatedRemoteRepository.logOutUser()
 
             when (result) {
@@ -69,42 +69,55 @@ class AgendaViewModel @Inject constructor(
 
                 is Result.Error -> {
                     println("failed logout :(")
-                    _viewState.value = _viewState.value.copy(
-                        showLoadingSpinner = false,
-                        showErrorDialog = true,
-                        dataError = result.error
-                    )
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
                 }
             }
         }
     }
 
     fun onErrorDialogDismissed() {
-        _viewState.value = _viewState.value.copy(showErrorDialog = false)
+        _viewState.update {
+            it.copy(showErrorDialog = false)
+        }
     }
 
     fun toggleLogoutDropdownVisibility() {
-        _viewState.value =
-            _viewState.value.copy(showLogoutDropdown = !_viewState.value.showLogoutDropdown)
+        _viewState.update {
+            it.copy(showLogoutDropdown = !_viewState.value.showLogoutDropdown)
+        }
     }
 
     fun updateDateDialogState(dialogState: MaterialDialogState) {
-        _viewState.value = _viewState.value.copy(datePickerDialogState = dialogState)
+        _viewState.update {
+            it.copy(datePickerDialogState = dialogState)
+        }
     }
 
-    fun updateDateSelected(date: LocalDate) {
+    fun updateDateSelected(month: Int, day: Int, year: Int? = null) {
+        // year is only null for horizontal calendar; populated by datePicker on toolbar month selection
+        val selectedYear = year ?: _yearSelected.value
+
+        val date = LocalDate.of(selectedYear, month, day)
         val calendarDays =
             if (_viewState.value.monthSelected != date.monthValue || _yearSelected.value != date.year) {
-                calendarHelper.getCalendarDaysForMonth(date.year, date.monthValue)
+                CalendarHelper.getCalendarDaysForMonth(date.year, date.monthValue)
             } else {
                 _viewState.value.calendarDays
             }
 
-        _viewState.value = _viewState.value.copy(
-            monthSelected = date.monthValue,
-            daySelected = date.dayOfMonth,
-            calendarDays = calendarDays
-        )
+        _viewState.update {
+            it.copy(
+                monthSelected = date.monthValue,
+                daySelected = date.dayOfMonth,
+                calendarDays = calendarDays
+            )
+        }
         _yearSelected.value = date.year
     }
 }

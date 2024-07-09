@@ -2,9 +2,8 @@ package com.example.tasky.feature_agenda.presentation
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.example.tasky.common.data.CalendarHelperImpl
-import com.example.tasky.common.domain.CalendarHelper
 import com.example.tasky.common.domain.error.DataError
+import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.fakes.FakeAuthenticatedRemoteRepository
 import com.example.tasky.fakes.FakeSessionStateManager
 import com.example.tasky.util.MainCoroutineRule
@@ -23,11 +22,9 @@ class AgendaViewModelTest {
     private lateinit var sessionStateManager: FakeSessionStateManager
     private lateinit var authenticatedRemoteRepository: FakeAuthenticatedRemoteRepository
     private lateinit var viewModel: AgendaViewModel
-    private lateinit var calendarHelper: CalendarHelper
 
     @Before
     fun setUp() {
-        calendarHelper = CalendarHelperImpl()
         sessionStateManager = FakeSessionStateManager()
         authenticatedRemoteRepository = FakeAuthenticatedRemoteRepository()
 
@@ -37,8 +34,7 @@ class AgendaViewModelTest {
 
         viewModel = AgendaViewModel(
             authenticatedRemoteRepository = authenticatedRemoteRepository,
-            sessionStateManager = sessionStateManager,
-            calendarHelper = calendarHelper
+            sessionStateManager = sessionStateManager
         )
     }
 
@@ -48,7 +44,7 @@ class AgendaViewModelTest {
         assertThat(LocalDate.now().monthValue).isEqualTo(viewState.monthSelected)
         assertThat(LocalDate.now().dayOfMonth).isEqualTo(viewState.daySelected)
         val expectedCalendarDays =
-            calendarHelper.getCalendarDaysForMonth(LocalDate.now().year, LocalDate.now().monthValue)
+            CalendarHelper.getCalendarDaysForMonth(LocalDate.now().year, LocalDate.now().monthValue)
         assertThat(expectedCalendarDays).isEqualTo(viewState.calendarDays)
     }
 

@@ -23,13 +23,12 @@ import com.example.tasky.R
 import com.example.tasky.common.presentation.LogoutDropdownRoot
 import com.example.tasky.feature_agenda.presentation.datepicker.MonthPickerOnToolbar
 import com.vanpra.composematerialdialogs.MaterialDialogState
-import java.time.LocalDate
 
 @Composable
 fun AgendaToolbar(
     monthSelected: Int,
     initials: String,
-    onDateSelected: (LocalDate) -> Unit,
+    updateDateSelected: (Int, Int, Int) -> Unit,
     toggleLogoutDropdownVisibility: () -> Unit,
     showLogoutDropdown: Boolean,
     dialogState: MaterialDialogState,
@@ -45,7 +44,7 @@ fun AgendaToolbar(
     ) {
         MonthPickerOnToolbar(
             monthSelected = monthSelected,
-            onDateSelected = onDateSelected,
+            updateDateSelected = updateDateSelected,
             dialogState = dialogState,
             onDialogStateChange = onDialogStateChange
         )
@@ -113,7 +112,7 @@ fun PreviewAgendaToolbar() {
     ) {
         MonthPickerOnToolbar(
             3,
-            onDateSelected = { },
+            updateDateSelected = { month, day, _ -> },
             dialogState = MaterialDialogState(),
             onDialogStateChange = { }
         )
