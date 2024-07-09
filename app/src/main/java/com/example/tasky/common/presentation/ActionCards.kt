@@ -70,7 +70,11 @@ fun ActionCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CustomCheckbox(isChecked = isChecked, color = headerColor)
-            HeaderMedium(title = "Meeting", isChecked = isChecked, textColor = headerColor)
+            HeaderMedium(
+                title = "Place Holder Text",
+                isChecked = isChecked,
+                textColor = headerColor
+            )
             Spacer(modifier = Modifier.weight(1f))
             HorizontalEllipsisIcon()
         }
@@ -88,7 +92,7 @@ fun CustomCheckbox(isChecked: Boolean, color: Color) {
             painterResource(id = R.drawable.ic_open_checkbox)
         },
         modifier = Modifier.padding(end = 8.dp),
-        contentDescription = "Checkbox circle icon",
+        contentDescription = stringResource(R.string.checkbox_circle_icon),
         tint = color
     )
 }
