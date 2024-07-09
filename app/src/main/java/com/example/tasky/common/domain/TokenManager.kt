@@ -14,17 +14,15 @@ class TokenManager @Inject constructor(
         private val TAG = "TokenManager"
     }
 
-    suspend fun shouldRefreshToken() {
+    suspend fun shouldRefreshToken(): Boolean {
         val now = ZonedDateTime.now()
         val currentTimeInMilliseconds = now.toInstant().toEpochMilli()
         val expirationTime = sessionStateManager.getAccessTokenExpiration().first() ?: 0L
 
-        if (currentTimeInMilliseconds > expirationTime) {
-            refreshToken()
-        }
+        return currentTimeInMilliseconds > expirationTime
     }
 
-    private suspend fun refreshToken() {
+    suspend fun refreshToken() {
         Log.d(TAG, "refreshToken()")
         val refreshToken = sessionStateManager.getRefreshToken() ?: ""
         val userId = sessionStateManager.getUserId().first()

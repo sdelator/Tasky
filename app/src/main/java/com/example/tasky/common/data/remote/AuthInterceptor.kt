@@ -18,7 +18,9 @@ class AuthInterceptor @Inject constructor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         runBlocking {
-            tokenManager.shouldRefreshToken()
+            if (tokenManager.shouldRefreshToken()) {
+                tokenManager.refreshToken()
+            }
         }
 
         val accessToken = runBlocking {
