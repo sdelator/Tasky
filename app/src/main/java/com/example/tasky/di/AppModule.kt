@@ -6,7 +6,6 @@ import com.example.tasky.common.data.SessionStateManagerManagerImpl
 import com.example.tasky.common.data.remote.ApiKeyInterceptor
 import com.example.tasky.common.data.remote.AuthInterceptor
 import com.example.tasky.common.data.remote.TaskyApi
-import com.example.tasky.common.data.remote.TokenManagerImpl
 import com.example.tasky.common.data.repository.TokenRemoteRepositoryImpl
 import com.example.tasky.common.domain.CalendarHelper
 import com.example.tasky.common.domain.Constants
@@ -45,13 +44,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideTokenManager(
-        tokenRemoteRepository: TokenRemoteRepository,
+        tokenRepository: TokenRemoteRepository,
         sessionStateManager: SessionStateManager
     ): TokenManager {
-        return TokenManagerImpl(
-            tokenRemoteRepository = tokenRemoteRepository,
-            sessionStateManager = sessionStateManager
-        )
+        return TokenManager(tokenRepository, sessionStateManager)
     }
 
     @Provides
@@ -76,10 +72,9 @@ object AppModule {
     @Provides
     @Singleton
     @TokenClient
-    fun provideTokenOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+    fun provideTokenOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(ApiKeyInterceptor())
-            .addInterceptor(authInterceptor)
             .build()
     }
 

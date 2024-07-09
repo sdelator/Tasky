@@ -6,13 +6,13 @@ import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.common.domain.repository.TokenRemoteRepository
 import com.example.tasky.common.domain.util.toNetworkErrorType
-import com.example.tasky.di.TokenApi
+import com.example.tasky.di.AuthenticatedApi
 import com.example.tasky.feature_login.data.model.AccessToken
 import java.io.IOException
 
 
 class TokenRemoteRepositoryImpl(
-    @TokenApi private val api: TaskyApi
+    @AuthenticatedApi private val api: TaskyApi
 ) : TokenRemoteRepository {
     override suspend fun refreshSession(
         refreshToken: String,
