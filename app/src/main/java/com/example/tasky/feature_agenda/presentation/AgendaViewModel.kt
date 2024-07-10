@@ -3,11 +3,14 @@ package com.example.tasky.feature_agenda.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasky.R
+import com.example.tasky.TaskyApplication
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.repository.TokenRemoteRepository
 import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
+import com.example.tasky.common.presentation.util.toFormatted_MM_DD_YYYY
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +27,8 @@ import javax.inject.Inject
 class AgendaViewModel @Inject constructor(
     private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
     private val tokenRemoteRepository: TokenRemoteRepository,
-    private val sessionStateManager: SessionStateManager
+    private val sessionStateManager: SessionStateManager,
+    private val application: TaskyApplication
 ) : ViewModel() {
 
     companion object {
@@ -51,7 +55,8 @@ class AgendaViewModel @Inject constructor(
                     calendarDays = CalendarHelper.getCalendarDaysForMonth(
                         LocalDate.now().year,
                         LocalDate.now().monthValue
-                    )
+                    ),
+                    headerDateText = application.applicationContext.getString(R.string.today)
                 )
             )
         }
@@ -117,7 +122,8 @@ class AgendaViewModel @Inject constructor(
             it.copy(
                 monthSelected = date.monthValue,
                 daySelected = date.dayOfMonth,
-                calendarDays = calendarDays
+                calendarDays = calendarDays,
+                headerDateText = getHeaderDateText(date)
             )
         }
         _yearSelected.value = date.year
@@ -149,6 +155,14 @@ class AgendaViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun getHeaderDateText(date: LocalDate): String {
+        return if (date == LocalDate.now()) {
+            application.applicationContext.getString(R.string.today)
+        } else {
+            date.toFormatted_MM_DD_YYYY()
         }
     }
 }

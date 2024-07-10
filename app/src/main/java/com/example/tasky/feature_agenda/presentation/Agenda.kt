@@ -58,7 +58,7 @@ fun AgendaRoot(
         dialogState = viewState.datePickerDialogState,
         updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
         onLogoutClick = { agendaViewModel.logOutClicked() },
-        checkAuthenticationClick = { agendaViewModel.checkAuthentication() }
+        headerDateText = viewState.headerDateText
     )
 
     if (viewState.showLoadingSpinner) {
@@ -96,7 +96,7 @@ fun AgendaContent(
     dialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
     onLogoutClick: () -> Unit,
-    checkAuthenticationClick: () -> Unit
+    headerDateText: String
 ) {
     Box(
         modifier = Modifier
@@ -142,7 +142,7 @@ fun AgendaContent(
                     }
                 )
                 Spacer(modifier = Modifier.padding(top = 10.dp))
-                HeaderSmall(title = "Today", modifier = Modifier.align(Alignment.Start))
+                HeaderSmall(title = headerDateText, modifier = Modifier.align(Alignment.Start))
             }
         }
     }
@@ -162,7 +162,7 @@ fun PreviewAgendaContent() {
         dialogState = MaterialDialogState(),
         updateDateDialogState = { },
         onLogoutClick = { },
-        checkAuthenticationClick = { }
+        headerDateText = "today"
     )
 }
 
