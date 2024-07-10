@@ -10,6 +10,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="tasky_green">#279F70</color>
     <color name="sea_foam_green">#93E9BE</color>
+    <color name="event_light_green">#CAEF45</color>
+    <color name="reminder_gray">#F2F3F7</color>
     <color name="black">#FF000000</color>
     <color name="gray">#A9B4BE</color>
     <color name="dark_gray">#5C5D5A</color>

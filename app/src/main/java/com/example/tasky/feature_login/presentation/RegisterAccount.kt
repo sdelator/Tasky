@@ -31,7 +31,7 @@ import androidx.navigation.NavController
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
-import com.example.tasky.common.presentation.Header
+import com.example.tasky.common.presentation.HeaderLarge
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
 import com.example.tasky.common.presentation.SimpleButton
@@ -133,7 +133,7 @@ fun RegisterAccountContent(
             .safeDrawingPadding()
     )
     {
-        Header(title = stringResource(R.string.create_your_account))
+        HeaderLarge(title = stringResource(R.string.create_your_account))
         // White bottom sheet-like shape
         Card(
             modifier = Modifier

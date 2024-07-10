@@ -41,7 +41,7 @@ import com.example.tasky.R
 import com.example.tasky.RegisterNav
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
-import com.example.tasky.common.presentation.Header
+import com.example.tasky.common.presentation.HeaderLarge
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
 import com.example.tasky.common.presentation.SimpleButton
@@ -144,7 +144,7 @@ fun LoginScreenContent(
             .padding(top = 70.dp)
             .safeDrawingPadding()
     ) {
-        Header(title = stringResource(R.string.welcome_back))
+        HeaderLarge(title = stringResource(R.string.welcome_back))
         // White bottom sheet-like shape
         Card(
             modifier = Modifier

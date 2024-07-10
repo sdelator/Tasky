@@ -14,5 +14,6 @@ data class AgendaViewState(
      val calendarDays: List<CalendarDay> = emptyList(),
      val showLoadingSpinner: Boolean = false,
      val showErrorDialog: Boolean = false,
-     val dataError: DataError = DataError.Network.UNKNOWN
+     val dataError: DataError = DataError.Network.UNKNOWN,
+     val headerDateText: String = ""
 )

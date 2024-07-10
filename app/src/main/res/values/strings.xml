@@ -23,4 +23,7 @@
     <string name="invalid_or_missing_token_or_api_key">Invalid or missing token or API key</string>
     <string name="logout">Logout</string>
     <string name="cancel">CANCEL</string>
+    <string name="more_options">More options</string>
+    <string name="checkbox_circle_icon">Checkbox circle icon</string>
+    <string name="today">Today</string>
 </resources>

@@ -5,16 +5,15 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,6 +29,7 @@ import com.example.tasky.AuthNavRoute
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
+import com.example.tasky.common.presentation.HeaderSmall
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
@@ -58,7 +58,7 @@ fun AgendaRoot(
         dialogState = viewState.datePickerDialogState,
         updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
         onLogoutClick = { agendaViewModel.logOutClicked() },
-        checkAuthenticationClick = { agendaViewModel.checkAuthentication() }
+        headerDateText = viewState.headerDateText
     )
 
     if (viewState.showLoadingSpinner) {
@@ -96,7 +96,7 @@ fun AgendaContent(
     dialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
     onLogoutClick: () -> Unit,
-    checkAuthenticationClick: () -> Unit
+    headerDateText: String
 ) {
     Box(
         modifier = Modifier
@@ -141,11 +141,8 @@ fun AgendaContent(
                         updateDateSelected(month, day, null)
                     }
                 )
-
-                //todo remove temp
-                Button(onClick = checkAuthenticationClick) {
-                    Text("Authenticated?", color = Color.White)
-                }
+                Spacer(modifier = Modifier.padding(top = 10.dp))
+                HeaderSmall(title = headerDateText, modifier = Modifier.align(Alignment.Start))
             }
         }
     }
@@ -165,7 +162,7 @@ fun PreviewAgendaContent() {
         dialogState = MaterialDialogState(),
         updateDateDialogState = { },
         onLogoutClick = { },
-        checkAuthenticationClick = { }
+        headerDateText = "today"
     )
 }
 
