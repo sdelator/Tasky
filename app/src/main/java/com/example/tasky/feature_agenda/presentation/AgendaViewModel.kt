@@ -1,10 +1,10 @@
 package com.example.tasky.feature_agenda.presentation
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.R
-import com.example.tasky.TaskyApplication
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.repository.TokenRemoteRepository
@@ -28,7 +28,7 @@ class AgendaViewModel @Inject constructor(
     private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
     private val tokenRemoteRepository: TokenRemoteRepository,
     private val sessionStateManager: SessionStateManager,
-    private val application: TaskyApplication
+    private val application: Application
 ) : ViewModel() {
 
     companion object {
