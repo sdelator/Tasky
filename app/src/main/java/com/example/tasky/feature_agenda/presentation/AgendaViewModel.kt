@@ -8,6 +8,7 @@ import com.example.tasky.R
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.repository.TokenRemoteRepository
+import com.example.tasky.common.presentation.model.Action
 import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_MM_DD_YYYY
@@ -100,6 +101,12 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
+    fun toggleFabDropdownVisibility() {
+        _viewState.update {
+            it.copy(showFabDropdown = !_viewState.value.showFabDropdown)
+        }
+    }
+
     fun updateDateDialogState(dialogState: MaterialDialogState) {
         _viewState.update {
             it.copy(datePickerDialogState = dialogState)
@@ -163,6 +170,22 @@ class AgendaViewModel @Inject constructor(
             application.applicationContext.getString(R.string.today)
         } else {
             date.toFormatted_MM_DD_YYYY()
+        }
+    }
+
+    fun fabActionClicked(action: Action) {
+        when (action) {
+            Action.Event -> {
+                // TODO open event screen
+            }
+
+            Action.Task -> {
+                // TODO open task screen
+            }
+
+            Action.Reminder -> {
+                // TODO open reminder screen
+            }
         }
     }
 }

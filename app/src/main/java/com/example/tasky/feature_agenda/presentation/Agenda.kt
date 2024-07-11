@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -29,9 +31,11 @@ import com.example.tasky.AuthNavRoute
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
+import com.example.tasky.common.presentation.FabDropdownRoot
 import com.example.tasky.common.presentation.HeaderSmall
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
+import com.example.tasky.common.presentation.model.Action
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
 
@@ -54,11 +58,14 @@ fun AgendaRoot(
         initials = initials,
         updateDateSelected = updateDateSelected,
         toggleLogoutDropdownVisibility = { agendaViewModel.toggleLogoutDropdownVisibility() },
+        toggleFabDropdownVisibility = { agendaViewModel.toggleFabDropdownVisibility() },
         showLogoutDropdown = viewState.showLogoutDropdown,
+        showFabDropdown = viewState.showFabDropdown,
         dialogState = viewState.datePickerDialogState,
         updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
         onLogoutClick = { agendaViewModel.logOutClicked() },
-        headerDateText = viewState.headerDateText
+        headerDateText = viewState.headerDateText,
+        onFabActionClick = { agendaViewModel.fabActionClicked(it) }
     )
 
     if (viewState.showLoadingSpinner) {
@@ -92,10 +99,13 @@ fun AgendaContent(
     initials: String,
     updateDateSelected: (Int, Int, Int?) -> Unit,
     toggleLogoutDropdownVisibility: () -> Unit,
+    toggleFabDropdownVisibility: () -> Unit,
     showLogoutDropdown: Boolean,
+    showFabDropdown: Boolean,
     dialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
     onLogoutClick: () -> Unit,
+    onFabActionClick: (Action) -> Unit,
     headerDateText: String
 ) {
     Box(
@@ -145,6 +155,21 @@ fun AgendaContent(
                 HeaderSmall(title = headerDateText, modifier = Modifier.align(Alignment.Start))
             }
         }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentSize(Alignment.BottomEnd)
+                .padding(bottom = 16.dp, end = 16.dp)
+                .zIndex(1f)
+        ) {
+            Fab(onClick = toggleFabDropdownVisibility)
+            FabDropdownRoot(
+                showFabDropdown = showFabDropdown,
+                toggleFabDropdownVisibility = toggleFabDropdownVisibility,
+                onFabActionClick = onFabActionClick,
+                modifier = Modifier.align(Alignment.BottomEnd)
+            )
+        }
     }
 }
 
@@ -158,11 +183,14 @@ fun PreviewAgendaContent() {
         initials = "AB",
         updateDateSelected = { month, day, year -> },
         toggleLogoutDropdownVisibility = { },
+        toggleFabDropdownVisibility = { },
         showLogoutDropdown = true,
+        showFabDropdown = true,
         dialogState = MaterialDialogState(),
         updateDateDialogState = { },
         onLogoutClick = { },
-        headerDateText = "today"
+        headerDateText = "today",
+        onFabActionClick = { }
     )
 }
 
