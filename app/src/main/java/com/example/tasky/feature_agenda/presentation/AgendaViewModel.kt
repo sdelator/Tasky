@@ -181,11 +181,11 @@ class AgendaViewModel @Inject constructor(
                 }
 
                 Action.Task -> {
-                    // TODO open task screen
+                    _viewEvent.send(AgendaViewEvent.NavigateToTaskScreen)
                 }
 
                 Action.Reminder -> {
-                    // TODO open reminder screen
+                    _viewEvent.send(AgendaViewEvent.NavigateToReminderScreen)
                 }
             }
         }

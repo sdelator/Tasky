@@ -92,6 +92,22 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
                 .background(Color.Green)
         )
     }
+    composable<TaskNav> {
+        // todo remove temporary screen
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Blue)
+        )
+    }
+    composable<ReminderNav> {
+        // todo remove temporary screen
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Red)
+        )
+    }
 }
 
 // routes
@@ -113,3 +129,9 @@ object AgendaNav
 
 @Serializable
 object EventNav
+
+@Serializable
+object TaskNav
+
+@Serializable
+object ReminderNav

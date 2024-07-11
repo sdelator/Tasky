@@ -30,6 +30,8 @@ import androidx.navigation.NavController
 import com.example.tasky.AuthNavRoute
 import com.example.tasky.EventNav
 import com.example.tasky.R
+import com.example.tasky.ReminderNav
+import com.example.tasky.TaskNav
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.FabDropdownRoot
@@ -90,6 +92,14 @@ fun AgendaRoot(
 
             AgendaViewEvent.NavigateToEventScreen -> {
                 navController.navigate(EventNav)
+            }
+
+            AgendaViewEvent.NavigateToTaskScreen -> {
+                navController.navigate(TaskNav)
+            }
+            
+            AgendaViewEvent.NavigateToReminderScreen -> {
+                navController.navigate(ReminderNav)
             }
         }
     }
