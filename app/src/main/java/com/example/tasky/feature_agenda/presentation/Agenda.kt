@@ -28,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.AuthNavRoute
+import com.example.tasky.EventNav
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
@@ -85,6 +86,10 @@ fun AgendaRoot(
         when (event) {
             is AgendaViewEvent.NavigateToLoginScreen -> {
                 navController.navigate(AuthNavRoute)
+            }
+
+            AgendaViewEvent.NavigateToEventScreen -> {
+                navController.navigate(EventNav)
             }
         }
     }

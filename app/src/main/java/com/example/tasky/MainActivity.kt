@@ -6,7 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -79,6 +84,14 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
     composable<AgendaNav> {
         AgendaRoot(navController = navController)
     }
+    composable<EventNav> {
+        // todo remove temporary screen
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Green)
+        )
+    }
 }
 
 // routes
@@ -97,3 +110,6 @@ object LoginNav
 
 @Serializable
 object AgendaNav
+
+@Serializable
+object EventNav

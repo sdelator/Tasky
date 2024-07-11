@@ -174,17 +174,19 @@ class AgendaViewModel @Inject constructor(
     }
 
     fun fabActionClicked(action: Action) {
-        when (action) {
-            Action.Event -> {
-                // TODO open event screen
-            }
+        viewModelScope.launch {
+            when (action) {
+                Action.Event -> {
+                    _viewEvent.send(AgendaViewEvent.NavigateToEventScreen)
+                }
 
-            Action.Task -> {
-                // TODO open task screen
-            }
+                Action.Task -> {
+                    // TODO open task screen
+                }
 
-            Action.Reminder -> {
-                // TODO open reminder screen
+                Action.Reminder -> {
+                    // TODO open reminder screen
+                }
             }
         }
     }
