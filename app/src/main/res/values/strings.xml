@@ -26,4 +26,8 @@
     <string name="more_options">More options</string>
     <string name="checkbox_circle_icon">Checkbox circle icon</string>
     <string name="today">Today</string>
+    <string name="floating_action_button">Floating action button</string>
+    <string name="reminder">Reminder</string>
+    <string name="task">Task</string>
+    <string name="event">Event</string>
 </resources>
