@@ -67,8 +67,8 @@ fun AgendaRoot(
         dialogState = viewState.datePickerDialogState,
         updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
         onLogoutClick = { agendaViewModel.logOutClicked() },
-        headerDateText = viewState.headerDateText,
-        onFabActionClick = { agendaViewModel.fabActionClicked(it) }
+        onFabActionClick = { agendaViewModel.fabActionClicked(it) },
+        headerDateText = viewState.headerDateText
     )
 
     if (viewState.showLoadingSpinner) {
@@ -97,7 +97,7 @@ fun AgendaRoot(
             AgendaViewEvent.NavigateToTaskScreen -> {
                 navController.navigate(TaskNav)
             }
-            
+
             AgendaViewEvent.NavigateToReminderScreen -> {
                 navController.navigate(ReminderNav)
             }
