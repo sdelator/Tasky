@@ -23,6 +23,22 @@ class FakeSessionStateManager : SessionStateManager {
         return refreshTokenFlow.value
     }
 
+    override suspend fun setAccessTokenExpiration(accessTokenExpiration: Long) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAccessTokenExpiration(): Flow<Long?> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun setUserId(userId: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getUserId(): Flow<String?> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun setName(name: String) {
         nameFlow.value = name
     }
