@@ -9,6 +9,7 @@ import java.time.LocalDate
 data class AgendaViewState(
      val datePickerDialogState: MaterialDialogState = MaterialDialogState(),
      val showLogoutDropdown: Boolean = false,
+     val showFabDropdown: Boolean = false,
      val monthSelected: Int = LocalDate.now().monthValue,
      val daySelected: Int = LocalDate.now().dayOfMonth,
      val calendarDays: List<CalendarDay> = emptyList(),
