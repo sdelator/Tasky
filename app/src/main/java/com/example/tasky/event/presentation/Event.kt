@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,9 +26,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.tasky.R
+import com.example.tasky.common.presentation.CustomCheckbox
+import com.example.tasky.common.presentation.HeaderLargeStrikeThrough
 import com.example.tasky.common.presentation.HeaderSmall
 import com.example.tasky.common.presentation.model.Action
 import com.example.tasky.feature_agenda.presentation.AgendaToolbar
@@ -96,6 +101,8 @@ fun AgendaContent(
                 ColorBlockTypeEvent()
                 Spacer(modifier = Modifier.padding(top = 10.dp))
                 HeaderSmall(title = headerDateText, modifier = Modifier.align(Alignment.Start))
+                GrayDivider()
+                EventDescription()
             }
         }
     }
@@ -117,4 +124,40 @@ fun ColorBlockTypeEvent() {
             color = colorResource(id = R.color.dark_gray)
         )
     }
+}
+
+@Composable
+@Preview
+fun CheckboxHeader() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CustomCheckbox(isChecked = false, color = Color.Black)
+        HeaderLargeStrikeThrough(
+            title = "Meeting",
+            isChecked = false,
+            textColor = Color.Black
+        )
+    }
+}
+
+@Composable
+@Preview
+fun GrayDivider() {
+    Divider(
+        color = colorResource(id = R.color.light_gray),
+        thickness = 1.dp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp)
+    )
+}
+
+@Composable
+@Preview
+fun EventDescription() {
+    Text(
+        text = "Test testing 123...",
+        fontSize = 16.sp
+    )
 }

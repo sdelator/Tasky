@@ -29,6 +29,20 @@ fun HeaderLarge(title: String) {
 }
 
 @Composable
+fun HeaderLargeStrikeThrough(title: String, isChecked: Boolean, textColor: Color) {
+    Text(
+        text = title,
+        style = TextStyle(
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = textColor,
+            textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
+        ),
+        textAlign = TextAlign.Center
+    )
+}
+
+@Composable
 fun HeaderMedium(title: String, isChecked: Boolean, textColor: Color) {
     Text(
         text = title,
