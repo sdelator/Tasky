@@ -71,7 +71,7 @@ fun EventContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .padding(top = 32.dp, bottom = 16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 ColorBlockTypeEvent()
@@ -79,6 +79,7 @@ fun EventContent(
                 CheckboxHeader()
                 GrayDivider()
                 EventDescription()
+                EmptyPhotos()
                 GrayDivider()
             }
         }
@@ -88,7 +89,9 @@ fun EventContent(
 @Composable
 @Preview
 fun ColorBlockTypeEvent() {
-    Row {
+    Row(
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+    ) {
         Box(
             modifier = Modifier
                 .size(20.dp)
@@ -108,7 +111,7 @@ fun ColorBlockTypeEvent() {
 fun CheckboxHeader() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(top = 16.dp, end = 16.dp)
+        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
     ) {
         CustomCheckbox(isChecked = false, color = Color.Black, size = 20.dp)
         HeaderLargeStrikeThrough(
@@ -127,7 +130,7 @@ fun GrayDivider() {
         thickness = 1.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp, bottom = 16.dp)
+            .padding(16.dp)
     )
 }
 
@@ -136,37 +139,41 @@ fun GrayDivider() {
 fun EventDescription() {
     Text(
         text = "Test testing 123...",
-        fontSize = 16.sp
+        fontSize = 16.sp,
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp)
     )
 }
 
 @Composable
-@Preview
 fun EmptyPhotos() {
-    Box(
-        Modifier
-            .background(colorResource(id = R.color.reminder_gray))
-            .padding(top = 50.dp, bottom = 50.dp)
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier.padding(top = 30.dp, bottom = 12.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+        Box(
+            modifier = Modifier
+                .background(colorResource(id = R.color.reminder_gray))
+                .padding(top = 50.dp, bottom = 50.dp)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            Icon(
-                Icons.Filled.Add,
-                modifier = Modifier.size(30.dp),
-                tint = colorResource(id = R.color.gray),
-                contentDescription = null
-            )
-            Spacer(modifier = Modifier.padding(5.dp))
-            Text(
-                text = "Add Photos",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = colorResource(id = R.color.gray)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    Icons.Filled.Add,
+                    modifier = Modifier.size(30.dp),
+                    tint = colorResource(id = R.color.gray),
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
+                Text(
+                    text = "Add Photos",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colorResource(id = R.color.gray)
+                )
+            }
         }
     }
 }
