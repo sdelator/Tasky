@@ -33,7 +33,7 @@ fun HeaderLargeStrikeThrough(title: String, isChecked: Boolean, textColor: Color
     Text(
         text = title,
         style = TextStyle(
-            fontSize = 20.sp,
+            fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
             color = textColor,
             textDecoration = if (isChecked) TextDecoration.LineThrough else TextDecoration.None

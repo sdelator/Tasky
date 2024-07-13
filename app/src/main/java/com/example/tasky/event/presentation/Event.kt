@@ -1,6 +1,7 @@
 package com.example.tasky.event.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,9 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,11 +37,6 @@ import androidx.navigation.NavController
 import com.example.tasky.R
 import com.example.tasky.common.presentation.CustomCheckbox
 import com.example.tasky.common.presentation.HeaderLargeStrikeThrough
-import com.example.tasky.common.presentation.HeaderSmall
-import com.example.tasky.common.presentation.model.Action
-import com.example.tasky.feature_agenda.presentation.AgendaToolbar
-import com.example.tasky.feature_agenda.presentation.model.CalendarDay
-import com.vanpra.composematerialdialogs.MaterialDialogState
 
 @Composable
 fun EventRoot(
@@ -47,21 +47,8 @@ fun EventRoot(
 }
 
 @Composable
-fun AgendaContent(
-    calendarDays: List<CalendarDay>,
-    monthSelected: Int,
-    daySelected: Int,
-    initials: String,
-    updateDateSelected: (Int, Int, Int?) -> Unit,
-    toggleLogoutDropdownVisibility: () -> Unit,
-    toggleFabDropdownVisibility: () -> Unit,
-    showLogoutDropdown: Boolean,
-    showFabDropdown: Boolean,
-    dialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState) -> Unit,
-    onLogoutClick: () -> Unit,
-    onFabActionClick: (Action) -> Unit,
-    headerDateText: String
+@Preview
+fun EventContent(
 ) {
     Box(
         modifier = Modifier
@@ -69,17 +56,7 @@ fun AgendaContent(
             .background(Color.Black)
             .safeDrawingPadding()
     ) {
-        AgendaToolbar(
-            monthSelected = monthSelected,
-            initials = initials,
-            updateDateSelected = updateDateSelected,
-            toggleLogoutDropdownVisibility = toggleLogoutDropdownVisibility,
-            showLogoutDropdown = showLogoutDropdown,
-            dialogState = dialogState,
-            onDialogStateChange = updateDateDialogState,
-            onLogoutClick = onLogoutClick
-        )
-
+        //TODO add EventToolbar
         Card(
             modifier = Modifier
                 .fillMaxSize()
@@ -94,15 +71,15 @@ fun AgendaContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 ColorBlockTypeEvent()
                 Spacer(modifier = Modifier.padding(top = 10.dp))
-                HeaderSmall(title = headerDateText, modifier = Modifier.align(Alignment.Start))
+                CheckboxHeader()
                 GrayDivider()
                 EventDescription()
+                GrayDivider()
             }
         }
     }
@@ -130,9 +107,10 @@ fun ColorBlockTypeEvent() {
 @Preview
 fun CheckboxHeader() {
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(top = 16.dp, end = 16.dp)
     ) {
-        CustomCheckbox(isChecked = false, color = Color.Black)
+        CustomCheckbox(isChecked = false, color = Color.Black, size = 20.dp)
         HeaderLargeStrikeThrough(
             title = "Meeting",
             isChecked = false,
@@ -149,7 +127,7 @@ fun GrayDivider() {
         thickness = 1.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp)
+            .padding(top = 16.dp, bottom = 16.dp)
     )
 }
 
@@ -160,4 +138,35 @@ fun EventDescription() {
         text = "Test testing 123...",
         fontSize = 16.sp
     )
+}
+
+@Composable
+@Preview
+fun EmptyPhotos() {
+    Box(
+        Modifier
+            .background(colorResource(id = R.color.reminder_gray))
+            .padding(top = 50.dp, bottom = 50.dp)
+            .fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                Icons.Filled.Add,
+                modifier = Modifier.size(30.dp),
+                tint = colorResource(id = R.color.gray),
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.padding(5.dp))
+            Text(
+                text = "Add Photos",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = colorResource(id = R.color.gray)
+            )
+        }
+    }
 }
