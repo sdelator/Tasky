@@ -7,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasky.R
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
-import com.example.tasky.common.domain.repository.TokenRemoteRepository
-import com.example.tasky.common.presentation.model.Action
 import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_MM_DD_YYYY
@@ -27,7 +25,6 @@ import javax.inject.Inject
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
     private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
-    private val tokenRemoteRepository: TokenRemoteRepository,
     private val sessionStateManager: SessionStateManager,
     private val application: Application
 ) : ViewModel() {
@@ -165,29 +162,11 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    fun getHeaderDateText(date: LocalDate): String {
+    private fun getHeaderDateText(date: LocalDate): String {
         return if (date == LocalDate.now()) {
             application.applicationContext.getString(R.string.today)
         } else {
             date.toFormatted_MM_DD_YYYY()
-        }
-    }
-
-    fun fabActionClicked(action: Action) {
-        viewModelScope.launch {
-            when (action) {
-                Action.Event -> {
-                    _viewEvent.send(AgendaViewEvent.NavigateToEventScreen)
-                }
-
-                Action.Task -> {
-                    _viewEvent.send(AgendaViewEvent.NavigateToTaskScreen)
-                }
-
-                Action.Reminder -> {
-                    _viewEvent.send(AgendaViewEvent.NavigateToReminderScreen)
-                }
-            }
         }
     }
 }

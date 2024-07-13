@@ -13,4 +13,8 @@ class FakeAuthenticatedRemoteRepository : AuthenticatedRemoteRepository {
             Result.Error(DataError.Network.NO_INTERNET)
         }
     }
+
+    override suspend fun authenticate(): Result<Unit, DataError.Network> {
+        TODO("Not yet implemented")
+    }
 }

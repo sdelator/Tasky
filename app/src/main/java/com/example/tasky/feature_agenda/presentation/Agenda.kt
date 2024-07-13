@@ -54,6 +54,14 @@ fun AgendaRoot(
         agendaViewModel.updateDateSelected(month, day, year)
     }
 
+    val onFabActionClick: (Action) -> Unit = {
+        when (it) {
+            Action.Event -> navController.navigate(EventNav)
+            Action.Task -> navController.navigate(TaskNav)
+            Action.Reminder -> navController.navigate(ReminderNav)
+        }
+    }
+
     AgendaContent(
         calendarDays = viewState.calendarDays,
         monthSelected = viewState.monthSelected,
@@ -67,7 +75,7 @@ fun AgendaRoot(
         dialogState = viewState.datePickerDialogState,
         updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
         onLogoutClick = { agendaViewModel.logOutClicked() },
-        onFabActionClick = { agendaViewModel.fabActionClicked(it) },
+        onFabActionClick = onFabActionClick,
         headerDateText = viewState.headerDateText
     )
 
@@ -88,18 +96,6 @@ fun AgendaRoot(
         when (event) {
             is AgendaViewEvent.NavigateToLoginScreen -> {
                 navController.navigate(AuthNavRoute)
-            }
-
-            AgendaViewEvent.NavigateToEventScreen -> {
-                navController.navigate(EventNav)
-            }
-
-            AgendaViewEvent.NavigateToTaskScreen -> {
-                navController.navigate(TaskNav)
-            }
-
-            AgendaViewEvent.NavigateToReminderScreen -> {
-                navController.navigate(ReminderNav)
             }
         }
     }
