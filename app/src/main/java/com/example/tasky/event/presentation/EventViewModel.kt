@@ -6,4 +6,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EventViewModel @Inject constructor() : ViewModel() {
+
+    fun cancelEventCreation() {
+
+    }
 }

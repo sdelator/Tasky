@@ -44,7 +44,7 @@ fun EventRoot(
     navController: NavController,
     eventViewModel: EventViewModel = hiltViewModel()
 ) {
-
+    EventContent()
 }
 
 @Composable
@@ -57,11 +57,16 @@ fun EventContent(
             .background(Color.Black)
             .safeDrawingPadding()
     ) {
-        //TODO add EventToolbar
+        EventToolbar(
+            cancelEventCreation = { /*TODO*/ },
+            saveEventEdits = { /*TODO*/ },
+            startEditMode = { /*TODO*/ },
+            isEditing = true
+        )
         Card(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 75.dp),
+                .padding(top = 60.dp),
             shape = RoundedCornerShape(
                 topStart = 30.dp, topEnd = 30.dp
             ),
@@ -120,7 +125,7 @@ fun CheckboxHeader() {
     ) {
         CustomCheckbox(isChecked = false, color = Color.Black, size = 20.dp)
         HeaderLargeStrikeThrough(
-            title = "Meeting",
+            title = stringResource(R.string.new_event),
             isChecked = false,
             textColor = Color.Black
         )
@@ -145,10 +150,11 @@ fun GrayDivider() {
 @Preview
 fun EventDescription() {
     Row(
-        modifier = Modifier.padding(start = 16.dp, end = 24.dp)
+        modifier = Modifier.padding(start = 16.dp, end = 24.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Test testing 123...",
+            text = stringResource(R.string.event_description),
             fontSize = 16.sp
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -202,7 +208,7 @@ fun DateLineItem() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "From",
+            text = stringResource(R.string.from),
             fontSize = 16.sp
         )
         Text(
