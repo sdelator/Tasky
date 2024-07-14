@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -81,6 +82,10 @@ fun EventContent(
                 EventDescription()
                 EmptyPhotos()
                 GrayDivider()
+                StartDateLineItem()
+                GrayDivider()
+                EndDateLineItem()
+                GrayDivider()
             }
         }
     }
@@ -111,7 +116,7 @@ fun ColorBlockTypeEvent() {
 fun CheckboxHeader() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 24.dp)
     ) {
         CustomCheckbox(isChecked = false, color = Color.Black, size = 20.dp)
         HeaderLargeStrikeThrough(
@@ -119,6 +124,8 @@ fun CheckboxHeader() {
             isChecked = false,
             textColor = Color.Black
         )
+        Spacer(modifier = Modifier.weight(1f))
+        RightCarrotIcon()
     }
 }
 
@@ -137,11 +144,16 @@ fun GrayDivider() {
 @Composable
 @Preview
 fun EventDescription() {
-    Text(
-        text = "Test testing 123...",
-        fontSize = 16.sp,
-        modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-    )
+    Row(
+        modifier = Modifier.padding(start = 16.dp, end = 24.dp)
+    ) {
+        Text(
+            text = "Test testing 123...",
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        RightCarrotIcon()
+    }
 }
 
 @Composable
@@ -176,4 +188,62 @@ fun EmptyPhotos() {
             }
         }
     }
+}
+
+@Composable
+@Preview
+fun DateLineItem() {
+    val isEditing = true
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp, top = 6.dp, bottom = 6.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "From",
+            fontSize = 16.sp
+        )
+        Text(
+            text = "08:00",
+            fontSize = 16.sp
+        ) // TODO timePicker
+
+        if (isEditing == true) {
+            RightCarrotIcon()
+        }
+
+        Text(
+            text = "Jul 21 2024",
+            fontSize = 16.sp
+        )// TODO CalendarPicker
+
+        if (isEditing == true) {
+            RightCarrotIcon()
+        }
+    }
+}
+
+@Composable
+@Preview
+fun StartDateLineItem() {
+    val isEditing = true
+    DateLineItem()
+}
+
+@Composable
+@Preview
+fun EndDateLineItem() {
+    val isEditing = false
+    DateLineItem()
+}
+
+@Composable
+fun RightCarrotIcon() {
+    Icon(
+        imageVector = Icons.Default.KeyboardArrowRight,
+        contentDescription = null,
+        tint = Color.Black
+    )
 }
