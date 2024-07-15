@@ -29,10 +29,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.tasky.R
 import com.example.tasky.common.domain.util.convertMillisToDate
-import com.example.tasky.common.presentation.CustomCheckbox
+import com.example.tasky.common.presentation.CheckboxHeader
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
-import com.example.tasky.common.presentation.HeaderLargeStrikeThrough
 import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.event.presentation.components.EmptyPhotos
 
@@ -62,9 +61,7 @@ fun EventContent(
     ) {
         EventToolbar(
             date = dateOnToolbar,
-            cancelEventCreation = { onToolbarAction(ToolbarAction.CANCEL) },
-            saveEventEdits = { onToolbarAction(ToolbarAction.SAVE) },
-            startEditMode = { onToolbarAction(ToolbarAction.EDIT) },
+            onToolbarAction = onToolbarAction,
             isEditing = true
         )
         Card(
@@ -122,24 +119,6 @@ fun ColorBlockTypeEvent() {
 
 @Composable
 @Preview
-fun CheckboxHeader() {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 24.dp)
-    ) {
-        CustomCheckbox(isChecked = false, color = Color.Black, size = 20.dp)
-        HeaderLargeStrikeThrough(
-            title = stringResource(R.string.new_event),
-            isChecked = false,
-            textColor = Color.Black
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        RightCarrotIcon()
-    }
-}
-
-@Composable
-@Preview
 fun EventDescription() {
     Row(
         modifier = Modifier.padding(start = 16.dp, end = 24.dp),
@@ -159,7 +138,7 @@ fun EventDescription() {
 fun StartDateLineItem() {
     DateLineItem(
         text = stringResource(id = R.string.from),
-        isEditing = false
+        isEditing = false // TODO use viewState to control this
     )
 }
 
@@ -168,6 +147,6 @@ fun StartDateLineItem() {
 fun EndDateLineItem() {
     DateLineItem(
         text = stringResource(id = R.string.to),
-        isEditing = true
+        isEditing = true // TODO use viewState to control this
     )
 }

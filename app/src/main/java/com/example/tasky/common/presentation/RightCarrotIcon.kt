@@ -17,6 +17,7 @@ fun RightCarrotIcon(modifier: Modifier = Modifier) {
     )
 }
 
+/* Usage: to maintain same spacing for when event is not in edit mode */
 @Composable
 fun InvisibleRightCarrotIcon(modifier: Modifier = Modifier) {
     Icon(
