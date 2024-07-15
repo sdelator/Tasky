@@ -1,7 +1,6 @@
 package com.example.tasky.common.presentation
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,20 +9,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import java.time.LocalTime
 
 @Composable
 fun DateLineItem(
-    text: String,
     isEditing: Boolean,
     dialogState: MaterialDialogState,
     timeDialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
-    updateTimeDialogState: (MaterialDialogState) -> Unit
+    updateTimeDialogState: (MaterialDialogState) -> Unit,
+    updateTimeSelected: (LocalTime, LineItemType) -> Unit,
+    lineItemType: LineItemType,
+    time: String
 ) {
     Row(
         modifier = Modifier
@@ -33,7 +34,8 @@ fun DateLineItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = text,
+            text = if (lineItemType == LineItemType.TO) stringResource(id = R.string.from)
+            else stringResource(id = R.string.to),
             fontSize = 16.sp,
             modifier = Modifier.weight(1f)
         )
@@ -41,7 +43,10 @@ fun DateLineItem(
         CustomTimePicker(
             modifier = Modifier.weight(1f),
             dialogState = timeDialogState,
-            updateTimeDialogState = updateTimeDialogState
+            updateTimeDialogState = updateTimeDialogState,
+            updateTimeSelected = updateTimeSelected,
+            lineItemType = lineItemType,
+            time = time
         )
 
         if (isEditing) RightCarrotIcon(modifier = Modifier.weight(1f))
@@ -60,25 +65,31 @@ fun DateLineItem(
     }
 }
 
-@Composable
-@Preview
-fun PreviewDateLineItem() {
-    Column {
-        DateLineItem(
-            text = stringResource(id = R.string.to),
-            isEditing = true,
-            dialogState = MaterialDialogState(),
-            timeDialogState = MaterialDialogState(),
-            updateDateDialogState = { },
-            updateTimeDialogState = { }
-        )
-        DateLineItem(
-            text = stringResource(id = R.string.from),
-            isEditing = false,
-            dialogState = MaterialDialogState(),
-            timeDialogState = MaterialDialogState(),
-            updateDateDialogState = { },
-            updateTimeDialogState = { }
-        )
-    }
-}
+//@Composable
+//@Preview
+//fun PreviewDateLineItem() {
+//    Column {
+//        DateLineItem(
+//            text = stringResource(id = R.string.to),
+//            isEditing = true,
+//            dialogState = MaterialDialogState(),
+//            timeDialogState = MaterialDialogState(),
+//            updateDateDialogState = { },
+//            updateTimeDialogState = { },
+//            updateTimeSelected = { },
+//            timeType = TimeType.TO,
+//            time = ""
+//        )
+//        DateLineItem(
+//            text = stringResource(id = R.string.from),
+//            isEditing = false,
+//            dialogState = MaterialDialogState(),
+//            timeDialogState = MaterialDialogState(),
+//            updateDateDialogState = { },
+//            updateTimeDialogState = { },
+//            updateTimeSelected = { },
+//            timeType = TimeType.FROM,
+//            time = ""
+//        )
+//    }
+//}

@@ -17,15 +17,19 @@ import com.vanpra.composematerialdialogs.datetime.time.TimePickerColors
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import java.time.LocalTime
 
 @Composable
 fun CustomTimePicker(
     modifier: Modifier,
     dialogState: MaterialDialogState,
-    updateTimeDialogState: (MaterialDialogState) -> Unit
+    updateTimeDialogState: (MaterialDialogState) -> Unit,
+    updateTimeSelected: (LocalTime, LineItemType) -> Unit,
+    lineItemType: LineItemType,
+    time: String
 ) {
     Text(
-        text = "08:00",
+        text = time,
         fontSize = 16.sp,
         modifier = modifier
             .clickable { dialogState.show() }
@@ -46,7 +50,8 @@ fun CustomTimePicker(
     ) {
         timepicker(
             colors = customTimePickerColors()
-        ) {
+        ) { time ->
+            updateTimeSelected(time, lineItemType)
             dialogState.hide()
             updateTimeDialogState(dialogState)
         }
@@ -93,4 +98,8 @@ fun customTimePickerColors(): TimePickerColors {
         headerTextColor = Color.Black,
         borderColor = Color.Black
     )
+}
+
+enum class LineItemType {
+    TO, FROM
 }

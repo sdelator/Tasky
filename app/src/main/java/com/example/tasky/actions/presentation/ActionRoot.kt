@@ -33,10 +33,12 @@ import com.example.tasky.actions.presentation.components.EmptyPhotos
 import com.example.tasky.common.domain.util.convertMillisToDate
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
+import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.common.presentation.TitleSection
 import com.example.tasky.common.presentation.model.Action
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import java.time.LocalTime
 
 @Composable
 fun ActionRoot(
@@ -46,6 +48,10 @@ fun ActionRoot(
     actionViewModel: ActionViewModel = hiltViewModel()
 ) {
     val viewState by actionViewModel.viewState.collectAsStateWithLifecycle()
+    val updateTimeSelected: (LocalTime, LineItemType) -> Unit = { time, timeType ->
+        eventViewModel.updateTimeSelected(time, timeType)
+    }
+
     ActionContent(
         dateOnToolbar = date.convertMillisToDate(),
         onToolbarAction = {},
@@ -53,7 +59,10 @@ fun ActionRoot(
         dialogState = viewState.datePickerDialogState,
         timeDialogState = viewState.timePickerDialogState,
         updateDateDialogState = { eventViewModel.updateDateDialogState(it) },
-        updateTimeDialogState = { eventViewModel.updateTimeDialogState(it) }
+        updateTimeDialogState = { eventViewModel.updateTimeDialogState(it) },
+        updateTimeSelected = updateTimeSelected,
+        startTime = viewState.startTime,
+        endTime = viewState.endTime
     )
 }
 
@@ -65,7 +74,10 @@ fun ActionContent(
     dialogState: MaterialDialogState,
     timeDialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
-    updateTimeDialogState: (MaterialDialogState) -> Unit
+    updateTimeDialogState: (MaterialDialogState) -> Unit,
+    updateTimeSelected: (LocalTime, LineItemType) -> Unit,
+    startTime: String,
+    endTime: String
 ) {
     Box(
         modifier = Modifier
@@ -108,7 +120,10 @@ fun ActionContent(
                     dialogState = dialogState,
                     timeDialogState = timeDialogState,
                     updateDateDialogState = updateDateDialogState,
-                    updateTimeDialogState = updateTimeDialogState
+                    updateTimeDialogState = updateTimeDialogState,
+                    updateTimeSelected = updateTimeSelected,
+                    startTime = startTime,
+                    endTime = endTime
                 )
                 GrayDivider()
                 if (actionType == Action.Event) {
@@ -116,7 +131,10 @@ fun ActionContent(
                         dialogState = dialogState,
                         timeDialogState = timeDialogState,
                         updateDateDialogState = updateDateDialogState,
-                        updateTimeDialogState = updateTimeDialogState
+                        updateTimeDialogState = updateTimeDialogState,
+                        updateTimeSelected = updateTimeSelected,
+                        startTime = startTime,
+                        endTime = endTime
                     )
                 }
                 GrayDivider()
@@ -188,15 +206,20 @@ fun StartDateLineItem(
     dialogState: MaterialDialogState,
     timeDialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
-    updateTimeDialogState: (MaterialDialogState) -> Unit
+    updateTimeDialogState: (MaterialDialogState) -> Unit,
+    updateTimeSelected: (LocalTime, LineItemType) -> Unit,
+    startTime: String,
+    endTime: String
 ) {
     DateLineItem(
-        text = stringResource(id = R.string.from),
         isEditing = false, // TODO use viewState to control this
         dialogState = dialogState,
         timeDialogState = timeDialogState,
         updateDateDialogState = updateDateDialogState,
-        updateTimeDialogState = updateTimeDialogState
+        updateTimeDialogState = updateTimeDialogState,
+        updateTimeSelected = updateTimeSelected,
+        lineItemType = LineItemType.TO,
+        time = startTime
     )
 }
 
@@ -205,14 +228,19 @@ fun EndDateLineItem(
     dialogState: MaterialDialogState,
     timeDialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
-    updateTimeDialogState: (MaterialDialogState) -> Unit
+    updateTimeDialogState: (MaterialDialogState) -> Unit,
+    updateTimeSelected: (LocalTime, LineItemType) -> Unit,
+    startTime: String,
+    endTime: String
 ) {
     DateLineItem(
-        text = stringResource(id = R.string.to),
         isEditing = true, // TODO use viewState to control this
         dialogState = dialogState,
         timeDialogState = timeDialogState,
         updateDateDialogState = updateDateDialogState,
-        updateTimeDialogState = updateTimeDialogState
+        updateTimeDialogState = updateTimeDialogState,
+        updateTimeSelected = updateTimeSelected,
+        lineItemType = LineItemType.FROM,
+        time = endTime
     )
 }
