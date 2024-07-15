@@ -12,11 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,6 +33,7 @@ import com.example.tasky.common.presentation.CustomCheckbox
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.HeaderLargeStrikeThrough
+import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.event.presentation.components.EmptyPhotos
 
 @Composable
@@ -171,14 +169,5 @@ fun EndDateLineItem() {
     DateLineItem(
         text = stringResource(id = R.string.to),
         isEditing = true
-    )
-}
-
-@Composable
-fun RightCarrotIcon() {
-    Icon(
-        imageVector = Icons.Default.KeyboardArrowRight,
-        contentDescription = null,
-        tint = Color.Black
     )
 }
