@@ -29,4 +29,10 @@ class ActionViewModel @Inject constructor() : ViewModel() {
             it.copy(datePickerDialogState = dialogState)
         }
     }
+
+    fun updateTimeDialogState(dialogState: MaterialDialogState) {
+        _viewState.update {
+            it.copy(timePickerDialogState = dialogState)
+        }
+    }
 }

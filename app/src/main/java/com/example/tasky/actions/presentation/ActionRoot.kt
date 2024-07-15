@@ -51,7 +51,9 @@ fun ActionRoot(
         onToolbarAction = {},
         actionType = action,
         dialogState = viewState.datePickerDialogState,
-        updateDateDialogState = { eventViewModel.updateDateDialogState(it) }
+        timeDialogState = viewState.timePickerDialogState,
+        updateDateDialogState = { eventViewModel.updateDateDialogState(it) },
+        updateTimeDialogState = { eventViewModel.updateTimeDialogState(it) }
     )
 }
 
@@ -61,7 +63,9 @@ fun ActionContent(
     onToolbarAction: (ToolbarAction) -> Unit,
     actionType: Action,
     dialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState) -> Unit
+    timeDialogState: MaterialDialogState,
+    updateDateDialogState: (MaterialDialogState) -> Unit,
+    updateTimeDialogState: (MaterialDialogState) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -102,13 +106,17 @@ fun ActionContent(
                 GrayDivider()
                 StartDateLineItem(
                     dialogState = dialogState,
-                    updateDateDialogState = updateDateDialogState
+                    timeDialogState = timeDialogState,
+                    updateDateDialogState = updateDateDialogState,
+                    updateTimeDialogState = updateTimeDialogState
                 )
                 GrayDivider()
                 if (actionType == Action.Event) {
                     EndDateLineItem(
                         dialogState = dialogState,
-                        updateDateDialogState = updateDateDialogState
+                        timeDialogState = timeDialogState,
+                        updateDateDialogState = updateDateDialogState,
+                        updateTimeDialogState = updateTimeDialogState
                     )
                 }
                 GrayDivider()
@@ -178,25 +186,33 @@ fun DescriptionSection(action: Action) {
 @Composable
 fun StartDateLineItem(
     dialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState) -> Unit
+    timeDialogState: MaterialDialogState,
+    updateDateDialogState: (MaterialDialogState) -> Unit,
+    updateTimeDialogState: (MaterialDialogState) -> Unit
 ) {
     DateLineItem(
         text = stringResource(id = R.string.from),
         isEditing = false, // TODO use viewState to control this
         dialogState = dialogState,
-        updateDateDialogState = updateDateDialogState
+        timeDialogState = timeDialogState,
+        updateDateDialogState = updateDateDialogState,
+        updateTimeDialogState = updateTimeDialogState
     )
 }
 
 @Composable
 fun EndDateLineItem(
     dialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState) -> Unit
+    timeDialogState: MaterialDialogState,
+    updateDateDialogState: (MaterialDialogState) -> Unit,
+    updateTimeDialogState: (MaterialDialogState) -> Unit
 ) {
     DateLineItem(
         text = stringResource(id = R.string.to),
         isEditing = true, // TODO use viewState to control this
         dialogState = dialogState,
-        updateDateDialogState = updateDateDialogState
+        timeDialogState = timeDialogState,
+        updateDateDialogState = updateDateDialogState,
+        updateTimeDialogState = updateTimeDialogState
     )
 }

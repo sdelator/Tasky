@@ -21,7 +21,9 @@ fun DateLineItem(
     text: String,
     isEditing: Boolean,
     dialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState) -> Unit
+    timeDialogState: MaterialDialogState,
+    updateDateDialogState: (MaterialDialogState) -> Unit,
+    updateTimeDialogState: (MaterialDialogState) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -36,11 +38,11 @@ fun DateLineItem(
             modifier = Modifier.weight(1f)
         )
 
-        Text(
-            text = "08:00",
-            fontSize = 16.sp,
-            modifier = Modifier.weight(1f)
-        ) // TODO TimePicker
+        CustomTimePicker(
+            modifier = Modifier.weight(1f),
+            dialogState = timeDialogState,
+            updateTimeDialogState = updateTimeDialogState
+        )
 
         if (isEditing) RightCarrotIcon(modifier = Modifier.weight(1f))
         else InvisibleRightCarrotIcon(modifier = Modifier.weight(1f))
@@ -66,13 +68,17 @@ fun PreviewDateLineItem() {
             text = stringResource(id = R.string.to),
             isEditing = true,
             dialogState = MaterialDialogState(),
-            updateDateDialogState = { }
+            timeDialogState = MaterialDialogState(),
+            updateDateDialogState = { },
+            updateTimeDialogState = { }
         )
         DateLineItem(
             text = stringResource(id = R.string.from),
             isEditing = false,
             dialogState = MaterialDialogState(),
-            updateDateDialogState = { }
+            timeDialogState = MaterialDialogState(),
+            updateDateDialogState = { },
+            updateTimeDialogState = { }
         )
     }
 }

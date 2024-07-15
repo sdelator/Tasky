@@ -4,6 +4,7 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 
 data class EventViewState(
     val datePickerDialogState: MaterialDialogState = MaterialDialogState(),
+    val timePickerDialogState: MaterialDialogState = MaterialDialogState(),
     val eventName: String = "",
     val eventDescription: String = "",
     val startTime: String = "",
