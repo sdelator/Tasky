@@ -22,6 +22,7 @@ import com.example.tasky.R
 
 @Composable
 fun EventToolbar(
+    date: String,
     cancelEventCreation: () -> Unit,
     saveEventEdits: () -> Unit,
     startEditMode: () -> Unit,
@@ -35,7 +36,7 @@ fun EventToolbar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         CancelButton(onClick = cancelEventCreation)
-        EventDate()
+        EventDate(date = date)
         if (isEditing) {
             SaveButton(startEditMode)
         } else {
@@ -76,9 +77,9 @@ fun SaveButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun EventDate() {
+fun EventDate(date: String) {
     Text(
-        text = "01 March 2024",
+        text = date,
         color = Color.White,
         fontWeight = FontWeight.SemiBold
     )
@@ -88,6 +89,7 @@ fun EventDate() {
 @Preview
 fun PreviewIcon() {
     EventToolbar(
+        date = "01 March 2024",
         cancelEventCreation = { /*TODO*/ },
         saveEventEdits = { /*TODO*/ },
         startEditMode = { },

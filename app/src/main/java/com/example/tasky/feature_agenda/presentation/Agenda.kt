@@ -56,7 +56,7 @@ fun AgendaRoot(
 
     val onFabActionClick: (Action) -> Unit = {
         when (it) {
-            Action.Event -> navController.navigate(EventNav)
+            Action.Event -> navController.navigate(EventNav(agendaViewModel.dateSelected.value))
             Action.Task -> navController.navigate(TaskNav)
             Action.Reminder -> navController.navigate(ReminderNav)
         }

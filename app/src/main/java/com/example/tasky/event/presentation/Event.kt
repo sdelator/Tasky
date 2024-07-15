@@ -36,20 +36,27 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.tasky.R
+import com.example.tasky.common.domain.util.convertMillisToDate
 import com.example.tasky.common.presentation.CustomCheckbox
 import com.example.tasky.common.presentation.HeaderLargeStrikeThrough
 
 @Composable
 fun EventRoot(
     navController: NavController,
+    date: Long,
     eventViewModel: EventViewModel = hiltViewModel()
 ) {
-    EventContent()
+//    val viewState by eventViewModel.viewState.collectAsStateWithLifecycle()
+    EventContent(
+        dateOnToolbar = date.convertMillisToDate(),
+        onToolbarAction = {}
+    )
 }
 
 @Composable
-@Preview
 fun EventContent(
+    dateOnToolbar: String,
+    onToolbarAction: (ToolbarAction) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -58,9 +65,10 @@ fun EventContent(
             .safeDrawingPadding()
     ) {
         EventToolbar(
-            cancelEventCreation = { /*TODO*/ },
-            saveEventEdits = { /*TODO*/ },
-            startEditMode = { /*TODO*/ },
+            date = dateOnToolbar,
+            cancelEventCreation = { onToolbarAction(ToolbarAction.CANCEL) },
+            saveEventEdits = { onToolbarAction(ToolbarAction.SAVE) },
+            startEditMode = { onToolbarAction(ToolbarAction.EDIT) },
             isEditing = true
         )
         Card(
