@@ -1,6 +1,7 @@
 package com.example.tasky.common.presentation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,9 +17,7 @@ import com.example.tasky.R
 import com.example.tasky.event.presentation.RightCarrotIcon
 
 @Composable
-@Preview
-fun DateLineItem() {
-    val isEditing = true
+fun DateLineItem(text: String, isEditing: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -27,7 +26,7 @@ fun DateLineItem() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = stringResource(R.string.from),
+            text = text,
             fontSize = 16.sp
         )
         Text(
@@ -35,7 +34,7 @@ fun DateLineItem() {
             fontSize = 16.sp
         ) // TODO timePicker
 
-        if (isEditing == true) {
+        if (isEditing) {
             RightCarrotIcon()
         }
 
@@ -44,8 +43,17 @@ fun DateLineItem() {
             fontSize = 16.sp
         )// TODO CalendarPicker
 
-        if (isEditing == true) {
+        if (isEditing) {
             RightCarrotIcon()
         }
+    }
+}
+
+@Composable
+@Preview
+fun PreviewDateLineItem() {
+    Column {
+        DateLineItem(text = stringResource(id = R.string.to), isEditing = true)
+        DateLineItem(text = stringResource(id = R.string.from), isEditing = false)
     }
 }

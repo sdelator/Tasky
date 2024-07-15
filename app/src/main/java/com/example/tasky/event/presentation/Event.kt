@@ -159,15 +159,19 @@ fun EventDescription() {
 @Composable
 @Preview
 fun StartDateLineItem() {
-    val isEditing = true
-    DateLineItem()
+    DateLineItem(
+        text = stringResource(id = R.string.from),
+        isEditing = false
+    )
 }
 
 @Composable
 @Preview
 fun EndDateLineItem() {
-    val isEditing = false
-    DateLineItem()
+    DateLineItem(
+        text = stringResource(id = R.string.to),
+        isEditing = true
+    )
 }
 
 @Composable
