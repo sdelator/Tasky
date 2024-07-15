@@ -1,13 +1,11 @@
 package com.example.tasky.event.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
@@ -15,11 +13,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +25,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,7 +33,10 @@ import androidx.navigation.NavController
 import com.example.tasky.R
 import com.example.tasky.common.domain.util.convertMillisToDate
 import com.example.tasky.common.presentation.CustomCheckbox
+import com.example.tasky.common.presentation.DateLineItem
+import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.HeaderLargeStrikeThrough
+import com.example.tasky.event.presentation.components.EmptyPhotos
 
 @Composable
 fun EventRoot(
@@ -93,7 +91,7 @@ fun EventContent(
                 CheckboxHeader()
                 GrayDivider()
                 EventDescription()
-                EmptyPhotos()
+                EmptyPhotos() // TODO if statement for added photos
                 GrayDivider()
                 StartDateLineItem()
                 GrayDivider()
@@ -144,18 +142,6 @@ fun CheckboxHeader() {
 
 @Composable
 @Preview
-fun GrayDivider() {
-    Divider(
-        color = colorResource(id = R.color.light_gray),
-        thickness = 1.dp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    )
-}
-
-@Composable
-@Preview
 fun EventDescription() {
     Row(
         modifier = Modifier.padding(start = 16.dp, end = 24.dp),
@@ -167,75 +153,6 @@ fun EventDescription() {
         )
         Spacer(modifier = Modifier.weight(1f))
         RightCarrotIcon()
-    }
-}
-
-@Composable
-fun EmptyPhotos() {
-    Column(
-        modifier = Modifier.padding(top = 30.dp, bottom = 12.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .background(colorResource(id = R.color.reminder_gray))
-                .padding(top = 50.dp, bottom = 50.dp)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    Icons.Filled.Add,
-                    modifier = Modifier.size(30.dp),
-                    tint = colorResource(id = R.color.gray),
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.padding(5.dp))
-                Text(
-                    text = "Add Photos",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colorResource(id = R.color.gray)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-@Preview
-fun DateLineItem() {
-    val isEditing = true
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 24.dp, end = 24.dp, top = 6.dp, bottom = 6.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = stringResource(R.string.from),
-            fontSize = 16.sp
-        )
-        Text(
-            text = "08:00",
-            fontSize = 16.sp
-        ) // TODO timePicker
-
-        if (isEditing == true) {
-            RightCarrotIcon()
-        }
-
-        Text(
-            text = "Jul 21 2024",
-            fontSize = 16.sp
-        )// TODO CalendarPicker
-
-        if (isEditing == true) {
-            RightCarrotIcon()
-        }
     }
 }
 
