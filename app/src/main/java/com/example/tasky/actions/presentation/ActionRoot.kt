@@ -50,7 +50,8 @@ fun ActionRoot(
         dateOnToolbar = date.convertMillisToDate(),
         onToolbarAction = {},
         actionType = action,
-        dialogState = viewState.datePickerDialogState
+        dialogState = viewState.datePickerDialogState,
+        updateDateDialogState = { eventViewModel.updateDateDialogState(it) }
     )
 }
 
@@ -59,7 +60,8 @@ fun ActionContent(
     dateOnToolbar: String,
     onToolbarAction: (ToolbarAction) -> Unit,
     actionType: Action,
-    dialogState: MaterialDialogState
+    dialogState: MaterialDialogState,
+    updateDateDialogState: (MaterialDialogState) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -98,10 +100,16 @@ fun ActionContent(
                     EmptyPhotos() // TODO if statement for added photos
                 }
                 GrayDivider()
-                StartDateLineItem(dialogState = dialogState)
+                StartDateLineItem(
+                    dialogState = dialogState,
+                    updateDateDialogState = updateDateDialogState
+                )
                 GrayDivider()
                 if (actionType == Action.Event) {
-                    EndDateLineItem(dialogState = dialogState)
+                    EndDateLineItem(
+                        dialogState = dialogState,
+                        updateDateDialogState = updateDateDialogState
+                    )
                 }
                 GrayDivider()
                 // TODO create rest of UI elements
@@ -168,19 +176,27 @@ fun DescriptionSection(action: Action) {
 }
 
 @Composable
-fun StartDateLineItem(dialogState: MaterialDialogState) {
+fun StartDateLineItem(
+    dialogState: MaterialDialogState,
+    updateDateDialogState: (MaterialDialogState) -> Unit
+) {
     DateLineItem(
         text = stringResource(id = R.string.from),
         isEditing = false, // TODO use viewState to control this
-        dialogState = dialogState
+        dialogState = dialogState,
+        updateDateDialogState = updateDateDialogState
     )
 }
 
 @Composable
-fun EndDateLineItem(dialogState: MaterialDialogState) {
+fun EndDateLineItem(
+    dialogState: MaterialDialogState,
+    updateDateDialogState: (MaterialDialogState) -> Unit
+) {
     DateLineItem(
         text = stringResource(id = R.string.to),
         isEditing = true, // TODO use viewState to control this
-        dialogState = dialogState
+        dialogState = dialogState,
+        updateDateDialogState = updateDateDialogState
     )
 }

@@ -17,7 +17,8 @@ import com.vanpra.composematerialdialogs.datetime.date.datepicker
 @Composable
 fun DatePickerLineItem(
     modifier: Modifier,
-    dialogState: MaterialDialogState
+    dialogState: MaterialDialogState,
+    updateDateDialogState: (MaterialDialogState) -> Unit
 ) {
     Text(
         text = "Jul 21 2024",
@@ -45,7 +46,7 @@ fun DatePickerLineItem(
         ) { date ->
             //updateDateSelected(date.monthValue, date.dayOfMonth, date.year)
             dialogState.hide()
-            //onDialogStateChange(dialogState)
+            updateDateDialogState(dialogState)
         }
     }
 }

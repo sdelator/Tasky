@@ -17,7 +17,12 @@ import com.example.tasky.R
 import com.vanpra.composematerialdialogs.MaterialDialogState
 
 @Composable
-fun DateLineItem(text: String, isEditing: Boolean, dialogState: MaterialDialogState) {
+fun DateLineItem(
+    text: String,
+    isEditing: Boolean,
+    dialogState: MaterialDialogState,
+    updateDateDialogState: (MaterialDialogState) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,7 +49,8 @@ fun DateLineItem(text: String, isEditing: Boolean, dialogState: MaterialDialogSt
             dialogState = dialogState,
             modifier = Modifier
                 .weight(2f)
-                .padding(start = 16.dp)
+                .padding(start = 16.dp),
+            updateDateDialogState = updateDateDialogState
         )
 
         if (isEditing) RightCarrotIcon()
@@ -59,12 +65,14 @@ fun PreviewDateLineItem() {
         DateLineItem(
             text = stringResource(id = R.string.to),
             isEditing = true,
-            dialogState = MaterialDialogState()
+            dialogState = MaterialDialogState(),
+            updateDateDialogState = { }
         )
         DateLineItem(
             text = stringResource(id = R.string.from),
             isEditing = false,
-            dialogState = MaterialDialogState()
+            dialogState = MaterialDialogState(),
+            updateDateDialogState = { }
         )
     }
 }
