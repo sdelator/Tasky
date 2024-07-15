@@ -4,25 +4,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview
-fun RightCarrotIcon() {
+fun RightCarrotIcon(modifier: Modifier = Modifier) {
     Icon(
         imageVector = Icons.Default.KeyboardArrowRight,
         contentDescription = null,
-        tint = Color.Black
+        tint = Color.Black,
+        modifier = modifier
     )
 }
 
 @Composable
-@Preview
-fun InvisibleRightCarrotIcon() {
+fun InvisibleRightCarrotIcon(modifier: Modifier = Modifier) {
     Icon(
         imageVector = Icons.Default.KeyboardArrowRight,
         contentDescription = null,
-        tint = Color.Transparent
+        tint = Color.Transparent,
+        modifier = modifier
     )
 }
