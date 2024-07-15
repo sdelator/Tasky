@@ -83,7 +83,7 @@ fun PreviewTimePicker() {
 @Composable
 fun customTimePickerColors(): TimePickerColors {
     return TimePickerDefaults.colors(
-        activeBackgroundColor = colorResource(id = R.color.tasky_green),
+        activeBackgroundColor = colorResource(id = R.color.sea_foam_green),
         inactiveBackgroundColor = colorResource(id = R.color.reminder_gray),
         activeTextColor = Color.White,
         inactiveTextColor = Color.Black,
