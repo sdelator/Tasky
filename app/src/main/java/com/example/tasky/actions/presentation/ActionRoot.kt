@@ -23,7 +23,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,6 +36,7 @@ import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.common.presentation.TitleSection
 import com.example.tasky.common.presentation.model.Action
+import com.vanpra.composematerialdialogs.MaterialDialogState
 
 @Composable
 fun ActionRoot(
@@ -49,7 +49,8 @@ fun ActionRoot(
     ActionContent(
         dateOnToolbar = date.convertMillisToDate(),
         onToolbarAction = {},
-        actionType = action
+        actionType = action,
+        dialogState = viewState.datePickerDialogState
     )
 }
 
@@ -57,7 +58,8 @@ fun ActionRoot(
 fun ActionContent(
     dateOnToolbar: String,
     onToolbarAction: (ToolbarAction) -> Unit,
-    actionType: Action
+    actionType: Action,
+    dialogState: MaterialDialogState
 ) {
     Box(
         modifier = Modifier
@@ -96,10 +98,10 @@ fun ActionContent(
                     EmptyPhotos() // TODO if statement for added photos
                 }
                 GrayDivider()
-                StartDateLineItem()
+                StartDateLineItem(dialogState = dialogState)
                 GrayDivider()
                 if (actionType == Action.Event) {
-                    EndDateLineItem()
+                    EndDateLineItem(dialogState = dialogState)
                 }
                 GrayDivider()
                 // TODO create rest of UI elements
@@ -166,19 +168,19 @@ fun DescriptionSection(action: Action) {
 }
 
 @Composable
-@Preview
-fun StartDateLineItem() {
+fun StartDateLineItem(dialogState: MaterialDialogState) {
     DateLineItem(
         text = stringResource(id = R.string.from),
-        isEditing = false // TODO use viewState to control this
+        isEditing = false, // TODO use viewState to control this
+        dialogState = dialogState
     )
 }
 
 @Composable
-@Preview
-fun EndDateLineItem() {
+fun EndDateLineItem(dialogState: MaterialDialogState) {
     DateLineItem(
         text = stringResource(id = R.string.to),
-        isEditing = true // TODO use viewState to control this
+        isEditing = true, // TODO use viewState to control this
+        dialogState = dialogState
     )
 }

@@ -14,9 +14,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
+import com.vanpra.composematerialdialogs.MaterialDialogState
 
 @Composable
-fun DateLineItem(text: String, isEditing: Boolean) {
+fun DateLineItem(text: String, isEditing: Boolean, dialogState: MaterialDialogState) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,13 +40,12 @@ fun DateLineItem(text: String, isEditing: Boolean) {
         if (isEditing) RightCarrotIcon(modifier = Modifier.weight(1f))
         else InvisibleRightCarrotIcon(modifier = Modifier.weight(1f))
 
-        Text(
-            text = "Jul 21 2024",
-            fontSize = 16.sp,
+        DatePickerLineItem(
+            dialogState = dialogState,
             modifier = Modifier
                 .weight(2f)
                 .padding(start = 16.dp)
-        ) // TODO CalendarPicker
+        )
 
         if (isEditing) RightCarrotIcon()
         else InvisibleRightCarrotIcon()
@@ -56,7 +56,15 @@ fun DateLineItem(text: String, isEditing: Boolean) {
 @Preview
 fun PreviewDateLineItem() {
     Column {
-        DateLineItem(text = stringResource(id = R.string.to), isEditing = true)
-        DateLineItem(text = stringResource(id = R.string.from), isEditing = false)
+        DateLineItem(
+            text = stringResource(id = R.string.to),
+            isEditing = true,
+            dialogState = MaterialDialogState()
+        )
+        DateLineItem(
+            text = stringResource(id = R.string.from),
+            isEditing = false,
+            dialogState = MaterialDialogState()
+        )
     }
 }
