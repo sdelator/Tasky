@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tasky.R
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -19,8 +20,14 @@ fun PreviewTimePicker() {
     MaterialDialog(
         dialogState = dialogState,
         buttons = {
-            positiveButton(stringResource(id = R.string.ok))
-            negativeButton(stringResource(id = R.string.cancel))
+            positiveButton(
+                stringResource(id = R.string.ok),
+                textStyle = TextStyle(color = Color.Black)
+            )
+            negativeButton(
+                stringResource(id = R.string.cancel),
+                textStyle = TextStyle(color = Color.Black)
+            )
         }
     ) {
         timepicker(
