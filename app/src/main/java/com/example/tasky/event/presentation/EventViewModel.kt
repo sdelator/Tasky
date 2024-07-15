@@ -16,6 +16,9 @@ class EventViewModel @Inject constructor() : ViewModel() {
     private val _viewState = MutableStateFlow(EventViewState())
     val viewState: StateFlow<EventViewState> = _viewState
 
-    fun cancelEventCreation() {
+    fun cancel() {
+    }
+
+    fun save() {
     }
 }
