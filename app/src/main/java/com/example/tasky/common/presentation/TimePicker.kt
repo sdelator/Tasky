@@ -1,5 +1,6 @@
 package com.example.tasky.common.presentation
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,9 +24,9 @@ import java.time.LocalTime
 fun CustomTimePicker(
     modifier: Modifier,
     dialogState: MaterialDialogState,
-    updateTimeDialogState: (MaterialDialogState) -> Unit,
+    updateTimeDialogState: (MaterialDialogState, LineItemType) -> Unit,
     updateTimeSelected: (LocalTime, LineItemType) -> Unit,
-    lineItemType: LineItemType,
+    buttonType: LineItemType,
     time: String
 ) {
     Text(
@@ -51,9 +52,10 @@ fun CustomTimePicker(
         timepicker(
             colors = customTimePickerColors()
         ) { time ->
-            updateTimeSelected(time, lineItemType)
+            Log.d("sandra", "buttonType $buttonType")
+            updateTimeSelected(time, buttonType)
             dialogState.hide()
-            updateTimeDialogState(dialogState)
+            updateTimeDialogState(dialogState, buttonType)
         }
     }
 }

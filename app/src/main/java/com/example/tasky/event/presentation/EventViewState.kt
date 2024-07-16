@@ -3,14 +3,16 @@ package com.example.tasky.event.presentation
 import com.vanpra.composematerialdialogs.MaterialDialogState
 
 data class EventViewState(
-    val datePickerDialogState: MaterialDialogState = MaterialDialogState(),
-    val timePickerDialogState: MaterialDialogState = MaterialDialogState(),
+    val fromDatePickerDialogState: MaterialDialogState = MaterialDialogState(),
+    val toDatePickerDialogState: MaterialDialogState = MaterialDialogState(),
+    val fromTimeDialogState: MaterialDialogState = MaterialDialogState(),
+    val toTimeDialogState: MaterialDialogState = MaterialDialogState(),
     val eventName: String = "",
     val eventDescription: String = "",
-    val startTime: String = "",
-    val endTime: String = "",
-    val startDate: String = "",
-    val endDate: String = "",
+    val fromTime: String = "",
+    val toTime: String = "",
+    val fromDate: String = "",
+    val toDate: String = "",
     val reminder: Int = 0,
     val eventViewMode: EventViewMode = EventViewMode.EDITABLE,
     val filterSelected: Filter = Filter.ALL

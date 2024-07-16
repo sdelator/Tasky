@@ -1,5 +1,6 @@
 package com.example.tasky.actions.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.tasky.common.presentation.LineItemType
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -25,8 +26,8 @@ class ActionViewModel @Inject constructor() : ViewModel() {
     init {
         _viewState.update {
             it.copy(
-                startTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")).toString(),
-                endTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
+                fromTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")).toString(),
+                toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
                     .format(DateTimeFormatter.ofPattern("HH:mm")).toString()
             )
         }
@@ -38,31 +39,53 @@ class ActionViewModel @Inject constructor() : ViewModel() {
     fun save() {
     }
 
-    fun updateDateDialogState(dialogState: MaterialDialogState) {
-        _viewState.update {
-            it.copy(datePickerDialogState = dialogState)
+    fun updateDateDialogState(dialogState: MaterialDialogState, lineItemType: LineItemType) {
+        when (lineItemType) {
+            LineItemType.FROM -> {
+                _viewState.update {
+                    it.copy(fromDatePickerDialogState = dialogState)
+                }
+            }
+
+            LineItemType.TO -> {
+                _viewState.update {
+                    it.copy(toDatePickerDialogState = dialogState)
+                }
+            }
         }
     }
 
-    fun updateTimeDialogState(dialogState: MaterialDialogState) {
-        _viewState.update {
-            it.copy(timePickerDialogState = dialogState)
+    fun updateTimeDialogState(dialogState: MaterialDialogState, lineItemType: LineItemType) {
+        when (lineItemType) {
+            LineItemType.FROM -> {
+                _viewState.update {
+                    it.copy(fromTimeDialogState = dialogState)
+                }
+            }
+
+            LineItemType.TO -> {
+                _viewState.update {
+                    it.copy(toTimeDialogState = dialogState)
+                }
+            }
         }
     }
 
     fun updateTimeSelected(time: LocalTime, lineItemType: LineItemType) {
+        Log.d("sandra", "updateTimeSelected $lineItemType")
         when (lineItemType) {
-            LineItemType.TO -> {
+            LineItemType.FROM -> {
                 _viewState.update {
-                    it.copy(startTime = time.toString())
+                    it.copy(fromTime = time.toString())
                 }
             }
 
-            LineItemType.FROM -> {
+            LineItemType.TO -> {
                 _viewState.update {
-                    it.copy(endTime = time.toString())
+                    it.copy(toTime = time.toString())
                 }
             }
+
         }
     }
 }

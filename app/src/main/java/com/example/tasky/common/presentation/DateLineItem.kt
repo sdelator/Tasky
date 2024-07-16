@@ -1,6 +1,7 @@
 package com.example.tasky.common.presentation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
@@ -20,10 +22,10 @@ fun DateLineItem(
     isEditing: Boolean,
     dialogState: MaterialDialogState,
     timeDialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState) -> Unit,
-    updateTimeDialogState: (MaterialDialogState) -> Unit,
+    updateDateDialogState: (MaterialDialogState, LineItemType) -> Unit,
+    updateTimeDialogState: (MaterialDialogState, LineItemType) -> Unit,
     updateTimeSelected: (LocalTime, LineItemType) -> Unit,
-    lineItemType: LineItemType,
+    buttonType: LineItemType,
     time: String
 ) {
     Row(
@@ -34,7 +36,7 @@ fun DateLineItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = if (lineItemType == LineItemType.TO) stringResource(id = R.string.from)
+            text = if (buttonType == LineItemType.FROM) stringResource(id = R.string.from)
             else stringResource(id = R.string.to),
             fontSize = 16.sp,
             modifier = Modifier.weight(1f)
@@ -45,7 +47,7 @@ fun DateLineItem(
             dialogState = timeDialogState,
             updateTimeDialogState = updateTimeDialogState,
             updateTimeSelected = updateTimeSelected,
-            lineItemType = lineItemType,
+            buttonType = buttonType,
             time = time
         )
 
@@ -57,7 +59,8 @@ fun DateLineItem(
             modifier = Modifier
                 .weight(2f)
                 .padding(start = 16.dp),
-            updateDateDialogState = updateDateDialogState
+            updateDateDialogState = updateDateDialogState,
+            lineItemType = buttonType
         )
 
         if (isEditing) RightCarrotIcon()
@@ -65,31 +68,29 @@ fun DateLineItem(
     }
 }
 
-//@Composable
-//@Preview
-//fun PreviewDateLineItem() {
-//    Column {
-//        DateLineItem(
-//            text = stringResource(id = R.string.to),
-//            isEditing = true,
-//            dialogState = MaterialDialogState(),
-//            timeDialogState = MaterialDialogState(),
-//            updateDateDialogState = { },
-//            updateTimeDialogState = { },
-//            updateTimeSelected = { },
-//            timeType = TimeType.TO,
-//            time = ""
-//        )
-//        DateLineItem(
-//            text = stringResource(id = R.string.from),
-//            isEditing = false,
-//            dialogState = MaterialDialogState(),
-//            timeDialogState = MaterialDialogState(),
-//            updateDateDialogState = { },
-//            updateTimeDialogState = { },
-//            updateTimeSelected = { },
-//            timeType = TimeType.FROM,
-//            time = ""
-//        )
-//    }
-//}
+@Composable
+@Preview
+fun PreviewDateLineItem() {
+    Column {
+        DateLineItem(
+            isEditing = true,
+            dialogState = MaterialDialogState(),
+            timeDialogState = MaterialDialogState(),
+            updateDateDialogState = { _, _ -> },
+            updateTimeDialogState = { _, _ -> },
+            updateTimeSelected = { _, _ -> },
+            buttonType = LineItemType.TO,
+            time = ""
+        )
+        DateLineItem(
+            isEditing = false,
+            dialogState = MaterialDialogState(),
+            timeDialogState = MaterialDialogState(),
+            updateDateDialogState = { _, _ -> },
+            updateTimeDialogState = { _, _ -> },
+            updateTimeSelected = { _, _ -> },
+            buttonType = LineItemType.FROM,
+            time = ""
+        )
+    }
+}

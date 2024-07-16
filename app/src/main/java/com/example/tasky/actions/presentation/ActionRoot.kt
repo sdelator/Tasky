@@ -51,18 +51,30 @@ fun ActionRoot(
     val updateTimeSelected: (LocalTime, LineItemType) -> Unit = { time, timeType ->
         eventViewModel.updateTimeSelected(time, timeType)
     }
+    val updateTimeDialogState: (MaterialDialogState, LineItemType) -> Unit =
+        { dialogState, timeType ->
+            eventViewModel.updateTimeDialogState(dialogState, timeType)
+        }
+    val updateDateDialogState: (MaterialDialogState, LineItemType) -> Unit =
+        { dialogState, timeType ->
+            eventViewModel.updateDateDialogState(dialogState, timeType)
+        }
 
     ActionContent(
         dateOnToolbar = date.convertMillisToDate(),
         onToolbarAction = {},
+        fromDialogState = viewState.fromDatePickerDialogState,
+        toDialogState = viewState.toDatePickerDialogState,
+        fromTimeDialogState = viewState.fromTimeDialogState,
+        toTimeDialogState = viewState.toTimeDialogState,
         actionType = action,
         dialogState = viewState.datePickerDialogState,
         timeDialogState = viewState.timePickerDialogState,
         updateDateDialogState = { eventViewModel.updateDateDialogState(it) },
         updateTimeDialogState = { eventViewModel.updateTimeDialogState(it) },
         updateTimeSelected = updateTimeSelected,
-        startTime = viewState.startTime,
-        endTime = viewState.endTime
+        startTime = viewState.fromTime,
+        endTime = viewState.toTime
     )
 }
 
@@ -70,6 +82,10 @@ fun ActionRoot(
 fun ActionContent(
     dateOnToolbar: String,
     onToolbarAction: (ToolbarAction) -> Unit,
+    fromDialogState: MaterialDialogState,
+    toDialogState: MaterialDialogState,
+    fromTimeDialogState: MaterialDialogState,
+    toTimeDialogState: MaterialDialogState,
     actionType: Action,
     dialogState: MaterialDialogState,
     timeDialogState: MaterialDialogState,
@@ -116,24 +132,22 @@ fun ActionContent(
                     EmptyPhotos() // TODO if statement for added photos
                 }
                 GrayDivider()
-                StartDateLineItem(
-                    dialogState = dialogState,
-                    timeDialogState = timeDialogState,
+                FromDateLineItem(
+                    dialogState = fromDialogState,
+                    timeDialogState = fromTimeDialogState,
                     updateDateDialogState = updateDateDialogState,
                     updateTimeDialogState = updateTimeDialogState,
                     updateTimeSelected = updateTimeSelected,
-                    startTime = startTime,
-                    endTime = endTime
+                    startTime = startTime
                 )
                 GrayDivider()
                 if (actionType == Action.Event) {
-                    EndDateLineItem(
-                        dialogState = dialogState,
-                        timeDialogState = timeDialogState,
+                    ToDateLineItem(
+                        dialogState = toDialogState,
+                        timeDialogState = toTimeDialogState,
                         updateDateDialogState = updateDateDialogState,
                         updateTimeDialogState = updateTimeDialogState,
                         updateTimeSelected = updateTimeSelected,
-                        startTime = startTime,
                         endTime = endTime
                     )
                 }
@@ -202,14 +216,13 @@ fun DescriptionSection(action: Action) {
 }
 
 @Composable
-fun StartDateLineItem(
+fun FromDateLineItem(
     dialogState: MaterialDialogState,
     timeDialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState) -> Unit,
-    updateTimeDialogState: (MaterialDialogState) -> Unit,
+    updateDateDialogState: (MaterialDialogState, LineItemType) -> Unit,
+    updateTimeDialogState: (MaterialDialogState, LineItemType) -> Unit,
     updateTimeSelected: (LocalTime, LineItemType) -> Unit,
-    startTime: String,
-    endTime: String
+    startTime: String
 ) {
     DateLineItem(
         isEditing = false, // TODO use viewState to control this
@@ -218,19 +231,18 @@ fun StartDateLineItem(
         updateDateDialogState = updateDateDialogState,
         updateTimeDialogState = updateTimeDialogState,
         updateTimeSelected = updateTimeSelected,
-        lineItemType = LineItemType.TO,
+        buttonType = LineItemType.FROM,
         time = startTime
     )
 }
 
 @Composable
-fun EndDateLineItem(
+fun ToDateLineItem(
     dialogState: MaterialDialogState,
     timeDialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState) -> Unit,
-    updateTimeDialogState: (MaterialDialogState) -> Unit,
+    updateDateDialogState: (MaterialDialogState, LineItemType) -> Unit,
+    updateTimeDialogState: (MaterialDialogState, LineItemType) -> Unit,
     updateTimeSelected: (LocalTime, LineItemType) -> Unit,
-    startTime: String,
     endTime: String
 ) {
     DateLineItem(
@@ -240,7 +252,7 @@ fun EndDateLineItem(
         updateDateDialogState = updateDateDialogState,
         updateTimeDialogState = updateTimeDialogState,
         updateTimeSelected = updateTimeSelected,
-        lineItemType = LineItemType.FROM,
+        buttonType = LineItemType.TO,
         time = endTime
     )
 }
