@@ -48,6 +48,7 @@ fun ActionRoot(
     actionViewModel: ActionViewModel = hiltViewModel()
 ) {
     val viewState by actionViewModel.viewState.collectAsStateWithLifecycle()
+    val isEditing = (viewState.eventViewMode == EventViewMode.EDITABLE)
     val updateTimeSelected: (LocalTime, LineItemType) -> Unit = { time, timeType ->
         eventViewModel.updateTimeSelected(time, timeType)
     }
@@ -61,6 +62,7 @@ fun ActionRoot(
         }
 
     ActionContent(
+        isEditMode = isEditing,
         dateOnToolbar = date.convertMillisToDate(),
         onToolbarAction = {},
         fromDialogState = viewState.fromDatePickerDialogState,
@@ -80,6 +82,7 @@ fun ActionRoot(
 
 @Composable
 fun ActionContent(
+    isEditMode: Boolean,
     dateOnToolbar: String,
     onToolbarAction: (ToolbarAction) -> Unit,
     fromDialogState: MaterialDialogState,
@@ -125,30 +128,34 @@ fun ActionContent(
             ) {
                 HeaderSection(action = actionType)
                 Spacer(modifier = Modifier.padding(top = 10.dp))
-                TitleSection()
+                TitleSection(isEditMode = isEditMode)
                 GrayDivider()
-                DescriptionSection(action = actionType)
+                DescriptionSection(action = actionType, isEditMode = isEditMode)
                 if (actionType == Action.Event) {
                     EmptyPhotos() // TODO if statement for added photos
                 }
                 GrayDivider()
-                FromDateLineItem(
+                DateLineItem(
                     dialogState = fromDialogState,
                     timeDialogState = fromTimeDialogState,
                     updateDateDialogState = updateDateDialogState,
                     updateTimeDialogState = updateTimeDialogState,
                     updateTimeSelected = updateTimeSelected,
-                    startTime = startTime
+                    time = startTime,
+                    buttonType = LineItemType.FROM,
+                    isEditing = isEditMode
                 )
                 GrayDivider()
                 if (actionType == Action.Event) {
-                    ToDateLineItem(
+                    DateLineItem(
                         dialogState = toDialogState,
                         timeDialogState = toTimeDialogState,
                         updateDateDialogState = updateDateDialogState,
                         updateTimeDialogState = updateTimeDialogState,
                         updateTimeSelected = updateTimeSelected,
-                        endTime = endTime
+                        time = endTime,
+                        buttonType = LineItemType.TO,
+                        isEditing = isEditMode
                     )
                 }
                 GrayDivider()
@@ -195,7 +202,7 @@ fun HeaderSection(action: Action) {
 }
 
 @Composable
-fun DescriptionSection(action: Action) {
+fun DescriptionSection(action: Action, isEditMode: Boolean) {
     val actionText = when (action) {
         Action.Event -> stringResource(id = R.string.event_description)
         Action.Task -> stringResource(id = R.string.task_description)
@@ -211,48 +218,8 @@ fun DescriptionSection(action: Action) {
             fontSize = 16.sp
         )
         Spacer(modifier = Modifier.weight(1f))
-        RightCarrotIcon()
+        if (isEditMode) {
+            RightCarrotIcon()
+        }
     }
-}
-
-@Composable
-fun FromDateLineItem(
-    dialogState: MaterialDialogState,
-    timeDialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState, LineItemType) -> Unit,
-    updateTimeDialogState: (MaterialDialogState, LineItemType) -> Unit,
-    updateTimeSelected: (LocalTime, LineItemType) -> Unit,
-    startTime: String
-) {
-    DateLineItem(
-        isEditing = false, // TODO use viewState to control this
-        dialogState = dialogState,
-        timeDialogState = timeDialogState,
-        updateDateDialogState = updateDateDialogState,
-        updateTimeDialogState = updateTimeDialogState,
-        updateTimeSelected = updateTimeSelected,
-        buttonType = LineItemType.FROM,
-        time = startTime
-    )
-}
-
-@Composable
-fun ToDateLineItem(
-    dialogState: MaterialDialogState,
-    timeDialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState, LineItemType) -> Unit,
-    updateTimeDialogState: (MaterialDialogState, LineItemType) -> Unit,
-    updateTimeSelected: (LocalTime, LineItemType) -> Unit,
-    endTime: String
-) {
-    DateLineItem(
-        isEditing = true, // TODO use viewState to control this
-        dialogState = dialogState,
-        timeDialogState = timeDialogState,
-        updateDateDialogState = updateDateDialogState,
-        updateTimeDialogState = updateTimeDialogState,
-        updateTimeSelected = updateTimeSelected,
-        buttonType = LineItemType.TO,
-        time = endTime
-    )
 }
