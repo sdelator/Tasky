@@ -2,11 +2,13 @@ package com.example.tasky.actions.presentation
 
 import androidx.lifecycle.ViewModel
 import com.example.tasky.common.presentation.LineItemType
+import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -25,6 +27,8 @@ class ActionViewModel @Inject constructor() : ViewModel() {
     init {
         _viewState.update {
             it.copy(
+                fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
+                toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
                 fromTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")).toString(),
                 toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
                     .format(DateTimeFormatter.ofPattern("HH:mm")).toString()
@@ -38,17 +42,27 @@ class ActionViewModel @Inject constructor() : ViewModel() {
     fun save() {
     }
 
-    fun updateDateDialogState(dialogState: MaterialDialogState, lineItemType: LineItemType) {
+    fun updateDateDialogState(
+        date: LocalDate,
+        dialogState: MaterialDialogState,
+        lineItemType: LineItemType
+    ) {
         when (lineItemType) {
             LineItemType.FROM -> {
                 _viewState.update {
-                    it.copy(fromDatePickerDialogState = dialogState)
+                    it.copy(
+                        fromDatePickerDialogState = dialogState,
+                        fromDate = date.toFormatted_MMM_dd_yyyy()
+                    )
                 }
             }
 
             LineItemType.TO -> {
                 _viewState.update {
-                    it.copy(toDatePickerDialogState = dialogState)
+                    it.copy(
+                        toDatePickerDialogState = dialogState,
+                        toDate = date.toFormatted_MMM_dd_yyyy()
+                    )
                 }
             }
         }

@@ -13,16 +13,18 @@ import com.example.tasky.feature_agenda.presentation.datepicker.customDatePicker
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import java.time.LocalDate
 
 @Composable
 fun DatePickerLineItem(
+    date: String,
     modifier: Modifier,
     dialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState, LineItemType) -> Unit,
+    updateDateDialogState: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
     lineItemType: LineItemType
 ) {
     Text(
-        text = "Jul 21 2024",
+        text = date,
         fontSize = 16.sp,
         modifier = modifier
             .clickable { dialogState.show() }
@@ -45,9 +47,8 @@ fun DatePickerLineItem(
             yearRange = IntRange(2023, 2030),
             colors = customDatePickerColors()
         ) { date ->
-            //updateDateSelected(date.monthValue, date.dayOfMonth, date.year)
+            updateDateDialogState(date, dialogState, lineItemType)
             dialogState.hide()
-            updateDateDialogState(dialogState, lineItemType)
         }
     }
 }

@@ -9,7 +9,7 @@ import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
-import com.example.tasky.common.presentation.util.toFormatted_MM_DD_YYYY
+import com.example.tasky.common.presentation.util.toFormatted_MMMM_dd_yyyy
 import com.example.tasky.common.presentation.util.toLong
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -171,7 +171,7 @@ class AgendaViewModel @Inject constructor(
         return if (date == LocalDate.now()) {
             application.applicationContext.getString(R.string.today)
         } else {
-            date.toFormatted_MM_DD_YYYY()
+            date.toFormatted_MMMM_dd_yyyy()
         }
     }
 }

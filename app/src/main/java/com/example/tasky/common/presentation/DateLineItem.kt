@@ -15,14 +15,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
 fun DateLineItem(
+    date: String,
     isEditing: Boolean,
     dialogState: MaterialDialogState,
     timeDialogState: MaterialDialogState,
-    updateDateDialogState: (MaterialDialogState, LineItemType) -> Unit,
+    updateDateDialogState: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
     onUpdateTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
     buttonType: LineItemType,
     time: String
@@ -53,6 +55,7 @@ fun DateLineItem(
         else InvisibleRightCarrotIcon(modifier = Modifier.weight(1f))
 
         DatePickerLineItem(
+            date = date,
             dialogState = dialogState,
             modifier = Modifier
                 .weight(2f)
@@ -71,19 +74,21 @@ fun DateLineItem(
 fun PreviewDateLineItem() {
     Column {
         DateLineItem(
+            date = "Jul 21 2024",
             isEditing = true,
             dialogState = MaterialDialogState(),
             timeDialogState = MaterialDialogState(),
-            updateDateDialogState = { _, _ -> },
+            updateDateDialogState = { _, _, _ -> },
             onUpdateTimeSelected = { _, _, _ -> },
             buttonType = LineItemType.TO,
             time = ""
         )
         DateLineItem(
+            date = "Jul 22 2024",
             isEditing = false,
             dialogState = MaterialDialogState(),
             timeDialogState = MaterialDialogState(),
-            updateDateDialogState = { _, _ -> },
+            updateDateDialogState = { _, _, _ -> },
             onUpdateTimeSelected = { _, _, _ -> },
             buttonType = LineItemType.FROM,
             time = ""
