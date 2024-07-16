@@ -113,11 +113,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         )
     }
     composable<EditingNav> {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Green)
-        )
+        EditScreenRoot(navController = navController)
     }
 }
 
