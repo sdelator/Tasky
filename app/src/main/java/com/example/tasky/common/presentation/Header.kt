@@ -1,5 +1,6 @@
 package com.example.tasky.common.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -106,10 +107,12 @@ fun ViewHeaderSmall() {
 }
 
 @Composable
-fun TitleSection(isEditMode: Boolean) {
+fun TitleSection(isEditMode: Boolean, onHeaderClick: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 24.dp)
+        modifier = Modifier
+            .padding(top = 16.dp, start = 16.dp, end = 24.dp)
+            .clickable { onHeaderClick() }
     ) {
         CustomCheckbox(isChecked = false, color = Color.Black, size = 20.dp)
         HeaderLargeStrikeThrough(

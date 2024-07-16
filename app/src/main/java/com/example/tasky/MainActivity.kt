@@ -112,6 +112,13 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
                 .background(Color.Red)
         )
     }
+    composable<EditingNav> {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Green)
+        )
+    }
 }
 
 // routes
@@ -139,3 +146,6 @@ object TaskNav
 
 @Serializable
 object ReminderNav
+
+@Serializable
+object EditingNav

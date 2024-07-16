@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.tasky.EditingNav
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.common.domain.util.convertMillisToDate
@@ -66,6 +67,7 @@ fun AgendaDetailsRoot(
         toDate = viewState.toDate,
         fromDate = viewState.fromDate,
         isEditMode = isEditing,
+        editHeaderTitle = { navController.navigate(EditingNav) },
         dateOnToolbar = date.convertMillisToDate(),
         onToolbarAction = {},
         fromDateDialogState = viewState.fromDatePickerDialogState,
@@ -85,6 +87,7 @@ fun AgendaDetailsContent(
     toDate: String,
     fromDate: String,
     isEditMode: Boolean,
+    editHeaderTitle: () -> Unit,
     dateOnToolbar: String,
     onToolbarAction: (ToolbarAction) -> Unit,
     fromDateDialogState: MaterialDialogState,
@@ -127,7 +130,10 @@ fun AgendaDetailsContent(
             ) {
                 HeaderSection(agendaDetailsType = agendaDetailsType)
                 Spacer(modifier = Modifier.padding(top = 10.dp))
-                TitleSection(isEditMode = isEditMode)
+                TitleSection(
+                    isEditMode = isEditMode,
+                    onHeaderClick = editHeaderTitle
+                )
                 GrayDivider()
                 DescriptionSection(agendaDetailsType = agendaDetailsType, isEditMode = isEditMode)
                 if (agendaDetailsType == AgendaDetailsType.Event) {
@@ -230,6 +236,7 @@ fun PreviewEventContent() {
         toDate = "Jul 12 2024",
         fromDate = "Jul 11 2024",
         isEditMode = true,
+        editHeaderTitle = { },
         dateOnToolbar = "15 Jul 2024",
         onToolbarAction = {},
         fromDateDialogState = MaterialDialogState(),

@@ -1,6 +1,7 @@
 package com.example.tasky.common.presentation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -24,6 +25,16 @@ fun InvisibleRightCarrotIcon(modifier: Modifier = Modifier) {
         imageVector = Icons.Default.KeyboardArrowRight,
         contentDescription = null,
         tint = Color.Transparent,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun LeftCarrotIcon(modifier: Modifier = Modifier) {
+    Icon(
+        imageVector = Icons.Default.KeyboardArrowLeft,
+        contentDescription = null,
+        tint = Color.Black,
         modifier = modifier
     )
 }
