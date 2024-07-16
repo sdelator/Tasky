@@ -14,8 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,21 +25,34 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.R
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LeftCarrotIcon
 
 @Composable
-fun EditScreenRoot(navController: NavController) {
+fun EditScreenRoot(
+    navController: NavController,
+    editingViewModel: EditingViewModel = hiltViewModel()
+) {
+    val text by editingViewModel.text.collectAsStateWithLifecycle()
+
     EditScreenContent(
-        navigateToPreviousScreen = { navController.popBackStack() }
+        navigateToPreviousScreen = { navController.popBackStack() },
+        saveEventTitle = { editingViewModel.save(it) },
+        text = text,
+        onTextChange = { editingViewModel.onTextChange(it) }
     )
 }
 
 @Composable
 fun EditScreenContent(
-    navigateToPreviousScreen: () -> Unit
+    navigateToPreviousScreen: () -> Unit,
+    saveEventTitle: (String) -> Unit,
+    text: String,
+    onTextChange: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -49,19 +61,27 @@ fun EditScreenContent(
             .safeDrawingPadding()
     ) {
         Column {
-            EditToolbar(navigateToPreviousScreen = navigateToPreviousScreen)
+            EditToolbar(
+                navigateToPreviousScreen = navigateToPreviousScreen,
+                saveEventTitle = { saveEventTitle(text) }
+            )
             GrayDivider()
-            EditableFieldArea()
+            EditableFieldArea(
+                text = text,
+                onTextChange = onTextChange
+            )
         }
     }
 }
 
 @Composable
-fun EditableFieldArea() {
-    val text = remember { mutableStateOf("") }
+fun EditableFieldArea(
+    text: String,
+    onTextChange: (String) -> Unit
+) {
     TextField(
-        value = text.value,
-        onValueChange = { text.value = it },
+        value = text,
+        onValueChange = onTextChange,
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
@@ -78,7 +98,8 @@ fun EditableFieldArea() {
 
 @Composable
 fun EditToolbar(
-    navigateToPreviousScreen: () -> Unit
+    navigateToPreviousScreen: () -> Unit,
+    saveEventTitle: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -91,7 +112,7 @@ fun EditToolbar(
             modifier = Modifier.clickable { navigateToPreviousScreen() }
         )
         EditTitle()
-        SaveButton(onClick = { })
+        SaveButton(onClick = { saveEventTitle() })
     }
 }
 
@@ -111,12 +132,18 @@ fun SaveButton(onClick: () -> Unit) {
         text = stringResource(R.string.save),
         color = colorResource(id = R.color.tasky_green),
         fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp
+        fontSize = 16.sp,
+        modifier = Modifier.clickable { onClick() }
     )
 }
 
 @Composable
 @Preview
 fun PreviewEditRootComposable() {
-    EditScreenContent(navigateToPreviousScreen = { })
+    EditScreenContent(
+        navigateToPreviousScreen = { },
+        saveEventTitle = { },
+        onTextChange = { _ -> },
+        text = "Test"
+    )
 }
