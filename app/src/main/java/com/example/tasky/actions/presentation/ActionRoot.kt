@@ -229,3 +229,23 @@ fun DescriptionSection(action: Action, isEditMode: Boolean) {
         }
     }
 }
+
+@Composable
+@Preview
+fun PreviewEventContent() {
+    EventContent(
+        toDate = "Jul 12 2024",
+        fromDate = "Jul 11 2024",
+        isEditMode = true,
+        dateOnToolbar = "15 Jul 2024",
+        onToolbarAction = {},
+        fromDialogState = MaterialDialogState(),
+        toDialogState = MaterialDialogState(),
+        fromTimeDialogState = MaterialDialogState(),
+        toTimeDialogState = MaterialDialogState(),
+        updateDateDialogState = { _, _, _ -> },
+        onUpdateTimeSelected = { _, _, _ -> },
+        startTime = "08:00",
+        endTime = "08:15"
+    )
+}
