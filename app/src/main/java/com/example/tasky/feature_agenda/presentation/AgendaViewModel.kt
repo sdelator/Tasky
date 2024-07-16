@@ -10,6 +10,7 @@ import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_MM_DD_YYYY
+import com.example.tasky.common.presentation.util.toLong
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,6 +46,9 @@ class AgendaViewModel @Inject constructor(
     // not displayed on screen; only necessary for business logic
     private val _yearSelected = MutableStateFlow(LocalDate.now().year)
     val yearSelected: StateFlow<Int> get() = _yearSelected
+
+    private val _dateSelected = MutableStateFlow(LocalDate.now().toLong())
+    val dateSelected: StateFlow<Long> get() = _dateSelected
 
     init {
         viewModelScope.launch {
@@ -131,6 +135,7 @@ class AgendaViewModel @Inject constructor(
             )
         }
         _yearSelected.value = date.year
+        _dateSelected.value = date.toLong()
     }
 
     fun checkAuthentication() {

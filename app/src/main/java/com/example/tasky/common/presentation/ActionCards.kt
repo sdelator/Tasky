@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
@@ -69,7 +71,7 @@ fun ActionCard(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CustomCheckbox(isChecked = isChecked, color = headerColor)
+            CustomCheckbox(isChecked = isChecked, color = headerColor, size = 16.dp)
             HeaderMedium(
                 title = "Place Holder Text",
                 isChecked = isChecked,
@@ -84,16 +86,19 @@ fun ActionCard(
 }
 
 @Composable
-fun CustomCheckbox(isChecked: Boolean, color: Color) {
+fun CustomCheckbox(isChecked: Boolean, color: Color, size: Dp) {
     Icon(
         painter = if (isChecked) {
             painterResource(id = R.drawable.ic_closed_checkbox)
         } else {
             painterResource(id = R.drawable.ic_open_checkbox)
         },
-        modifier = Modifier.padding(end = 8.dp),
+        modifier = Modifier
+            .padding(end = 8.dp)
+            .size(size),
         contentDescription = stringResource(R.string.checkbox_circle_icon),
-        tint = color
+        tint = color,
+
     )
 }
 
@@ -163,5 +168,5 @@ fun PreviewReminderCard() {
 @Composable
 @Preview
 fun PreviewCustomCheckbox() {
-    CustomCheckbox(isChecked = true, color = Color.White)
+    CustomCheckbox(isChecked = true, color = Color.White, size = 16.dp)
 }

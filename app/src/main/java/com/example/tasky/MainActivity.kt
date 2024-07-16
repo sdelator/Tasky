@@ -19,6 +19,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.example.tasky.event.presentation.EventRoot
 import com.example.tasky.feature_agenda.presentation.AgendaRoot
 import com.example.tasky.feature_login.presentation.LoginRoot
 import com.example.tasky.feature_login.presentation.RegisterAccountRoot
@@ -85,12 +87,9 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         AgendaRoot(navController = navController)
     }
     composable<EventNav> {
-        // todo remove temporary screen
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Green)
-        )
+        val args = it.toRoute<EventNav>()
+        val date = args.date
+        EventRoot(navController = navController, date = date)
     }
     composable<TaskNav> {
         // todo remove temporary screen
@@ -128,7 +127,7 @@ object LoginNav
 object AgendaNav
 
 @Serializable
-object EventNav
+data class EventNav(val date: Long)
 
 @Serializable
 object TaskNav

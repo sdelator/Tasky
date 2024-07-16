@@ -30,4 +30,9 @@
     <string name="reminder">Reminder</string>
     <string name="task">Task</string>
     <string name="event">Event</string>
+    <string name="new_event">New event</string>
+    <string name="event_description">Event description</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="edit">Edit</string>
 </resources>
