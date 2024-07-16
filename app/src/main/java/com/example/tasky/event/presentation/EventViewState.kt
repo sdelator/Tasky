@@ -9,10 +9,10 @@ data class EventViewState(
     val endDate: String = "",
     val reminder: Int = 0,
     val eventViewMode: EventViewMode = EventViewMode.EDITABLE,
-    val filterSelected: Filter = Filter.ALL
+    val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL
 )
 
-enum class Filter(type: String) {
+enum class AttendeeFilter(type: String) {
     ALL("All"), GOING("Going"), NOT_GOING("Not Going")
 }
 
