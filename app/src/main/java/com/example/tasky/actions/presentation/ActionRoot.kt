@@ -49,13 +49,12 @@ fun ActionRoot(
 ) {
     val viewState by actionViewModel.viewState.collectAsStateWithLifecycle()
     val isEditing = (viewState.eventViewMode == EventViewMode.EDITABLE)
-    val updateTimeSelected: (LocalTime, LineItemType) -> Unit = { time, timeType ->
-        eventViewModel.updateTimeSelected(time, timeType)
+
+    val onUpdateTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit =
+        { time, lineItemType, dialogState ->
+            eventViewModel.onUpdateTimeSelected(time, lineItemType, dialogState)
     }
-    val updateTimeDialogState: (MaterialDialogState, LineItemType) -> Unit =
-        { dialogState, timeType ->
-            eventViewModel.updateTimeDialogState(dialogState, timeType)
-        }
+
     val updateDateDialogState: (MaterialDialogState, LineItemType) -> Unit =
         { dialogState, timeType ->
             eventViewModel.updateDateDialogState(dialogState, timeType)
@@ -74,7 +73,7 @@ fun ActionRoot(
         timeDialogState = viewState.timePickerDialogState,
         updateDateDialogState = { eventViewModel.updateDateDialogState(it) },
         updateTimeDialogState = { eventViewModel.updateTimeDialogState(it) },
-        updateTimeSelected = updateTimeSelected,
+        onUpdateTimeSelected = onUpdateTimeSelected,
         startTime = viewState.fromTime,
         endTime = viewState.toTime
     )
@@ -94,7 +93,7 @@ fun ActionContent(
     timeDialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
     updateTimeDialogState: (MaterialDialogState) -> Unit,
-    updateTimeSelected: (LocalTime, LineItemType) -> Unit,
+    onUpdateTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
     startTime: String,
     endTime: String
 ) {
@@ -140,7 +139,7 @@ fun ActionContent(
                     timeDialogState = fromTimeDialogState,
                     updateDateDialogState = updateDateDialogState,
                     updateTimeDialogState = updateTimeDialogState,
-                    updateTimeSelected = updateTimeSelected,
+                    onUpdateTimeSelected = onUpdateTimeSelected,
                     time = startTime,
                     buttonType = LineItemType.FROM,
                     isEditing = isEditMode
@@ -152,7 +151,7 @@ fun ActionContent(
                         timeDialogState = toTimeDialogState,
                         updateDateDialogState = updateDateDialogState,
                         updateTimeDialogState = updateTimeDialogState,
-                        updateTimeSelected = updateTimeSelected,
+                        onUpdateTimeSelected = onUpdateTimeSelected,
                         time = endTime,
                         buttonType = LineItemType.TO,
                         isEditing = isEditMode

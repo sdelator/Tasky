@@ -1,6 +1,5 @@
 package com.example.tasky.actions.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.tasky.common.presentation.LineItemType
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -71,21 +70,29 @@ class ActionViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun updateTimeSelected(time: LocalTime, lineItemType: LineItemType) {
-        Log.d("sandra", "updateTimeSelected $lineItemType")
+    fun onUpdateTimeSelected(
+        time: LocalTime,
+        lineItemType: LineItemType,
+        dialogState: MaterialDialogState
+    ) {
         when (lineItemType) {
             LineItemType.FROM -> {
                 _viewState.update {
-                    it.copy(fromTime = time.toString())
+                    it.copy(
+                        fromTimeDialogState = dialogState,
+                        fromTime = time.toString()
+                    )
                 }
             }
 
             LineItemType.TO -> {
                 _viewState.update {
-                    it.copy(toTime = time.toString())
+                    it.copy(
+                        toTimeDialogState = dialogState,
+                        toTime = time.toString()
+                    )
                 }
             }
-
         }
     }
 }

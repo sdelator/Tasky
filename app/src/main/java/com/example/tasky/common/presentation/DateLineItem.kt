@@ -23,8 +23,7 @@ fun DateLineItem(
     dialogState: MaterialDialogState,
     timeDialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState, LineItemType) -> Unit,
-    updateTimeDialogState: (MaterialDialogState, LineItemType) -> Unit,
-    updateTimeSelected: (LocalTime, LineItemType) -> Unit,
+    onUpdateTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
     buttonType: LineItemType,
     time: String
 ) {
@@ -45,8 +44,7 @@ fun DateLineItem(
         CustomTimePicker(
             modifier = Modifier.weight(1f),
             dialogState = timeDialogState,
-            updateTimeDialogState = updateTimeDialogState,
-            updateTimeSelected = updateTimeSelected,
+            onUpdateTimeSelected = onUpdateTimeSelected,
             buttonType = buttonType,
             time = time
         )
@@ -77,8 +75,7 @@ fun PreviewDateLineItem() {
             dialogState = MaterialDialogState(),
             timeDialogState = MaterialDialogState(),
             updateDateDialogState = { _, _ -> },
-            updateTimeDialogState = { _, _ -> },
-            updateTimeSelected = { _, _ -> },
+            onUpdateTimeSelected = { _, _, _ -> },
             buttonType = LineItemType.TO,
             time = ""
         )
@@ -87,8 +84,7 @@ fun PreviewDateLineItem() {
             dialogState = MaterialDialogState(),
             timeDialogState = MaterialDialogState(),
             updateDateDialogState = { _, _ -> },
-            updateTimeDialogState = { _, _ -> },
-            updateTimeSelected = { _, _ -> },
+            onUpdateTimeSelected = { _, _, _ -> },
             buttonType = LineItemType.FROM,
             time = ""
         )
