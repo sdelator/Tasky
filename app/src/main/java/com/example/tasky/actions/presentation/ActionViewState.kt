@@ -1,14 +1,14 @@
-package com.example.tasky.event.presentation
+package com.example.tasky.actions.presentation
 
-data class EventViewState(
-    val eventName: String = "",
-    val eventDescription: String = "",
+data class ActionViewState(
+    val actionTitle: String = "",
+    val actionDescription: String = "",
     val startTime: String = "",
     val endTime: String = "",
     val startDate: String = "",
     val endDate: String = "",
     val reminder: Int = 0,
-    val eventViewMode: EventViewMode = EventViewMode.EDITABLE,
+    val actionViewMode: ActionViewMode = ActionViewMode.EDITABLE,
     val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL
 )
 
@@ -16,6 +16,6 @@ enum class AttendeeFilter(type: String) {
     ALL("All"), GOING("Going"), NOT_GOING("Not Going")
 }
 
-enum class EventViewMode {
+enum class ActionViewMode {
     NON_EDITABLE, EDITABLE, ATTENDEE, ATTENDEE_EDITABLE
 }

@@ -1,4 +1,4 @@
-package com.example.tasky.event.presentation.components
+package com.example.tasky.actions.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

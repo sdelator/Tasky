@@ -107,7 +107,7 @@ fun ViewHeaderSmall() {
 
 @Composable
 @Preview
-fun CheckboxHeader() {
+fun TitleSection() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 24.dp)
