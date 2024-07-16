@@ -1,6 +1,7 @@
 package com.example.tasky.common.presentation.editing
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,11 +33,15 @@ import com.example.tasky.common.presentation.LeftCarrotIcon
 
 @Composable
 fun EditScreenRoot(navController: NavController) {
-    EditScreenContent()
+    EditScreenContent(
+        navigateToPreviousScreen = { navController.popBackStack() }
+    )
 }
 
 @Composable
-fun EditScreenContent() {
+fun EditScreenContent(
+    navigateToPreviousScreen: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -44,7 +49,7 @@ fun EditScreenContent() {
             .safeDrawingPadding()
     ) {
         Column {
-            EditToolbar()
+            EditToolbar(navigateToPreviousScreen = navigateToPreviousScreen)
             GrayDivider()
             EditableFieldArea()
         }
@@ -72,8 +77,9 @@ fun EditableFieldArea() {
 }
 
 @Composable
-@Preview
-fun EditToolbar() {
+fun EditToolbar(
+    navigateToPreviousScreen: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -81,7 +87,9 @@ fun EditToolbar() {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        LeftCarrotIcon()
+        LeftCarrotIcon(
+            modifier = Modifier.clickable { navigateToPreviousScreen() }
+        )
         EditTitle()
         SaveButton(onClick = { })
     }
@@ -110,5 +118,5 @@ fun SaveButton(onClick: () -> Unit) {
 @Composable
 @Preview
 fun PreviewEditRootComposable() {
-    EditScreenContent()
+    EditScreenContent(navigateToPreviousScreen = { })
 }
