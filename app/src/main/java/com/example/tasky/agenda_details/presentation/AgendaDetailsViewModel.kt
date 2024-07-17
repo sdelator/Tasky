@@ -1,4 +1,4 @@
-package com.example.tasky.actions.presentation
+package com.example.tasky.agenda_details.presentation
 
 import androidx.lifecycle.ViewModel
 import com.example.tasky.common.presentation.LineItemType
@@ -14,15 +14,15 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class ActionViewModel @Inject constructor() : ViewModel() {
+class AgendaDetailsViewModel @Inject constructor() : ViewModel() {
 
     companion object {
-        const val TAG = "ActionViewModel"
+        const val TAG = "AgendaDetailsViewModel"
         const val DEFAULT_TIME_RANGE = 15L
     }
 
-    private val _viewState = MutableStateFlow(ActionViewState())
-    val viewState: StateFlow<ActionViewState> = _viewState
+    private val _viewState = MutableStateFlow(AgendaDetailsViewState())
+    val viewState: StateFlow<AgendaDetailsViewState> = _viewState
 
     init {
         _viewState.update {

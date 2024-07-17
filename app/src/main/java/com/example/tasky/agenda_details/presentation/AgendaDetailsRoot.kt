@@ -1,4 +1,4 @@
-package com.example.tasky.actions.presentation
+package com.example.tasky.agenda_details.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,39 +30,39 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.R
-import com.example.tasky.actions.presentation.components.EmptyPhotos
+import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.common.domain.util.convertMillisToDate
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.common.presentation.TitleSection
-import com.example.tasky.common.presentation.model.Action
+import com.example.tasky.common.presentation.model.AgendaDetailsType
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
-fun ActionRoot(
+fun AgendaDetailsRoot(
     navController: NavController,
-    action: Action,
+    agendaDetailsType: AgendaDetailsType,
     date: Long,
-    actionViewModel: ActionViewModel = hiltViewModel()
+    agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
-    val viewState by actionViewModel.viewState.collectAsStateWithLifecycle()
-    val isEditing = (viewState.actionViewMode == ActionViewMode.EDITABLE)
+    val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
+    val isEditing = (viewState.agendaDetailsViewMode == AgendaDetailsViewMode.EDITABLE)
 
     val onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit =
         { time, lineItemType, dialogState ->
-            actionViewModel.onTimeSelected(time, lineItemType, dialogState)
+            agendaDetailsViewModel.onTimeSelected(time, lineItemType, dialogState)
         }
 
     val onDateSelected: (LocalDate, MaterialDialogState, LineItemType) -> Unit =
         { selectedDate, dialogState, timeType ->
-            actionViewModel.onDateSelected(selectedDate, dialogState, timeType)
+            agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
         }
 
-    ActionContent(
+    AgendaDetailsContent(
         toDate = viewState.toDate,
         fromDate = viewState.fromDate,
         isEditMode = isEditing,
@@ -72,7 +72,7 @@ fun ActionRoot(
         toDateDialogState = viewState.toDatePickerDialogState,
         fromTimeDialogState = viewState.fromTimeDialogState,
         toTimeDialogState = viewState.toTimeDialogState,
-        actionType = action,
+        agendaDetailsType = agendaDetailsType,
         onDateSelected = onDateSelected,
         onTimeSelected = onTimeSelected,
         startTime = viewState.fromTime,
@@ -81,7 +81,7 @@ fun ActionRoot(
 }
 
 @Composable
-fun ActionContent(
+fun AgendaDetailsContent(
     toDate: String,
     fromDate: String,
     isEditMode: Boolean,
@@ -91,7 +91,7 @@ fun ActionContent(
     toDateDialogState: MaterialDialogState,
     fromTimeDialogState: MaterialDialogState,
     toTimeDialogState: MaterialDialogState,
-    actionType: Action,
+    agendaDetailsType: AgendaDetailsType,
     onDateSelected: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
     onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
     startTime: String,
@@ -103,7 +103,7 @@ fun ActionContent(
             .background(Color.Black)
             .safeDrawingPadding()
     ) {
-        ActionToolbar(
+        AgendaDetailsToolbar(
             date = dateOnToolbar,
             onToolbarAction = onToolbarAction,
             isEditing = true
@@ -125,12 +125,12 @@ fun ActionContent(
                     .padding(top = 32.dp, bottom = 16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                HeaderSection(action = actionType)
+                HeaderSection(agendaDetailsType = agendaDetailsType)
                 Spacer(modifier = Modifier.padding(top = 10.dp))
                 TitleSection(isEditMode = isEditMode)
                 GrayDivider()
-                DescriptionSection(action = actionType, isEditMode = isEditMode)
-                if (actionType == Action.Event) {
+                DescriptionSection(agendaDetailsType = agendaDetailsType, isEditMode = isEditMode)
+                if (agendaDetailsType == AgendaDetailsType.Event) {
                     EmptyPhotos() // TODO if statement for added photos
                 }
                 GrayDivider()
@@ -145,7 +145,7 @@ fun ActionContent(
                     isEditing = isEditMode
                 )
                 GrayDivider()
-                if (actionType == Action.Event) {
+                if (agendaDetailsType == AgendaDetailsType.Event) {
                     DateLineItem(
                         date = toDate,
                         dialogState = toDateDialogState,
@@ -170,17 +170,17 @@ fun ActionContent(
 }
 
 @Composable
-fun HeaderSection(action: Action) {
-    val actionColor = when (action) {
-        Action.Event -> colorResource(id = R.color.event_light_green)
-        Action.Task -> colorResource(id = R.color.tasky_green)
-        Action.Reminder -> colorResource(id = R.color.reminder_gray)
+fun HeaderSection(agendaDetailsType: AgendaDetailsType) {
+    val agendaDetailsTypeColor = when (agendaDetailsType) {
+        AgendaDetailsType.Event -> colorResource(id = R.color.event_light_green)
+        AgendaDetailsType.Task -> colorResource(id = R.color.tasky_green)
+        AgendaDetailsType.Reminder -> colorResource(id = R.color.reminder_gray)
     }
 
-    val actionText = when (action) {
-        Action.Event -> stringResource(id = R.string.event)
-        Action.Task -> stringResource(id = R.string.task)
-        Action.Reminder -> stringResource(id = R.string.reminder)
+    val agendaDetailsTypeText = when (agendaDetailsType) {
+        AgendaDetailsType.Event -> stringResource(id = R.string.event)
+        AgendaDetailsType.Task -> stringResource(id = R.string.task)
+        AgendaDetailsType.Reminder -> stringResource(id = R.string.reminder)
     }
 
     Row(
@@ -190,22 +190,22 @@ fun HeaderSection(action: Action) {
             modifier = Modifier
                 .size(20.dp)
                 .clip(shape = RoundedCornerShape(2.dp))
-                .background(actionColor),
+                .background(agendaDetailsTypeColor),
         )
         Spacer(modifier = Modifier.padding(4.dp))
         Text(
-            text = actionText,
+            text = agendaDetailsTypeText,
             color = colorResource(id = R.color.dark_gray)
         )
     }
 }
 
 @Composable
-fun DescriptionSection(action: Action, isEditMode: Boolean) {
-    val actionText = when (action) {
-        Action.Event -> stringResource(id = R.string.event_description)
-        Action.Task -> stringResource(id = R.string.task_description)
-        Action.Reminder -> stringResource(id = R.string.reminder_description)
+fun DescriptionSection(agendaDetailsType: AgendaDetailsType, isEditMode: Boolean) {
+    val agendaDetailsTypeText = when (agendaDetailsType) {
+        AgendaDetailsType.Event -> stringResource(id = R.string.event_description)
+        AgendaDetailsType.Task -> stringResource(id = R.string.task_description)
+        AgendaDetailsType.Reminder -> stringResource(id = R.string.reminder_description)
     }
 
     Row(
@@ -213,7 +213,7 @@ fun DescriptionSection(action: Action, isEditMode: Boolean) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = actionText,
+            text = agendaDetailsTypeText,
             fontSize = 16.sp
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -226,7 +226,7 @@ fun DescriptionSection(action: Action, isEditMode: Boolean) {
 @Composable
 @Preview
 fun PreviewEventContent() {
-    ActionContent(
+    AgendaDetailsContent(
         toDate = "Jul 12 2024",
         fromDate = "Jul 11 2024",
         isEditMode = true,
@@ -240,6 +240,6 @@ fun PreviewEventContent() {
         onTimeSelected = { _, _, _ -> },
         startTime = "08:00",
         endTime = "08:15",
-        actionType = Action.Event
+        agendaDetailsType = AgendaDetailsType.Event
     )
 }

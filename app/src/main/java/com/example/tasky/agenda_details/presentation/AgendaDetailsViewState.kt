@@ -1,8 +1,8 @@
-package com.example.tasky.actions.presentation
+package com.example.tasky.agenda_details.presentation
 
 import com.vanpra.composematerialdialogs.MaterialDialogState
 
-data class ActionViewState(
+data class AgendaDetailsViewState(
     val fromDatePickerDialogState: MaterialDialogState = MaterialDialogState(),
     val toDatePickerDialogState: MaterialDialogState = MaterialDialogState(),
     val fromTimeDialogState: MaterialDialogState = MaterialDialogState(),
@@ -14,7 +14,7 @@ data class ActionViewState(
     val toDate: String = "",
     val fromDate: String = "",
     val reminder: Int = 0,
-    val actionViewMode: ActionViewMode = ActionViewMode.EDITABLE,
+    val agendaDetailsViewMode: AgendaDetailsViewMode = AgendaDetailsViewMode.EDITABLE,
     val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL
 )
 
@@ -22,6 +22,6 @@ enum class AttendeeFilter(type: String) {
     ALL("All"), GOING("Going"), NOT_GOING("Not Going")
 }
 
-enum class ActionViewMode {
+enum class AgendaDetailsViewMode {
     NON_EDITABLE, EDITABLE, ATTENDEE, ATTENDEE_EDITABLE
 }
