@@ -48,6 +48,7 @@ fun AgendaDetailsRoot(
     navController: NavController,
     agendaDetailsType: AgendaDetailsType,
     date: Long,
+    title: String?,
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
@@ -63,7 +64,11 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
         }
 
+    val titleText = title ?: stringResource(R.string.new_event)
+
+
     AgendaDetailsContent(
+        titleText = titleText,
         toDate = viewState.toDate,
         fromDate = viewState.fromDate,
         isEditMode = isEditing,
@@ -84,6 +89,7 @@ fun AgendaDetailsRoot(
 
 @Composable
 fun AgendaDetailsContent(
+    titleText: String,
     toDate: String,
     fromDate: String,
     isEditMode: Boolean,
@@ -131,6 +137,7 @@ fun AgendaDetailsContent(
                 HeaderSection(agendaDetailsType = agendaDetailsType)
                 Spacer(modifier = Modifier.padding(top = 10.dp))
                 TitleSection(
+                    title = titleText,
                     isEditMode = isEditMode,
                     onHeaderClick = editHeaderTitle
                 )
@@ -233,6 +240,7 @@ fun DescriptionSection(agendaDetailsType: AgendaDetailsType, isEditMode: Boolean
 @Preview
 fun PreviewEventContent() {
     AgendaDetailsContent(
+        titleText = "Meeting",
         toDate = "Jul 12 2024",
         fromDate = "Jul 11 2024",
         isEditMode = true,

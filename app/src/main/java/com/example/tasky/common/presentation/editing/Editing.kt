@@ -41,7 +41,10 @@ fun EditScreenRoot(
 
     EditScreenContent(
         navigateToPreviousScreen = { navController.popBackStack() },
-        saveEventTitle = { editingViewModel.save(it) },
+        saveEventTitle = {
+            navController.previousBackStackEntry?.savedStateHandle?.set("newTitle", text)
+            navController.popBackStack()
+        },
         text = text,
         onTextChange = { editingViewModel.onTextChange(it) }
     )

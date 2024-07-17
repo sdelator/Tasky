@@ -18,6 +18,7 @@ class EditingViewModel @Inject constructor() : ViewModel() {
 
     fun save(text: String) {
         Log.d("sandra", "text to save $text")
+        //TODO popbackstack 
     }
 
     fun onTextChange(newText: String) {
