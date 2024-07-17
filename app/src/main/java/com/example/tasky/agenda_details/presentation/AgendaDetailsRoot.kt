@@ -67,8 +67,9 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
         }
 
-    val titleText = title ?: getDefaultTitle(agendaDetailsType)
-    val itemDescription = description ?: getDefaultDescription(agendaDetailsType)
+    val titleText = if (!title.isNullOrEmpty()) title else getDefaultTitle(agendaDetailsType)
+    val itemDescription =
+        if (!description.isNullOrEmpty()) description else getDefaultDescription(agendaDetailsType)
 
     AgendaDetailsContent(
         titleText = titleText,
