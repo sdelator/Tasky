@@ -160,7 +160,7 @@ fun AgendaDetailsContent(
                 GrayDivider()
                 // TODO create rest of UI elements
 //                ReminderSection()
-//                if((actionType == Action.Event) {
+//                if((agendaDetailsType == Action.Event) {
 //                    AttendeeSection()
 //                }
 //                DeleteButton()

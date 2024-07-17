@@ -29,7 +29,7 @@ import com.example.tasky.R
 import com.example.tasky.common.presentation.model.AgendaDetailsType
 
 @Composable
-fun ActionCard(
+fun AgendaCard(
     cardType: AgendaDetailsType,
     isChecked: Boolean
 ) {
@@ -141,7 +141,7 @@ fun DateOfAction(date: String, textColor: Color) {
 @Composable
 @Preview
 fun PreviewEventCard() {
-    ActionCard(
+    AgendaCard(
         cardType = AgendaDetailsType.Event,
         isChecked = true
     )
@@ -150,7 +150,7 @@ fun PreviewEventCard() {
 @Composable
 @Preview
 fun PreviewTaskCard() {
-    ActionCard(
+    AgendaCard(
         cardType = AgendaDetailsType.Task,
         isChecked = false
     )
@@ -159,7 +159,7 @@ fun PreviewTaskCard() {
 @Composable
 @Preview
 fun PreviewReminderCard() {
-    ActionCard(
+    AgendaCard(
         cardType = AgendaDetailsType.Reminder,
         isChecked = true
     )
