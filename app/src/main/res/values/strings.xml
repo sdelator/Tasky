@@ -31,6 +31,8 @@
     <string name="task">Task</string>
     <string name="event">Event</string>
     <string name="new_event">New event</string>
+    <string name="new_task">New task</string>
+    <string name="new_reminder">New reminder</string>
     <string name="event_description">Event description</string>
     <string name="task_description">Task description</string>
     <string name="reminder_description">Reminder description</string>

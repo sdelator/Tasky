@@ -51,6 +51,7 @@ fun AgendaDetailsRoot(
     agendaDetailsType: AgendaDetailsType,
     date: Long,
     title: String?,
+    description: String?,
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
@@ -66,11 +67,12 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
         }
 
-    val titleText = title ?: stringResource(R.string.new_event)
-
+    val titleText = title ?: getDefaultTitle(agendaDetailsType)
+    val itemDescription = description ?: getDefaultDescription(agendaDetailsType)
 
     AgendaDetailsContent(
         titleText = titleText,
+        itemDescription = itemDescription,
         toDate = viewState.toDate,
         fromDate = viewState.fromDate,
         isEditMode = isEditing,
@@ -92,6 +94,7 @@ fun AgendaDetailsRoot(
 @Composable
 fun AgendaDetailsContent(
     titleText: String,
+    itemDescription: String,
     toDate: String,
     fromDate: String,
     isEditMode: Boolean,
@@ -145,7 +148,7 @@ fun AgendaDetailsContent(
                 )
                 GrayDivider()
                 DescriptionSection(
-                    agendaDetailsType = agendaDetailsType,
+                    description = itemDescription,
                     isEditMode = isEditMode,
                     onEditClick = onEditClick
                 )
@@ -221,16 +224,10 @@ fun HeaderSection(agendaDetailsType: AgendaDetailsType) {
 
 @Composable
 fun DescriptionSection(
-    agendaDetailsType: AgendaDetailsType,
+    description: String,
     isEditMode: Boolean,
     onEditClick: (TextFieldType) -> Unit
 ) {
-    val agendaDetailsTypeText = when (agendaDetailsType) {
-        AgendaDetailsType.Event -> stringResource(id = R.string.event_description)
-        AgendaDetailsType.Task -> stringResource(id = R.string.task_description)
-        AgendaDetailsType.Reminder -> stringResource(id = R.string.reminder_description)
-    }
-
     Row(
         modifier = Modifier
             .padding(start = 16.dp, end = 24.dp)
@@ -238,7 +235,7 @@ fun DescriptionSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = agendaDetailsTypeText,
+            text = description,
             fontSize = 16.sp
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -253,6 +250,7 @@ fun DescriptionSection(
 fun PreviewEventContent() {
     AgendaDetailsContent(
         titleText = "Meeting",
+        itemDescription = "test decription",
         toDate = "Jul 12 2024",
         fromDate = "Jul 11 2024",
         isEditMode = true,
@@ -269,4 +267,22 @@ fun PreviewEventContent() {
         endTime = "08:15",
         agendaDetailsType = AgendaDetailsType.Event
     )
+}
+
+@Composable
+fun getDefaultDescription(agendaDetailsType: AgendaDetailsType): String {
+    return when (agendaDetailsType) {
+        AgendaDetailsType.Event -> stringResource(id = R.string.event_description)
+        AgendaDetailsType.Task -> stringResource(id = R.string.task_description)
+        AgendaDetailsType.Reminder -> stringResource(id = R.string.reminder_description)
+    }
+}
+
+@Composable
+fun getDefaultTitle(agendaDetailsType: AgendaDetailsType): String {
+    return when (agendaDetailsType) {
+        AgendaDetailsType.Event -> stringResource(id = R.string.new_event)
+        AgendaDetailsType.Task -> stringResource(id = R.string.new_task)
+        AgendaDetailsType.Reminder -> stringResource(id = R.string.new_reminder)
+    }
 }

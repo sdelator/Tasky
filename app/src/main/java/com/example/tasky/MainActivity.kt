@@ -91,13 +91,15 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
     }
     composable<EventNav> {
         val title = it.savedStateHandle.get<String>(Constants.TITLE)
+        val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
         val args = it.toRoute<EventNav>()
         val date = args.date
         AgendaDetailsRoot(
             navController = navController,
             date = date,
             agendaDetailsType = AgendaDetailsType.Event,
-            title = title
+            title = title,
+            description = description
         )
     }
     composable<TaskNav> {

@@ -15,7 +15,7 @@ class EditingViewModel @Inject constructor() : ViewModel() {
     private val _text = MutableStateFlow("")
     val text: StateFlow<String> get() = _text
 
-    fun formatTitle(text: String): String {
+    fun formatText(text: String): String {
         return text.trim()
     }
 

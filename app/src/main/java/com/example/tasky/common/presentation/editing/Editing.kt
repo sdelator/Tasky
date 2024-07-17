@@ -43,9 +43,19 @@ fun EditScreenRoot(
 
     EditScreenContent(
         navigateToPreviousScreen = { navController.popBackStack() },
-        saveEventTitle = {
-            val title = editingViewModel.formatTitle(text)
-            navController.previousBackStackEntry?.savedStateHandle?.set(Constants.TITLE, title)
+        saveText = {
+            val textChanged = editingViewModel.formatText(text)
+            if (textFieldType == TextFieldType.TITLE.name) {
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    Constants.TITLE,
+                    textChanged
+                )
+            } else {
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    Constants.DESCRIPTION,
+                    textChanged
+                )
+            }
             navController.popBackStack()
         },
         text = text,
@@ -62,7 +72,7 @@ fun EditScreenRoot(
 fun EditScreenContent(
     toolbarTitle: String,
     navigateToPreviousScreen: () -> Unit,
-    saveEventTitle: (String) -> Unit,
+    saveText: (String) -> Unit,
     text: String,
     onTextChange: (String) -> Unit
 ) {
@@ -76,7 +86,7 @@ fun EditScreenContent(
             EditToolbar(
                 toolbarTitle = toolbarTitle,
                 navigateToPreviousScreen = navigateToPreviousScreen,
-                saveEventTitle = { saveEventTitle(text) }
+                saveEventTitle = { saveText(text) }
             )
             GrayDivider()
             EditableFieldArea(
@@ -157,7 +167,7 @@ fun PreviewEditRootComposable() {
     EditScreenContent(
         toolbarTitle = stringResource(id = R.string.edit_title),
         navigateToPreviousScreen = { },
-        saveEventTitle = { },
+        saveText = { },
         onTextChange = { _ -> },
         text = "Test"
     )
