@@ -14,9 +14,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
-fun DateLineItem(text: String, isEditing: Boolean) {
+fun DateLineItem(
+    date: String,
+    isEditing: Boolean,
+    dialogState: MaterialDialogState,
+    timeDialogState: MaterialDialogState,
+    onDateSelected: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
+    onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
+    buttonType: LineItemType,
+    time: String
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -25,27 +37,32 @@ fun DateLineItem(text: String, isEditing: Boolean) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = text,
+            text = if (buttonType == LineItemType.FROM) stringResource(id = R.string.from)
+            else stringResource(id = R.string.to),
             fontSize = 16.sp,
             modifier = Modifier.weight(1f)
         )
 
-        Text(
-            text = "08:00",
-            fontSize = 16.sp,
-            modifier = Modifier.weight(1f)
-        ) // TODO TimePicker
+        CustomTimePicker(
+            modifier = Modifier.weight(1f),
+            dialogState = timeDialogState,
+            onTimeSelected = onTimeSelected,
+            buttonType = buttonType,
+            time = time
+        )
 
         if (isEditing) RightCarrotIcon(modifier = Modifier.weight(1f))
         else InvisibleRightCarrotIcon(modifier = Modifier.weight(1f))
 
-        Text(
-            text = "Jul 21 2024",
-            fontSize = 16.sp,
+        DatePickerLineItem(
+            date = date,
+            dialogState = dialogState,
             modifier = Modifier
                 .weight(2f)
-                .padding(start = 16.dp)
-        ) // TODO CalendarPicker
+                .padding(start = 16.dp),
+            onDateSelected = onDateSelected,
+            lineItemType = buttonType
+        )
 
         if (isEditing) RightCarrotIcon()
         else InvisibleRightCarrotIcon()
@@ -56,7 +73,25 @@ fun DateLineItem(text: String, isEditing: Boolean) {
 @Preview
 fun PreviewDateLineItem() {
     Column {
-        DateLineItem(text = stringResource(id = R.string.to), isEditing = true)
-        DateLineItem(text = stringResource(id = R.string.from), isEditing = false)
+        DateLineItem(
+            date = "Jul 21 2024",
+            isEditing = true,
+            dialogState = MaterialDialogState(),
+            timeDialogState = MaterialDialogState(),
+            onDateSelected = { _, _, _ -> },
+            onTimeSelected = { _, _, _ -> },
+            buttonType = LineItemType.TO,
+            time = ""
+        )
+        DateLineItem(
+            date = "Jul 22 2024",
+            isEditing = false,
+            dialogState = MaterialDialogState(),
+            timeDialogState = MaterialDialogState(),
+            onDateSelected = { _, _, _ -> },
+            onTimeSelected = { _, _, _ -> },
+            buttonType = LineItemType.FROM,
+            time = ""
+        )
     }
 }

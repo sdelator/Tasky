@@ -6,7 +6,7 @@ import assertk.assertions.isEqualTo
 import com.example.tasky.R
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.util.CalendarHelper
-import com.example.tasky.common.presentation.util.toFormatted_MM_DD_YYYY
+import com.example.tasky.common.presentation.util.toFormatted_MMMM_dd_yyyy
 import com.example.tasky.fakes.FakeAuthenticatedRemoteRepository
 import com.example.tasky.fakes.FakeSessionStateManager
 import com.example.tasky.util.MainCoroutineRule
@@ -123,7 +123,7 @@ class AgendaViewModelTest {
                     month
                 )
             )
-            assertThat(state.headerDateText).isEqualTo(date.toFormatted_MM_DD_YYYY())
+            assertThat(state.headerDateText).isEqualTo(date.toFormatted_MMMM_dd_yyyy())
             assertThat(viewModel.yearSelected.value).isEqualTo(year)
         }
     }
@@ -180,7 +180,7 @@ class AgendaViewModelTest {
                     month
                 )
             )
-            assertThat(state.headerDateText).isEqualTo(date.toFormatted_MM_DD_YYYY())
+            assertThat(state.headerDateText).isEqualTo(date.toFormatted_MMMM_dd_yyyy())
             assertThat(viewModel.yearSelected.value).isEqualTo(year)
         }
     }

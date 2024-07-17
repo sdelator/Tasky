@@ -106,8 +106,7 @@ fun ViewHeaderSmall() {
 }
 
 @Composable
-@Preview
-fun TitleSection() {
+fun TitleSection(isEditMode: Boolean) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 24.dp)
@@ -119,6 +118,8 @@ fun TitleSection() {
             textColor = Color.Black
         )
         Spacer(modifier = Modifier.weight(1f))
-        RightCarrotIcon()
+        if (isEditMode) {
+            RightCarrotIcon()
+        }
     }
 }
