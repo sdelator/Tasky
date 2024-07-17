@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.R
+import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LeftCarrotIcon
 
@@ -42,7 +43,8 @@ fun EditScreenRoot(
     EditScreenContent(
         navigateToPreviousScreen = { navController.popBackStack() },
         saveEventTitle = {
-            navController.previousBackStackEntry?.savedStateHandle?.set("newTitle", text)
+            val title = editingViewModel.formatTitle(text)
+            navController.previousBackStackEntry?.savedStateHandle?.set(Constants.TITLE, title)
             navController.popBackStack()
         },
         text = text,

@@ -21,6 +21,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.tasky.agenda_details.presentation.AgendaDetailsRoot
+import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.presentation.editing.EditScreenRoot
 import com.example.tasky.common.presentation.model.AgendaDetailsType
 import com.example.tasky.feature_agenda.presentation.AgendaRoot
@@ -89,10 +90,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         AgendaRoot(navController = navController)
     }
     composable<EventNav> {
-        val title = it.savedStateHandle.get<String>("newTitle")
-//        text?.let {
-//            Text(text)
-//        }
+        val title = it.savedStateHandle.get<String>(Constants.TITLE)
         val args = it.toRoute<EventNav>()
         val date = args.date
         AgendaDetailsRoot(
