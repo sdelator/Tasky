@@ -42,7 +42,7 @@ class ActionViewModel @Inject constructor() : ViewModel() {
     fun save() {
     }
 
-    fun updateDateDialogState(
+    fun onDateSelected(
         date: LocalDate,
         dialogState: MaterialDialogState,
         lineItemType: LineItemType
@@ -68,23 +68,7 @@ class ActionViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun updateTimeDialogState(dialogState: MaterialDialogState, lineItemType: LineItemType) {
-        when (lineItemType) {
-            LineItemType.FROM -> {
-                _viewState.update {
-                    it.copy(fromTimeDialogState = dialogState)
-                }
-            }
-
-            LineItemType.TO -> {
-                _viewState.update {
-                    it.copy(toTimeDialogState = dialogState)
-                }
-            }
-        }
-    }
-
-    fun onUpdateTimeSelected(
+    fun onTimeSelected(
         time: LocalTime,
         lineItemType: LineItemType,
         dialogState: MaterialDialogState

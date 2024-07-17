@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,16 +50,16 @@ fun ActionRoot(
     actionViewModel: ActionViewModel = hiltViewModel()
 ) {
     val viewState by actionViewModel.viewState.collectAsStateWithLifecycle()
-    val isEditing = (viewState.eventViewMode == EventViewMode.EDITABLE)
+    val isEditing = (viewState.actionViewMode == ActionViewMode.EDITABLE)
 
-    val onUpdateTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit =
+    val onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit =
         { time, lineItemType, dialogState ->
-            eventViewModel.onUpdateTimeSelected(time, lineItemType, dialogState)
-    }
+            actionViewModel.onTimeSelected(time, lineItemType, dialogState)
+        }
 
-    val updateDateDialogState: (LocalDate, MaterialDialogState, LineItemType) -> Unit =
+    val onDateSelected: (LocalDate, MaterialDialogState, LineItemType) -> Unit =
         { selectedDate, dialogState, timeType ->
-            eventViewModel.updateDateDialogState(selectedDate, dialogState, timeType)
+            actionViewModel.onDateSelected(selectedDate, dialogState, timeType)
         }
 
     ActionContent(
@@ -72,11 +73,8 @@ fun ActionRoot(
         fromTimeDialogState = viewState.fromTimeDialogState,
         toTimeDialogState = viewState.toTimeDialogState,
         actionType = action,
-        dialogState = viewState.datePickerDialogState,
-        timeDialogState = viewState.timePickerDialogState,
-        updateDateDialogState = updateDateDialogState,
-        updateTimeDialogState = { eventViewModel.updateTimeDialogState(it) },
-        onUpdateTimeSelected = onUpdateTimeSelected,
+        onDateSelected = onDateSelected,
+        onTimeSelected = onTimeSelected,
         startTime = viewState.fromTime,
         endTime = viewState.toTime
     )
@@ -94,11 +92,8 @@ fun ActionContent(
     fromTimeDialogState: MaterialDialogState,
     toTimeDialogState: MaterialDialogState,
     actionType: Action,
-    dialogState: MaterialDialogState,
-    timeDialogState: MaterialDialogState,
-    updateDateDialogState: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
-    updateTimeDialogState: (MaterialDialogState) -> Unit,
-    onUpdateTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
+    onDateSelected: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
+    onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
     startTime: String,
     endTime: String
 ) {
@@ -143,9 +138,8 @@ fun ActionContent(
                     date = fromDate,
                     dialogState = fromDialogState,
                     timeDialogState = fromTimeDialogState,
-                    updateDateDialogState = updateDateDialogState,
-                    updateTimeDialogState = updateTimeDialogState,
-                    onUpdateTimeSelected = onUpdateTimeSelected,
+                    onDateSelected = onDateSelected,
+                    onTimeSelected = onTimeSelected,
                     time = startTime,
                     buttonType = LineItemType.FROM,
                     isEditing = isEditMode
@@ -156,9 +150,8 @@ fun ActionContent(
                         date = toDate,
                         dialogState = toDialogState,
                         timeDialogState = toTimeDialogState,
-                        updateDateDialogState = updateDateDialogState,
-                        updateTimeDialogState = updateTimeDialogState,
-                        onUpdateTimeSelected = onUpdateTimeSelected,
+                        onDateSelected = onDateSelected,
+                        onTimeSelected = onTimeSelected,
                         time = endTime,
                         buttonType = LineItemType.TO,
                         isEditing = isEditMode
@@ -233,7 +226,7 @@ fun DescriptionSection(action: Action, isEditMode: Boolean) {
 @Composable
 @Preview
 fun PreviewEventContent() {
-    EventContent(
+    ActionContent(
         toDate = "Jul 12 2024",
         fromDate = "Jul 11 2024",
         isEditMode = true,
@@ -243,9 +236,10 @@ fun PreviewEventContent() {
         toDialogState = MaterialDialogState(),
         fromTimeDialogState = MaterialDialogState(),
         toTimeDialogState = MaterialDialogState(),
-        updateDateDialogState = { _, _, _ -> },
-        onUpdateTimeSelected = { _, _, _ -> },
+        onDateSelected = { _, _, _ -> },
+        onTimeSelected = { _, _, _ -> },
         startTime = "08:00",
-        endTime = "08:15"
+        endTime = "08:15",
+        actionType = Action.Event
     )
 }

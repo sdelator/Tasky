@@ -20,7 +20,7 @@ fun DatePickerLineItem(
     date: String,
     modifier: Modifier,
     dialogState: MaterialDialogState,
-    updateDateDialogState: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
+    onDateSelected: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
     lineItemType: LineItemType
 ) {
     Text(
@@ -47,7 +47,7 @@ fun DatePickerLineItem(
             yearRange = IntRange(2023, 2030),
             colors = customDatePickerColors()
         ) { date ->
-            updateDateDialogState(date, dialogState, lineItemType)
+            onDateSelected(date, dialogState, lineItemType)
             dialogState.hide()
         }
     }

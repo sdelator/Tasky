@@ -23,7 +23,7 @@ import java.time.LocalTime
 fun CustomTimePicker(
     modifier: Modifier,
     dialogState: MaterialDialogState,
-    onUpdateTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
+    onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
     buttonType: LineItemType,
     time: String
 ) {
@@ -51,7 +51,7 @@ fun CustomTimePicker(
             colors = customTimePickerColors()
         ) { selectedTime ->
             dialogState.hide()
-            onUpdateTimeSelected(selectedTime, buttonType, dialogState)
+            onTimeSelected(selectedTime, buttonType, dialogState)
         }
     }
 }

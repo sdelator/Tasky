@@ -24,8 +24,8 @@ fun DateLineItem(
     isEditing: Boolean,
     dialogState: MaterialDialogState,
     timeDialogState: MaterialDialogState,
-    updateDateDialogState: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
-    onUpdateTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
+    onDateSelected: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
+    onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
     buttonType: LineItemType,
     time: String
 ) {
@@ -46,7 +46,7 @@ fun DateLineItem(
         CustomTimePicker(
             modifier = Modifier.weight(1f),
             dialogState = timeDialogState,
-            onUpdateTimeSelected = onUpdateTimeSelected,
+            onTimeSelected = onTimeSelected,
             buttonType = buttonType,
             time = time
         )
@@ -60,7 +60,7 @@ fun DateLineItem(
             modifier = Modifier
                 .weight(2f)
                 .padding(start = 16.dp),
-            updateDateDialogState = updateDateDialogState,
+            onDateSelected = onDateSelected,
             lineItemType = buttonType
         )
 
@@ -78,8 +78,8 @@ fun PreviewDateLineItem() {
             isEditing = true,
             dialogState = MaterialDialogState(),
             timeDialogState = MaterialDialogState(),
-            updateDateDialogState = { _, _, _ -> },
-            onUpdateTimeSelected = { _, _, _ -> },
+            onDateSelected = { _, _, _ -> },
+            onTimeSelected = { _, _, _ -> },
             buttonType = LineItemType.TO,
             time = ""
         )
@@ -88,8 +88,8 @@ fun PreviewDateLineItem() {
             isEditing = false,
             dialogState = MaterialDialogState(),
             timeDialogState = MaterialDialogState(),
-            updateDateDialogState = { _, _, _ -> },
-            onUpdateTimeSelected = { _, _, _ -> },
+            onDateSelected = { _, _, _ -> },
+            onTimeSelected = { _, _, _ -> },
             buttonType = LineItemType.FROM,
             time = ""
         )
