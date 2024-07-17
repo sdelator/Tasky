@@ -39,4 +39,5 @@
     <string name="edit">Edit</string>
     <string name="save">Save</string>
     <string name="edit_title">EDIT TITLE</string>
+    <string name="edit_description">EDIT DESCRIPTION</string>
 </resources>

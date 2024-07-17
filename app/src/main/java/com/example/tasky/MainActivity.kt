@@ -117,7 +117,9 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         )
     }
     composable<EditingNav> {
-        EditScreenRoot(navController = navController)
+        val args = it.toRoute<EditingNav>()
+        val textFieldType = args.textFieldType
+        EditScreenRoot(navController = navController, textFieldType = textFieldType)
     }
 }
 
@@ -148,4 +150,4 @@ object TaskNav
 object ReminderNav
 
 @Serializable
-object EditingNav
+data class EditingNav(val textFieldType: String)

@@ -1,6 +1,7 @@
 package com.example.tasky.agenda_details.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +39,7 @@ import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.common.presentation.TitleSection
+import com.example.tasky.common.presentation.editing.TextFieldType
 import com.example.tasky.common.presentation.model.AgendaDetailsType
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import java.time.LocalDate
@@ -72,7 +74,7 @@ fun AgendaDetailsRoot(
         toDate = viewState.toDate,
         fromDate = viewState.fromDate,
         isEditMode = isEditing,
-        editHeaderTitle = { navController.navigate(EditingNav) },
+        onEditClick = { navController.navigate(EditingNav(it.name)) },
         dateOnToolbar = date.convertMillisToDate(),
         onToolbarAction = {},
         fromDateDialogState = viewState.fromDatePickerDialogState,
@@ -93,7 +95,7 @@ fun AgendaDetailsContent(
     toDate: String,
     fromDate: String,
     isEditMode: Boolean,
-    editHeaderTitle: () -> Unit,
+    onEditClick: (TextFieldType) -> Unit,
     dateOnToolbar: String,
     onToolbarAction: (ToolbarAction) -> Unit,
     fromDateDialogState: MaterialDialogState,
@@ -139,10 +141,14 @@ fun AgendaDetailsContent(
                 TitleSection(
                     title = titleText,
                     isEditMode = isEditMode,
-                    onHeaderClick = editHeaderTitle
+                    onEditClick = onEditClick
                 )
                 GrayDivider()
-                DescriptionSection(agendaDetailsType = agendaDetailsType, isEditMode = isEditMode)
+                DescriptionSection(
+                    agendaDetailsType = agendaDetailsType,
+                    isEditMode = isEditMode,
+                    onEditClick = onEditClick
+                )
                 if (agendaDetailsType == AgendaDetailsType.Event) {
                     EmptyPhotos() // TODO if statement for added photos
                 }
@@ -214,7 +220,11 @@ fun HeaderSection(agendaDetailsType: AgendaDetailsType) {
 }
 
 @Composable
-fun DescriptionSection(agendaDetailsType: AgendaDetailsType, isEditMode: Boolean) {
+fun DescriptionSection(
+    agendaDetailsType: AgendaDetailsType,
+    isEditMode: Boolean,
+    onEditClick: (TextFieldType) -> Unit
+) {
     val agendaDetailsTypeText = when (agendaDetailsType) {
         AgendaDetailsType.Event -> stringResource(id = R.string.event_description)
         AgendaDetailsType.Task -> stringResource(id = R.string.task_description)
@@ -222,7 +232,9 @@ fun DescriptionSection(agendaDetailsType: AgendaDetailsType, isEditMode: Boolean
     }
 
     Row(
-        modifier = Modifier.padding(start = 16.dp, end = 24.dp),
+        modifier = Modifier
+            .padding(start = 16.dp, end = 24.dp)
+            .clickable { onEditClick(TextFieldType.DESCRIPTION) },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -244,7 +256,7 @@ fun PreviewEventContent() {
         toDate = "Jul 12 2024",
         fromDate = "Jul 11 2024",
         isEditMode = true,
-        editHeaderTitle = { },
+        onEditClick = { },
         dateOnToolbar = "15 Jul 2024",
         onToolbarAction = {},
         fromDateDialogState = MaterialDialogState(),

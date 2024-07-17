@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tasky.common.presentation.editing.TextFieldType
 
 
 @Composable
@@ -105,12 +106,12 @@ fun ViewHeaderSmall() {
 }
 
 @Composable
-fun TitleSection(title: String, isEditMode: Boolean, onHeaderClick: () -> Unit) {
+fun TitleSection(title: String, isEditMode: Boolean, onEditClick: (TextFieldType) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .padding(top = 16.dp, start = 16.dp, end = 24.dp)
-            .clickable { onHeaderClick() }
+            .clickable { onEditClick(TextFieldType.TITLE) }
     ) {
         CustomCheckbox(isChecked = false, color = Color.Black, size = 20.dp)
         HeaderLargeStrikeThrough(

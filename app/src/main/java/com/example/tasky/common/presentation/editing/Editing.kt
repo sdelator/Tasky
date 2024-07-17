@@ -35,6 +35,7 @@ import com.example.tasky.common.presentation.LeftCarrotIcon
 
 @Composable
 fun EditScreenRoot(
+    textFieldType: String,
     navController: NavController,
     editingViewModel: EditingViewModel = hiltViewModel()
 ) {
@@ -48,12 +49,18 @@ fun EditScreenRoot(
             navController.popBackStack()
         },
         text = text,
-        onTextChange = { editingViewModel.onTextChange(it) }
+        onTextChange = { editingViewModel.onTextChange(it) },
+        toolbarTitle = when (textFieldType) {
+            TextFieldType.TITLE.name -> stringResource(R.string.edit_title)
+            TextFieldType.DESCRIPTION.name -> stringResource(id = R.string.edit_description)
+            else -> stringResource(id = R.string.edit_description)
+        }
     )
 }
 
 @Composable
 fun EditScreenContent(
+    toolbarTitle: String,
     navigateToPreviousScreen: () -> Unit,
     saveEventTitle: (String) -> Unit,
     text: String,
@@ -67,6 +74,7 @@ fun EditScreenContent(
     ) {
         Column {
             EditToolbar(
+                toolbarTitle = toolbarTitle,
                 navigateToPreviousScreen = navigateToPreviousScreen,
                 saveEventTitle = { saveEventTitle(text) }
             )
@@ -103,6 +111,7 @@ fun EditableFieldArea(
 
 @Composable
 fun EditToolbar(
+    toolbarTitle: String,
     navigateToPreviousScreen: () -> Unit,
     saveEventTitle: () -> Unit
 ) {
@@ -116,15 +125,15 @@ fun EditToolbar(
         LeftCarrotIcon(
             modifier = Modifier.clickable { navigateToPreviousScreen() }
         )
-        EditTitle()
+        EditTitle(toolbarTitle = toolbarTitle)
         SaveButton(onClick = { saveEventTitle() })
     }
 }
 
 @Composable
-fun EditTitle() {
+fun EditTitle(toolbarTitle: String) {
     Text(
-        text = stringResource(R.string.edit_title),
+        text = toolbarTitle,
         color = Color.Black,
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp
@@ -146,6 +155,7 @@ fun SaveButton(onClick: () -> Unit) {
 @Preview
 fun PreviewEditRootComposable() {
     EditScreenContent(
+        toolbarTitle = stringResource(id = R.string.edit_title),
         navigateToPreviousScreen = { },
         saveEventTitle = { },
         onTextChange = { _ -> },
