@@ -1,4 +1,4 @@
-package com.example.tasky.event.presentation
+package com.example.tasky.actions.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.example.tasky.R
 
 @Composable
-fun EventToolbar(
+fun ActionToolbar(
     date: String,
     onToolbarAction: (ToolbarAction) -> Unit,
     isEditing: Boolean
@@ -86,7 +86,7 @@ fun EventDate(date: String) {
 @Composable
 @Preview
 fun PreviewIcon() {
-    EventToolbar(
+    ActionToolbar(
         date = "01 March 2024",
         onToolbarAction = { },
         isEditing = true
