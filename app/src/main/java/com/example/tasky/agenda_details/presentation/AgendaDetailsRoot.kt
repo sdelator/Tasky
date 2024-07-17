@@ -50,7 +50,7 @@ fun AgendaDetailsRoot(
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
-    val isEditing = (viewState.agendaDetailsViewMode == AgendaDetailsViewMode.EDITABLE)
+    val isEditing = true
 
     val onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit =
         { time, lineItemType, dialogState ->

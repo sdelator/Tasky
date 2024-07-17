@@ -14,14 +14,9 @@ data class AgendaDetailsViewState(
     val toDate: String = "",
     val fromDate: String = "",
     val reminder: Int = 0,
-    val agendaDetailsViewMode: AgendaDetailsViewMode = AgendaDetailsViewMode.EDITABLE,
     val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL
 )
 
 enum class AttendeeFilter(type: String) {
     ALL("All"), GOING("Going"), NOT_GOING("Not Going")
-}
-
-enum class AgendaDetailsViewMode {
-    NON_EDITABLE, EDITABLE, ATTENDEE, ATTENDEE_EDITABLE
 }
