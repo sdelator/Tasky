@@ -121,6 +121,9 @@ fun EditableFieldArea(
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
             disabledContainerColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
         )
     )
 }
