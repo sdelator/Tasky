@@ -42,4 +42,10 @@
     <string name="save">Save</string>
     <string name="edit_title">EDIT TITLE</string>
     <string name="edit_description">EDIT DESCRIPTION</string>
+    <string name="enter_the_event_name">Enter the event name...</string>
+    <string name="enter_the_task_name">Enter the task name...</string>
+    <string name="enter_the_reminder_name">Enter the reminder name...</string>
+    <string name="enter_the_event_description">Enter the event description...</string>
+    <string name="enter_the_task_description">Enter the task description...</string>
+    <string name="enter_the_reminder_description">Enter the reminder description...</string>
 </resources>

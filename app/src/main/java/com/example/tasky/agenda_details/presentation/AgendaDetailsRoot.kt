@@ -77,7 +77,7 @@ fun AgendaDetailsRoot(
         toDate = viewState.toDate,
         fromDate = viewState.fromDate,
         isEditMode = isEditing,
-        onEditClick = { navController.navigate(EditingNav(it.name)) },
+        onEditClick = { navController.navigate(EditingNav(it.name, agendaDetailsType.name)) },
         dateOnToolbar = date.convertMillisToDate(),
         onToolbarAction = {},
         fromDateDialogState = viewState.fromDatePickerDialogState,

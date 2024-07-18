@@ -32,10 +32,12 @@ import com.example.tasky.R
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LeftCarrotIcon
+import com.example.tasky.common.presentation.model.AgendaDetailsType
 
 @Composable
 fun EditScreenRoot(
     textFieldType: String,
+    agendaDetailsType: String,
     navController: NavController,
     editingViewModel: EditingViewModel = hiltViewModel()
 ) {
@@ -64,7 +66,8 @@ fun EditScreenRoot(
             TextFieldType.TITLE.name -> stringResource(R.string.edit_title)
             TextFieldType.DESCRIPTION.name -> stringResource(id = R.string.edit_description)
             else -> stringResource(id = R.string.edit_description)
-        }
+        },
+        placeholderText = getPlaceholderText(textFieldType, agendaDetailsType)
     )
 }
 
@@ -74,6 +77,7 @@ fun EditScreenContent(
     navigateToPreviousScreen: () -> Unit,
     saveText: (String) -> Unit,
     text: String,
+    placeholderText: String,
     onTextChange: (String) -> Unit
 ) {
     Box(
@@ -91,6 +95,7 @@ fun EditScreenContent(
             GrayDivider()
             EditableFieldArea(
                 text = text,
+                placeholderText = placeholderText,
                 onTextChange = onTextChange
             )
         }
@@ -100,6 +105,7 @@ fun EditScreenContent(
 @Composable
 fun EditableFieldArea(
     text: String,
+    placeholderText: String,
     onTextChange: (String) -> Unit
 ) {
     TextField(
@@ -109,7 +115,7 @@ fun EditableFieldArea(
             .fillMaxSize()
             .padding(horizontal = 16.dp),
         singleLine = false,
-        placeholder = { Text("Enter the event name...", fontSize = 26.sp) },
+        placeholder = { Text(placeholderText, fontSize = 26.sp) },
         textStyle = TextStyle(fontSize = 26.sp),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.White,
@@ -162,10 +168,34 @@ fun SaveButton(onClick: () -> Unit) {
 }
 
 @Composable
+fun getPlaceholderText(textFieldType: String, agendaDetailsType: String): String {
+    return when (textFieldType) {
+        TextFieldType.TITLE.name -> {
+            when (agendaDetailsType) {
+                AgendaDetailsType.Event.name -> stringResource(id = R.string.enter_the_event_name)
+                AgendaDetailsType.Task.name -> stringResource(id = R.string.enter_the_task_name)
+                else -> stringResource(id = R.string.enter_the_reminder_name)
+            }
+        }
+
+        TextFieldType.DESCRIPTION.name -> {
+            when (agendaDetailsType) {
+                AgendaDetailsType.Event.name -> stringResource(id = R.string.enter_the_event_description)
+                AgendaDetailsType.Task.name -> stringResource(id = R.string.enter_the_task_description)
+                else -> stringResource(id = R.string.enter_the_reminder_description)
+            }
+        }
+
+        else -> stringResource(id = R.string.edit_description)
+    }
+}
+
+@Composable
 @Preview
 fun PreviewEditRootComposable() {
     EditScreenContent(
         toolbarTitle = stringResource(id = R.string.edit_title),
+        placeholderText = stringResource(R.string.enter_the_event_name),
         navigateToPreviousScreen = { },
         saveText = { },
         onTextChange = { _ -> },
