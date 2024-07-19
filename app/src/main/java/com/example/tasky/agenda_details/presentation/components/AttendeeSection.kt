@@ -1,4 +1,4 @@
-package com.example.tasky.common.presentation
+package com.example.tasky.agenda_details.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,12 +11,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tasky.agenda_details.presentation.AttendeeFilter
+import com.example.tasky.common.presentation.HeaderMedium
+import com.example.tasky.common.presentation.PillButton
 
 @Composable
 @Preview
 fun AttendeeSection() {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, bottom = 16.dp),
     ) {
         HeaderMedium(
             title = "Visitors",
@@ -25,6 +29,8 @@ fun AttendeeSection() {
         )
         Spacer(modifier = Modifier.padding(16.dp))
         AttendeeStatusSection()
+        GoingSection()
+//        NotGoingSection()
     }
 }
 
@@ -33,7 +39,7 @@ fun AttendeeStatusSection() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp)
+            .padding(8.dp)
     ) {
         PillButton(buttonName = AttendeeFilter.ALL.typeName, onClick = { /*TODO*/ })
         PillButton(buttonName = AttendeeFilter.GOING.typeName, onClick = { /*TODO*/ })

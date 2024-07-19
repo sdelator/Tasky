@@ -32,9 +32,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.EditingNav
 import com.example.tasky.R
+import com.example.tasky.agenda_details.presentation.components.AttendeeSection
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.common.domain.util.convertMillisToDate
-import com.example.tasky.common.presentation.AttendeeSection
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LineItemType

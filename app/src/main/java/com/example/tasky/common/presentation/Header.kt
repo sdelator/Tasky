@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tasky.R
 import com.example.tasky.common.presentation.editing.TextFieldType
 
 
@@ -70,7 +72,7 @@ fun HeaderMedium(
 }
 
 @Composable
-fun HeaderSmall(title: String, modifier: Modifier) {
+fun HeaderSmallBold(title: String, modifier: Modifier) {
     Text(
         text = title,
         modifier = modifier,
@@ -78,6 +80,18 @@ fun HeaderSmall(title: String, modifier: Modifier) {
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
+        ),
+        textAlign = TextAlign.Center
+    )
+}
+
+@Composable
+fun HeaderSmall(title: String) {
+    Text(
+        text = title,
+        style = TextStyle(
+            fontSize = 16.sp,
+            color = colorResource(id = R.color.dark_gray)
         ),
         textAlign = TextAlign.Center
     )
@@ -107,7 +121,7 @@ fun ViewHeaderMedium() {
 @Preview
 fun ViewHeaderSmall() {
     Column {
-        HeaderSmall(title = "HEADLINE SMALL", modifier = Modifier)
+        HeaderSmallBold(title = "HEADLINE SMALL", modifier = Modifier)
     }
 }
 
