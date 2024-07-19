@@ -50,7 +50,7 @@ fun HeaderLargeStrikeThrough(title: String, isChecked: Boolean, textColor: Color
 }
 
 @Composable
-fun HeaderMedium(title: String, isChecked: Boolean, textColor: Color) {
+fun HeaderMedium(title: String, isChecked: Boolean = false, textColor: Color) {
     Text(
         text = title,
         style = TextStyle(

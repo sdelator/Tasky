@@ -17,6 +17,6 @@ data class AgendaDetailsViewState(
     val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL
 )
 
-enum class AttendeeFilter(type: String) {
+enum class AttendeeFilter(val typeName: String) {
     ALL("All"), GOING("Going"), NOT_GOING("Not Going")
 }

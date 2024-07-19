@@ -34,9 +34,11 @@ import com.example.tasky.EditingNav
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.common.domain.util.convertMillisToDate
+import com.example.tasky.common.presentation.AttendeeSection
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LineItemType
+import com.example.tasky.common.presentation.ReminderSection
 import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.common.presentation.TitleSection
 import com.example.tasky.common.presentation.editing.TextFieldType
@@ -181,12 +183,12 @@ fun AgendaDetailsContent(
                     )
                 }
                 GrayDivider()
-                // TODO create rest of UI elements
-//                ReminderSection()
-//                if((agendaItemType == Action.Event) {
-//                    AttendeeSection()
-//                }
-//                DeleteButton()
+                ReminderSection()
+                GrayDivider()
+                if (agendaItemType == AgendaItemType.Event) {
+                    AttendeeSection()
+                }
+                //DeleteButton()
             }
         }
     }
