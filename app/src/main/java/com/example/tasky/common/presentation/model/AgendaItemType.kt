@@ -1,5 +1,5 @@
 package com.example.tasky.common.presentation.model
 
-enum class AgendaDetailsType {
+enum class AgendaItemType {
     Event, Task, Reminder
 }

@@ -11,13 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tasky.R
-import com.example.tasky.common.presentation.model.AgendaDetailsType
+import com.example.tasky.common.presentation.model.AgendaItemType
 
 @Composable
 fun FabDropdownRoot(
     showFabDropdown: Boolean,
     toggleFabDropdownVisibility: () -> Unit,
-    onFabActionClick: (AgendaDetailsType) -> Unit,
+    onFabActionClick: (AgendaItemType) -> Unit,
     modifier: Modifier
 ) {
     DropdownMenu(
@@ -28,19 +28,19 @@ fun FabDropdownRoot(
         DropdownMenuItem(
             text = { Text(stringResource(R.string.event)) },
             onClick = {
-                onFabActionClick(AgendaDetailsType.Event)
+                onFabActionClick(AgendaItemType.Event)
             }
         )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.task)) },
             onClick = {
-                onFabActionClick(AgendaDetailsType.Task)
+                onFabActionClick(AgendaItemType.Task)
             }
         )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.reminder)) },
             onClick = {
-                onFabActionClick(AgendaDetailsType.Reminder)
+                onFabActionClick(AgendaItemType.Reminder)
             }
         )
     }

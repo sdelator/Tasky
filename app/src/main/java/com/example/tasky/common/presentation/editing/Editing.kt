@@ -32,22 +32,24 @@ import com.example.tasky.R
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LeftCarrotIcon
-import com.example.tasky.common.presentation.model.AgendaDetailsType
+import com.example.tasky.common.presentation.model.AgendaItemType
 
 @Composable
 fun EditScreenRoot(
     textFieldType: String,
-    agendaDetailsType: String,
+    agendaItemType: String,
     navController: NavController,
     editingViewModel: EditingViewModel = hiltViewModel()
 ) {
     val text by editingViewModel.text.collectAsStateWithLifecycle()
+    val fieldType = enumValueOf<TextFieldType>(textFieldType)
+    val agendaType = enumValueOf<AgendaItemType>(agendaItemType)
 
     EditScreenContent(
         navigateToPreviousScreen = { navController.popBackStack() },
         saveText = {
             val textChanged = editingViewModel.formatText(text)
-            if (textFieldType == TextFieldType.TITLE.name) {
+            if (fieldType == TextFieldType.TITLE) {
                 navController.previousBackStackEntry?.savedStateHandle?.set(
                     Constants.TITLE,
                     textChanged
@@ -62,12 +64,11 @@ fun EditScreenRoot(
         },
         text = text,
         onTextChange = { editingViewModel.onTextChange(it) },
-        toolbarTitle = when (textFieldType) {
-            TextFieldType.TITLE.name -> stringResource(R.string.edit_title)
-            TextFieldType.DESCRIPTION.name -> stringResource(id = R.string.edit_description)
-            else -> stringResource(id = R.string.edit_description)
+        toolbarTitle = when (fieldType) {
+            TextFieldType.TITLE -> stringResource(R.string.edit_title)
+            TextFieldType.DESCRIPTION -> stringResource(id = R.string.edit_description)
         },
-        placeholderText = getPlaceholderText(textFieldType, agendaDetailsType)
+        placeholderText = getPlaceholderText(fieldType, agendaType)
     )
 }
 
@@ -171,25 +172,23 @@ fun SaveButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun getPlaceholderText(textFieldType: String, agendaDetailsType: String): String {
+fun getPlaceholderText(textFieldType: TextFieldType, agendaItemType: AgendaItemType): String {
     return when (textFieldType) {
-        TextFieldType.TITLE.name -> {
-            when (agendaDetailsType) {
-                AgendaDetailsType.Event.name -> stringResource(id = R.string.enter_the_event_name)
-                AgendaDetailsType.Task.name -> stringResource(id = R.string.enter_the_task_name)
-                else -> stringResource(id = R.string.enter_the_reminder_name)
+        TextFieldType.TITLE -> {
+            when (agendaItemType) {
+                AgendaItemType.Event -> stringResource(id = R.string.enter_the_event_name)
+                AgendaItemType.Task -> stringResource(id = R.string.enter_the_task_name)
+                AgendaItemType.Reminder -> stringResource(id = R.string.enter_the_reminder_name)
             }
         }
 
-        TextFieldType.DESCRIPTION.name -> {
-            when (agendaDetailsType) {
-                AgendaDetailsType.Event.name -> stringResource(id = R.string.enter_the_event_description)
-                AgendaDetailsType.Task.name -> stringResource(id = R.string.enter_the_task_description)
-                else -> stringResource(id = R.string.enter_the_reminder_description)
+        TextFieldType.DESCRIPTION -> {
+            when (agendaItemType) {
+                AgendaItemType.Event -> stringResource(id = R.string.enter_the_event_description)
+                AgendaItemType.Task -> stringResource(id = R.string.enter_the_task_description)
+                AgendaItemType.Reminder -> stringResource(id = R.string.enter_the_reminder_description)
             }
         }
-
-        else -> stringResource(id = R.string.edit_description)
     }
 }
 

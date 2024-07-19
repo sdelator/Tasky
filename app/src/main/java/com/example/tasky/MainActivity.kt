@@ -23,7 +23,7 @@ import androidx.navigation.toRoute
 import com.example.tasky.agenda_details.presentation.AgendaDetailsRoot
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.presentation.editing.EditScreenRoot
-import com.example.tasky.common.presentation.model.AgendaDetailsType
+import com.example.tasky.common.presentation.model.AgendaItemType
 import com.example.tasky.feature_agenda.presentation.AgendaRoot
 import com.example.tasky.feature_login.presentation.LoginRoot
 import com.example.tasky.feature_login.presentation.RegisterAccountRoot
@@ -97,7 +97,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         AgendaDetailsRoot(
             navController = navController,
             date = date,
-            agendaDetailsType = AgendaDetailsType.Event,
+            agendaItemType = AgendaItemType.Event,
             title = title,
             description = description
         )
@@ -121,11 +121,11 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
     composable<EditingNav> {
         val args = it.toRoute<EditingNav>()
         val textFieldType = args.textFieldType
-        val agendaDetailType = args.agendaDetailsType
+        val agendaDetailType = args.agendaItemType
         EditScreenRoot(
             navController = navController,
             textFieldType = textFieldType,
-            agendaDetailsType = agendaDetailType
+            agendaItemType = agendaDetailType
         )
     }
 }
@@ -157,4 +157,4 @@ object TaskNav
 object ReminderNav
 
 @Serializable
-data class EditingNav(val textFieldType: String, val agendaDetailsType: String)
+data class EditingNav(val textFieldType: String, val agendaItemType: String)
