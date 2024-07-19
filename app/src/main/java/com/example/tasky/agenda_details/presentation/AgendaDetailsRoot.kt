@@ -91,7 +91,7 @@ fun AgendaDetailsRoot(
         onTimeSelected = onTimeSelected,
         startTime = viewState.fromTime,
         endTime = viewState.toTime,
-        showReminderDropdown = { viewState.showReminderDropdown },
+        showReminderDropdown = viewState.showReminderDropdown,
         toggleReminderDropdownVisibility = { agendaDetailsViewModel.toggleReminderDropdownVisibility() }
     )
 }
@@ -115,7 +115,7 @@ fun AgendaDetailsContent(
     onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
     startTime: String,
     endTime: String,
-    showReminderDropdown: () -> Unit,
+    showReminderDropdown: Boolean,
     toggleReminderDropdownVisibility: () -> Unit
 ) {
     Box(
@@ -276,7 +276,7 @@ fun PreviewEventContent() {
         startTime = "08:00",
         endTime = "08:15",
         agendaItemType = AgendaItemType.Event,
-        showReminderDropdown = {},
+        showReminderDropdown = false,
         toggleReminderDropdownVisibility = {}
     )
 }

@@ -2,6 +2,7 @@ package com.example.tasky.common.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,29 +19,32 @@ import com.example.tasky.R
 
 @Composable
 fun ReminderSection(
-    showReminderDropdown: () -> Unit,
+    showReminderDropdown: Boolean,
     toggleReminderDropdownVisibility: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp)
-            .clickable { showReminderDropdown() },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_reminder),
-            contentDescription = null
-        )
-        Spacer(modifier = Modifier.padding(5.dp))
-        Text(
-            text = "30 minutes before",
-            fontSize = 16.sp,
-            color = Color.Black
+    Box {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
+                .clickable { toggleReminderDropdownVisibility() },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_reminder),
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.padding(5.dp))
+            Text(
+                text = "30 minutes before",
+                fontSize = 16.sp,
+                color = Color.Black
+            )
+        }
+        ReminderDropdownRoot(
+            showReminderDropdown = showReminderDropdown,
+            toggleReminderDropdownVisibility = toggleReminderDropdownVisibility,
+            Modifier.align(Alignment.BottomEnd)
         )
     }
-    ReminderDropdownRoot(
-        showReminderDropdown = true,
-        toggleReminderDropdownVisibility = toggleReminderDropdownVisibility
-    )
 }

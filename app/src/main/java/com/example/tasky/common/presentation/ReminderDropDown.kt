@@ -15,11 +15,13 @@ import com.example.tasky.R
 @Composable
 fun ReminderDropdownRoot(
     showReminderDropdown: Boolean,
-    toggleReminderDropdownVisibility: () -> Unit
+    toggleReminderDropdownVisibility: () -> Unit,
+    modifier: Modifier
 ) {
     DropdownMenu(
         expanded = showReminderDropdown,
-        onDismissRequest = toggleReminderDropdownVisibility
+        onDismissRequest = toggleReminderDropdownVisibility,
+        modifier = modifier
     ) {
         DropdownMenuItem(
             text = { Text(stringResource(R.string.ten_minutes_before)) },
@@ -55,7 +57,8 @@ fun PreviewReminderDropdownMenu() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         ReminderDropdownRoot(
             showReminderDropdown = true,
-            toggleReminderDropdownVisibility = { }
+            toggleReminderDropdownVisibility = { },
+            Modifier.align(Alignment.TopEnd)
         )
     }
 }
