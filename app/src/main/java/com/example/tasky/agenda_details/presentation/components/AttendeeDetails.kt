@@ -23,31 +23,28 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 import com.example.tasky.common.presentation.HeaderSmall
 
 @Composable
-@Preview
-fun GoingSection() {
+fun GoingSection(headerText: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        HeaderSmall(title = "Going")
+        HeaderSmall(title = headerText)
         Spacer(modifier = Modifier.padding(bottom = 5.dp))
         //TODO add a scrollable adapter
-        Attendee(name = "AB")
-        Attendee(name = "BC")
+        Attendee(name = "AB", isCreator = true)
+        Attendee(name = "BC", isCreator = false)
     }
 }
 
 @Composable
-fun Attendee(name: String) {
-    val isCreator = false
+fun Attendee(name: String, isCreator: Boolean) {
     Surface(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier

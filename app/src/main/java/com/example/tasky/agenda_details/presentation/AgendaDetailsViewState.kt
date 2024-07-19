@@ -18,5 +18,5 @@ data class AgendaDetailsViewState(
 )
 
 enum class AttendeeFilter(val typeName: String) {
-    ALL("All"), GOING("Going"), NOT_GOING("Not Going")
+    ALL("All"), GOING("Going"), NOT_GOING("Not going")
 }
