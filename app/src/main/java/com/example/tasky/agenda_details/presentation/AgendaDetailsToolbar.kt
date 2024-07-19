@@ -68,7 +68,7 @@ fun EditButton(onClick: () -> Unit) {
 @Composable
 fun SaveButton(onClick: () -> Unit) {
     Text(
-        text = "Save",
+        text = stringResource(id = R.string.save),
         color = Color.White,
         fontWeight = FontWeight.SemiBold
     )

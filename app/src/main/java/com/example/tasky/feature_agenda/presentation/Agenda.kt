@@ -38,7 +38,7 @@ import com.example.tasky.common.presentation.FabDropdownRoot
 import com.example.tasky.common.presentation.HeaderSmall
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
-import com.example.tasky.common.presentation.model.AgendaDetailsType
+import com.example.tasky.common.presentation.model.AgendaItemType
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
 
@@ -54,11 +54,11 @@ fun AgendaRoot(
         agendaViewModel.updateDateSelected(month, day, year)
     }
 
-    val onFabAgendaDetailsTypeClick: (AgendaDetailsType) -> Unit = {
+    val onFabAgendaItemTypeClick: (AgendaItemType) -> Unit = {
         when (it) {
-            AgendaDetailsType.Event -> navController.navigate(EventNav(agendaViewModel.dateSelected.value))
-            AgendaDetailsType.Task -> navController.navigate(TaskNav)
-            AgendaDetailsType.Reminder -> navController.navigate(ReminderNav)
+            AgendaItemType.Event -> navController.navigate(EventNav(agendaViewModel.dateSelected.value))
+            AgendaItemType.Task -> navController.navigate(TaskNav)
+            AgendaItemType.Reminder -> navController.navigate(ReminderNav)
         }
     }
 
@@ -75,7 +75,7 @@ fun AgendaRoot(
         dialogState = viewState.datePickerDialogState,
         updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
         onLogoutClick = { agendaViewModel.logOutClicked() },
-        onFabActionClick = onFabAgendaDetailsTypeClick,
+        onFabActionClick = onFabAgendaItemTypeClick,
         headerDateText = viewState.headerDateText
     )
 
@@ -116,7 +116,7 @@ fun AgendaContent(
     dialogState: MaterialDialogState,
     updateDateDialogState: (MaterialDialogState) -> Unit,
     onLogoutClick: () -> Unit,
-    onFabActionClick: (AgendaDetailsType) -> Unit,
+    onFabActionClick: (AgendaItemType) -> Unit,
     headerDateText: String
 ) {
     Box(

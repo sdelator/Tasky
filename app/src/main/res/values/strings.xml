@@ -31,10 +31,21 @@
     <string name="task">Task</string>
     <string name="event">Event</string>
     <string name="new_event">New event</string>
+    <string name="new_task">New task</string>
+    <string name="new_reminder">New reminder</string>
     <string name="event_description">Event description</string>
     <string name="task_description">Task description</string>
     <string name="reminder_description">Reminder description</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="edit_title">EDIT TITLE</string>
+    <string name="edit_description">EDIT DESCRIPTION</string>
+    <string name="enter_the_event_name">Enter the event name...</string>
+    <string name="enter_the_task_name">Enter the task name...</string>
+    <string name="enter_the_reminder_name">Enter the reminder name...</string>
+    <string name="enter_the_event_description">Enter the event description...</string>
+    <string name="enter_the_task_description">Enter the task description...</string>
+    <string name="enter_the_reminder_description">Enter the reminder description...</string>
 </resources>

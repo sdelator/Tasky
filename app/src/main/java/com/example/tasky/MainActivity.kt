@@ -21,7 +21,9 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.tasky.agenda_details.presentation.AgendaDetailsRoot
-import com.example.tasky.common.presentation.model.AgendaDetailsType
+import com.example.tasky.common.domain.Constants
+import com.example.tasky.common.presentation.editing.EditScreenRoot
+import com.example.tasky.common.presentation.model.AgendaItemType
 import com.example.tasky.feature_agenda.presentation.AgendaRoot
 import com.example.tasky.feature_login.presentation.LoginRoot
 import com.example.tasky.feature_login.presentation.RegisterAccountRoot
@@ -88,12 +90,16 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         AgendaRoot(navController = navController)
     }
     composable<EventNav> {
+        val title = it.savedStateHandle.get<String>(Constants.TITLE)
+        val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
         val args = it.toRoute<EventNav>()
         val date = args.date
         AgendaDetailsRoot(
             navController = navController,
             date = date,
-            agendaDetailsType = AgendaDetailsType.Event
+            agendaItemType = AgendaItemType.Event,
+            title = title,
+            description = description
         )
     }
     composable<TaskNav> {
@@ -110,6 +116,16 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Red)
+        )
+    }
+    composable<EditingNav> {
+        val args = it.toRoute<EditingNav>()
+        val textFieldType = args.textFieldType
+        val agendaDetailType = args.agendaItemType
+        EditScreenRoot(
+            navController = navController,
+            textFieldType = textFieldType,
+            agendaItemType = agendaDetailType
         )
     }
 }
@@ -139,3 +155,6 @@ object TaskNav
 
 @Serializable
 object ReminderNav
+
+@Serializable
+data class EditingNav(val textFieldType: String, val agendaItemType: String)

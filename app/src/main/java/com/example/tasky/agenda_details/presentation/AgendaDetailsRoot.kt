@@ -1,6 +1,7 @@
 package com.example.tasky.agenda_details.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.tasky.EditingNav
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.common.domain.util.convertMillisToDate
@@ -37,7 +39,8 @@ import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.common.presentation.TitleSection
-import com.example.tasky.common.presentation.model.AgendaDetailsType
+import com.example.tasky.common.presentation.editing.TextFieldType
+import com.example.tasky.common.presentation.model.AgendaItemType
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import java.time.LocalDate
 import java.time.LocalTime
@@ -45,8 +48,10 @@ import java.time.LocalTime
 @Composable
 fun AgendaDetailsRoot(
     navController: NavController,
-    agendaDetailsType: AgendaDetailsType,
+    agendaItemType: AgendaItemType,
     date: Long,
+    title: String?,
+    description: String?,
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
@@ -62,17 +67,24 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
         }
 
+    val titleText = if (!title.isNullOrEmpty()) title else getDefaultTitle(agendaItemType)
+    val itemDescription =
+        if (!description.isNullOrEmpty()) description else getDefaultDescription(agendaItemType)
+
     AgendaDetailsContent(
+        titleText = titleText,
+        itemDescription = itemDescription,
         toDate = viewState.toDate,
         fromDate = viewState.fromDate,
         isEditMode = isEditing,
+        onEditClick = { navController.navigate(EditingNav(it.name, agendaItemType.name)) },
         dateOnToolbar = date.convertMillisToDate(),
         onToolbarAction = {},
         fromDateDialogState = viewState.fromDatePickerDialogState,
         toDateDialogState = viewState.toDatePickerDialogState,
         fromTimeDialogState = viewState.fromTimeDialogState,
         toTimeDialogState = viewState.toTimeDialogState,
-        agendaDetailsType = agendaDetailsType,
+        agendaItemType = agendaItemType,
         onDateSelected = onDateSelected,
         onTimeSelected = onTimeSelected,
         startTime = viewState.fromTime,
@@ -82,16 +94,19 @@ fun AgendaDetailsRoot(
 
 @Composable
 fun AgendaDetailsContent(
+    titleText: String,
+    itemDescription: String,
     toDate: String,
     fromDate: String,
     isEditMode: Boolean,
+    onEditClick: (TextFieldType) -> Unit,
     dateOnToolbar: String,
     onToolbarAction: (ToolbarAction) -> Unit,
     fromDateDialogState: MaterialDialogState,
     toDateDialogState: MaterialDialogState,
     fromTimeDialogState: MaterialDialogState,
     toTimeDialogState: MaterialDialogState,
-    agendaDetailsType: AgendaDetailsType,
+    agendaItemType: AgendaItemType,
     onDateSelected: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
     onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
     startTime: String,
@@ -125,12 +140,20 @@ fun AgendaDetailsContent(
                     .padding(top = 32.dp, bottom = 16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                HeaderSection(agendaDetailsType = agendaDetailsType)
+                HeaderSection(agendaItemType = agendaItemType)
                 Spacer(modifier = Modifier.padding(top = 10.dp))
-                TitleSection(isEditMode = isEditMode)
+                TitleSection(
+                    title = titleText,
+                    isEditMode = isEditMode,
+                    onEditClick = onEditClick
+                )
                 GrayDivider()
-                DescriptionSection(agendaDetailsType = agendaDetailsType, isEditMode = isEditMode)
-                if (agendaDetailsType == AgendaDetailsType.Event) {
+                DescriptionSection(
+                    description = itemDescription,
+                    isEditMode = isEditMode,
+                    onEditClick = onEditClick
+                )
+                if (agendaItemType == AgendaItemType.Event) {
                     EmptyPhotos() // TODO if statement for added photos
                 }
                 GrayDivider()
@@ -145,7 +168,7 @@ fun AgendaDetailsContent(
                     isEditing = isEditMode
                 )
                 GrayDivider()
-                if (agendaDetailsType == AgendaDetailsType.Event) {
+                if (agendaItemType == AgendaItemType.Event) {
                     DateLineItem(
                         date = toDate,
                         dialogState = toDateDialogState,
@@ -160,7 +183,7 @@ fun AgendaDetailsContent(
                 GrayDivider()
                 // TODO create rest of UI elements
 //                ReminderSection()
-//                if((agendaDetailsType == Action.Event) {
+//                if((agendaItemType == Action.Event) {
 //                    AttendeeSection()
 //                }
 //                DeleteButton()
@@ -170,17 +193,17 @@ fun AgendaDetailsContent(
 }
 
 @Composable
-fun HeaderSection(agendaDetailsType: AgendaDetailsType) {
-    val agendaDetailsTypeColor = when (agendaDetailsType) {
-        AgendaDetailsType.Event -> colorResource(id = R.color.event_light_green)
-        AgendaDetailsType.Task -> colorResource(id = R.color.tasky_green)
-        AgendaDetailsType.Reminder -> colorResource(id = R.color.reminder_gray)
+fun HeaderSection(agendaItemType: AgendaItemType) {
+    val agendaItemTypeColor = when (agendaItemType) {
+        AgendaItemType.Event -> colorResource(id = R.color.event_light_green)
+        AgendaItemType.Task -> colorResource(id = R.color.tasky_green)
+        AgendaItemType.Reminder -> colorResource(id = R.color.reminder_gray)
     }
 
-    val agendaDetailsTypeText = when (agendaDetailsType) {
-        AgendaDetailsType.Event -> stringResource(id = R.string.event)
-        AgendaDetailsType.Task -> stringResource(id = R.string.task)
-        AgendaDetailsType.Reminder -> stringResource(id = R.string.reminder)
+    val agendaItemTypeText = when (agendaItemType) {
+        AgendaItemType.Event -> stringResource(id = R.string.event)
+        AgendaItemType.Task -> stringResource(id = R.string.task)
+        AgendaItemType.Reminder -> stringResource(id = R.string.reminder)
     }
 
     Row(
@@ -190,30 +213,30 @@ fun HeaderSection(agendaDetailsType: AgendaDetailsType) {
             modifier = Modifier
                 .size(20.dp)
                 .clip(shape = RoundedCornerShape(2.dp))
-                .background(agendaDetailsTypeColor),
+                .background(agendaItemTypeColor),
         )
         Spacer(modifier = Modifier.padding(4.dp))
         Text(
-            text = agendaDetailsTypeText,
+            text = agendaItemTypeText,
             color = colorResource(id = R.color.dark_gray)
         )
     }
 }
 
 @Composable
-fun DescriptionSection(agendaDetailsType: AgendaDetailsType, isEditMode: Boolean) {
-    val agendaDetailsTypeText = when (agendaDetailsType) {
-        AgendaDetailsType.Event -> stringResource(id = R.string.event_description)
-        AgendaDetailsType.Task -> stringResource(id = R.string.task_description)
-        AgendaDetailsType.Reminder -> stringResource(id = R.string.reminder_description)
-    }
-
+fun DescriptionSection(
+    description: String,
+    isEditMode: Boolean,
+    onEditClick: (TextFieldType) -> Unit
+) {
     Row(
-        modifier = Modifier.padding(start = 16.dp, end = 24.dp),
+        modifier = Modifier
+            .padding(start = 16.dp, end = 24.dp)
+            .clickable { onEditClick(TextFieldType.DESCRIPTION) },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = agendaDetailsTypeText,
+            text = description,
             fontSize = 16.sp
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -227,9 +250,12 @@ fun DescriptionSection(agendaDetailsType: AgendaDetailsType, isEditMode: Boolean
 @Preview
 fun PreviewEventContent() {
     AgendaDetailsContent(
+        titleText = "Meeting",
+        itemDescription = "test decription",
         toDate = "Jul 12 2024",
         fromDate = "Jul 11 2024",
         isEditMode = true,
+        onEditClick = { },
         dateOnToolbar = "15 Jul 2024",
         onToolbarAction = {},
         fromDateDialogState = MaterialDialogState(),
@@ -240,6 +266,24 @@ fun PreviewEventContent() {
         onTimeSelected = { _, _, _ -> },
         startTime = "08:00",
         endTime = "08:15",
-        agendaDetailsType = AgendaDetailsType.Event
+        agendaItemType = AgendaItemType.Event
     )
+}
+
+@Composable
+fun getDefaultDescription(agendaItemType: AgendaItemType): String {
+    return when (agendaItemType) {
+        AgendaItemType.Event -> stringResource(id = R.string.event_description)
+        AgendaItemType.Task -> stringResource(id = R.string.task_description)
+        AgendaItemType.Reminder -> stringResource(id = R.string.reminder_description)
+    }
+}
+
+@Composable
+fun getDefaultTitle(agendaItemType: AgendaItemType): String {
+    return when (agendaItemType) {
+        AgendaItemType.Event -> stringResource(id = R.string.new_event)
+        AgendaItemType.Task -> stringResource(id = R.string.new_task)
+        AgendaItemType.Reminder -> stringResource(id = R.string.new_reminder)
+    }
 }

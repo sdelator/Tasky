@@ -26,11 +26,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
-import com.example.tasky.common.presentation.model.AgendaDetailsType
+import com.example.tasky.common.presentation.model.AgendaItemType
 
 @Composable
 fun AgendaCard(
-    cardType: AgendaDetailsType,
+    cardType: AgendaItemType,
     isChecked: Boolean
 ) {
     var cardColor = CardDefaults.cardColors()
@@ -38,13 +38,13 @@ fun AgendaCard(
     var headerColor = Color.Black
 
     when (cardType) {
-        AgendaDetailsType.Event -> {
+        AgendaItemType.Event -> {
             cardColor = CardDefaults.cardColors(
                 containerColor = colorResource(id = R.color.event_light_green)
             )
         }
 
-        AgendaDetailsType.Task -> {
+        AgendaItemType.Task -> {
             cardColor = CardDefaults.cardColors(
                 containerColor = colorResource(id = R.color.tasky_green)
             )
@@ -52,7 +52,7 @@ fun AgendaCard(
             headerColor = Color.White
         }
 
-        AgendaDetailsType.Reminder -> {
+        AgendaItemType.Reminder -> {
             cardColor = CardDefaults.cardColors(
                 containerColor = colorResource(id = R.color.reminder_gray)
             )
@@ -142,7 +142,7 @@ fun DateOfAction(date: String, textColor: Color) {
 @Preview
 fun PreviewEventCard() {
     AgendaCard(
-        cardType = AgendaDetailsType.Event,
+        cardType = AgendaItemType.Event,
         isChecked = true
     )
 }
@@ -151,7 +151,7 @@ fun PreviewEventCard() {
 @Preview
 fun PreviewTaskCard() {
     AgendaCard(
-        cardType = AgendaDetailsType.Task,
+        cardType = AgendaItemType.Task,
         isChecked = false
     )
 }
@@ -160,7 +160,7 @@ fun PreviewTaskCard() {
 @Preview
 fun PreviewReminderCard() {
     AgendaCard(
-        cardType = AgendaDetailsType.Reminder,
+        cardType = AgendaItemType.Reminder,
         isChecked = true
     )
 }
