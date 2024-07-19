@@ -51,9 +51,9 @@ fun PillButton(
         onClick = onClick,
         enabled = enabled,
         modifier = Modifier
-            .padding(0.dp)
-            .width(100.dp)
-            .height(30.dp),
+            .padding(start = 8.dp, end = 8.dp)
+            .width(110.dp)
+            .height(35.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Black,
             contentColor = Color.White,

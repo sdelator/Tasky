@@ -3,6 +3,7 @@ package com.example.tasky.common.presentation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,9 +16,13 @@ import com.example.tasky.agenda_details.presentation.AttendeeFilter
 @Preview
 fun AttendeeSection() {
     Column(
-        modifier = Modifier.padding(start = 16.dp)
+        modifier = Modifier.fillMaxWidth(),
     ) {
-        HeaderMedium(title = "Visitors", textColor = Color.Black)
+        HeaderMedium(
+            title = "Visitors",
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+            textColor = Color.Black
+        )
         Spacer(modifier = Modifier.padding(16.dp))
         AttendeeStatusSection()
     }
@@ -25,9 +30,13 @@ fun AttendeeSection() {
 
 @Composable
 fun AttendeeStatusSection() {
-    Row {
-        PillButton(buttonName = AttendeeFilter.ALL.name, onClick = { /*TODO*/ })
-        PillButton(buttonName = AttendeeFilter.GOING.name, onClick = { /*TODO*/ })
-        PillButton(buttonName = AttendeeFilter.NOT_GOING.name, onClick = { /*TODO*/ })
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 8.dp)
+    ) {
+        PillButton(buttonName = AttendeeFilter.ALL.typeName, onClick = { /*TODO*/ })
+        PillButton(buttonName = AttendeeFilter.GOING.typeName, onClick = { /*TODO*/ })
+        PillButton(buttonName = AttendeeFilter.NOT_GOING.typeName, onClick = { /*TODO*/ })
     }
 }
