@@ -14,6 +14,7 @@ data class AgendaDetailsViewState(
     val toDate: String = "",
     val fromDate: String = "",
     val reminder: Int = 0,
+    val showReminderDropdown: Boolean = false,
     val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL
 )
 

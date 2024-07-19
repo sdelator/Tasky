@@ -93,4 +93,10 @@ class AgendaDetailsViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
+    fun toggleReminderDropdownVisibility() {
+        _viewState.update {
+            it.copy(showReminderDropdown = !_viewState.value.showReminderDropdown)
+        }
+    }
 }
