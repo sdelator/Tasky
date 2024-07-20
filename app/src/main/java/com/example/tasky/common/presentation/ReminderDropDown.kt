@@ -8,9 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.tasky.R
 
 @Composable
 fun ReminderDropdownRoot(
@@ -25,23 +23,23 @@ fun ReminderDropdownRoot(
         modifier = modifier
     ) {
         DropdownMenuItem(
-            text = { Text(stringResource(R.string.ten_minutes_before)) },
+            text = { Text(ReminderTime.TEN_MINUTES.typeName) },
             onClick = { onReminderClick(ReminderTime.TEN_MINUTES) }
         )
         DropdownMenuItem(
-            text = { Text(stringResource(R.string.thirty_minutes_before)) },
+            text = { Text(ReminderTime.THIRTY_MINUTES.typeName) },
             onClick = { onReminderClick(ReminderTime.THIRTY_MINUTES) }
         )
         DropdownMenuItem(
-            text = { Text(stringResource(R.string.one_hour_before)) },
+            text = { Text(ReminderTime.ONE_HOUR.typeName) },
             onClick = { onReminderClick(ReminderTime.ONE_HOUR) }
         )
         DropdownMenuItem(
-            text = { Text(stringResource(R.string.six_hour_before)) },
+            text = { Text(ReminderTime.SIX_HOURS.typeName) },
             onClick = { onReminderClick(ReminderTime.SIX_HOURS) }
         )
         DropdownMenuItem(
-            text = { Text(stringResource(R.string.one_day_before)) },
+            text = { Text(ReminderTime.ONE_DAY.typeName) },
             onClick = { onReminderClick(ReminderTime.ONE_DAY) }
         )
     }
