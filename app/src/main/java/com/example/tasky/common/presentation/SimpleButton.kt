@@ -45,20 +45,20 @@ fun SimpleButton(
 fun PillButton(
     buttonName: String,
     onClick: () -> Unit,
-    enabled: Boolean = false
+    isSelected: Boolean = false
 ) {
+    val containerColor = if (isSelected) Color.Black else colorResource(id = R.color.reminder_gray)
+    val contentColor = if (isSelected) Color.White else Color.Black
+
     androidx.compose.material3.Button(
         onClick = onClick,
-        enabled = enabled,
         modifier = Modifier
             .padding(start = 8.dp, end = 8.dp)
             .width(110.dp)
             .height(35.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Black,
-            contentColor = Color.White,
-            disabledContentColor = Color.Black,
-            disabledContainerColor = colorResource(id = R.color.reminder_gray)
+            containerColor = containerColor,
+            contentColor = contentColor
         ),
         contentPadding = PaddingValues(0.dp)
     ) {
@@ -85,8 +85,6 @@ fun ViewButton() {
 @Composable
 @Preview
 fun ViewPillButton() {
-    val notGoingFilter = AttendeeFilter.NOT_GOING
-    val notGoingValue = notGoingFilter.typeName
     Column {
         PillButton(
             onClick = { /*TODO*/ },

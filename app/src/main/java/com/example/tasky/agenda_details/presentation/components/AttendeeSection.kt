@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.AttendeeFilter
@@ -17,8 +16,10 @@ import com.example.tasky.common.presentation.HeaderMedium
 import com.example.tasky.common.presentation.PillButton
 
 @Composable
-@Preview
-fun AttendeeSection() {
+fun AttendeeSection(
+    attendeeFilter: AttendeeFilter,
+    onAttendeeFilterClick: (AttendeeFilter) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -30,21 +31,39 @@ fun AttendeeSection() {
             textColor = Color.Black
         )
         Spacer(modifier = Modifier.padding(16.dp))
-        AttendeeStatusSection()
+        AttendeeStatusSection(
+            attendeeFilter = attendeeFilter,
+            onAttendeeFilterClick = onAttendeeFilterClick
+        )
         GoingSection(headerText = stringResource(R.string.going))
         GoingSection(headerText = stringResource(R.string.not_going))
     }
 }
 
 @Composable
-fun AttendeeStatusSection() {
+fun AttendeeStatusSection(
+    attendeeFilter: AttendeeFilter,
+    onAttendeeFilterClick: (AttendeeFilter) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        PillButton(buttonName = AttendeeFilter.ALL.typeName, onClick = { /*TODO*/ })
-        PillButton(buttonName = AttendeeFilter.GOING.typeName, onClick = { /*TODO*/ })
-        PillButton(buttonName = AttendeeFilter.NOT_GOING.typeName, onClick = { /*TODO*/ })
+        PillButton(
+            buttonName = AttendeeFilter.ALL.typeName,
+            onClick = { onAttendeeFilterClick(AttendeeFilter.ALL) },
+            isSelected = attendeeFilter == AttendeeFilter.ALL
+        )
+        PillButton(
+            buttonName = AttendeeFilter.GOING.typeName,
+            onClick = { onAttendeeFilterClick(AttendeeFilter.GOING) },
+            isSelected = attendeeFilter == AttendeeFilter.GOING
+        )
+        PillButton(
+            buttonName = AttendeeFilter.NOT_GOING.typeName,
+            onClick = { onAttendeeFilterClick(AttendeeFilter.NOT_GOING) },
+            isSelected = attendeeFilter == AttendeeFilter.NOT_GOING
+        )
     }
 }

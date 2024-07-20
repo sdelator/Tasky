@@ -102,11 +102,20 @@ class AgendaDetailsViewModel @Inject constructor() : ViewModel() {
     }
 
     fun setReminder(reminderTime: ReminderTime) {
-        //TODO actually set the timer
+        // TODO actually set the timer
         _viewState.update {
             it.copy(
                 reminderTime = reminderTime,
                 showReminderDropdown = false
+            )
+        }
+    }
+
+    fun setAttendeeFilter(attendeeFilter: AttendeeFilter) {
+        // TODO add filter logic
+        _viewState.update {
+            it.copy(
+                attendeeFilterSelected = attendeeFilter
             )
         }
     }

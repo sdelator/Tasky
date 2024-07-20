@@ -95,7 +95,9 @@ fun AgendaDetailsRoot(
         showReminderDropdown = viewState.showReminderDropdown,
         toggleReminderDropdownVisibility = { agendaDetailsViewModel.toggleReminderDropdownVisibility() },
         onReminderClick = { agendaDetailsViewModel.setReminder(it) },
-        reminderTime = viewState.reminderTime
+        reminderTime = viewState.reminderTime,
+        attendeeFilter = viewState.attendeeFilterSelected,
+        onAttendeeFilterClick = { agendaDetailsViewModel.setAttendeeFilter(it) }
     )
 }
 
@@ -121,7 +123,9 @@ fun AgendaDetailsContent(
     showReminderDropdown: Boolean,
     toggleReminderDropdownVisibility: () -> Unit,
     onReminderClick: (ReminderTime) -> Unit,
-    reminderTime: ReminderTime
+    reminderTime: ReminderTime,
+    attendeeFilter: AttendeeFilter,
+    onAttendeeFilterClick: (AttendeeFilter) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -200,7 +204,10 @@ fun AgendaDetailsContent(
                 )
                 GrayDivider()
                 if (agendaItemType == AgendaItemType.Event) {
-                    AttendeeSection()
+                    AttendeeSection(
+                        attendeeFilter = attendeeFilter,
+                        onAttendeeFilterClick = onAttendeeFilterClick
+                    )
                 }
                 //DeleteButton()
             }
@@ -286,7 +293,9 @@ fun PreviewEventContent() {
         showReminderDropdown = false,
         toggleReminderDropdownVisibility = {},
         onReminderClick = {},
-        reminderTime = ReminderTime.THIRTY_MINUTES
+        reminderTime = ReminderTime.THIRTY_MINUTES,
+        attendeeFilter = AttendeeFilter.GOING,
+        onAttendeeFilterClick = {}
     )
 }
 
