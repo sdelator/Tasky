@@ -38,8 +38,8 @@ fun GoingSection(headerText: String) {
         HeaderSmall(title = headerText)
         Spacer(modifier = Modifier.padding(bottom = 5.dp))
         //TODO add a scrollable adapter
-        Attendee(name = "AB", isCreator = true)
-        Attendee(name = "BC", isCreator = false)
+        Attendee(name = "Ann Bailey", isCreator = true)
+        Attendee(name = "Bertha Cole", isCreator = false)
     }
 }
 
@@ -49,7 +49,7 @@ fun Attendee(name: String, isCreator: Boolean) {
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 5.dp, bottom = 5.dp) // Adjust the padding here
+            .padding(top = 5.dp, bottom = 5.dp)
     ) {
         Row(
             modifier = Modifier
@@ -58,9 +58,9 @@ fun Attendee(name: String, isCreator: Boolean) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AttendeeProfile(
-                initials = "AB"
+                initials = "AB" // TODO getInitials from name
             )
-            AttendeeName("Ann Bailey", modifier = Modifier.weight(1f))
+            AttendeeName(name, modifier = Modifier.weight(1f))
             if (isCreator) {
                 CreatorText()
             } else {
@@ -116,7 +116,7 @@ fun TrashIcon() {
 @Composable
 fun CreatorText() {
     Text(
-        text = "creator",
+        text = stringResource(R.string.creator),
         fontSize = 14.sp,
         modifier = Modifier.padding(end = 16.dp),
         color = colorResource(id = R.color.light_blue)
