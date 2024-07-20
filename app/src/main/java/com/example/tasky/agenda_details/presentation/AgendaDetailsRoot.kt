@@ -34,6 +34,7 @@ import com.example.tasky.EditingNav
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.components.AttendeeSection
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
+import com.example.tasky.agenda_details.presentation.components.Photos
 import com.example.tasky.common.domain.util.convertMillisToDate
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
@@ -169,7 +170,10 @@ fun AgendaDetailsContent(
                     onEditClick = onEditClick
                 )
                 if (agendaItemType == AgendaItemType.Event) {
-                    EmptyPhotos() // TODO if statement for added photos
+                    val hasPhotos = true
+                    if (hasPhotos) {
+                        Photos()
+                    } else EmptyPhotos()
                 }
                 GrayDivider()
                 DateLineItem(
