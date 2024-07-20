@@ -22,11 +22,14 @@ fun ReminderSection(
     showReminderDropdown: Boolean,
     toggleReminderDropdownVisibility: () -> Unit
 ) {
-    Box {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 5.dp, bottom = 5.dp)
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
                 .clickable { toggleReminderDropdownVisibility() },
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -44,7 +47,7 @@ fun ReminderSection(
         ReminderDropdownRoot(
             showReminderDropdown = showReminderDropdown,
             toggleReminderDropdownVisibility = toggleReminderDropdownVisibility,
-            Modifier.align(Alignment.BottomEnd)
+            Modifier.align(Alignment.TopEnd)
         )
     }
 }
