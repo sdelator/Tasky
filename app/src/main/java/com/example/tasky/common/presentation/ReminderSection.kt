@@ -25,7 +25,7 @@ fun ReminderSection(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 5.dp, bottom = 5.dp)
+            .padding(start = 16.dp, end = 16.dp)
     ) {
         Row(
             modifier = Modifier
