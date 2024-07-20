@@ -19,8 +19,10 @@ import com.example.tasky.R
 
 @Composable
 fun ReminderSection(
+    reminderTime: ReminderTime,
     showReminderDropdown: Boolean,
-    toggleReminderDropdownVisibility: () -> Unit
+    toggleReminderDropdownVisibility: () -> Unit,
+    onReminderClick: (ReminderTime) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -39,7 +41,7 @@ fun ReminderSection(
             )
             Spacer(modifier = Modifier.padding(5.dp))
             Text(
-                text = "30 minutes before",
+                text = reminderTime.typeName,
                 fontSize = 16.sp,
                 color = Color.Black
             )
@@ -47,7 +49,8 @@ fun ReminderSection(
         ReminderDropdownRoot(
             showReminderDropdown = showReminderDropdown,
             toggleReminderDropdownVisibility = toggleReminderDropdownVisibility,
-            Modifier.align(Alignment.TopEnd)
+            Modifier.align(Alignment.TopEnd),
+            onReminderClick = onReminderClick
         )
     }
 }

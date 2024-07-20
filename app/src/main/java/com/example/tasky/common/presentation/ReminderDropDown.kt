@@ -16,7 +16,8 @@ import com.example.tasky.R
 fun ReminderDropdownRoot(
     showReminderDropdown: Boolean,
     toggleReminderDropdownVisibility: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    onReminderClick: (ReminderTime) -> Unit
 ) {
     DropdownMenu(
         expanded = showReminderDropdown,
@@ -25,28 +26,23 @@ fun ReminderDropdownRoot(
     ) {
         DropdownMenuItem(
             text = { Text(stringResource(R.string.ten_minutes_before)) },
-            onClick = {
-            }
+            onClick = { onReminderClick(ReminderTime.TEN_MINUTES) }
         )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.thirty_minutes_before)) },
-            onClick = {
-            }
+            onClick = { onReminderClick(ReminderTime.THIRTY_MINUTES) }
         )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.one_hour_before)) },
-            onClick = {
-            }
+            onClick = { onReminderClick(ReminderTime.ONE_HOUR) }
         )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.six_hour_before)) },
-            onClick = {
-            }
+            onClick = { onReminderClick(ReminderTime.SIX_HOURS) }
         )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.one_day_before)) },
-            onClick = {
-            }
+            onClick = { onReminderClick(ReminderTime.ONE_DAY) }
         )
     }
 }
@@ -58,7 +54,16 @@ fun PreviewReminderDropdownMenu() {
         ReminderDropdownRoot(
             showReminderDropdown = true,
             toggleReminderDropdownVisibility = { },
-            Modifier.align(Alignment.TopEnd)
+            Modifier.align(Alignment.TopEnd),
+            onReminderClick = { }
         )
     }
+}
+
+enum class ReminderTime(val typeName: String) {
+    TEN_MINUTES("10 minutes before"),
+    THIRTY_MINUTES("30 minutes before"),
+    ONE_HOUR("1 hour before"),
+    SIX_HOURS("6 hours before"),
+    ONE_DAY("1 day before")
 }

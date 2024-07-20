@@ -39,6 +39,7 @@ import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderSection
+import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.common.presentation.TitleSection
 import com.example.tasky.common.presentation.editing.TextFieldType
@@ -92,7 +93,9 @@ fun AgendaDetailsRoot(
         startTime = viewState.fromTime,
         endTime = viewState.toTime,
         showReminderDropdown = viewState.showReminderDropdown,
-        toggleReminderDropdownVisibility = { agendaDetailsViewModel.toggleReminderDropdownVisibility() }
+        toggleReminderDropdownVisibility = { agendaDetailsViewModel.toggleReminderDropdownVisibility() },
+        onReminderClick = { agendaDetailsViewModel.setReminder(it) },
+        reminderTime = viewState.reminderTime
     )
 }
 
@@ -116,7 +119,9 @@ fun AgendaDetailsContent(
     startTime: String,
     endTime: String,
     showReminderDropdown: Boolean,
-    toggleReminderDropdownVisibility: () -> Unit
+    toggleReminderDropdownVisibility: () -> Unit,
+    onReminderClick: (ReminderTime) -> Unit,
+    reminderTime: ReminderTime
 ) {
     Box(
         modifier = Modifier
@@ -188,8 +193,10 @@ fun AgendaDetailsContent(
                 }
                 GrayDivider()
                 ReminderSection(
+                    reminderTime = reminderTime,
                     showReminderDropdown = showReminderDropdown,
-                    toggleReminderDropdownVisibility = toggleReminderDropdownVisibility
+                    toggleReminderDropdownVisibility = toggleReminderDropdownVisibility,
+                    onReminderClick = onReminderClick
                 )
                 GrayDivider()
                 if (agendaItemType == AgendaItemType.Event) {
@@ -277,7 +284,9 @@ fun PreviewEventContent() {
         endTime = "08:15",
         agendaItemType = AgendaItemType.Event,
         showReminderDropdown = false,
-        toggleReminderDropdownVisibility = {}
+        toggleReminderDropdownVisibility = {},
+        onReminderClick = {},
+        reminderTime = ReminderTime.THIRTY_MINUTES
     )
 }
 
