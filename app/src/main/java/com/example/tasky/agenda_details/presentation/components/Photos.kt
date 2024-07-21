@@ -73,7 +73,7 @@ fun EmptyPhotos(onAddPhotosClick: () -> Unit) {
 }
 
 @Composable
-fun Photos(selectedImageUris: List<Uri>) {
+fun Photos(selectedPhotoUris: List<Uri>) {
     Column(
         modifier = Modifier.padding(top = 30.dp, bottom = 12.dp)
     ) {
@@ -86,26 +86,24 @@ fun Photos(selectedImageUris: List<Uri>) {
             Column {
                 HeaderMedium(title = "Photos", textColor = Color.Black)
                 Spacer(modifier = Modifier.padding(10.dp))
-                // TODO add up to 10 photos
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    LazyRow {
-                        items(selectedImageUris) { uri ->
-                            AsyncImage(
-                                model = uri,
-                                modifier = Modifier
-                                    .padding(end = 10.dp)
-                                    .size(60.dp)
-                                    .clip(RoundedCornerShape(6.dp))
-                                    .border(2.dp, colorResource(id = R.color.light_blue)),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop
-                            )
+                LazyRow {
+                    items(selectedPhotoUris) { uri ->
+                        AsyncImage(
+                            model = uri,
+                            modifier = Modifier
+                                .padding(end = 10.dp)
+                                .size(60.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .border(2.dp, colorResource(id = R.color.light_blue)),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    item {
+                        if (selectedPhotoUris.size < 10) {
+                            PhotoSlot()
                         }
                     }
-                    // todo add if 10 pics then do not show
-                    PhotoSlot()
                 }
             }
         }
