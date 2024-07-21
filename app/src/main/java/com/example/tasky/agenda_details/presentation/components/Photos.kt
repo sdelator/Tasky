@@ -1,5 +1,6 @@
 package com.example.tasky.agenda_details.presentation.components
 
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -20,11 +21,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,6 +42,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.tasky.R
 import com.example.tasky.common.presentation.HeaderMedium
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun EmptyPhotos(onAddPhotosClick: () -> Unit) {
@@ -88,16 +97,28 @@ fun Photos(selectedPhotoUris: List<Uri>) {
                 Spacer(modifier = Modifier.padding(10.dp))
                 LazyRow {
                     items(selectedPhotoUris) { uri ->
-                        AsyncImage(
-                            model = uri,
-                            modifier = Modifier
-                                .padding(end = 10.dp)
-                                .size(60.dp)
-                                .clip(RoundedCornerShape(6.dp))
-                                .border(2.dp, colorResource(id = R.color.light_blue)),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
-                        )
+                        val context = LocalContext.current
+                        var compressedImage by remember { mutableStateOf<Bitmap?>(null) }
+
+                        LaunchedEffect(uri) {
+                            compressedImage = withContext(Dispatchers.IO) {
+                                val drawable = uri.toDrawable(context)
+                                context.reduceImageSize(drawable)
+                            }
+                        }
+
+                        compressedImage?.let { compressedUri ->
+                            AsyncImage(
+                                model = compressedUri,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(end = 10.dp)
+                                    .size(60.dp)
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .border(2.dp, colorResource(id = R.color.light_blue)),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
                     item {
                         if (selectedPhotoUris.size < 10) {
