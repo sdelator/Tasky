@@ -64,6 +64,7 @@ fun AgendaDetailsRoot(
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
     val isEditing = true
+    val maxPhotoCount = 10
 
     val onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit =
         { time, lineItemType, dialogState ->
@@ -80,7 +81,7 @@ fun AgendaDetailsRoot(
         if (!description.isNullOrEmpty()) description else getDefaultDescription(agendaItemType)
 
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = maxPhotoCount),
         onResult = { uris ->
             val photoUris = uris.take(10)
             agendaDetailsViewModel.onAddPhotosClick(photoUris)
