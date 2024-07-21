@@ -83,7 +83,7 @@ fun AgendaDetailsRoot(
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = maxPhotoCount),
         onResult = { uris ->
-            val photoUris = uris.take(10)
+            val photoUris = uris.take(maxPhotoCount)
             agendaDetailsViewModel.onAddPhotosClick(photoUris)
         }
     )
