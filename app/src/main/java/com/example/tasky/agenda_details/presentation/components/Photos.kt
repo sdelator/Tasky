@@ -3,6 +3,7 @@ package com.example.tasky.agenda_details.presentation.components
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -85,18 +87,25 @@ fun Photos(selectedImageUris: List<Uri>) {
                 HeaderMedium(title = "Photos", textColor = Color.Black)
                 Spacer(modifier = Modifier.padding(10.dp))
                 // TODO add up to 10 photos
-                PhotoSlot()
-                LazyRow {
-                    items(selectedImageUris) { uri ->
-                        AsyncImage(
-                            model = uri,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .size(100.dp),
-                            contentScale = ContentScale.Crop
-                        )
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    LazyRow {
+                        items(selectedImageUris) { uri ->
+                            AsyncImage(
+                                model = uri,
+                                modifier = Modifier
+                                    .padding(end = 10.dp)
+                                    .size(60.dp)
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .border(2.dp, colorResource(id = R.color.light_blue)),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
+                    // todo add if 10 pics then do not show
+                    PhotoSlot()
                 }
             }
         }
@@ -108,7 +117,7 @@ fun Photos(selectedImageUris: List<Uri>) {
 fun PhotoSlot() {
     Surface(
         shape = RoundedCornerShape(6.dp),
-        border = BorderStroke(1.dp, colorResource(id = R.color.light_blue)),
+        border = BorderStroke(2.dp, colorResource(id = R.color.light_blue)),
     ) {
         Box(
             modifier = Modifier
