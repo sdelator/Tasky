@@ -1,5 +1,6 @@
 package com.example.tasky.agenda_details.presentation
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
@@ -118,5 +119,9 @@ class AgendaDetailsViewModel @Inject constructor() : ViewModel() {
                 attendeeFilterSelected = attendeeFilter
             )
         }
+    }
+
+    fun onAddPhotosClick(photoUris: List<Uri>) {
+        _viewState.update { it.copy(photosUri = photoUris) }
     }
 }

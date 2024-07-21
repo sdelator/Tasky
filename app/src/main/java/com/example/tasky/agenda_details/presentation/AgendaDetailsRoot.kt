@@ -1,5 +1,9 @@
 package com.example.tasky.agenda_details.presentation
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -75,6 +79,14 @@ fun AgendaDetailsRoot(
     val itemDescription =
         if (!description.isNullOrEmpty()) description else getDefaultDescription(agendaItemType)
 
+    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        onResult = { uris ->
+            val photoUris = uris.take(10)
+            agendaDetailsViewModel.onAddPhotosClick(photoUris)
+        }
+    )
+
     AgendaDetailsContent(
         titleText = titleText,
         itemDescription = itemDescription,
@@ -98,7 +110,13 @@ fun AgendaDetailsRoot(
         onReminderClick = { agendaDetailsViewModel.setReminder(it) },
         reminderTime = viewState.reminderTime,
         attendeeFilter = viewState.attendeeFilterSelected,
-        onAttendeeFilterClick = { agendaDetailsViewModel.setAttendeeFilter(it) }
+        onAttendeeFilterClick = { agendaDetailsViewModel.setAttendeeFilter(it) },
+        onAddPhotosClick = {
+            multiplePhotoPickerLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
+        },
+        selectedImageUris = viewState.photosUri
     )
 }
 
@@ -126,7 +144,9 @@ fun AgendaDetailsContent(
     onReminderClick: (ReminderTime) -> Unit,
     reminderTime: ReminderTime,
     attendeeFilter: AttendeeFilter,
-    onAttendeeFilterClick: (AttendeeFilter) -> Unit
+    onAttendeeFilterClick: (AttendeeFilter) -> Unit,
+    onAddPhotosClick: () -> Unit,
+    selectedImageUris: List<Uri>
 ) {
     Box(
         modifier = Modifier
@@ -170,10 +190,11 @@ fun AgendaDetailsContent(
                     onEditClick = onEditClick
                 )
                 if (agendaItemType == AgendaItemType.Event) {
-                    val hasPhotos = true
-                    if (hasPhotos) {
-                        Photos()
-                    } else EmptyPhotos()
+                    if (selectedImageUris.isEmpty()) {
+                        EmptyPhotos(onAddPhotosClick = onAddPhotosClick)
+                    } else {
+                        Photos(selectedImageUris = selectedImageUris)
+                    }
                 }
                 GrayDivider()
                 DateLineItem(
@@ -299,7 +320,9 @@ fun PreviewEventContent() {
         onReminderClick = {},
         reminderTime = ReminderTime.THIRTY_MINUTES,
         attendeeFilter = AttendeeFilter.GOING,
-        onAttendeeFilterClick = {}
+        onAttendeeFilterClick = {},
+        onAddPhotosClick = {},
+        selectedImageUris = listOf()
     )
 }
 

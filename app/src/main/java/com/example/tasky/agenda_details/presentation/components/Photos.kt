@@ -1,7 +1,9 @@
 package com.example.tasky.agenda_details.presentation.components
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,9 +12,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,13 +30,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.tasky.R
 import com.example.tasky.common.presentation.HeaderMedium
 
 @Composable
-fun EmptyPhotos() {
+fun EmptyPhotos(onAddPhotosClick: () -> Unit) {
     Column(
-        modifier = Modifier.padding(top = 30.dp, bottom = 12.dp)
+        modifier = Modifier
+            .padding(top = 30.dp, bottom = 12.dp)
+            .clickable { onAddPhotosClick() }
     ) {
         Box(
             modifier = Modifier
@@ -47,14 +53,14 @@ fun EmptyPhotos() {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    Icons.Filled.Add,
-                    modifier = Modifier.size(30.dp),
+                    painter = painterResource(id = R.drawable.ic_add),
+                    modifier = Modifier.size(15.dp),
                     tint = colorResource(id = R.color.gray),
                     contentDescription = null
                 )
-                Spacer(modifier = Modifier.padding(5.dp))
+                Spacer(modifier = Modifier.padding(10.dp))
                 Text(
-                    text = "Add Photos",
+                    text = stringResource(R.string.add_photos),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = colorResource(id = R.color.gray)
@@ -65,8 +71,7 @@ fun EmptyPhotos() {
 }
 
 @Composable
-@Preview
-fun Photos() {
+fun Photos(selectedImageUris: List<Uri>) {
     Column(
         modifier = Modifier.padding(top = 30.dp, bottom = 12.dp)
     ) {
@@ -79,8 +84,20 @@ fun Photos() {
             Column {
                 HeaderMedium(title = "Photos", textColor = Color.Black)
                 Spacer(modifier = Modifier.padding(10.dp))
-                // TODO add however many photos
+                // TODO add up to 10 photos
                 PhotoSlot()
+                LazyRow {
+                    items(selectedImageUris) { uri ->
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .size(100.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
             }
         }
     }
@@ -100,7 +117,7 @@ fun PhotoSlot() {
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_add),
-                stringResource(R.string.floating_action_button),
+                stringResource(R.string.add_photos),
                 tint = colorResource(id = R.color.light_blue)
             )
         }
