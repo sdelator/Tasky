@@ -1,6 +1,7 @@
 package com.example.tasky.di
 
 import android.app.Application
+import com.example.tasky.agenda_details.domain.ImageCompressionUseCase
 import com.example.tasky.common.data.PreferenceHelper
 import com.example.tasky.common.data.SessionStateManagerImpl
 import com.example.tasky.common.data.remote.ApiKeyInterceptor
@@ -149,5 +150,10 @@ object AppModule {
         @TokenApi api: TaskyApi
     ): TokenRemoteRepository {
         return TokenRemoteRepositoryImpl(api)
+    }
+
+    @Provides
+    fun provideImageCompressionUseCase(): ImageCompressionUseCase {
+        return ImageCompressionUseCase()
     }
 }

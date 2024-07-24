@@ -1,5 +1,7 @@
 package com.example.tasky.agenda_details.presentation
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -63,6 +65,7 @@ fun AgendaDetailsRoot(
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
+    val compressedImages = agendaDetailsViewModel.compressedImages
     val isEditing = true
     val maxPhotoCount = 10
 
@@ -74,6 +77,11 @@ fun AgendaDetailsRoot(
     val onDateSelected: (LocalDate, MaterialDialogState, LineItemType) -> Unit =
         { selectedDate, dialogState, timeType ->
             agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
+        }
+
+    val compressAndAddImage: (Context, Uri) -> Unit =
+        { context, uri ->
+            agendaDetailsViewModel.compressAndAddImage(context, uri)
         }
 
     val titleText = if (!title.isNullOrEmpty()) title else getDefaultTitle(agendaItemType)
@@ -116,7 +124,9 @@ fun AgendaDetailsRoot(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         },
-        selectedImageUris = viewState.photosUri
+        selectedImageUris = viewState.photosUri,
+        compressedImages = compressedImages,
+        compressAndAddImage = compressAndAddImage
     )
 }
 
@@ -146,7 +156,9 @@ fun AgendaDetailsContent(
     attendeeFilter: AttendeeFilter,
     onAttendeeFilterClick: (AttendeeFilter) -> Unit,
     onAddPhotosClick: () -> Unit,
-    selectedImageUris: List<Uri>
+    selectedImageUris: List<Uri>,
+    compressedImages: List<Bitmap?>,
+    compressAndAddImage: (Context, Uri) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -193,7 +205,11 @@ fun AgendaDetailsContent(
                     if (selectedImageUris.isEmpty()) {
                         EmptyPhotos(onAddPhotosClick = onAddPhotosClick)
                     } else {
-                        Photos(selectedPhotoUris = selectedImageUris)
+                        Photos(
+                            selectedPhotoUris = selectedImageUris,
+                            compressedImages = compressedImages,
+                            compressAndAddImage = compressAndAddImage
+                        )
                     }
                 }
                 GrayDivider()
@@ -322,7 +338,9 @@ fun PreviewEventContent() {
         attendeeFilter = AttendeeFilter.GOING,
         onAttendeeFilterClick = {},
         onAddPhotosClick = {},
-        selectedImageUris = listOf()
+        selectedImageUris = listOf(),
+        compressedImages = emptyList(),
+        compressAndAddImage = { _, _ -> }
     )
 }
 
