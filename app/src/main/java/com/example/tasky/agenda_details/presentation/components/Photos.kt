@@ -89,16 +89,13 @@ fun Photos(
 
     LaunchedEffect(selectedPhotoUris) {
         compressAndAddImage(context, selectedPhotoUris)
-//        selectedPhotoUris.forEach { uri ->
-//            compressAndAddImage(context, uri)
-//        }
     }
 
     LaunchedEffect(photoSkipCount) {
         if (photoSkipCount > 0) {
             Toast.makeText(
                 context,
-                "$photoSkipCount photos were skipped because they were too large",
+                context.getString(R.string.photos_were_skipped, photoSkipCount),
                 Toast.LENGTH_SHORT
             ).show()
         }
