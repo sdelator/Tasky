@@ -150,7 +150,7 @@ class AgendaDetailsViewModel @Inject constructor(
             val compressedList = uris.mapNotNull { uri ->
                 val drawable = imageCompressionUseCase.uriToDrawable(context, uri)
                 val originalBitmap = (drawable as BitmapDrawable).bitmap
-                Log.d("sandra", "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
+                Log.d(TAG, "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
 
                 val compressedByteArray = withContext(Dispatchers.IO) {
                     imageCompressionUseCase.compressImage(drawable)
@@ -158,7 +158,7 @@ class AgendaDetailsViewModel @Inject constructor(
 
                 val compressedBitmap =
                     BitmapFactory.decodeByteArray(compressedByteArray, 0, compressedByteArray.size)
-                Log.d("sandra", "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
+                Log.d(TAG, "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
 
                 if (compressedByteArray.size > 1024 * 1024) {
                     skipped++
