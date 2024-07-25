@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressionUseCase
@@ -37,11 +35,14 @@ class AgendaDetailsViewModel @Inject constructor(
         const val DEFAULT_TIME_RANGE = 15L
     }
 
+    private val _photoSkipCount = MutableStateFlow(0)
+    val photoSkipCount: StateFlow<Int> get() = _photoSkipCount
+
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
 
-    private val _compressedImages = mutableStateListOf<Bitmap?>()
-    val compressedImages: List<Bitmap?> = _compressedImages
+    private val _compressedImages = MutableStateFlow<List<Bitmap?>>(emptyList())
+    val compressedImages: StateFlow<List<Bitmap?>> get() = _compressedImages
 
     init {
         _viewState.update {
@@ -142,28 +143,32 @@ class AgendaDetailsViewModel @Inject constructor(
         _viewState.update { it.copy(photosUri = photoUris) }
     }
 
-    fun compressAndAddImage(context: Context, uri: Uri) {
+    fun compressAndAddImage(context: Context, uris: List<Uri>) {
         viewModelScope.launch {
-            val drawable = imageCompressionUseCase.uriToDrawable(context, uri)
-            val originalBitmap = (drawable as BitmapDrawable).bitmap
-            Log.d("sandra", "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
+            var skipped = 0
+            val compressedList = uris.mapNotNull { uri ->
+                val drawable = imageCompressionUseCase.uriToDrawable(context, uri)
+                val originalBitmap = (drawable as BitmapDrawable).bitmap
+                Log.d("sandra", "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
 
-            val compressedByteArray = withContext(Dispatchers.IO) {
-                imageCompressionUseCase.compressImage(drawable)
-            }
-
-            val compressedBitmap =
-                BitmapFactory.decodeByteArray(compressedByteArray, 0, compressedByteArray.size)
-            Log.d("sandra", "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
-
-            if (compressedByteArray.size > 1024 * 1024) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Image skipped, was too large", Toast.LENGTH_SHORT)
-                        .show()
+                val compressedByteArray = withContext(Dispatchers.IO) {
+                    imageCompressionUseCase.compressImage(drawable)
                 }
-            } else {
-                _compressedImages.add(compressedBitmap)
+
+                val compressedBitmap =
+                    BitmapFactory.decodeByteArray(compressedByteArray, 0, compressedByteArray.size)
+                Log.d("sandra", "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
+
+                if (compressedByteArray.size > 1024 * 1024) {
+                    skipped++
+                    null
+                } else {
+                    compressedBitmap
+                }
             }
+
+            _compressedImages.value = compressedList
+            _photoSkipCount.value = skipped
         }
     }
 }

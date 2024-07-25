@@ -65,7 +65,8 @@ fun AgendaDetailsRoot(
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
-    val compressedImages = agendaDetailsViewModel.compressedImages
+    val compressedImages by agendaDetailsViewModel.compressedImages.collectAsStateWithLifecycle()
+    val photoSkipCount by agendaDetailsViewModel.photoSkipCount.collectAsStateWithLifecycle()
     val isEditing = true
     val maxPhotoCount = 10
 
@@ -79,7 +80,7 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
         }
 
-    val compressAndAddImage: (Context, Uri) -> Unit =
+    val compressAndAddImage: (Context, List<Uri>) -> Unit =
         { context, uri ->
             agendaDetailsViewModel.compressAndAddImage(context, uri)
         }
@@ -126,7 +127,8 @@ fun AgendaDetailsRoot(
         },
         selectedImageUris = viewState.photosUri,
         compressedImages = compressedImages,
-        compressAndAddImage = compressAndAddImage
+        compressAndAddImage = compressAndAddImage,
+        photoSkipCount = photoSkipCount
     )
 }
 
@@ -158,7 +160,8 @@ fun AgendaDetailsContent(
     onAddPhotosClick: () -> Unit,
     selectedImageUris: List<Uri>,
     compressedImages: List<Bitmap?>,
-    compressAndAddImage: (Context, Uri) -> Unit
+    compressAndAddImage: (Context, List<Uri>) -> Unit,
+    photoSkipCount: Int
 ) {
     Box(
         modifier = Modifier
@@ -208,7 +211,8 @@ fun AgendaDetailsContent(
                         Photos(
                             selectedPhotoUris = selectedImageUris,
                             compressedImages = compressedImages,
-                            compressAndAddImage = compressAndAddImage
+                            compressAndAddImage = compressAndAddImage,
+                            photoSkipCount = photoSkipCount
                         )
                     }
                 }
@@ -340,7 +344,8 @@ fun PreviewEventContent() {
         onAddPhotosClick = {},
         selectedImageUris = listOf(),
         compressedImages = emptyList(),
-        compressAndAddImage = { _, _ -> }
+        compressAndAddImage = { _, _ -> },
+        photoSkipCount = 0
     )
 }
 

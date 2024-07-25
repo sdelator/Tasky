@@ -3,6 +3,7 @@ package com.example.tasky.agenda_details.presentation.components
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -81,13 +82,25 @@ fun EmptyPhotos(onAddPhotosClick: () -> Unit) {
 fun Photos(
     selectedPhotoUris: List<Uri>,
     compressedImages: List<Bitmap?>,
-    compressAndAddImage: (Context, Uri) -> Unit
+    compressAndAddImage: (Context, List<Uri>) -> Unit,
+    photoSkipCount: Int
 ) {
     val context = LocalContext.current
 
     LaunchedEffect(selectedPhotoUris) {
-        selectedPhotoUris.forEach { uri ->
-            compressAndAddImage(context, uri)
+        compressAndAddImage(context, selectedPhotoUris)
+//        selectedPhotoUris.forEach { uri ->
+//            compressAndAddImage(context, uri)
+//        }
+    }
+
+    LaunchedEffect(photoSkipCount) {
+        if (photoSkipCount > 0) {
+            Toast.makeText(
+                context,
+                "$photoSkipCount photos were skipped because they were too large",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
