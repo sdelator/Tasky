@@ -147,7 +147,7 @@ class AgendaDetailsViewModel @Inject constructor(
     fun compressAndAddImage(context: Context, uris: List<Uri>) {
         viewModelScope.launch {
             var skipped = 0
-            val compressedList = uris.mapNotNull { uri ->
+            val newCompressedList = uris.mapNotNull { uri ->
                 val drawable = imageCompressionUseCase.uriToDrawable(context, uri)
                 val originalBitmap = (drawable as BitmapDrawable).bitmap
                 Log.d(TAG, "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
@@ -168,7 +168,7 @@ class AgendaDetailsViewModel @Inject constructor(
                 }
             }
 
-            _viewState.update { it.copy(compressedImages = compressedList) }
+            _viewState.update { it.copy(compressedImages = it.compressedImages + newCompressedList) }
             _photoSkipCount.value = skipped
         }
     }
