@@ -51,17 +51,17 @@ fun AttendeeStatusSection(
             .padding(8.dp)
     ) {
         PillButton(
-            buttonName = AttendeeFilter.ALL.typeName,
+            buttonName = stringResource(id = AttendeeFilter.ALL.typeName),
             onClick = { onAttendeeFilterClick(AttendeeFilter.ALL) },
             isSelected = attendeeFilter == AttendeeFilter.ALL
         )
         PillButton(
-            buttonName = AttendeeFilter.GOING.typeName,
+            buttonName = stringResource(id = AttendeeFilter.GOING.typeName),
             onClick = { onAttendeeFilterClick(AttendeeFilter.GOING) },
             isSelected = attendeeFilter == AttendeeFilter.GOING
         )
         PillButton(
-            buttonName = AttendeeFilter.NOT_GOING.typeName,
+            buttonName = stringResource(id = AttendeeFilter.NOT_GOING.typeName),
             onClick = { onAttendeeFilterClick(AttendeeFilter.NOT_GOING) },
             isSelected = attendeeFilter == AttendeeFilter.NOT_GOING
         )
