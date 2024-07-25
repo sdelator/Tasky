@@ -2,6 +2,7 @@ package com.example.tasky.agenda_details.presentation
 
 import androidx.lifecycle.ViewModel
 import com.example.tasky.common.presentation.LineItemType
+import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -91,6 +92,31 @@ class AgendaDetailsViewModel @Inject constructor() : ViewModel() {
                     )
                 }
             }
+        }
+    }
+
+    fun toggleReminderDropdownVisibility() {
+        _viewState.update {
+            it.copy(showReminderDropdown = !_viewState.value.showReminderDropdown)
+        }
+    }
+
+    fun setReminder(reminderTime: ReminderTime) {
+        // TODO actually set the timer
+        _viewState.update {
+            it.copy(
+                reminderTime = reminderTime,
+                showReminderDropdown = false
+            )
+        }
+    }
+
+    fun setAttendeeFilter(attendeeFilter: AttendeeFilter) {
+        // TODO add filter logic
+        _viewState.update {
+            it.copy(
+                attendeeFilterSelected = attendeeFilter
+            )
         }
     }
 }

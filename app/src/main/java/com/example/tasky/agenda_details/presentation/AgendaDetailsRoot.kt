@@ -32,11 +32,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.EditingNav
 import com.example.tasky.R
+import com.example.tasky.agenda_details.presentation.components.AttendeeSection
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.common.domain.util.convertMillisToDate
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LineItemType
+import com.example.tasky.common.presentation.ReminderSection
+import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.common.presentation.TitleSection
 import com.example.tasky.common.presentation.editing.TextFieldType
@@ -88,7 +91,13 @@ fun AgendaDetailsRoot(
         onDateSelected = onDateSelected,
         onTimeSelected = onTimeSelected,
         startTime = viewState.fromTime,
-        endTime = viewState.toTime
+        endTime = viewState.toTime,
+        showReminderDropdown = viewState.showReminderDropdown,
+        toggleReminderDropdownVisibility = { agendaDetailsViewModel.toggleReminderDropdownVisibility() },
+        onReminderClick = { agendaDetailsViewModel.setReminder(it) },
+        reminderTime = viewState.reminderTime,
+        attendeeFilter = viewState.attendeeFilterSelected,
+        onAttendeeFilterClick = { agendaDetailsViewModel.setAttendeeFilter(it) }
     )
 }
 
@@ -110,7 +119,13 @@ fun AgendaDetailsContent(
     onDateSelected: (LocalDate, MaterialDialogState, LineItemType) -> Unit,
     onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit,
     startTime: String,
-    endTime: String
+    endTime: String,
+    showReminderDropdown: Boolean,
+    toggleReminderDropdownVisibility: () -> Unit,
+    onReminderClick: (ReminderTime) -> Unit,
+    reminderTime: ReminderTime,
+    attendeeFilter: AttendeeFilter,
+    onAttendeeFilterClick: (AttendeeFilter) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -181,12 +196,20 @@ fun AgendaDetailsContent(
                     )
                 }
                 GrayDivider()
-                // TODO create rest of UI elements
-//                ReminderSection()
-//                if((agendaItemType == Action.Event) {
-//                    AttendeeSection()
-//                }
-//                DeleteButton()
+                ReminderSection(
+                    reminderTime = reminderTime,
+                    showReminderDropdown = showReminderDropdown,
+                    toggleReminderDropdownVisibility = toggleReminderDropdownVisibility,
+                    onReminderClick = onReminderClick
+                )
+                GrayDivider()
+                if (agendaItemType == AgendaItemType.Event) {
+                    AttendeeSection(
+                        attendeeFilter = attendeeFilter,
+                        onAttendeeFilterClick = onAttendeeFilterClick
+                    )
+                }
+                //DeleteButton()
             }
         }
     }
@@ -266,7 +289,13 @@ fun PreviewEventContent() {
         onTimeSelected = { _, _, _ -> },
         startTime = "08:00",
         endTime = "08:15",
-        agendaItemType = AgendaItemType.Event
+        agendaItemType = AgendaItemType.Event,
+        showReminderDropdown = false,
+        toggleReminderDropdownVisibility = {},
+        onReminderClick = {},
+        reminderTime = ReminderTime.THIRTY_MINUTES,
+        attendeeFilter = AttendeeFilter.GOING,
+        onAttendeeFilterClick = {}
     )
 }
 

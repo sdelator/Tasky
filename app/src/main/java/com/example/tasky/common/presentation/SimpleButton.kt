@@ -1,16 +1,23 @@
 package com.example.tasky.common.presentation
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.tasky.R
+import com.example.tasky.agenda_details.presentation.AttendeeFilter
 
 @Composable
 fun SimpleButton(
@@ -35,6 +42,35 @@ fun SimpleButton(
 }
 
 @Composable
+fun PillButton(
+    buttonName: String,
+    onClick: () -> Unit,
+    isSelected: Boolean = false
+) {
+    val containerColor = if (isSelected) Color.Black else colorResource(id = R.color.reminder_gray)
+    val contentColor = if (isSelected) Color.White else Color.Black
+
+    androidx.compose.material3.Button(
+        onClick = onClick,
+        modifier = Modifier
+            .padding(start = 8.dp, end = 8.dp)
+            .width(110.dp)
+            .height(35.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        ),
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Text(
+            buttonName,
+            fontSize = 14.sp,
+            modifier = Modifier.align(Alignment.CenterVertically)
+        )
+    }
+}
+
+@Composable
 @Preview
 fun ViewButton() {
     Column {
@@ -42,6 +78,17 @@ fun ViewButton() {
             modifier = Modifier.fillMaxWidth(),
             onClick = { /*TODO*/ },
             buttonName = "Test"
+        )
+    }
+}
+
+@Composable
+@Preview
+fun ViewPillButton() {
+    Column {
+        PillButton(
+            onClick = { /*TODO*/ },
+            buttonName = AttendeeFilter.NOT_GOING.typeName
         )
     }
 }

@@ -35,7 +35,7 @@ import com.example.tasky.TaskNav
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.FabDropdownRoot
-import com.example.tasky.common.presentation.HeaderSmall
+import com.example.tasky.common.presentation.HeaderSmallBold
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
 import com.example.tasky.common.presentation.model.AgendaItemType
@@ -163,7 +163,7 @@ fun AgendaContent(
                     }
                 )
                 Spacer(modifier = Modifier.padding(top = 10.dp))
-                HeaderSmall(title = headerDateText, modifier = Modifier.align(Alignment.Start))
+                HeaderSmallBold(title = headerDateText, modifier = Modifier.align(Alignment.Start))
             }
         }
         Box(

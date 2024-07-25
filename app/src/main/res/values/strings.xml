@@ -48,4 +48,8 @@
     <string name="enter_the_event_description">Enter the event description...</string>
     <string name="enter_the_task_description">Enter the task description...</string>
     <string name="enter_the_reminder_description">Enter the reminder description...</string>
+    <string name="visitors">Visitors</string>
+    <string name="going">Going</string>
+    <string name="not_going">Not going</string>
+    <string name="creator">creator</string>
 </resources>
