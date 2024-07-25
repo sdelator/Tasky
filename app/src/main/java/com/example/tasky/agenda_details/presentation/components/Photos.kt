@@ -36,7 +36,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
@@ -83,7 +82,8 @@ fun Photos(
     selectedPhotoUris: List<Uri>,
     compressedImages: List<Bitmap?>,
     compressAndAddImage: (Context, List<Uri>) -> Unit,
-    photoSkipCount: Int
+    photoSkipCount: Int,
+    onAddPhotosClick: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -129,8 +129,8 @@ fun Photos(
                         }
                     }
                     item {
-                        if (selectedPhotoUris.size < 10) {
-                            PhotoSlot()
+                        if (compressedImages.size < 10) {
+                            PhotoSlot(onAddPhotosClick)
                         }
                     }
                 }
@@ -140,15 +140,15 @@ fun Photos(
 }
 
 @Composable
-@Preview
-fun PhotoSlot() {
+fun PhotoSlot(onAddPhotosClick: () -> Unit) {
     Surface(
         shape = RoundedCornerShape(6.dp),
         border = BorderStroke(2.dp, colorResource(id = R.color.light_blue)),
     ) {
         Box(
             modifier = Modifier
-                .size(60.dp),
+                .size(60.dp)
+                .clickable(onClick = onAddPhotosClick),
             contentAlignment = Alignment.Center
         ) {
             Icon(

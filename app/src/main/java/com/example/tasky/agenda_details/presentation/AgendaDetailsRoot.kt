@@ -212,7 +212,8 @@ fun AgendaDetailsContent(
                             selectedPhotoUris = selectedImageUris,
                             compressedImages = compressedImages,
                             compressAndAddImage = compressAndAddImage,
-                            photoSkipCount = photoSkipCount
+                            photoSkipCount = photoSkipCount,
+                            onAddPhotosClick = onAddPhotosClick
                         )
                     }
                 }
