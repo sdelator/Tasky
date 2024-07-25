@@ -111,7 +111,7 @@ fun Photos(
                 .fillMaxWidth()
         ) {
             Column {
-                HeaderMedium(title = "Photos", textColor = Color.Black)
+                HeaderMedium(title = stringResource(R.string.photos), textColor = Color.Black)
                 Spacer(modifier = Modifier.padding(10.dp))
                 LazyRow {
                     items(compressedImages) { bitmap ->
