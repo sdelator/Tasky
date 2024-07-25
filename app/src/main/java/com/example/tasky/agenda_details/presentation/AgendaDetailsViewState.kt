@@ -1,5 +1,6 @@
 package com.example.tasky.agenda_details.presentation
 
+import com.example.tasky.R
 import com.example.tasky.common.presentation.ReminderTime
 import com.vanpra.composematerialdialogs.MaterialDialogState
 
@@ -19,6 +20,6 @@ data class AgendaDetailsViewState(
     val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL
 )
 
-enum class AttendeeFilter(val typeName: String) {
-    ALL("All"), GOING("Going"), NOT_GOING("Not going")
+enum class AttendeeFilter(val typeName: Int) {
+    ALL(R.string.all), GOING(R.string.going), NOT_GOING(R.string.not_going)
 }

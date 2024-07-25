@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.tasky.R
 
 @Composable
 fun ReminderDropdownRoot(
@@ -23,23 +25,23 @@ fun ReminderDropdownRoot(
         modifier = modifier
     ) {
         DropdownMenuItem(
-            text = { Text(ReminderTime.TEN_MINUTES.typeName) },
+            text = { Text(stringResource(id = ReminderTime.TEN_MINUTES.typeName)) },
             onClick = { onReminderClick(ReminderTime.TEN_MINUTES) }
         )
         DropdownMenuItem(
-            text = { Text(ReminderTime.THIRTY_MINUTES.typeName) },
+            text = { Text(stringResource(id = ReminderTime.THIRTY_MINUTES.typeName)) },
             onClick = { onReminderClick(ReminderTime.THIRTY_MINUTES) }
         )
         DropdownMenuItem(
-            text = { Text(ReminderTime.ONE_HOUR.typeName) },
+            text = { Text(stringResource(id = ReminderTime.ONE_HOUR.typeName)) },
             onClick = { onReminderClick(ReminderTime.ONE_HOUR) }
         )
         DropdownMenuItem(
-            text = { Text(ReminderTime.SIX_HOURS.typeName) },
+            text = { Text(stringResource(id = ReminderTime.SIX_HOURS.typeName)) },
             onClick = { onReminderClick(ReminderTime.SIX_HOURS) }
         )
         DropdownMenuItem(
-            text = { Text(ReminderTime.ONE_DAY.typeName) },
+            text = { Text(stringResource(id = ReminderTime.ONE_DAY.typeName)) },
             onClick = { onReminderClick(ReminderTime.ONE_DAY) }
         )
     }
@@ -58,10 +60,10 @@ fun PreviewReminderDropdownMenu() {
     }
 }
 
-enum class ReminderTime(val typeName: String) {
-    TEN_MINUTES("10 minutes before"),
-    THIRTY_MINUTES("30 minutes before"),
-    ONE_HOUR("1 hour before"),
-    SIX_HOURS("6 hours before"),
-    ONE_DAY("1 day before")
+enum class ReminderTime(val typeName: Int) {
+    TEN_MINUTES(R.string.ten_minutes_before),
+    THIRTY_MINUTES(R.string.thirty_minutes_before),
+    ONE_HOUR(R.string.one_hour_before),
+    SIX_HOURS(R.string.six_hours_before),
+    ONE_DAY(R.string.one_day_before)
 }
