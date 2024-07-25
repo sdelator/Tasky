@@ -1,7 +1,6 @@
 package com.example.tasky.agenda_details.presentation
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -35,14 +34,16 @@ class AgendaDetailsViewModel @Inject constructor(
         const val DEFAULT_TIME_RANGE = 15L
     }
 
-    private val _photoSkipCount = MutableStateFlow(0)
-    val photoSkipCount: StateFlow<Int> get() = _photoSkipCount
-
+    // on screen variables
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
 
-    private val _compressedImages = MutableStateFlow<List<Bitmap?>>(emptyList())
-    val compressedImages: StateFlow<List<Bitmap?>> get() = _compressedImages
+    // temporary variables
+    private val _photosUri = MutableStateFlow<List<Uri>>(emptyList())
+    val photosUri: StateFlow<List<Uri>> get() = _photosUri
+
+    private val _photoSkipCount = MutableStateFlow(0)
+    val photoSkipCount: StateFlow<Int> get() = _photoSkipCount
 
     init {
         _viewState.update {
@@ -140,7 +141,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun onAddPhotosClick(photoUris: List<Uri>) {
-        _viewState.update { it.copy(photosUri = photoUris) }
+        _photosUri.value = photoUris
     }
 
     fun compressAndAddImage(context: Context, uris: List<Uri>) {
@@ -167,7 +168,7 @@ class AgendaDetailsViewModel @Inject constructor(
                 }
             }
 
-            _compressedImages.value = compressedList
+            _viewState.update { it.copy(compressedImages = compressedList) }
             _photoSkipCount.value = skipped
         }
     }
