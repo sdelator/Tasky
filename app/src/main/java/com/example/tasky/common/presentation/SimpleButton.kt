@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,17 +45,16 @@ fun SimpleButton(
 fun PillButton(
     buttonName: String,
     onClick: () -> Unit,
-    isSelected: Boolean = false
+    isSelected: Boolean = false,
+    modifier: Modifier
 ) {
     val containerColor = if (isSelected) Color.Black else colorResource(id = R.color.reminder_gray)
     val contentColor = if (isSelected) Color.White else Color.Black
 
     androidx.compose.material3.Button(
         onClick = onClick,
-        modifier = Modifier
-            .padding(start = 8.dp, end = 8.dp)
-            .width(110.dp)
-            .height(35.dp),
+        modifier = modifier
+            .padding(start = 8.dp, end = 8.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor
@@ -66,7 +64,9 @@ fun PillButton(
         Text(
             buttonName,
             fontSize = 14.sp,
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(start = 16.dp, end = 16.dp)
         )
     }
 }
@@ -89,7 +89,8 @@ fun ViewPillButton() {
     Column {
         PillButton(
             onClick = { /*TODO*/ },
-            buttonName = stringResource(id = AttendeeFilter.NOT_GOING.typeName)
+            buttonName = stringResource(id = AttendeeFilter.NOT_GOING.typeName),
+            modifier = Modifier
         )
     }
 }
