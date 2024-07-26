@@ -1,6 +1,7 @@
 package com.example.tasky.di
 
 import android.app.Application
+import com.example.tasky.agenda_details.data.ImageCompressionUseCaseImpl
 import com.example.tasky.agenda_details.domain.ImageCompressionUseCase
 import com.example.tasky.common.data.PreferenceHelper
 import com.example.tasky.common.data.SessionStateManagerImpl
@@ -154,6 +155,6 @@ object AppModule {
 
     @Provides
     fun provideImageCompressionUseCase(): ImageCompressionUseCase {
-        return ImageCompressionUseCase()
+        return ImageCompressionUseCaseImpl()
     }
 }
