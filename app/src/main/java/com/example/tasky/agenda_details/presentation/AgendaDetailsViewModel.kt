@@ -13,10 +13,12 @@ import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -148,8 +150,9 @@ class AgendaDetailsViewModel @Inject constructor(
 
                 val compressedByteArray = imageCompressionUseCase.compressImage(drawable)
 
-                val compressedBitmap =
+                val compressedBitmap = withContext(Dispatchers.IO) {
                     BitmapFactory.decodeByteArray(compressedByteArray, 0, compressedByteArray.size)
+                }
                 Log.d(TAG, "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
 
                 if (compressedByteArray.size > 1024 * 1024) {
