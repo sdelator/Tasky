@@ -58,4 +58,7 @@
     <string name="one_hour_before">1 hour before</string>
     <string name="six_hours_before">6 hours before</string>
     <string name="one_day_before">1 day before</string>
+    <string name="add_photos">Add photos</string>
+    <string name="photos_were_skipped">%1$d photos were skipped because they were too large</string>
+    <string name="photos">Photos</string>
 </resources>

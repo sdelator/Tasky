@@ -1,5 +1,11 @@
 package com.example.tasky.agenda_details.presentation
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -34,6 +40,7 @@ import com.example.tasky.EditingNav
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.components.AttendeeSection
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
+import com.example.tasky.agenda_details.presentation.components.Photos
 import com.example.tasky.common.domain.util.convertMillisToDate
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
@@ -58,7 +65,10 @@ fun AgendaDetailsRoot(
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
+    val photosUri by agendaDetailsViewModel.photosUri.collectAsStateWithLifecycle()
+    val photoSkipCount by agendaDetailsViewModel.photoSkipCount.collectAsStateWithLifecycle()
     val isEditing = true
+    val maxPhotoCount = 10
 
     val onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit =
         { time, lineItemType, dialogState ->
@@ -70,9 +80,22 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
         }
 
+    val compressAndAddImage: (Context, List<Uri>) -> Unit =
+        { context, uri ->
+            agendaDetailsViewModel.compressAndAddImage(context, uri)
+        }
+
     val titleText = if (!title.isNullOrEmpty()) title else getDefaultTitle(agendaItemType)
     val itemDescription =
         if (!description.isNullOrEmpty()) description else getDefaultDescription(agendaItemType)
+
+    val maxPhotosSelection = maxOf(2, maxPhotoCount - viewState.compressedImages.size)
+    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = maxPhotosSelection),
+        onResult = { photoUris ->
+            agendaDetailsViewModel.onAddPhotosClick(photoUris)
+        }
+    )
 
     AgendaDetailsContent(
         titleText = titleText,
@@ -97,7 +120,16 @@ fun AgendaDetailsRoot(
         onReminderClick = { agendaDetailsViewModel.setReminder(it) },
         reminderTime = viewState.reminderTime,
         attendeeFilter = viewState.attendeeFilterSelected,
-        onAttendeeFilterClick = { agendaDetailsViewModel.setAttendeeFilter(it) }
+        onAttendeeFilterClick = { agendaDetailsViewModel.setAttendeeFilter(it) },
+        onAddPhotosClick = {
+            multiplePhotoPickerLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
+        },
+        selectedImageUris = photosUri,
+        compressedImages = viewState.compressedImages,
+        compressAndAddImage = compressAndAddImage,
+        photoSkipCount = photoSkipCount
     )
 }
 
@@ -125,7 +157,12 @@ fun AgendaDetailsContent(
     onReminderClick: (ReminderTime) -> Unit,
     reminderTime: ReminderTime,
     attendeeFilter: AttendeeFilter,
-    onAttendeeFilterClick: (AttendeeFilter) -> Unit
+    onAttendeeFilterClick: (AttendeeFilter) -> Unit,
+    onAddPhotosClick: () -> Unit,
+    selectedImageUris: List<Uri>,
+    compressedImages: List<Bitmap?>,
+    compressAndAddImage: (Context, List<Uri>) -> Unit,
+    photoSkipCount: Int
 ) {
     Box(
         modifier = Modifier
@@ -169,7 +206,17 @@ fun AgendaDetailsContent(
                     onEditClick = onEditClick
                 )
                 if (agendaItemType == AgendaItemType.Event) {
-                    EmptyPhotos() // TODO if statement for added photos
+                    if (selectedImageUris.isEmpty()) {
+                        EmptyPhotos(onAddPhotosClick = onAddPhotosClick)
+                    } else {
+                        Photos(
+                            selectedPhotoUris = selectedImageUris,
+                            compressedImages = compressedImages,
+                            compressAndAddImage = compressAndAddImage,
+                            photoSkipCount = photoSkipCount,
+                            onAddPhotosClick = onAddPhotosClick
+                        )
+                    }
                 }
                 GrayDivider()
                 DateLineItem(
@@ -295,7 +342,12 @@ fun PreviewEventContent() {
         onReminderClick = {},
         reminderTime = ReminderTime.THIRTY_MINUTES,
         attendeeFilter = AttendeeFilter.GOING,
-        onAttendeeFilterClick = {}
+        onAttendeeFilterClick = {},
+        onAddPhotosClick = {},
+        selectedImageUris = listOf(),
+        compressedImages = emptyList(),
+        compressAndAddImage = { _, _ -> },
+        photoSkipCount = 0
     )
 }
 

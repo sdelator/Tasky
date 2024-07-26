@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
     implementation(libs.material)
+    implementation(libs.coil.compose)
 
     // Room Database
     implementation(libs.androidx.room.common)
