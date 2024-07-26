@@ -34,16 +34,8 @@ class AgendaDetailsViewModel @Inject constructor(
         const val DEFAULT_TIME_RANGE = 15L
     }
 
-    // on screen variables
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
-
-    // temporary variables
-    private val _photosUri = MutableStateFlow<List<Uri>>(emptyList())
-    val photosUri: StateFlow<List<Uri>> get() = _photosUri
-
-    private val _photoSkipCount = MutableStateFlow(0)
-    val photoSkipCount: StateFlow<Int> get() = _photoSkipCount
 
     init {
         _viewState.update {
@@ -141,7 +133,11 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun onAddPhotosClick(photoUris: List<Uri>) {
-        _photosUri.value = photoUris
+        _viewState.update {
+            it.copy(
+                photosUri = photoUris
+            )
+        }
     }
 
     fun compressAndAddImage(context: Context, uris: List<Uri>) {
@@ -168,8 +164,12 @@ class AgendaDetailsViewModel @Inject constructor(
                 }
             }
 
-            _viewState.update { it.copy(compressedImages = it.compressedImages + newCompressedList) }
-            _photoSkipCount.value = skipped
+            _viewState.update {
+                it.copy(
+                    compressedImages = it.compressedImages + newCompressedList,
+                    photoSkipCount = skipped
+                )
+            }
         }
     }
 }

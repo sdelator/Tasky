@@ -1,6 +1,7 @@
 package com.example.tasky.agenda_details.presentation
 
 import android.graphics.Bitmap
+import android.net.Uri
 import com.example.tasky.R
 import com.example.tasky.common.presentation.ReminderTime
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -19,7 +20,9 @@ data class AgendaDetailsViewState(
     val compressedImages: List<Bitmap?> = emptyList(),
     val reminderTime: ReminderTime = ReminderTime.THIRTY_MINUTES,
     val showReminderDropdown: Boolean = false,
-    val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL
+    val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL,
+    val photoSkipCount: Int = 0,
+    val photosUri: List<Uri> = emptyList()
 )
 
 enum class AttendeeFilter(val typeName: Int) {

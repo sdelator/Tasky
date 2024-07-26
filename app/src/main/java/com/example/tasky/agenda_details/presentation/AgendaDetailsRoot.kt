@@ -65,8 +65,6 @@ fun AgendaDetailsRoot(
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
-    val photosUri by agendaDetailsViewModel.photosUri.collectAsStateWithLifecycle()
-    val photoSkipCount by agendaDetailsViewModel.photoSkipCount.collectAsStateWithLifecycle()
     val isEditing = true
     val maxPhotoCount = 10
 
@@ -126,10 +124,10 @@ fun AgendaDetailsRoot(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         },
-        selectedImageUris = photosUri,
+        selectedImageUris = viewState.photosUri,
         compressedImages = viewState.compressedImages,
         compressAndAddImage = compressAndAddImage,
-        photoSkipCount = photoSkipCount
+        photoSkipCount = viewState.photoSkipCount
     )
 }
 
