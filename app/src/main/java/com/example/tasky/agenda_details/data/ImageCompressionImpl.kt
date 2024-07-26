@@ -1,6 +1,6 @@
 package com.example.tasky.agenda_details.data
 
-import android.content.Context
+import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -10,7 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
-class ImageCompressionUseCaseImpl : ImageCompressionUseCase {
+class ImageCompressionUseCaseImpl(private val contentResolver: ContentResolver) :
+    ImageCompressionUseCase {
     override suspend fun compressImage(drawable: Drawable): ByteArray {
         return withContext(Dispatchers.IO) {
             val quality = 100
@@ -21,9 +22,8 @@ class ImageCompressionUseCaseImpl : ImageCompressionUseCase {
         }
     }
 
-    override suspend fun uriToDrawable(context: Context, uri: Uri): Drawable? {
+    override suspend fun uriToDrawable(uri: Uri): Drawable? {
         return withContext(Dispatchers.IO) {
-            val contentResolver = context.contentResolver
             val inputStream = contentResolver.openInputStream(uri)
             Drawable.createFromStream(inputStream, uri.toString())
         }

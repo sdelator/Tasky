@@ -1,8 +1,6 @@
 package com.example.tasky.agenda_details.presentation.components
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -79,17 +77,11 @@ fun EmptyPhotos(onAddPhotosClick: () -> Unit) {
 
 @Composable
 fun Photos(
-    selectedPhotoUris: List<Uri>,
     compressedImages: List<Bitmap?>,
-    compressAndAddImage: (Context, List<Uri>) -> Unit,
     photoSkipCount: Int,
     onAddPhotosClick: () -> Unit
 ) {
     val context = LocalContext.current
-
-    LaunchedEffect(selectedPhotoUris) {
-        compressAndAddImage(context, selectedPhotoUris)
-    }
 
     LaunchedEffect(photoSkipCount) {
         if (photoSkipCount > 0) {

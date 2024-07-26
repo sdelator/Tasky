@@ -1,6 +1,5 @@
 package com.example.tasky.agenda_details.presentation
 
-import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -133,18 +132,14 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun onAddPhotosClick(photoUris: List<Uri>) {
-        _viewState.update {
-            it.copy(
-                photosUri = photoUris
-            )
-        }
+        compressAndAddImage(photoUris)
     }
 
-    fun compressAndAddImage(context: Context, uris: List<Uri>) {
+    private fun compressAndAddImage(uris: List<Uri>) {
         viewModelScope.launch {
             var skipped = 0
             val newCompressedList = uris.mapNotNull { uri ->
-                val drawable = imageCompressionUseCase.uriToDrawable(context, uri)
+                val drawable = imageCompressionUseCase.uriToDrawable(uri)
                 val originalBitmap = (drawable as BitmapDrawable).bitmap
                 Log.d(TAG, "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
 
