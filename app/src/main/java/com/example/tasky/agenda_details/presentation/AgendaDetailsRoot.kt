@@ -1,6 +1,5 @@
 package com.example.tasky.agenda_details.presentation
 
-import android.graphics.Bitmap
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -148,7 +147,7 @@ fun AgendaDetailsContent(
     attendeeFilter: AttendeeFilter,
     onAttendeeFilterClick: (AttendeeFilter) -> Unit,
     onAddPhotosClick: () -> Unit,
-    compressedImages: List<Bitmap?>,
+    compressedImages: List<ByteArray?>,
     photoSkipCount: Int
 ) {
     Box(

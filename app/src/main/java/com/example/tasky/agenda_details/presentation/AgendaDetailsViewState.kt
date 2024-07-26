@@ -1,6 +1,5 @@
 package com.example.tasky.agenda_details.presentation
 
-import android.graphics.Bitmap
 import com.example.tasky.R
 import com.example.tasky.common.presentation.ReminderTime
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -16,7 +15,7 @@ data class AgendaDetailsViewState(
     val fromTime: String = "",
     val toDate: String = "",
     val fromDate: String = "",
-    val compressedImages: List<Bitmap?> = emptyList(),
+    val compressedImages: List<ByteArray?> = emptyList(),
     val reminderTime: ReminderTime = ReminderTime.THIRTY_MINUTES,
     val showReminderDropdown: Boolean = false,
     val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL,

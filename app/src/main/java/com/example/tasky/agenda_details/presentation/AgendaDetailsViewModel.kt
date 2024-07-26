@@ -1,6 +1,5 @@
 package com.example.tasky.agenda_details.presentation
 
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.util.Log
@@ -12,12 +11,10 @@ import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -144,17 +141,13 @@ class AgendaDetailsViewModel @Inject constructor(
                 Log.d(TAG, "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
 
                 val compressedByteArray = imageCompressor.compressImage(drawable)
-
-                val compressedBitmap = withContext(Dispatchers.IO) {
-                    BitmapFactory.decodeByteArray(compressedByteArray, 0, compressedByteArray.size)
-                }
                 Log.d(TAG, "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
 
                 if (compressedByteArray.size > 1024 * 1024) {
                     skipped++
                     null
                 } else {
-                    compressedBitmap
+                    compressedByteArray
                 }
             }
 

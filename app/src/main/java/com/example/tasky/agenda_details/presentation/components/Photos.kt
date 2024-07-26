@@ -1,9 +1,7 @@
 package com.example.tasky.agenda_details.presentation.components
 
-import android.graphics.Bitmap
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -36,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.tasky.R
 import com.example.tasky.common.presentation.HeaderMedium
 
@@ -77,7 +75,7 @@ fun EmptyPhotos(onAddPhotosClick: () -> Unit) {
 
 @Composable
 fun Photos(
-    compressedImages: List<Bitmap?>,
+    compressedImages: List<ByteArray?>,
     photoSkipCount: Int,
     onAddPhotosClick: () -> Unit
 ) {
@@ -106,10 +104,10 @@ fun Photos(
                 HeaderMedium(title = stringResource(R.string.photos), textColor = Color.Black)
                 Spacer(modifier = Modifier.padding(10.dp))
                 LazyRow {
-                    items(compressedImages) { bitmap ->
-                        bitmap?.let {
-                            Image(
-                                bitmap = it.asImageBitmap(),
+                    items(compressedImages) { byteArray ->
+                        byteArray?.let {
+                            AsyncImage(
+                                model = it,
                                 contentDescription = null,
                                 modifier = Modifier
                                     .padding(end = 10.dp)
