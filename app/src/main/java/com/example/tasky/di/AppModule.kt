@@ -3,8 +3,8 @@ package com.example.tasky.di
 import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
-import com.example.tasky.agenda_details.data.ImageCompressionUseCaseImpl
-import com.example.tasky.agenda_details.domain.ImageCompressionUseCase
+import com.example.tasky.agenda_details.data.ImageCompressorImpl
+import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.common.data.PreferenceHelper
 import com.example.tasky.common.data.SessionStateManagerImpl
 import com.example.tasky.common.data.remote.ApiKeyInterceptor
@@ -162,7 +162,7 @@ object AppModule {
     }
 
     @Provides
-    fun provideImageCompressionUseCase(contentResolver: ContentResolver): ImageCompressionUseCase {
-        return ImageCompressionUseCaseImpl(contentResolver = contentResolver)
+    fun provideImageCompressor(contentResolver: ContentResolver): ImageCompressor {
+        return ImageCompressorImpl(contentResolver = contentResolver)
     }
 }
