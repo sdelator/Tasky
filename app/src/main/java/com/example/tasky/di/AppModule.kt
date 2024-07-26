@@ -1,6 +1,9 @@
 package com.example.tasky.di
 
 import android.app.Application
+import android.content.ContentResolver
+import android.content.Context
+import com.example.tasky.agenda_details.data.ImageCompressionUseCaseImpl
 import com.example.tasky.agenda_details.domain.ImageCompressionUseCase
 import com.example.tasky.common.data.PreferenceHelper
 import com.example.tasky.common.data.SessionStateManagerImpl
@@ -21,6 +24,7 @@ import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -153,7 +157,12 @@ object AppModule {
     }
 
     @Provides
-    fun provideImageCompressionUseCase(): ImageCompressionUseCase {
-        return ImageCompressionUseCase()
+    fun provideContentResolver(@ApplicationContext context: Context): ContentResolver {
+        return context.contentResolver
+    }
+
+    @Provides
+    fun provideImageCompressionUseCase(contentResolver: ContentResolver): ImageCompressionUseCase {
+        return ImageCompressionUseCaseImpl(contentResolver = contentResolver)
     }
 }

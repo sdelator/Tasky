@@ -1,6 +1,7 @@
 package com.example.tasky.feature_agenda.presentation
 
 import com.example.tasky.common.domain.error.DataError
+import com.example.tasky.common.presentation.util.toLong
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import java.time.LocalDate
@@ -16,5 +17,7 @@ data class AgendaViewState(
      val showLoadingSpinner: Boolean = false,
      val showErrorDialog: Boolean = false,
      val dataError: DataError = DataError.Network.UNKNOWN,
-     val headerDateText: String = ""
+     val headerDateText: String = "",
+     val yearSelected: Int = LocalDate.now().year,
+     val dateSelected: Long = LocalDate.now().toLong()
 )

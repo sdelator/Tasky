@@ -1,8 +1,6 @@
 package com.example.tasky.agenda_details.presentation
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -65,8 +63,6 @@ fun AgendaDetailsRoot(
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
-    val photosUri by agendaDetailsViewModel.photosUri.collectAsStateWithLifecycle()
-    val photoSkipCount by agendaDetailsViewModel.photoSkipCount.collectAsStateWithLifecycle()
     val isEditing = true
     val maxPhotoCount = 10
 
@@ -78,11 +74,6 @@ fun AgendaDetailsRoot(
     val onDateSelected: (LocalDate, MaterialDialogState, LineItemType) -> Unit =
         { selectedDate, dialogState, timeType ->
             agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
-        }
-
-    val compressAndAddImage: (Context, List<Uri>) -> Unit =
-        { context, uri ->
-            agendaDetailsViewModel.compressAndAddImage(context, uri)
         }
 
     val titleText = if (!title.isNullOrEmpty()) title else getDefaultTitle(agendaItemType)
@@ -126,10 +117,8 @@ fun AgendaDetailsRoot(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         },
-        selectedImageUris = photosUri,
         compressedImages = viewState.compressedImages,
-        compressAndAddImage = compressAndAddImage,
-        photoSkipCount = photoSkipCount
+        photoSkipCount = viewState.photoSkipCount
     )
 }
 
@@ -159,9 +148,7 @@ fun AgendaDetailsContent(
     attendeeFilter: AttendeeFilter,
     onAttendeeFilterClick: (AttendeeFilter) -> Unit,
     onAddPhotosClick: () -> Unit,
-    selectedImageUris: List<Uri>,
     compressedImages: List<Bitmap?>,
-    compressAndAddImage: (Context, List<Uri>) -> Unit,
     photoSkipCount: Int
 ) {
     Box(
@@ -206,13 +193,11 @@ fun AgendaDetailsContent(
                     onEditClick = onEditClick
                 )
                 if (agendaItemType == AgendaItemType.Event) {
-                    if (selectedImageUris.isEmpty()) {
+                    if (compressedImages.isEmpty()) {
                         EmptyPhotos(onAddPhotosClick = onAddPhotosClick)
                     } else {
                         Photos(
-                            selectedPhotoUris = selectedImageUris,
                             compressedImages = compressedImages,
-                            compressAndAddImage = compressAndAddImage,
                             photoSkipCount = photoSkipCount,
                             onAddPhotosClick = onAddPhotosClick
                         )
@@ -344,9 +329,7 @@ fun PreviewEventContent() {
         attendeeFilter = AttendeeFilter.GOING,
         onAttendeeFilterClick = {},
         onAddPhotosClick = {},
-        selectedImageUris = listOf(),
         compressedImages = emptyList(),
-        compressAndAddImage = { _, _ -> },
         photoSkipCount = 0
     )
 }

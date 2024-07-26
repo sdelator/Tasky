@@ -1,6 +1,5 @@
 package com.example.tasky.agenda_details.presentation
 
-import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -34,16 +33,8 @@ class AgendaDetailsViewModel @Inject constructor(
         const val DEFAULT_TIME_RANGE = 15L
     }
 
-    // on screen variables
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
-
-    // temporary variables
-    private val _photosUri = MutableStateFlow<List<Uri>>(emptyList())
-    val photosUri: StateFlow<List<Uri>> get() = _photosUri
-
-    private val _photoSkipCount = MutableStateFlow(0)
-    val photoSkipCount: StateFlow<Int> get() = _photoSkipCount
 
     init {
         _viewState.update {
@@ -141,23 +132,22 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun onAddPhotosClick(photoUris: List<Uri>) {
-        _photosUri.value = photoUris
+        compressAndAddImage(photoUris)
     }
 
-    fun compressAndAddImage(context: Context, uris: List<Uri>) {
+    private fun compressAndAddImage(uris: List<Uri>) {
         viewModelScope.launch {
             var skipped = 0
             val newCompressedList = uris.mapNotNull { uri ->
-                val drawable = imageCompressionUseCase.uriToDrawable(context, uri)
+                val drawable = imageCompressionUseCase.uriToDrawable(uri)
                 val originalBitmap = (drawable as BitmapDrawable).bitmap
                 Log.d(TAG, "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
 
-                val compressedByteArray = withContext(Dispatchers.IO) {
-                    imageCompressionUseCase.compressImage(drawable)
-                }
+                val compressedByteArray = imageCompressionUseCase.compressImage(drawable)
 
-                val compressedBitmap =
+                val compressedBitmap = withContext(Dispatchers.IO) {
                     BitmapFactory.decodeByteArray(compressedByteArray, 0, compressedByteArray.size)
+                }
                 Log.d(TAG, "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
 
                 if (compressedByteArray.size > 1024 * 1024) {
@@ -168,8 +158,12 @@ class AgendaDetailsViewModel @Inject constructor(
                 }
             }
 
-            _viewState.update { it.copy(compressedImages = it.compressedImages + newCompressedList) }
-            _photoSkipCount.value = skipped
+            _viewState.update {
+                it.copy(
+                    compressedImages = it.compressedImages + newCompressedList,
+                    photoSkipCount = skipped
+                )
+            }
         }
     }
 }

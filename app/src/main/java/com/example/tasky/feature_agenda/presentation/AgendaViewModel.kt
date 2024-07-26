@@ -40,15 +40,7 @@ class AgendaViewModel @Inject constructor(
     private val _viewEvent = Channel<AgendaViewEvent>()
     val viewEvent = _viewEvent.receiveAsFlow()
 
-    // UI does not change
     val initials: String = sessionStateManager.getName()?.let { ProfileUtils.getInitials(it) } ?: ""
-
-    // not displayed on screen; only necessary for business logic
-    private val _yearSelected = MutableStateFlow(LocalDate.now().year)
-    val yearSelected: StateFlow<Int> get() = _yearSelected
-
-    private val _dateSelected = MutableStateFlow(LocalDate.now().toLong())
-    val dateSelected: StateFlow<Long> get() = _dateSelected
 
     init {
         viewModelScope.launch {
@@ -116,11 +108,11 @@ class AgendaViewModel @Inject constructor(
 
     fun updateDateSelected(month: Int, day: Int, year: Int? = null) {
         // year is only null for horizontal calendar; populated by datePicker on toolbar month selection
-        val selectedYear = year ?: _yearSelected.value
+        val selectedYear = year ?: _viewState.value.yearSelected
 
         val date = LocalDate.of(selectedYear, month, day)
         val calendarDays =
-            if (_viewState.value.monthSelected != date.monthValue || _yearSelected.value != date.year) {
+            if (_viewState.value.monthSelected != date.monthValue || _viewState.value.yearSelected != date.year) {
                 CalendarHelper.getCalendarDaysForMonth(date.year, date.monthValue)
             } else {
                 _viewState.value.calendarDays
@@ -130,12 +122,12 @@ class AgendaViewModel @Inject constructor(
             it.copy(
                 monthSelected = date.monthValue,
                 daySelected = date.dayOfMonth,
+                yearSelected = date.year,
                 calendarDays = calendarDays,
-                headerDateText = getHeaderDateText(date)
+                headerDateText = getHeaderDateText(date),
+                dateSelected = date.toLong()
             )
         }
-        _yearSelected.value = date.year
-        _dateSelected.value = date.toLong()
     }
 
     fun checkAuthentication() {
