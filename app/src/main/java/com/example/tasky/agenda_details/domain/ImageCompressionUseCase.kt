@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 
 interface ImageCompressionUseCase {
-    fun compressImage(drawable: Drawable): ByteArray
-    fun uriToDrawable(context: Context, uri: Uri): Drawable?
+    suspend fun compressImage(drawable: Drawable): ByteArray
+    suspend fun uriToDrawable(context: Context, uri: Uri): Drawable?
 
 }
