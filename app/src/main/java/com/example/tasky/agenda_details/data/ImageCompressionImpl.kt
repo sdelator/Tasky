@@ -14,7 +14,7 @@ class ImageCompressionUseCaseImpl(private val contentResolver: ContentResolver) 
     ImageCompressionUseCase {
     override suspend fun compressImage(drawable: Drawable): ByteArray {
         return withContext(Dispatchers.IO) {
-            val quality = 100
+            val quality = 80
             val bitmap = (drawable as BitmapDrawable).bitmap
             val stream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream)
