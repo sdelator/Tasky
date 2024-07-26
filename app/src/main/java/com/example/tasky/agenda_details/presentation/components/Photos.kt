@@ -77,7 +77,8 @@ fun EmptyPhotos(onAddPhotosClick: () -> Unit) {
 fun Photos(
     compressedImages: List<ByteArray?>,
     photoSkipCount: Int,
-    onAddPhotosClick: () -> Unit
+    onAddPhotosClick: () -> Unit,
+    onPhotoClick: (ByteArray) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -113,7 +114,8 @@ fun Photos(
                                     .padding(end = 10.dp)
                                     .size(60.dp)
                                     .clip(RoundedCornerShape(6.dp))
-                                    .border(2.dp, colorResource(id = R.color.light_blue)),
+                                    .border(2.dp, colorResource(id = R.color.light_blue))
+                                    .clickable { onPhotoClick(it) },
                                 contentScale = ContentScale.Crop
                             )
                         }

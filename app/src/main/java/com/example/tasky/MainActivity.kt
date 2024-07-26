@@ -128,6 +128,13 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
             agendaItemType = agendaDetailType
         )
     }
+    composable<EnlargePhotoNav> {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Yellow)
+        )
+    }
 }
 
 // routes
@@ -158,3 +165,6 @@ object ReminderNav
 
 @Serializable
 data class EditingNav(val textFieldType: String, val agendaItemType: String)
+
+@Serializable
+data class EnlargePhotoNav(val imageUri: String)

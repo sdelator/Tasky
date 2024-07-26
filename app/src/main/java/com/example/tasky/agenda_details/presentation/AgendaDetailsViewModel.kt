@@ -159,4 +159,8 @@ class AgendaDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    fun convertImageToString(byteArray: ByteArray): String {
+        return imageCompressor.byteArrayToString(byteArray)
+    }
 }

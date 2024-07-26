@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.EditingNav
+import com.example.tasky.EnlargePhotoNav
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.components.AttendeeSection
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
@@ -117,7 +118,11 @@ fun AgendaDetailsRoot(
             )
         },
         compressedImages = viewState.compressedImages,
-        photoSkipCount = viewState.photoSkipCount
+        photoSkipCount = viewState.photoSkipCount,
+        onPhotoClick = {
+            val imageString = agendaDetailsViewModel.convertImageToString(it)
+            navController.navigate(EnlargePhotoNav(imageString))
+        }
     )
 }
 
@@ -148,7 +153,8 @@ fun AgendaDetailsContent(
     onAttendeeFilterClick: (AttendeeFilter) -> Unit,
     onAddPhotosClick: () -> Unit,
     compressedImages: List<ByteArray?>,
-    photoSkipCount: Int
+    photoSkipCount: Int,
+    onPhotoClick: (ByteArray) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -198,7 +204,8 @@ fun AgendaDetailsContent(
                         Photos(
                             compressedImages = compressedImages,
                             photoSkipCount = photoSkipCount,
-                            onAddPhotosClick = onAddPhotosClick
+                            onAddPhotosClick = onAddPhotosClick,
+                            onPhotoClick = onPhotoClick
                         )
                     }
                 }
@@ -329,7 +336,8 @@ fun PreviewEventContent() {
         onAttendeeFilterClick = {},
         onAddPhotosClick = {},
         compressedImages = emptyList(),
-        photoSkipCount = 0
+        photoSkipCount = 0,
+        onPhotoClick = {}
     )
 }
 

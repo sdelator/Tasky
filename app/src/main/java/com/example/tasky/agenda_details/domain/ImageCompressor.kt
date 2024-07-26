@@ -7,4 +7,7 @@ interface ImageCompressor {
     suspend fun compressImage(drawable: Drawable): ByteArray
     suspend fun uriToDrawable(uri: Uri): Drawable?
 
+    fun byteArrayToString(byteArray: ByteArray): String
+
+    fun stringToByteArray(base64String: String): ByteArray
 }
