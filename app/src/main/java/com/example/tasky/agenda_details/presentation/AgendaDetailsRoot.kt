@@ -20,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -120,10 +121,17 @@ fun AgendaDetailsRoot(
         compressedImages = viewState.compressedImages,
         photoSkipCount = viewState.photoSkipCount,
         onPhotoClick = {
-            val imageString = agendaDetailsViewModel.convertImageToString(it)
-            navController.navigate(PhotoDetailNav(imageString))
+            agendaDetailsViewModel.convertImageToString(it)
         }
     )
+
+    // LaunchedEffect to handle navigation after imageDetail is updated
+    LaunchedEffect(viewState.imageDetail) {
+        if (viewState.imageDetail.isNotEmpty()) {
+            navController.navigate(PhotoDetailNav(viewState.imageDetail))
+            agendaDetailsViewModel.resetImageDetail()
+        }
+    }
 }
 
 @Composable

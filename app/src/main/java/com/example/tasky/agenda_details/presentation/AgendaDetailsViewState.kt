@@ -19,7 +19,8 @@ data class AgendaDetailsViewState(
     val reminderTime: ReminderTime = ReminderTime.THIRTY_MINUTES,
     val showReminderDropdown: Boolean = false,
     val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL,
-    val photoSkipCount: Int = 0
+    val photoSkipCount: Int = 0,
+    val imageDetail: String = ""
 )
 
 enum class AttendeeFilter(val typeName: Int) {

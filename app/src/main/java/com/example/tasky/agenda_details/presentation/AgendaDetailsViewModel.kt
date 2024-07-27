@@ -160,7 +160,22 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    suspend fun convertImageToString(byteArray: ByteArray): String {
-        return imageCompressor.byteArrayToString(byteArray)
+    fun convertImageToString(byteArray: ByteArray) {
+        viewModelScope.launch {
+            val imageString = imageCompressor.byteArrayToString(byteArray)
+            _viewState.update {
+                it.copy(
+                    imageDetail = imageString
+                )
+            }
+        }
+    }
+
+    fun resetImageDetail() {
+        _viewState.update {
+            it.copy(
+                imageDetail = ""
+            )
+        }
     }
 }
