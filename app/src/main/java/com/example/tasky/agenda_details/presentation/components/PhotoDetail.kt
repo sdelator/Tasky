@@ -59,9 +59,10 @@ fun PhotoDetailRoot(
             image = it,
             onClick = {
                 when (it) {
-                    PhotoDetailToolbarAction.Cancel -> navController.popBackStack()
+                    PhotoDetailToolbarAction.Cancel -> photoPhotoDetailViewModel.resetImageDetail()
                     PhotoDetailToolbarAction.Erase -> photoPhotoDetailViewModel.erasePhoto()
                 }
+                navController.popBackStack()
             }
         )
     }
@@ -84,6 +85,7 @@ fun PhotoDetailContent(
                 model = image,
                 contentDescription = null,
                 modifier = Modifier
+                    .fillMaxSize()
                     .padding(start = 16.dp, end = 16.dp, top = 50.dp, bottom = 100.dp)
                     .clip(RoundedCornerShape(5.dp))
                     .border(2.dp, colorResource(id = R.color.light_blue)),

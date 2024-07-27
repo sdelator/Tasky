@@ -21,4 +21,12 @@ class PhotoDetailViewModel @Inject constructor(
     fun erasePhoto() {
         Log.d("sandra", "erase photo")
     }
+
+    fun resetImageDetail() {
+//        _viewState.update {
+//            it.copy(
+//                imageDetail = ""
+//            )
+//        }
+    }
 }
