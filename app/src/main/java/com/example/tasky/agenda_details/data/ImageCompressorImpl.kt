@@ -30,11 +30,15 @@ class ImageCompressorImpl(private val contentResolver: ContentResolver) :
         }
     }
 
-    override fun byteArrayToString(byteArray: ByteArray): String {
-        return Base64.encodeToString(byteArray, Base64.DEFAULT)
+    override suspend fun byteArrayToString(byteArray: ByteArray): String {
+        return withContext(Dispatchers.IO) {
+            Base64.encodeToString(byteArray, Base64.DEFAULT)
+        }
     }
 
-    override fun stringToByteArray(base64String: String): ByteArray {
-        return Base64.decode(base64String, Base64.DEFAULT)
+    override suspend fun stringToByteArray(base64String: String): ByteArray {
+        return withContext(Dispatchers.IO) {
+            Base64.decode(base64String, Base64.DEFAULT)
+        }
     }
 }
