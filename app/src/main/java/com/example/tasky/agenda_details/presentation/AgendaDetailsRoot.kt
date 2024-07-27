@@ -61,11 +61,17 @@ fun AgendaDetailsRoot(
     date: Long,
     title: String?,
     description: String?,
+    selectedImage: String?,
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
     val isEditing = true
     val maxPhotoCount = 10
+
+    if (!selectedImage.isNullOrEmpty()) {
+        agendaDetailsViewModel.deleteImage(selectedImage)
+        agendaDetailsViewModel.resetImageDetail()
+    }
 
     val onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit =
         { time, lineItemType, dialogState ->

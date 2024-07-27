@@ -35,10 +35,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.PhotoDetailViewModel
+import com.example.tasky.common.domain.Constants
 import kotlinx.coroutines.coroutineScope
 
 @Composable
@@ -47,7 +49,9 @@ fun PhotoDetailRoot(
     image: String,
     photoPhotoDetailViewModel: PhotoDetailViewModel = hiltViewModel()
 ) {
+    val viewState by photoPhotoDetailViewModel.viewState.collectAsStateWithLifecycle()
     var imageByteArray by remember { mutableStateOf<ByteArray?>(null) }
+
     LaunchedEffect(image) {
         coroutineScope {
             imageByteArray = photoPhotoDetailViewModel.convertStringToImage(image)
@@ -57,14 +61,26 @@ fun PhotoDetailRoot(
     imageByteArray?.let {
         PhotoDetailContent(
             image = it,
-            onClick = {
-                when (it) {
+            onClick = { toolbarAction ->
+                when (toolbarAction) {
                     PhotoDetailToolbarAction.Cancel -> photoPhotoDetailViewModel.resetImageDetail()
-                    PhotoDetailToolbarAction.Erase -> photoPhotoDetailViewModel.erasePhoto()
+                    PhotoDetailToolbarAction.Erase -> {
+                        photoPhotoDetailViewModel.convertImageToString(it)
+                    }
                 }
-                navController.popBackStack()
             }
         )
+    }
+
+    // LaunchedEffect to handle navigation after imageDetail is updated
+    LaunchedEffect(viewState.imageDetail) {
+        if (viewState.imageDetail.isNotEmpty()) {
+            navController.previousBackStackEntry?.savedStateHandle?.set(
+                Constants.IMAGE,
+                viewState.imageDetail
+            )
+            navController.popBackStack()
+        }
     }
 }
 

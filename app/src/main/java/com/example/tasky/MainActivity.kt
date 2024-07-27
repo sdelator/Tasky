@@ -93,6 +93,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
     composable<EventNav> {
         val title = it.savedStateHandle.get<String>(Constants.TITLE)
         val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
+        val selectedImage = it.savedStateHandle.get<String>(Constants.IMAGE)
         val args = it.toRoute<EventNav>()
         val date = args.date
         AgendaDetailsRoot(
@@ -100,7 +101,8 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
             date = date,
             agendaItemType = AgendaItemType.Event,
             title = title,
-            description = description
+            description = description,
+            selectedImage = selectedImage
         )
     }
     composable<TaskNav> {

@@ -178,4 +178,20 @@ class AgendaDetailsViewModel @Inject constructor(
             )
         }
     }
+
+    fun deleteImage(image: String) {
+        viewModelScope.launch {
+            val imageString = imageCompressor.stringToByteArray(image)
+
+            val oldImageList = _viewState.value.compressedImages
+            val newImageList = oldImageList.filterNot { it?.contentEquals(imageString) ?: false }
+                .toMutableList()
+
+            _viewState.update {
+                it.copy(
+                    compressedImages = newImageList
+                )
+            }
+        }
+    }
 }
