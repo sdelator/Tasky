@@ -34,7 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.EditingNav
-import com.example.tasky.EnlargePhotoNav
+import com.example.tasky.PhotoDetailNav
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.components.AttendeeSection
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
@@ -121,7 +121,7 @@ fun AgendaDetailsRoot(
         photoSkipCount = viewState.photoSkipCount,
         onPhotoClick = {
             val imageString = agendaDetailsViewModel.convertImageToString(it)
-            navController.navigate(EnlargePhotoNav(imageString))
+            navController.navigate(PhotoDetailNav(imageString))
         }
     )
 }

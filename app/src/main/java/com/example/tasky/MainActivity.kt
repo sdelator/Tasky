@@ -21,6 +21,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.tasky.agenda_details.presentation.AgendaDetailsRoot
+import com.example.tasky.agenda_details.presentation.components.PhotoDetailRoot
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.presentation.editing.EditScreenRoot
 import com.example.tasky.common.presentation.model.AgendaItemType
@@ -128,11 +129,12 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
             agendaItemType = agendaDetailType
         )
     }
-    composable<EnlargePhotoNav> {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Yellow)
+    composable<PhotoDetailNav> {
+        val args = it.toRoute<PhotoDetailNav>()
+        val imageString = args.image
+        PhotoDetailRoot(
+            navController = navController,
+            image = imageString
         )
     }
 }
@@ -167,4 +169,4 @@ object ReminderNav
 data class EditingNav(val textFieldType: String, val agendaItemType: String)
 
 @Serializable
-data class EnlargePhotoNav(val imageUri: String)
+data class PhotoDetailNav(val image: String)
