@@ -151,7 +151,7 @@ class AgendaDetailsViewModel @Inject constructor(
 
             _viewState.update {
                 it.copy(
-                    uriImageList = uriListFiltered,
+                    uriImageList = it.uriImageList + uriListFiltered,
                     byteArrayImageList = it.byteArrayImageList + newCompressedList,
                     photoSkipCount = skipped
                 )
