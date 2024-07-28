@@ -79,6 +79,12 @@ fun AgendaDetailsRoot(
         )
     }
 
+    LaunchedEffect(viewState.imageDetail) {
+        if (viewState.imageDetail.isNotEmpty() && imageAction == PhotoDetailAction.NONE.name) {
+            navController.navigate(PhotoDetailNav(viewState.imageDetail))
+        }
+    }
+
     val onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit =
         { time, lineItemType, dialogState ->
             agendaDetailsViewModel.onTimeSelected(time, lineItemType, dialogState)
@@ -136,13 +142,6 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.convertImageToString(it)
         }
     )
-
-    // LaunchedEffect to handle navigation after imageDetail is updated
-    LaunchedEffect(viewState.imageDetail) {
-        if (viewState.imageDetail.isNotEmpty()) {
-            navController.navigate(PhotoDetailNav(viewState.imageDetail))
-        }
-    }
 }
 
 @Composable
