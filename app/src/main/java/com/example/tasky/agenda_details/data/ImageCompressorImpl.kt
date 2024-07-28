@@ -5,16 +5,16 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import com.example.tasky.agenda_details.domain.ImageCompressionUseCase
+import com.example.tasky.agenda_details.domain.ImageCompressor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
-class ImageCompressionUseCaseImpl(private val contentResolver: ContentResolver) :
-    ImageCompressionUseCase {
+class ImageCompressorImpl(private val contentResolver: ContentResolver) :
+    ImageCompressor {
     override suspend fun compressImage(drawable: Drawable): ByteArray {
         return withContext(Dispatchers.IO) {
-            val quality = 100
+            val quality = 80
             val bitmap = (drawable as BitmapDrawable).bitmap
             val stream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream)
