@@ -101,7 +101,7 @@ fun AgendaDetailsRoot(
     val itemDescription =
         if (!description.isNullOrEmpty()) description else getDefaultDescription(agendaItemType)
 
-    val maxPhotosSelection = maxOf(2, maxPhotoCount - viewState.compressedImages.size)
+    val maxPhotosSelection = maxOf(2, maxPhotoCount - viewState.byteArrayImageList.size)
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = maxPhotosSelection),
         onResult = { photoUris ->
@@ -138,7 +138,7 @@ fun AgendaDetailsRoot(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         },
-        uriImages = viewState.uriListFiltered,
+        uriImages = viewState.uriImageList,
         photoSkipCount = viewState.photoSkipCount,
         onPhotoClick = {
             agendaDetailsViewModel.setSelectedImage(it)

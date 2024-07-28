@@ -159,8 +159,8 @@ class AgendaDetailsViewModel @Inject constructor(
 
             _viewState.update {
                 it.copy(
-                    uriListFiltered = uriListFiltered,
-                    compressedImages = it.compressedImages + newCompressedList,
+                    uriImageList = uriListFiltered,
+                    byteArrayImageList = it.byteArrayImageList + newCompressedList,
                     photoSkipCount = skipped
                 )
             }
@@ -186,20 +186,20 @@ class AgendaDetailsViewModel @Inject constructor(
     private fun deleteImage(photoUri: Uri?) {  // TODO add an error if cannot be deleted
         if (photoUri != null) {
             // get imageUriList and remove uri from there
-            val oldUriList = _viewState.value.uriListFiltered
+            val oldUriList = _viewState.value.uriImageList
             val imageIndex = oldUriList.indexOf(photoUri)
             val newUriList = oldUriList.filter { it != photoUri }
 
             // update compressedImageList
-            val oldImageList = _viewState.value.compressedImages
+            val oldImageList = _viewState.value.byteArrayImageList
             val newImageList = oldImageList.toMutableList().apply {
                 removeAt(imageIndex)
             }
 
             _viewState.update {
                 it.copy(
-                    uriListFiltered = newUriList,
-                    compressedImages = newImageList,
+                    uriImageList = newUriList,
+                    byteArrayImageList = newImageList,
                     photoUri = null
                 )
             }
