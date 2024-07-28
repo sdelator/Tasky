@@ -133,10 +133,10 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
     }
     composable<PhotoDetailNav> {
         val args = it.toRoute<PhotoDetailNav>()
-        val imageString = args.image
+        val imageUriAsString = args.image
         PhotoDetailRoot(
             navController = navController,
-            image = imageString
+            image = imageUriAsString
         )
     }
 }

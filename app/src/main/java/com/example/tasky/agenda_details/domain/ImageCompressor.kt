@@ -6,8 +6,4 @@ import android.net.Uri
 interface ImageCompressor {
     suspend fun compressImage(drawable: Drawable): ByteArray
     suspend fun uriToDrawable(uri: Uri): Drawable?
-
-    suspend fun byteArrayToString(byteArray: ByteArray): String
-
-    suspend fun stringToByteArray(base64String: String): ByteArray
 }

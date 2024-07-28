@@ -35,28 +35,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.PhotoDetailAction
-import com.example.tasky.agenda_details.presentation.PhotoDetailViewModel
 import com.example.tasky.common.domain.Constants
 import kotlinx.coroutines.coroutineScope
 
 @Composable
 fun PhotoDetailRoot(
     navController: NavController,
-    image: String,
-    photoPhotoDetailViewModel: PhotoDetailViewModel = hiltViewModel()
+    image: String
 ) {
-    val viewState by photoPhotoDetailViewModel.viewState.collectAsStateWithLifecycle()
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     LaunchedEffect(image) {
         coroutineScope {
-            imageUri = photoPhotoDetailViewModel.convertStringToUri(image)
+            imageUri = Uri.parse(image)
         }
     }
 

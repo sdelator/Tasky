@@ -139,7 +139,7 @@ fun AgendaDetailsRoot(
         compressedImages = viewState.compressedImages,
         photoSkipCount = viewState.photoSkipCount,
         onPhotoClick = {
-            agendaDetailsViewModel.getImageUri(it)//convertImageToString(it)
+            agendaDetailsViewModel.getImageUri(it) //todo maybe can already be uri
         }
     )
 }

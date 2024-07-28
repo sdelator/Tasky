@@ -168,7 +168,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun getImageUri(byteArray: ByteArray) {
-        //todo get byteArray index
+        //todo get byteArray index ~~~~~ instead lets use uri?
         // if its a newly created event, use original uri list (if null (user deleted before saving) then print error
         // else get uri from local db/remote repository
 
@@ -198,7 +198,7 @@ class AgendaDetailsViewModel @Inject constructor(
 //        }
 //    }
 
-    private fun resetImageDetail() {
+    private fun resetImageSelected() {
         _viewState.update {
             it.copy(
                 photoUri = null
@@ -226,39 +226,20 @@ class AgendaDetailsViewModel @Inject constructor(
                     photoUri = null
                 )
             }
-
-//            viewModelScope.launch {
-//                val imageString = imageCompressor.stringToByteArray(image)
-//
-//                val oldImageList = _viewState.value.compressedImages
-//                val newImageList =
-//                    oldImageList.filterNot { it?.contentEquals(imageString) ?: false }
-//                        .toMutableList()
-//
-//                _viewState.update {
-//                    it.copy(
-//                        compressedImages = newImageList,
-//                        photoUri = null
-//                    )
-//                }
-//            }
         }
     }
 
     fun handlePhotoDetailAction(action: PhotoDetailAction) {
-        viewModelScope.launch {
-            when (action) {
-                PhotoDetailAction.ERASE -> {
-                    //TODO deleteImage(_viewState.value.photoUri)
-                    deleteImage(_viewState.value.photoUri)
-                }
-
-                PhotoDetailAction.CANCEL -> {
-                    resetImageDetail()
-                }
-
-                PhotoDetailAction.NONE -> println("no image action")
+        when (action) {
+            PhotoDetailAction.ERASE -> {
+                deleteImage(_viewState.value.photoUri)
             }
+
+            PhotoDetailAction.CANCEL -> {
+                resetImageSelected()
+            }
+
+            PhotoDetailAction.NONE -> println("no image action")
         }
     }
 }
