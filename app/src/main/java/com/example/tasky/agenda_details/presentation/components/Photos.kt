@@ -105,6 +105,7 @@ fun Photos(
                 HeaderMedium(title = stringResource(R.string.photos), textColor = Color.Black)
                 Spacer(modifier = Modifier.padding(10.dp))
                 LazyRow {
+                    // todo figure out if we should use byteArray or Uri here
                     items(compressedImages) { byteArray ->
                         byteArray?.let {
                             AsyncImage(
