@@ -69,30 +69,18 @@ fun PhotoDetailRoot(
                             Constants.IMAGE_ACTION,
                             PhotoDetailAction.CANCEL.name
                         )
-                        navController.navigateUp()
                     }
                     PhotoDetailToolbarAction.Erase -> {
                         navController.previousBackStackEntry?.savedStateHandle?.set(
                             Constants.IMAGE_ACTION,
                             PhotoDetailAction.ERASE.name
                         )
-                        navController.navigateUp()
                     }
                 }
+                navController.navigateUp()
             }
         )
     }
-
-    // LaunchedEffect to handle navigation after imageDetail is updated
-//    LaunchedEffect(viewState.imageDetail) {
-//        if (viewState.imageDetail.isNotEmpty()) {
-//            navController.previousBackStackEntry?.savedStateHandle?.set(
-//                Constants.ERASE_IMAGE_FLAG,
-//                true
-//            )
-//            navController.popBackStack()
-//        }
-//    }
 }
 
 @Composable
