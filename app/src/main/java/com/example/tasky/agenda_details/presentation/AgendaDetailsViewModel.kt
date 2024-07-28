@@ -171,7 +171,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun resetImageDetail() {
+    private fun resetImageDetail() {
         _viewState.update {
             it.copy(
                 imageDetail = ""
@@ -179,7 +179,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun deleteImage(image: String) {
+    private fun deleteImage(image: String) {
         viewModelScope.launch {
             val imageString = imageCompressor.stringToByteArray(image)
 
