@@ -1,5 +1,6 @@
 package com.example.tasky.agenda_details.presentation
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -69,6 +70,7 @@ fun AgendaDetailsRoot(
     val isEditing = true
     val maxPhotoCount = 10
 
+    // handle Cancel or Delete clicked from PhotoDetails screen
     LaunchedEffect(imageAction) {
         val imageDetailsAction =
             enumValueOf<PhotoDetailAction>(imageAction ?: PhotoDetailAction.NONE.name)
@@ -136,10 +138,10 @@ fun AgendaDetailsRoot(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         },
-        compressedImages = viewState.compressedImages,
+        uriImages = viewState.uriListFiltered,
         photoSkipCount = viewState.photoSkipCount,
         onPhotoClick = {
-            agendaDetailsViewModel.getImageUri(it) //todo maybe can already be uri
+            agendaDetailsViewModel.setSelectedImage(it)
         }
     )
 }
@@ -170,9 +172,9 @@ fun AgendaDetailsContent(
     attendeeFilter: AttendeeFilter,
     onAttendeeFilterClick: (AttendeeFilter) -> Unit,
     onAddPhotosClick: () -> Unit,
-    compressedImages: List<ByteArray?>,
+    uriImages: List<Uri?>,
     photoSkipCount: Int,
-    onPhotoClick: (ByteArray) -> Unit
+    onPhotoClick: (Uri) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -216,11 +218,11 @@ fun AgendaDetailsContent(
                     onEditClick = onEditClick
                 )
                 if (agendaItemType == AgendaItemType.Event) {
-                    if (compressedImages.isEmpty()) {
+                    if (uriImages.isEmpty()) {
                         EmptyPhotos(onAddPhotosClick = onAddPhotosClick)
                     } else {
                         Photos(
-                            compressedImages = compressedImages,
+                            uriImages = uriImages,
                             photoSkipCount = photoSkipCount,
                             onAddPhotosClick = onAddPhotosClick,
                             onPhotoClick = onPhotoClick
@@ -353,7 +355,7 @@ fun PreviewEventContent() {
         attendeeFilter = AttendeeFilter.GOING,
         onAttendeeFilterClick = {},
         onAddPhotosClick = {},
-        compressedImages = emptyList(),
+        uriImages = emptyList(),
         photoSkipCount = 0,
         onPhotoClick = {}
     )

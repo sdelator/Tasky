@@ -1,5 +1,6 @@
 package com.example.tasky.agenda_details.presentation.components
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -75,10 +76,10 @@ fun EmptyPhotos(onAddPhotosClick: () -> Unit) {
 
 @Composable
 fun Photos(
-    compressedImages: List<ByteArray?>,
+    uriImages: List<Uri?>,
     photoSkipCount: Int,
     onAddPhotosClick: () -> Unit,
-    onPhotoClick: (ByteArray) -> Unit
+    onPhotoClick: (Uri) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -105,9 +106,8 @@ fun Photos(
                 HeaderMedium(title = stringResource(R.string.photos), textColor = Color.Black)
                 Spacer(modifier = Modifier.padding(10.dp))
                 LazyRow {
-                    // todo figure out if we should use byteArray or Uri here
-                    items(compressedImages) { byteArray ->
-                        byteArray?.let {
+                    items(uriImages) { uri ->
+                        uri?.let {
                             AsyncImage(
                                 model = it,
                                 contentDescription = null,
@@ -122,7 +122,7 @@ fun Photos(
                         }
                     }
                     item {
-                        if (compressedImages.size < 10) {
+                        if (uriImages.size < 10) {
                             PhotoSlot(onAddPhotosClick)
                         }
                     }

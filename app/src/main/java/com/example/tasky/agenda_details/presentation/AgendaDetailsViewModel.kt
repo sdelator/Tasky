@@ -167,36 +167,13 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun getImageUri(byteArray: ByteArray) {
-        //todo get byteArray index ~~~~~ instead lets use uri?
-        // if its a newly created event, use original uri list (if null (user deleted before saving) then print error
-        // else get uri from local db/remote repository
-
-        val index = findByteArrayIndex(_viewState.value.compressedImages, byteArray)
-        val photoUri =
-            _viewState.value.uriListFiltered[index] //con: how do I delete uri from details screen?
-
+    fun setSelectedImage(photoUri: Uri) {
         _viewState.update {
             it.copy(
                 photoUri = photoUri
             )
         }
     }
-
-    private fun findByteArrayIndex(list: List<ByteArray?>, target: ByteArray): Int {
-        return list.indexOfFirst { it != null && it.contentEquals(target) }
-    }
-
-//    fun convertImageToString(byteArray: ByteArray) {
-//        viewModelScope.launch {
-//            val imageString = imageCompressor.byteArrayToString(byteArray)
-//            _viewState.update {
-//                it.copy(
-//                    imageDetail = imageString
-//                )
-//            }
-//        }
-//    }
 
     private fun resetImageSelected() {
         _viewState.update {
