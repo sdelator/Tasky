@@ -79,9 +79,9 @@ fun AgendaDetailsRoot(
         )
     }
 
-    LaunchedEffect(viewState.imageDetail) {
-        if (viewState.imageDetail.isNotEmpty() && imageAction == PhotoDetailAction.NONE.name) {
-            navController.navigate(PhotoDetailNav(viewState.imageDetail))
+    LaunchedEffect(viewState.photoUri) {
+        if (viewState.photoUri != null && imageAction == PhotoDetailAction.NONE.name) {
+            navController.navigate(PhotoDetailNav(viewState.photoUri.toString()))
         }
     }
 
@@ -139,7 +139,7 @@ fun AgendaDetailsRoot(
         compressedImages = viewState.compressedImages,
         photoSkipCount = viewState.photoSkipCount,
         onPhotoClick = {
-            agendaDetailsViewModel.convertImageToString(it)
+            agendaDetailsViewModel.getImageUri(it)//convertImageToString(it)
         }
     )
 }

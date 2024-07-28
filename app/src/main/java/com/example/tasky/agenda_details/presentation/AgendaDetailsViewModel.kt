@@ -49,6 +49,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun save() {
+        // todo save all items in local DB and server
     }
 
     fun onDateSelected(
@@ -135,7 +136,8 @@ class AgendaDetailsViewModel @Inject constructor(
     private fun compressAndAddImage(uris: List<Uri>) {
         viewModelScope.launch {
             var skipped = 0
-            val newCompressedList = uris.mapNotNull { uri ->
+            val skippedIndexes = mutableListOf<Int>()
+            val newCompressedList = uris.mapIndexedNotNull { index, uri ->
                 val drawable = imageCompressor.uriToDrawable(uri)
                 val originalBitmap = (drawable as BitmapDrawable).bitmap
                 Log.d(TAG, "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
@@ -145,14 +147,19 @@ class AgendaDetailsViewModel @Inject constructor(
 
                 if (compressedByteArray.size > 1024 * 1024) {
                     skipped++
+                    skippedIndexes.add(index)
                     null
                 } else {
                     compressedByteArray
                 }
             }
 
+            //use original Uris list and remove the skipped ones out to pass into photoDetail screen
+            val uriListFiltered = uris.filterIndexed { index, _ -> index !in skippedIndexes }
+
             _viewState.update {
                 it.copy(
+                    uriListFiltered = uriListFiltered,
                     compressedImages = it.compressedImages + newCompressedList,
                     photoSkipCount = skipped
                 )
@@ -160,21 +167,41 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun convertImageToString(byteArray: ByteArray) {
-        viewModelScope.launch {
-            val imageString = imageCompressor.byteArrayToString(byteArray)
-            _viewState.update {
-                it.copy(
-                    imageDetail = imageString
-                )
-            }
+    fun getImageUri(byteArray: ByteArray) {
+        //todo get byteArray index
+        // if its a newly created event, use original uri list (if null (user deleted before saving) then print error
+        // else get uri from local db/remote repository
+
+        val index = findByteArrayIndex(_viewState.value.compressedImages, byteArray)
+        val photoUri =
+            _viewState.value.uriListFiltered[index] //con: how do I delete uri from details screen?
+
+        _viewState.update {
+            it.copy(
+                photoUri = photoUri
+            )
         }
     }
+
+    private fun findByteArrayIndex(list: List<ByteArray?>, target: ByteArray): Int {
+        return list.indexOfFirst { it != null && it.contentEquals(target) }
+    }
+
+//    fun convertImageToString(byteArray: ByteArray) {
+//        viewModelScope.launch {
+//            val imageString = imageCompressor.byteArrayToString(byteArray)
+//            _viewState.update {
+//                it.copy(
+//                    imageDetail = imageString
+//                )
+//            }
+//        }
+//    }
 
     private fun resetImageDetail() {
         _viewState.update {
             it.copy(
-                imageDetail = ""
+                photoUri = null
             )
         }
     }
@@ -190,7 +217,7 @@ class AgendaDetailsViewModel @Inject constructor(
             _viewState.update {
                 it.copy(
                     compressedImages = newImageList,
-                    imageDetail = ""
+                    photoUri = null
                 )
             }
         }
@@ -200,7 +227,7 @@ class AgendaDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             when (action) {
                 PhotoDetailAction.ERASE -> {
-                    deleteImage(_viewState.value.imageDetail)
+                    //TODO deleteImage(_viewState.value.photoUri)
                 }
 
                 PhotoDetailAction.CANCEL -> {

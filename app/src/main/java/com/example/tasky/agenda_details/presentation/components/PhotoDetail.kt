@@ -1,5 +1,6 @@
 package com.example.tasky.agenda_details.presentation.components
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -51,15 +52,15 @@ fun PhotoDetailRoot(
     photoPhotoDetailViewModel: PhotoDetailViewModel = hiltViewModel()
 ) {
     val viewState by photoPhotoDetailViewModel.viewState.collectAsStateWithLifecycle()
-    var imageByteArray by remember { mutableStateOf<ByteArray?>(null) }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     LaunchedEffect(image) {
         coroutineScope {
-            imageByteArray = photoPhotoDetailViewModel.convertStringToImage(image)
+            imageUri = photoPhotoDetailViewModel.convertStringToUri(image)
         }
     }
 
-    imageByteArray?.let {
+    imageUri?.let {
         PhotoDetailContent(
             image = it,
             onClick = { toolbarAction ->
@@ -85,7 +86,7 @@ fun PhotoDetailRoot(
 
 @Composable
 fun PhotoDetailContent(
-    image: ByteArray,
+    image: Uri,
     onClick: (PhotoDetailToolbarAction) -> Unit
 ) {
     Box(
@@ -157,7 +158,7 @@ fun TrashButton(onClick: (PhotoDetailToolbarAction) -> Unit) {
 @Preview
 fun PreviewPhotoDetailsRootComposable() {
     PhotoDetailContent(
-        image = ByteArray(123),
+        image = Uri.parse("test"),
         onClick = {}
     )
 }
