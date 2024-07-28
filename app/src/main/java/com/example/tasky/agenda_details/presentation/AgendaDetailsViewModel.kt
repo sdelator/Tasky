@@ -1,8 +1,5 @@
 package com.example.tasky.agenda_details.presentation
 
-import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
@@ -129,21 +126,21 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun onAddPhotosClick(photoUris: List<Uri>) {
+    fun onAddPhotosClick(photoUris: List<String>) {
         compressAndAddImage(photoUris)
     }
 
-    private fun compressAndAddImage(uris: List<Uri>) {
+    private fun compressAndAddImage(uris: List<String>) {
         viewModelScope.launch {
             var skipped = 0
             val skippedIndexes = mutableListOf<Int>()
             val newCompressedList = uris.mapIndexedNotNull { index, uri ->
-                val drawable = imageCompressor.uriToDrawable(uri)
-                val originalBitmap = (drawable as BitmapDrawable).bitmap
-                Log.d(TAG, "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
+                val drawable = imageCompressor.uriStringToDrawable(uri)
+//                val originalBitmap = (drawable as BitmapDrawable).bitmap
+//                Log.d(TAG, "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
 
                 val compressedByteArray = imageCompressor.compressImage(drawable, quality = 80)
-                Log.d(TAG, "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
+//                Log.d(TAG, "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
 
                 if (compressedByteArray.size > 1024 * 1024) {
                     skipped++
@@ -167,7 +164,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun setSelectedImage(photoUri: Uri) {
+    fun setSelectedImage(photoUri: String) {
         _viewState.update {
             it.copy(
                 photoUri = photoUri
@@ -183,7 +180,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun deleteImage(photoUri: Uri?) {  // TODO add an error if cannot be deleted
+    private fun deleteImage(photoUri: String?) {  // TODO add an error if cannot be deleted
         if (photoUri != null) {
             // get imageUriList and remove uri from there
             val oldUriList = _viewState.value.uriImageList

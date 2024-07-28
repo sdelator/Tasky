@@ -105,7 +105,7 @@ fun AgendaDetailsRoot(
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = maxPhotosSelection),
         onResult = { photoUris ->
-            agendaDetailsViewModel.onAddPhotosClick(photoUris)
+            agendaDetailsViewModel.onAddPhotosClick(photoUris.map { it.toString() })
         }
     )
 
@@ -138,10 +138,10 @@ fun AgendaDetailsRoot(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         },
-        uriImages = viewState.uriImageList,
+        uriImages = viewState.uriImageList.map { it?.let { uriString -> Uri.parse(uriString) } },
         photoSkipCount = viewState.photoSkipCount,
-        onPhotoClick = {
-            agendaDetailsViewModel.setSelectedImage(it)
+        onPhotoClick = { uri ->
+            agendaDetailsViewModel.setSelectedImage(uri.toString())
         }
     )
 }
