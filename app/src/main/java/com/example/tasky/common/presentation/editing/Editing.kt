@@ -46,7 +46,7 @@ fun EditScreenRoot(
     val agendaType = enumValueOf<AgendaItemType>(agendaItemType)
 
     EditScreenContent(
-        navigateToPreviousScreen = { navController.popBackStack() },
+        navigateToPreviousScreen = { navController.navigateUp() },
         saveText = {
             val textChanged = editingViewModel.formatText(text)
             if (fieldType == TextFieldType.TITLE) {
@@ -60,7 +60,7 @@ fun EditScreenRoot(
                     textChanged
                 )
             }
-            navController.popBackStack()
+            navController.navigateUp()
         },
         text = text,
         onTextChange = { editingViewModel.onTextChange(it) },

@@ -69,14 +69,14 @@ fun PhotoDetailRoot(
                             Constants.IMAGE_ACTION,
                             PhotoDetailAction.CANCEL.name
                         )
-                        navController.popBackStack()
+                        navController.navigateUp()
                     }
                     PhotoDetailToolbarAction.Erase -> {
                         navController.previousBackStackEntry?.savedStateHandle?.set(
                             Constants.IMAGE_ACTION,
                             PhotoDetailAction.ERASE.name
                         )
-                        navController.popBackStack()
+                        navController.navigateUp()
                     }
                 }
             }
