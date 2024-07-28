@@ -142,7 +142,7 @@ class AgendaDetailsViewModel @Inject constructor(
                 val originalBitmap = (drawable as BitmapDrawable).bitmap
                 Log.d(TAG, "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
 
-                val compressedByteArray = imageCompressor.compressImage(drawable)
+                val compressedByteArray = imageCompressor.compressImage(drawable, quality = 80)
                 Log.d(TAG, "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
 
                 if (compressedByteArray.size > 1024 * 1024) {

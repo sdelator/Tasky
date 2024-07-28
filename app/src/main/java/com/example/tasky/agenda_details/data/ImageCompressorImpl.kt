@@ -12,9 +12,8 @@ import java.io.ByteArrayOutputStream
 
 class ImageCompressorImpl(private val contentResolver: ContentResolver) :
     ImageCompressor {
-    override suspend fun compressImage(drawable: Drawable): ByteArray {
+    override suspend fun compressImage(drawable: Drawable, quality: Int): ByteArray {
         return withContext(Dispatchers.IO) {
-            val quality = 80
             val bitmap = (drawable as BitmapDrawable).bitmap
             val stream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream)
