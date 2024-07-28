@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
@@ -78,16 +80,22 @@ fun PhotoDetailContent(
     ) {
         Column {
             PhotoDetailToolbar(onClick = onClick)
-            AsyncImage(
-                model = image,
-                contentDescription = null,
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 16.dp, end = 16.dp, top = 50.dp, bottom = 100.dp)
-                    .clip(RoundedCornerShape(5.dp))
-                    .border(2.dp, colorResource(id = R.color.light_blue)),
-                contentScale = ContentScale.Crop
-            )
+                    .verticalScroll(rememberScrollState())
+                    .padding(start = 16.dp, end = 16.dp, top = 50.dp, bottom = 50.dp)
+            ) {
+                AsyncImage(
+                    model = image,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(5.dp))
+                        .border(2.dp, colorResource(id = R.color.light_blue)),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
     }
 }
