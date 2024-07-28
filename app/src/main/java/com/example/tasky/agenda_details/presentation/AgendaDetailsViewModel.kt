@@ -136,12 +136,7 @@ class AgendaDetailsViewModel @Inject constructor(
             val skippedIndexes = mutableListOf<Int>()
             val newCompressedList = uris.mapIndexedNotNull { index, uri ->
                 val drawable = imageCompressor.uriStringToDrawable(uri)
-//                val originalBitmap = (drawable as BitmapDrawable).bitmap
-//                Log.d(TAG, "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
-
                 val compressedByteArray = imageCompressor.compressImage(drawable, quality = 80)
-//                Log.d(TAG, "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
-
                 if (compressedByteArray.size > 1024 * 1024) {
                     skipped++
                     skippedIndexes.add(index)
@@ -151,7 +146,7 @@ class AgendaDetailsViewModel @Inject constructor(
                 }
             }
 
-            //use original Uris list and remove the skipped ones out to pass into photoDetail screen
+            // use original Uris list and remove the skipped ones out to pass into photoDetail screen
             val uriListFiltered = uris.filterIndexed { index, _ -> index !in skippedIndexes }
 
             _viewState.update {
