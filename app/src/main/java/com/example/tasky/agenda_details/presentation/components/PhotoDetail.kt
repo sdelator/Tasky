@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.tasky.R
+import com.example.tasky.agenda_details.presentation.PhotoDetailAction
 import com.example.tasky.agenda_details.presentation.PhotoDetailViewModel
 import com.example.tasky.common.domain.Constants
 import kotlinx.coroutines.coroutineScope
@@ -63,9 +64,19 @@ fun PhotoDetailRoot(
             image = it,
             onClick = { toolbarAction ->
                 when (toolbarAction) {
-                    PhotoDetailToolbarAction.Cancel -> photoPhotoDetailViewModel.resetImageDetail()
+                    PhotoDetailToolbarAction.Cancel -> {
+                        navController.previousBackStackEntry?.savedStateHandle?.set(
+                            Constants.IMAGE_ACTION,
+                            PhotoDetailAction.CANCEL.name
+                        )
+                        navController.popBackStack()
+                    }
                     PhotoDetailToolbarAction.Erase -> {
-                        photoPhotoDetailViewModel.convertImageToString(it)
+                        navController.previousBackStackEntry?.savedStateHandle?.set(
+                            Constants.IMAGE_ACTION,
+                            PhotoDetailAction.ERASE.name
+                        )
+                        navController.popBackStack()
                     }
                 }
             }
@@ -73,15 +84,15 @@ fun PhotoDetailRoot(
     }
 
     // LaunchedEffect to handle navigation after imageDetail is updated
-    LaunchedEffect(viewState.imageDetail) {
-        if (viewState.imageDetail.isNotEmpty()) {
-            navController.previousBackStackEntry?.savedStateHandle?.set(
-                Constants.IMAGE,
-                viewState.imageDetail
-            )
-            navController.popBackStack()
-        }
-    }
+//    LaunchedEffect(viewState.imageDetail) {
+//        if (viewState.imageDetail.isNotEmpty()) {
+//            navController.previousBackStackEntry?.savedStateHandle?.set(
+//                Constants.ERASE_IMAGE_FLAG,
+//                true
+//            )
+//            navController.popBackStack()
+//        }
+//    }
 }
 
 @Composable

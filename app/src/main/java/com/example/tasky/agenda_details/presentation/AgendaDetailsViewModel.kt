@@ -189,8 +189,25 @@ class AgendaDetailsViewModel @Inject constructor(
 
             _viewState.update {
                 it.copy(
-                    compressedImages = newImageList
+                    compressedImages = newImageList,
+                    imageDetail = ""
                 )
+            }
+        }
+    }
+
+    fun handlePhotoDetailAction(action: PhotoDetailAction) {
+        viewModelScope.launch {
+            when (action) {
+                PhotoDetailAction.ERASE -> {
+                    deleteImage(_viewState.value.imageDetail)
+                }
+
+                PhotoDetailAction.CANCEL -> {
+                    resetImageDetail()
+                }
+
+                PhotoDetailAction.NONE -> println("no image action")
             }
         }
     }

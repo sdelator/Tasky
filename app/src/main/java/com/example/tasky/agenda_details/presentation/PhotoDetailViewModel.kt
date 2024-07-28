@@ -1,13 +1,10 @@
 package com.example.tasky.agenda_details.presentation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,16 +22,16 @@ class PhotoDetailViewModel @Inject constructor(
         return imageCompressor.stringToByteArray(byteString)
     }
 
-    fun convertImageToString(image: ByteArray) {
-        viewModelScope.launch {
-            val imageString = imageCompressor.byteArrayToString(image)
-            _viewState.update {
-                it.copy(
-                    imageDetail = imageString
-                )
-            }
-        }
-    }
+//    fun convertImageToString(image: ByteArray) {
+//        viewModelScope.launch {
+//            val imageString = imageCompressor.byteArrayToString(image)
+//            _viewState.update {
+//                it.copy(
+//                    imageDetail = imageString
+//                )
+//            }
+//        }
+//    }
 
     fun resetImageDetail() {
 //        _viewState.update {

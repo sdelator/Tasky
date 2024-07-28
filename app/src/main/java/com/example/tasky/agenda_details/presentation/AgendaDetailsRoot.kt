@@ -40,6 +40,7 @@ import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.components.AttendeeSection
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.agenda_details.presentation.components.Photos
+import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.util.convertMillisToDate
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
@@ -61,16 +62,21 @@ fun AgendaDetailsRoot(
     date: Long,
     title: String?,
     description: String?,
-    selectedImage: String?,
+    imageAction: String?,
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
     val isEditing = true
     val maxPhotoCount = 10
 
-    if (!selectedImage.isNullOrEmpty()) {
-        agendaDetailsViewModel.deleteImage(selectedImage)
-        agendaDetailsViewModel.resetImageDetail()
+    LaunchedEffect(imageAction) {
+        val imageDetailsAction =
+            enumValueOf<PhotoDetailAction>(imageAction ?: PhotoDetailAction.NONE.name)
+        agendaDetailsViewModel.handlePhotoDetailAction(imageDetailsAction)
+        navController.currentBackStackEntry?.savedStateHandle?.set(
+            Constants.IMAGE_ACTION,
+            PhotoDetailAction.NONE.name
+        )
     }
 
     val onTimeSelected: (LocalTime, LineItemType, MaterialDialogState) -> Unit =
@@ -135,7 +141,6 @@ fun AgendaDetailsRoot(
     LaunchedEffect(viewState.imageDetail) {
         if (viewState.imageDetail.isNotEmpty()) {
             navController.navigate(PhotoDetailNav(viewState.imageDetail))
-            agendaDetailsViewModel.resetImageDetail()
         }
     }
 }
