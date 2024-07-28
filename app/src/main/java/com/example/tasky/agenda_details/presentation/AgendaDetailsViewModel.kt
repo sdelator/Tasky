@@ -206,20 +206,42 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun deleteImage(image: String) {
-        viewModelScope.launch {
-            val imageString = imageCompressor.stringToByteArray(image)
+    private fun deleteImage(photoUri: Uri?) {  // TODO add an error if cannot be deleted
+        if (photoUri != null) {
+            // get imageUriList and remove uri from there
+            val oldUriList = _viewState.value.uriListFiltered
+            val imageIndex = oldUriList.indexOf(photoUri)
+            val newUriList = oldUriList.filter { it != photoUri }
 
+            // update compressedImageList
             val oldImageList = _viewState.value.compressedImages
-            val newImageList = oldImageList.filterNot { it?.contentEquals(imageString) ?: false }
-                .toMutableList()
+            val newImageList = oldImageList.toMutableList().apply {
+                removeAt(imageIndex)
+            }
 
             _viewState.update {
                 it.copy(
+                    uriListFiltered = newUriList,
                     compressedImages = newImageList,
                     photoUri = null
                 )
             }
+
+//            viewModelScope.launch {
+//                val imageString = imageCompressor.stringToByteArray(image)
+//
+//                val oldImageList = _viewState.value.compressedImages
+//                val newImageList =
+//                    oldImageList.filterNot { it?.contentEquals(imageString) ?: false }
+//                        .toMutableList()
+//
+//                _viewState.update {
+//                    it.copy(
+//                        compressedImages = newImageList,
+//                        photoUri = null
+//                    )
+//                }
+//            }
         }
     }
 
@@ -228,6 +250,7 @@ class AgendaDetailsViewModel @Inject constructor(
             when (action) {
                 PhotoDetailAction.ERASE -> {
                     //TODO deleteImage(_viewState.value.photoUri)
+                    deleteImage(_viewState.value.photoUri)
                 }
 
                 PhotoDetailAction.CANCEL -> {
