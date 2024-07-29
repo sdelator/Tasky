@@ -1,8 +1,5 @@
 package com.example.tasky.agenda_details.presentation
 
-import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
@@ -49,6 +46,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun save() {
+        // todo save all items in local DB and server
     }
 
     fun onDateSelected(
@@ -128,35 +126,99 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun onAddPhotosClick(photoUris: List<Uri>) {
+    fun resetPhotoSkipCount() {
+        _viewState.update {
+            it.copy(
+                photoSkipCount = 0
+            )
+        }
+    }
+
+    fun onAddPhotosClick(photoUris: List<String>) {
         compressAndAddImage(photoUris)
     }
 
-    private fun compressAndAddImage(uris: List<Uri>) {
+    private fun compressAndAddImage(uris: List<String>) {
         viewModelScope.launch {
             var skipped = 0
-            val newCompressedList = uris.mapNotNull { uri ->
-                val drawable = imageCompressor.uriToDrawable(uri)
-                val originalBitmap = (drawable as BitmapDrawable).bitmap
-                Log.d(TAG, "Original Bitmap Size in bytes: ${originalBitmap.byteCount}")
-
-                val compressedByteArray = imageCompressor.compressImage(drawable)
-                Log.d(TAG, "Compressed Bitmap Size in bytes: ${compressedByteArray.size}")
-
+            val skippedIndexes = mutableListOf<Int>()
+            val newCompressedList = uris.mapIndexedNotNull { index, uri ->
+                val drawable = imageCompressor.uriStringToDrawable(uri)
+                val compressedByteArray = imageCompressor.compressImage(drawable, quality = 80)
                 if (compressedByteArray.size > 1024 * 1024) {
                     skipped++
+                    skippedIndexes.add(index)
                     null
                 } else {
                     compressedByteArray
                 }
             }
 
+            // use original Uris list and remove the skipped ones out to pass into photoDetail screen
+            val uriListFiltered = uris.filterIndexed { index, _ -> index !in skippedIndexes }
+
             _viewState.update {
                 it.copy(
-                    compressedImages = it.compressedImages + newCompressedList,
+                    uriImageList = it.uriImageList + uriListFiltered,
+                    byteArrayImageList = it.byteArrayImageList + newCompressedList,
                     photoSkipCount = skipped
                 )
             }
+        }
+    }
+
+    fun setSelectedImage(photoUri: String) {
+        _viewState.update {
+            it.copy(
+                photoUri = photoUri
+            )
+        }
+    }
+
+    private fun resetImageSelected() {
+        _viewState.update {
+            it.copy(
+                photoUri = null
+            )
+        }
+    }
+
+    private fun deleteImage(photoUri: String?) {  // TODO add an error if cannot be deleted
+        if (photoUri != null) {
+            // get imageUriList and remove uri from there
+            val oldUriList = _viewState.value.uriImageList
+            val imageIndex = oldUriList.indexOf(photoUri)
+            val newUriList = oldUriList.toMutableList().apply {
+                removeAt(imageIndex)
+            }
+
+            // update compressedImageList
+            val oldImageList = _viewState.value.byteArrayImageList
+            val newImageList = oldImageList.toMutableList().apply {
+                removeAt(imageIndex)
+            }
+
+            _viewState.update {
+                it.copy(
+                    uriImageList = newUriList,
+                    byteArrayImageList = newImageList,
+                    photoUri = null
+                )
+            }
+        }
+    }
+
+    fun handlePhotoDetailAction(action: PhotoDetailAction) {
+        when (action) {
+            PhotoDetailAction.ERASE -> {
+                deleteImage(_viewState.value.photoUri)
+            }
+
+            PhotoDetailAction.CANCEL -> {
+                resetImageSelected()
+            }
+
+            PhotoDetailAction.NONE -> println("no image action")
         }
     }
 }

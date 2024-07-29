@@ -1,5 +1,6 @@
 package com.example.tasky.agenda_details.presentation.components
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -75,9 +76,11 @@ fun EmptyPhotos(onAddPhotosClick: () -> Unit) {
 
 @Composable
 fun Photos(
-    compressedImages: List<ByteArray?>,
+    uriImages: List<Uri?>,
     photoSkipCount: Int,
-    onAddPhotosClick: () -> Unit
+    onAddPhotosClick: () -> Unit,
+    onPhotoClick: (Uri) -> Unit,
+    resetPhotoSkipCount: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -88,6 +91,8 @@ fun Photos(
                 context.getString(R.string.photos_were_skipped, photoSkipCount),
                 Toast.LENGTH_SHORT
             ).show()
+
+            resetPhotoSkipCount()
         }
     }
 
@@ -104,8 +109,8 @@ fun Photos(
                 HeaderMedium(title = stringResource(R.string.photos), textColor = Color.Black)
                 Spacer(modifier = Modifier.padding(10.dp))
                 LazyRow {
-                    items(compressedImages) { byteArray ->
-                        byteArray?.let {
+                    items(uriImages) { uri ->
+                        uri?.let {
                             AsyncImage(
                                 model = it,
                                 contentDescription = null,
@@ -113,13 +118,14 @@ fun Photos(
                                     .padding(end = 10.dp)
                                     .size(60.dp)
                                     .clip(RoundedCornerShape(6.dp))
-                                    .border(2.dp, colorResource(id = R.color.light_blue)),
+                                    .border(2.dp, colorResource(id = R.color.light_blue))
+                                    .clickable { onPhotoClick(it) },
                                 contentScale = ContentScale.Crop
                             )
                         }
                     }
                     item {
-                        if (compressedImages.size < 10) {
+                        if (uriImages.size < 10) {
                             PhotoSlot(onAddPhotosClick)
                         }
                     }

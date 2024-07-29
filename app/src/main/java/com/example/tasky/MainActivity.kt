@@ -21,6 +21,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.tasky.agenda_details.presentation.AgendaDetailsRoot
+import com.example.tasky.agenda_details.presentation.components.PhotoDetailRoot
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.presentation.editing.EditScreenRoot
 import com.example.tasky.common.presentation.model.AgendaItemType
@@ -92,6 +93,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
     composable<EventNav> {
         val title = it.savedStateHandle.get<String>(Constants.TITLE)
         val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
+        val imageAction = it.savedStateHandle.get<String>(Constants.IMAGE_ACTION)
         val args = it.toRoute<EventNav>()
         val date = args.date
         AgendaDetailsRoot(
@@ -99,7 +101,8 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
             date = date,
             agendaItemType = AgendaItemType.Event,
             title = title,
-            description = description
+            description = description,
+            imageAction = imageAction
         )
     }
     composable<TaskNav> {
@@ -126,6 +129,14 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
             navController = navController,
             textFieldType = textFieldType,
             agendaItemType = agendaDetailType
+        )
+    }
+    composable<PhotoDetailNav> {
+        val args = it.toRoute<PhotoDetailNav>()
+        val imageUriAsString = args.image
+        PhotoDetailRoot(
+            navController = navController,
+            image = imageUriAsString
         )
     }
 }
@@ -158,3 +169,6 @@ object ReminderNav
 
 @Serializable
 data class EditingNav(val textFieldType: String, val agendaItemType: String)
+
+@Serializable
+data class PhotoDetailNav(val image: String)
