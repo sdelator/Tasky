@@ -180,7 +180,9 @@ class AgendaDetailsViewModel @Inject constructor(
             // get imageUriList and remove uri from there
             val oldUriList = _viewState.value.uriImageList
             val imageIndex = oldUriList.indexOf(photoUri)
-            val newUriList = oldUriList.filter { it != photoUri }
+            val newUriList = oldUriList.toMutableList().apply {
+                removeAt(imageIndex)
+            }
 
             // update compressedImageList
             val oldImageList = _viewState.value.byteArrayImageList
