@@ -21,15 +21,9 @@ class ImageCompressorImpl(private val contentResolver: ContentResolver) :
         }
     }
 
-    override suspend fun uriStringToDrawable(uri: String): Drawable {
-        return withContext(Dispatchers.IO) {
-            val inputStream = contentResolver.openInputStream(Uri.parse(uri))
-            requireNotNull(inputStream) { "Failed to open input stream for URI: $uri" }
-
-            val drawable = Drawable.createFromStream(inputStream, uri)
-            requireNotNull(drawable) { "Failed to create drawable from input stream for URI: $uri" }
-
-            drawable
+    override suspend fun uriStringToDrawable(uri: String): Drawable? {
+        return contentResolver.openInputStream(Uri.parse(uri))?.use { inputStream ->
+            Drawable.createFromStream(inputStream, uri)
         }
     }
 }

@@ -214,15 +214,21 @@ class AgendaDetailsViewModel @Inject constructor(
     private suspend fun compressPhoto(uris: List<String>): List<PhotoType.LocalPhoto> {
         var skipped = 0
         val skippedIndexes = mutableListOf<Int>()
-        val compressedByteArrayList = uris.mapIndexedNotNull { index, uri ->
+        val newCompressedList = uris.mapIndexedNotNull { index, uri ->
             val drawable = imageCompressor.uriStringToDrawable(uri)
-            val compressedByteArray = imageCompressor.compressImage(drawable, quality = 80)
-            if (compressedByteArray.size > 1024 * 1024) {
+            if (drawable == null) {
                 skipped++
                 skippedIndexes.add(index)
                 null
             } else {
-                compressedByteArray
+                val compressedByteArray = imageCompressor.compressImage(drawable, quality = 80)
+                if (compressedByteArray.size > 1024 * 1024) {
+                    skipped++
+                    skippedIndexes.add(index)
+                    null
+                } else {
+                    compressedByteArray
+                }
             }
         }
 
