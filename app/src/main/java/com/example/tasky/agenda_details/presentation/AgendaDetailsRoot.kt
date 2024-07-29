@@ -142,7 +142,8 @@ fun AgendaDetailsRoot(
         photoSkipCount = viewState.photoSkipCount,
         onPhotoClick = { uri ->
             agendaDetailsViewModel.setSelectedImage(uri.toString())
-        }
+        },
+        resetPhotoSkipCount = { agendaDetailsViewModel.resetPhotoSkipCount() }
     )
 }
 
@@ -174,7 +175,8 @@ fun AgendaDetailsContent(
     onAddPhotosClick: () -> Unit,
     uriImages: List<Uri?>,
     photoSkipCount: Int,
-    onPhotoClick: (Uri) -> Unit
+    onPhotoClick: (Uri) -> Unit,
+    resetPhotoSkipCount: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -225,7 +227,8 @@ fun AgendaDetailsContent(
                             uriImages = uriImages,
                             photoSkipCount = photoSkipCount,
                             onAddPhotosClick = onAddPhotosClick,
-                            onPhotoClick = onPhotoClick
+                            onPhotoClick = onPhotoClick,
+                            resetPhotoSkipCount = resetPhotoSkipCount
                         )
                     }
                 }
@@ -357,7 +360,8 @@ fun PreviewEventContent() {
         onAddPhotosClick = {},
         uriImages = emptyList(),
         photoSkipCount = 0,
-        onPhotoClick = {}
+        onPhotoClick = {},
+        resetPhotoSkipCount = {}
     )
 }
 

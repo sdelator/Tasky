@@ -126,6 +126,14 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
+    fun resetPhotoSkipCount() {
+        _viewState.update {
+            it.copy(
+                photoSkipCount = 0
+            )
+        }
+    }
+
     fun onAddPhotosClick(photoUris: List<String>) {
         compressAndAddImage(photoUris)
     }

@@ -79,7 +79,8 @@ fun Photos(
     uriImages: List<Uri?>,
     photoSkipCount: Int,
     onAddPhotosClick: () -> Unit,
-    onPhotoClick: (Uri) -> Unit
+    onPhotoClick: (Uri) -> Unit,
+    resetPhotoSkipCount: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -90,6 +91,8 @@ fun Photos(
                 context.getString(R.string.photos_were_skipped, photoSkipCount),
                 Toast.LENGTH_SHORT
             ).show()
+
+            resetPhotoSkipCount()
         }
     }
 
