@@ -2,11 +2,11 @@ package com.example.tasky.agenda_details.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tasky.agenda_details.data.model.Attendee
-import com.example.tasky.agenda_details.data.model.EventResponse
-import com.example.tasky.agenda_details.data.model.Photo
 import com.example.tasky.agenda_details.data.model.PhotoType
 import com.example.tasky.agenda_details.domain.ImageCompressor
+import com.example.tasky.agenda_details.domain.model.Attendee
+import com.example.tasky.agenda_details.domain.model.EventResponse
+import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
