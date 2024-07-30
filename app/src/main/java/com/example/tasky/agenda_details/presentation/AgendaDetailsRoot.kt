@@ -97,11 +97,12 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
         }
 
-    val titleText = if (!title.isNullOrEmpty()) title else getDefaultTitle(agendaItemType)
-    val itemDescription =
-        if (!description.isNullOrEmpty()) description else getDefaultDescription(agendaItemType)
+    // TODO add logic back
+//    val titleText = if (!title.isNullOrEmpty()) title else getDefaultTitle(agendaItemType)
+//    val itemDescription =
+//        if (!description.isNullOrEmpty()) description else getDefaultDescription(agendaItemType)
 
-    val maxPhotosSelection = maxOf(2, maxPhotoCount - viewState.uriImageList.size)
+    val maxPhotosSelection = maxOf(2, maxPhotoCount)// - viewState.uriImageList.size)
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = maxPhotosSelection),
         onResult = { photoUris ->
@@ -110,8 +111,8 @@ fun AgendaDetailsRoot(
     )
 
     AgendaDetailsContent(
-        titleText = titleText,
-        itemDescription = itemDescription,
+        titleText = viewState.title,
+        itemDescription = viewState.description,
         toDate = viewState.toDate,
         fromDate = viewState.fromDate,
         isEditMode = isEditing,
@@ -138,7 +139,8 @@ fun AgendaDetailsRoot(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         },
-        uriImages = viewState.uriImageList.map { it?.let { uriString -> Uri.parse(uriString) } },
+        photosList = agendaDetailsViewModel.getUrisOrUrlsFromPhotoList(viewState.photos)
+            .map { it.let { uriString -> Uri.parse(uriString) } },
         photoSkipCount = viewState.photoSkipCount,
         onPhotoClick = { uri ->
             agendaDetailsViewModel.setSelectedImage(uri.toString())
@@ -173,7 +175,7 @@ fun AgendaDetailsContent(
     attendeeFilter: AttendeeFilter,
     onAttendeeFilterClick: (AttendeeFilter) -> Unit,
     onAddPhotosClick: () -> Unit,
-    uriImages: List<Uri?>,
+    photosList: List<Uri?>,
     photoSkipCount: Int,
     onPhotoClick: (Uri) -> Unit,
     resetPhotoSkipCount: () -> Unit
@@ -220,11 +222,11 @@ fun AgendaDetailsContent(
                     onEditClick = onEditClick
                 )
                 if (agendaItemType == AgendaItemType.Event) {
-                    if (uriImages.isEmpty()) {
+                    if (photosList.isEmpty()) {
                         EmptyPhotos(onAddPhotosClick = onAddPhotosClick)
                     } else {
                         Photos(
-                            uriImages = uriImages,
+                            uriImages = photosList,
                             photoSkipCount = photoSkipCount,
                             onAddPhotosClick = onAddPhotosClick,
                             onPhotoClick = onPhotoClick,
@@ -358,7 +360,7 @@ fun PreviewEventContent() {
         attendeeFilter = AttendeeFilter.GOING,
         onAttendeeFilterClick = {},
         onAddPhotosClick = {},
-        uriImages = emptyList(),
+        photosList = emptyList(),
         photoSkipCount = 0,
         onPhotoClick = {},
         resetPhotoSkipCount = {}
