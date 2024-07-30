@@ -97,11 +97,6 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
         }
 
-    // TODO add logic back
-//    val titleText = if (!title.isNullOrEmpty()) title else getDefaultTitle(agendaItemType)
-//    val itemDescription =
-//        if (!description.isNullOrEmpty()) description else getDefaultDescription(agendaItemType)
-
     val maxPhotosSelection = maxOf(2, maxPhotoCount)// - viewState.uriImageList.size)
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = maxPhotosSelection),
@@ -111,8 +106,10 @@ fun AgendaDetailsRoot(
     )
 
     AgendaDetailsContent(
-        titleText = viewState.title,
-        itemDescription = viewState.description,
+        titleText = viewState.title ?: title ?: getDefaultTitle(agendaItemType),
+        itemDescription = viewState.description ?: description ?: getDefaultDescription(
+            agendaItemType
+        ),
         toDate = viewState.toDate,
         fromDate = viewState.fromDate,
         isEditMode = isEditing,

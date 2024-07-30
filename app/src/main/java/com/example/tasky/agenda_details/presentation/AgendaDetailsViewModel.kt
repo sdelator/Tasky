@@ -37,7 +37,7 @@ class AgendaDetailsViewModel @Inject constructor(
 
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
-    private val isNewEvent = false
+    private val isNewEvent = true
 
     init {
         if (isNewEvent) {
