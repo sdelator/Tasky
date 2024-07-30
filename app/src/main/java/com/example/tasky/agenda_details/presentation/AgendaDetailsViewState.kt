@@ -17,8 +17,6 @@ data class AgendaDetailsViewState(
     val toDate: String = "",
     val fromDate: String = "",
     val photos: List<PhotoType> = emptyList(),
-//    val uriImageList: List<String?> = emptyList(),
-//    val byteArrayImageList: List<ByteArray?> = emptyList(),
     val reminderTime: ReminderTime = ReminderTime.THIRTY_MINUTES,
     val showReminderDropdown: Boolean = false,
     val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL,

@@ -205,7 +205,6 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun onAddPhotosClick(photoUris: List<String>) {
-        // todo conversion ? to photo
         viewModelScope.launch {
             val localPhotos = compressPhoto(photoUris)
             displayPhotos(localPhotos)
