@@ -171,6 +171,7 @@ class AgendaDetailsViewModel @Inject constructor(
                 is Result.Success -> {
                     println("success event creation!")
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                    println("response = ${result.data}")
                 }
 
                 is Result.Error -> {
