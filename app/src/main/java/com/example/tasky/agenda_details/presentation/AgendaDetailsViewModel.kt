@@ -103,7 +103,8 @@ class AgendaDetailsViewModel @Inject constructor(
 
     private fun getReminderTime(remindAt: Long, fromTime: Long): ReminderTime {
         val secondsBetween = DateTimeHelper.calculateTimeDifferenceInSeconds(remindAt, fromTime)
-        return getReminderTimeForDuration(secondsBetween)
+        val reminderTime = getReminderTimeForDuration(secondsBetween)
+        return reminderTime
     }
 
     private fun getReminderTimeForDuration(durationInSeconds: Long): ReminderTime {
