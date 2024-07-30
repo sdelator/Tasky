@@ -7,6 +7,7 @@ import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.Attendee
 import com.example.tasky.agenda_details.domain.model.EventResponse
 import com.example.tasky.agenda_details.domain.model.Photo
+import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
@@ -16,12 +17,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Duration
-import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -89,10 +86,12 @@ class AgendaDetailsViewModel @Inject constructor(
                 it.copy(
                     title = sampleResponse.title,
                     description = sampleResponse.description,
-                    toTime = getLocalTimeFromEpoch(sampleResponse.to).toString(),
-                    fromTime = getLocalTimeFromEpoch(sampleResponse.from).toString(),
-                    toDate = getLocalDateFromEpoch(sampleResponse.to).toFormatted_MMM_dd_yyyy(),
-                    fromDate = getLocalDateFromEpoch(sampleResponse.from).toFormatted_MMM_dd_yyyy(),
+                    toTime = DateTimeHelper.getLocalTimeFromEpoch(sampleResponse.to).toString(),
+                    fromTime = DateTimeHelper.getLocalTimeFromEpoch(sampleResponse.from).toString(),
+                    toDate = DateTimeHelper.getLocalDateFromEpoch(sampleResponse.to)
+                        .toFormatted_MMM_dd_yyyy(),
+                    fromDate = DateTimeHelper.getLocalDateFromEpoch(sampleResponse.from)
+                        .toFormatted_MMM_dd_yyyy(),
                     photos = sampleResponse.photos.map { photo ->
                         PhotoType.RemotePhoto(key = photo.key, url = photo.url)
                     },
@@ -103,39 +102,13 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun getReminderTime(remindAt: Long, fromTime: Long): ReminderTime {
-        val secondsBetween = calculateTimeDifferenceInSeconds(remindAt, fromTime)
+        val secondsBetween = DateTimeHelper.calculateTimeDifferenceInSeconds(remindAt, fromTime)
         return getReminderTimeForDuration(secondsBetween)
     }
 
     private fun getReminderTimeForDuration(durationInSeconds: Long): ReminderTime {
         return ReminderTime.entries.find { it.epochSeconds == durationInSeconds }
             ?: ReminderTime.THIRTY_MINUTES
-    }
-
-    private fun calculateTimeDifferenceInSeconds(epochReminderTime: Long, fromTime: Long): Long {
-        val instant1 = Instant.ofEpochSecond(epochReminderTime)
-        val instant2 = Instant.ofEpochSecond(fromTime)
-
-        val duration = Duration.between(instant1, instant2)
-        return duration.seconds
-    }
-
-    private fun getLocalDateFromEpoch(
-        epochSeconds: Long,
-        zoneId: ZoneId = ZoneId.systemDefault()
-    ): LocalDate {
-        val instant = Instant.ofEpochSecond(epochSeconds)
-        val zonedDateTime = ZonedDateTime.ofInstant(instant, zoneId)
-        return zonedDateTime.toLocalDate()
-    }
-
-    fun getLocalTimeFromEpoch(
-        epochSeconds: Long,
-        zoneId: ZoneId = ZoneId.systemDefault()
-    ): LocalTime {
-        val instant = Instant.ofEpochSecond(epochSeconds)
-        val zonedDateTime = ZonedDateTime.ofInstant(instant, zoneId)
-        return zonedDateTime.toLocalTime()
     }
 
     fun cancel() {
