@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,7 +36,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.tasky.AgendaNav
 import com.example.tasky.EditingNav
+import com.example.tasky.EventNav
 import com.example.tasky.PhotoDetailNav
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.components.AttendeeSection
@@ -43,15 +46,19 @@ import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.agenda_details.presentation.components.Photos
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.util.convertMillisToDate
+import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LineItemType
+import com.example.tasky.common.presentation.LoadingSpinner
+import com.example.tasky.common.presentation.ObserveAsEvents
 import com.example.tasky.common.presentation.ReminderSection
 import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.common.presentation.TitleSection
 import com.example.tasky.common.presentation.editing.TextFieldType
 import com.example.tasky.common.presentation.model.AgendaItemType
+import com.example.tasky.feature_agenda.presentation.toLogOutErrorMessage
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import java.time.LocalDate
 import java.time.LocalTime
@@ -69,6 +76,10 @@ fun AgendaDetailsRoot(
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
     val isEditing = true
     val maxPhotoCount = 10
+
+    LaunchedEffect(navController.currentBackStackEntry) {
+        agendaDetailsViewModel.restoreViewState(title, description)
+    }
 
     // handle Cancel or Delete clicked from PhotoDetails screen
     LaunchedEffect(imageAction) {
@@ -115,7 +126,13 @@ fun AgendaDetailsRoot(
         isEditMode = isEditing,
         onEditClick = { navController.navigate(EditingNav(it.name, agendaItemType.name)) },
         dateOnToolbar = date.convertMillisToDate(),
-        onToolbarAction = {},
+        onToolbarAction = {
+            when (it) {
+                ToolbarAction.SAVE -> agendaDetailsViewModel.save()
+                ToolbarAction.CANCEL -> navController.navigateUp()
+                ToolbarAction.EDIT -> agendaDetailsViewModel.edit()
+            }
+        },
         fromDateDialogState = viewState.fromDatePickerDialogState,
         toDateDialogState = viewState.toDatePickerDialogState,
         fromTimeDialogState = viewState.fromTimeDialogState,
@@ -144,6 +161,31 @@ fun AgendaDetailsRoot(
         },
         resetPhotoSkipCount = { agendaDetailsViewModel.resetPhotoSkipCount() }
     )
+
+    if (viewState.showLoadingSpinner) {
+        LoadingSpinner()
+    }
+
+    if (viewState.showErrorDialog) {
+        val message = viewState.dataError.toLogOutErrorMessage(context = LocalContext.current)
+        CreateErrorAlertDialog(
+            showDialog = true,
+            dialogMessage = message,
+            onDismiss = { agendaDetailsViewModel.onErrorDialogDismissed() }
+        )
+    }
+
+    ObserveAsEvents(flow = agendaDetailsViewModel.viewEvent) { event ->
+        when (event) {
+            is AgendaDetailsViewEvent.NavigateToAgenda -> {
+                navController.navigate(AgendaNav) {
+                    popUpTo(EventNav) {
+                        inclusive = true
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable

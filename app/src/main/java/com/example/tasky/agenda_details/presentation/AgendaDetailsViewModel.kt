@@ -13,18 +13,24 @@ import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class AgendaDetailsViewModel @Inject constructor(
-    private val imageCompressor: ImageCompressor
+    private val imageCompressor: ImageCompressor,
+    private val agendaDetailsRemoteRepository: AgendaDetailsRemoteRepository
 ) : ViewModel() {
 
     companion object {
@@ -35,6 +41,10 @@ class AgendaDetailsViewModel @Inject constructor(
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
     private val isNewEvent = false
+
+    // viewEvent triggered by API response
+    private val _viewEvent = Channel<AgendaDetailsViewEvent>()
+    val viewEvent = _viewEvent.receiveAsFlow()
 
     init {
         if (isNewEvent) {
@@ -112,11 +122,69 @@ class AgendaDetailsViewModel @Inject constructor(
             ?: ReminderTime.THIRTY_MINUTES
     }
 
-    fun cancel() {
+    fun restoreViewState(title: String?, description: String?) {
+        println("restore viewstate called")
+        if (title != null) {
+            _viewState.update {
+                it.copy(
+                    title = title
+                )
+            }
+        }
+        if (description != null) {
+            _viewState.update {
+                it.copy(
+                    description = description
+                )
+            }
+        }
+    }
+
+    fun edit() {
+        //set viewstate to editing
     }
 
     fun save() {
-        // todo save all items in local DB and server
+        // todo save all items in local DB
+        val fromInEpochSeconds =
+            getEpochSeconds(date = _viewState.value.fromDate, time = _viewState.value.fromTime)
+        val toInEpochSeconds =
+            getEpochSeconds(date = _viewState.value.toDate, time = _viewState.value.toTime)
+        val reminderTime = _viewState.value.reminderTime.epochSeconds
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.createEvent(
+                eventDetails = EventDetails(
+                    id = UUID.randomUUID().toString(),
+                    title = _viewState.value.title,
+                    description = _viewState.value.description,
+                    from = fromInEpochSeconds,
+                    to = toInEpochSeconds,
+                    remindAt = fromInEpochSeconds - reminderTime,
+                    attendeeIds = listOf("a", "b")
+                ),
+                photosByteArray = _viewState.value.byteArrayImageList.mapNotNull { it }
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    println("success event creation!")
+                    _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                }
+
+                is Result.Error -> {
+                    println("failed event creation :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun onDateSelected(
@@ -169,6 +237,14 @@ class AgendaDetailsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getEpochSeconds(date: String, time: String): Long {
+        val dateFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy")
+        val localTime = LocalTime.parse(time)
+        val localDate = LocalDate.parse(date, dateFormatter)
+        val zdt = ZonedDateTime.of(localDate, localTime, ZoneOffset.UTC)
+        return zdt.toEpochSecond()
     }
 
     fun toggleReminderDropdownVisibility() {
@@ -315,6 +391,12 @@ class AgendaDetailsViewModel @Inject constructor(
             }
 
             PhotoDetailAction.NONE -> println("no image action")
+        }
+    }
+
+    fun onErrorDialogDismissed() {
+        _viewState.update {
+            it.copy(showErrorDialog = false)
         }
     }
 }

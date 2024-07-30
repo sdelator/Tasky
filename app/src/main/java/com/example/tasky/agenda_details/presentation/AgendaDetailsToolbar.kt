@@ -28,15 +28,16 @@ fun AgendaDetailsToolbar(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(end = 16.dp),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         CancelButton(onClick = { onToolbarAction(ToolbarAction.CANCEL) })
         EventDate(date = date)
         if (isEditing) {
-            SaveButton(onClick = { onToolbarAction(ToolbarAction.SAVE) })
+            IconButton(onClick = { onToolbarAction(ToolbarAction.SAVE) }) {
+                SaveButton()
+            }
         } else {
             EditButton(onClick = { onToolbarAction(ToolbarAction.EDIT) })
         }
@@ -66,7 +67,7 @@ fun EditButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun SaveButton(onClick: () -> Unit) {
+fun SaveButton() {
     Text(
         text = stringResource(id = R.string.save),
         color = Color.White,
