@@ -76,7 +76,7 @@ fun EmptyPhotos(onAddPhotosClick: () -> Unit) {
 
 @Composable
 fun Photos(
-    uriImages: List<Uri?>,
+    photoUriList: List<Uri?>,
     photoSkipCount: Int,
     onAddPhotosClick: () -> Unit,
     onPhotoClick: (Uri) -> Unit,
@@ -109,7 +109,7 @@ fun Photos(
                 HeaderMedium(title = stringResource(R.string.photos), textColor = Color.Black)
                 Spacer(modifier = Modifier.padding(10.dp))
                 LazyRow {
-                    items(uriImages) { uri ->
+                    items(photoUriList) { uri ->
                         uri?.let {
                             AsyncImage(
                                 model = it,
@@ -125,7 +125,7 @@ fun Photos(
                         }
                     }
                     item {
-                        if (uriImages.size < 10) {
+                        if (photoUriList.size < 10) {
                             PhotoSlot(onAddPhotosClick)
                         }
                     }

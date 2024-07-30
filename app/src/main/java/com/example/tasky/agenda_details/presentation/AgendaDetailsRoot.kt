@@ -136,7 +136,7 @@ fun AgendaDetailsRoot(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         },
-        photosList = agendaDetailsViewModel.getUrisOrUrlsFromPhotoList(viewState.photos)
+        photosUriList = agendaDetailsViewModel.getUrisOrUrlsFromPhotoList(viewState.photos)
             .map { it.let { uriString -> Uri.parse(uriString) } },
         photoSkipCount = viewState.photoSkipCount,
         onPhotoClick = { uri ->
@@ -172,7 +172,7 @@ fun AgendaDetailsContent(
     attendeeFilter: AttendeeFilter,
     onAttendeeFilterClick: (AttendeeFilter) -> Unit,
     onAddPhotosClick: () -> Unit,
-    photosList: List<Uri?>,
+    photosUriList: List<Uri?>,
     photoSkipCount: Int,
     onPhotoClick: (Uri) -> Unit,
     resetPhotoSkipCount: () -> Unit
@@ -219,11 +219,11 @@ fun AgendaDetailsContent(
                     onEditClick = onEditClick
                 )
                 if (agendaItemType == AgendaItemType.Event) {
-                    if (photosList.isEmpty()) {
+                    if (photosUriList.isEmpty()) {
                         EmptyPhotos(onAddPhotosClick = onAddPhotosClick)
                     } else {
                         Photos(
-                            uriImages = photosList,
+                            photoUriList = photosUriList,
                             photoSkipCount = photoSkipCount,
                             onAddPhotosClick = onAddPhotosClick,
                             onPhotoClick = onPhotoClick,
@@ -357,7 +357,7 @@ fun PreviewEventContent() {
         attendeeFilter = AttendeeFilter.GOING,
         onAttendeeFilterClick = {},
         onAddPhotosClick = {},
-        photosList = emptyList(),
+        photosUriList = emptyList(),
         photoSkipCount = 0,
         onPhotoClick = {},
         resetPhotoSkipCount = {}
