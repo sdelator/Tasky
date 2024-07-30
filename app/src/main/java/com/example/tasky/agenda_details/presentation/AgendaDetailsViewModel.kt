@@ -272,29 +272,30 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun deleteImage(photoUri: String?) {  // TODO add an error if cannot be deleted
-//        if (photoUri != null) {
-//            // get imageUriList and remove uri from there
-//            val oldUriList = _viewState.value.uriImageList
-//            val imageIndex = oldUriList.indexOf(photoUri)
-//            val newUriList = oldUriList.toMutableList().apply {
-//                removeAt(imageIndex)
-//            }
-//
-//            // update compressedImageList
-//            val oldImageList = _viewState.value.byteArrayImageList
-//            val newImageList = oldImageList.toMutableList().apply {
-//                removeAt(imageIndex)
-//            }
-//
-//            _viewState.update {
-//                it.copy(
-//                    uriImageList = newUriList,
-//                    byteArrayImageList = newImageList,
-//                    photoUri = null
-//                )
-//            }
-//        }
+    private fun deleteImage(photoUri: String?) {
+        if (photoUri != null) {
+            val oldPhotosList = _viewState.value.photos
+
+            val imageIndex = oldPhotosList.indexOfFirst { photo ->
+                when (photo) {
+                    is PhotoType.LocalPhoto -> photo.uri == photoUri
+                    is PhotoType.RemotePhoto -> photo.url == photoUri
+                }
+            }
+
+            if (imageIndex != -1) {
+                val newPhotosList = oldPhotosList.toMutableList().apply {
+                    removeAt(imageIndex)
+                }
+
+                _viewState.update {
+                    it.copy(
+                        photos = newPhotosList,
+                        photoUri = null
+                    )
+                }
+            } // todo else { add error dialog if cant delete }
+        }
     }
 
     fun handlePhotoDetailAction(action: PhotoDetailAction) {
