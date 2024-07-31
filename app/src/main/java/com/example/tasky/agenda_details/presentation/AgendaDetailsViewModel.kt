@@ -2,12 +2,15 @@ package com.example.tasky.agenda_details.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasky.agenda_details.data.model.EventDetails
 import com.example.tasky.agenda_details.data.model.PhotoType
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.Attendee
 import com.example.tasky.agenda_details.domain.model.EventResponse
 import com.example.tasky.agenda_details.domain.model.Photo
+import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
+import com.example.tasky.common.domain.Result
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
@@ -157,14 +160,14 @@ class AgendaDetailsViewModel @Inject constructor(
             val result = agendaDetailsRemoteRepository.createEvent(
                 eventDetails = EventDetails(
                     id = UUID.randomUUID().toString(),
-                    title = _viewState.value.title,
-                    description = _viewState.value.description,
+                    title = _viewState.value.title ?: "",
+                    description = _viewState.value.description ?: "",
                     from = fromInEpochSeconds,
                     to = toInEpochSeconds,
                     remindAt = fromInEpochSeconds - reminderTime,
                     attendeeIds = listOf("a", "b")
                 ),
-                photosByteArray = _viewState.value.byteArrayImageList.mapNotNull { it }
+                photosByteArray = getByteArrayFromPhotoList(_viewState.value.photos)
             )
 
             when (result) {
@@ -291,7 +294,7 @@ class AgendaDetailsViewModel @Inject constructor(
     private suspend fun compressPhoto(uris: List<String>): List<PhotoType.LocalPhoto> {
         var skipped = 0
         val skippedIndexes = mutableListOf<Int>()
-        val newCompressedList = uris.mapIndexedNotNull { index, uri ->
+        val compressedByteArrayList = uris.mapIndexedNotNull { index, uri ->
             val drawable = imageCompressor.uriStringToDrawable(uri)
             if (drawable == null) {
                 skipped++
@@ -337,6 +340,11 @@ class AgendaDetailsViewModel @Inject constructor(
                 is PhotoType.RemotePhoto -> photo.url
             }
         }
+    }
+
+    fun getByteArrayFromPhotoList(photos: List<PhotoType>): List<ByteArray> {
+        return photos.filterIsInstance<PhotoType.LocalPhoto>()
+            .map { it.byteArray }
     }
 
     fun setSelectedImage(photoUri: String) {
