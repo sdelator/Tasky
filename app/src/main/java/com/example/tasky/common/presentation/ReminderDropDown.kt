@@ -60,10 +60,10 @@ fun PreviewReminderDropdownMenu() {
     }
 }
 
-enum class ReminderTime(val typeName: Int) {
-    TEN_MINUTES(R.string.ten_minutes_before),
-    THIRTY_MINUTES(R.string.thirty_minutes_before),
-    ONE_HOUR(R.string.one_hour_before),
-    SIX_HOURS(R.string.six_hours_before),
-    ONE_DAY(R.string.one_day_before)
+enum class ReminderTime(val typeName: Int, val epochSeconds: Long) {
+    TEN_MINUTES(R.string.ten_minutes_before, 600),
+    THIRTY_MINUTES(R.string.thirty_minutes_before, 1800),
+    ONE_HOUR(R.string.one_hour_before, 3600),
+    SIX_HOURS(R.string.six_hours_before, 21600),
+    ONE_DAY(R.string.one_day_before, 86400)
 }
