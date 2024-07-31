@@ -32,11 +32,6 @@ class AgendaDetailsRemoteRepositoryImpl(
                 val mimeType = when (byteArray.take(3)) {
                     listOf(0xFF.toByte(), 0xD8.toByte(), 0xFF.toByte()) -> "image/jpeg"
                     listOf(0x89.toByte(), 0x50.toByte(), 0x4e.toByte()) -> "image/png"
-                    listOf(
-                        0x47.toByte(),
-                        0x49.toByte(),
-                        0x46.toByte()
-                    ) -> "image/gif" //"GIF89a" (47 49 46 38 39 61) or "GIF87a" (47 49 46 38 37 61)
                     else -> throw Exception("invalid Image format")
                 }
                 val requestFile =
