@@ -108,11 +108,22 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.onDateSelected(selectedDate, dialogState, timeType)
         }
 
-    val maxPhotosSelection = maxOf(2, maxPhotoCount - viewState.photos.size)
+    val maxPhotosSelection = maxPhotoCount - viewState.photos.size
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = maxPhotosSelection),
+        contract = ActivityResultContracts.PickMultipleVisualMedia(
+            maxItems = maxOf(
+                2,
+                maxPhotosSelection
+            )
+        ),
         onResult = { photoUris ->
             agendaDetailsViewModel.onAddPhotosClick(photoUris.map { it.toString() })
+        }
+    )
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { photoUri ->
+            agendaDetailsViewModel.onAddPhotosClick(listOf(photoUri.toString()))
         }
     )
 
@@ -149,9 +160,15 @@ fun AgendaDetailsRoot(
         attendeeFilter = viewState.attendeeFilterSelected,
         onAttendeeFilterClick = { agendaDetailsViewModel.setAttendeeFilter(it) },
         onAddPhotosClick = {
-            multiplePhotoPickerLauncher.launch(
-                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-            )
+            if (maxPhotosSelection > 1) {
+                multiplePhotoPickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            } else {
+                singlePhotoPickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            }
         },
         photosUriList = agendaDetailsViewModel.getUrisOrUrlsFromPhotoList(viewState.photos)
             .map { it.let { uriString -> Uri.parse(uriString) } },
