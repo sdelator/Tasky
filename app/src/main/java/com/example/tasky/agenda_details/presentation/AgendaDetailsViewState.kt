@@ -2,6 +2,7 @@ package com.example.tasky.agenda_details.presentation
 
 import com.example.tasky.R
 import com.example.tasky.agenda_details.data.model.PhotoType
+import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.ReminderTime
 import com.vanpra.composematerialdialogs.MaterialDialogState
 
@@ -21,7 +22,10 @@ data class AgendaDetailsViewState(
     val showReminderDropdown: Boolean = false,
     val attendeeFilterSelected: AttendeeFilter = AttendeeFilter.ALL,
     val photoSkipCount: Int = 0,
-    val photoUri: String? = null
+    val photoUri: String? = null,
+    val showLoadingSpinner: Boolean = false,
+    val showErrorDialog: Boolean = false,
+    val dataError: DataError = DataError.Network.UNKNOWN
 )
 
 enum class AttendeeFilter(val typeName: Int) {

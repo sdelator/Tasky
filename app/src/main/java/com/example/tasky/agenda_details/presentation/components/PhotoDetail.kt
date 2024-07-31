@@ -41,9 +41,9 @@ import com.example.tasky.common.domain.Constants
 @Composable
 fun PhotoDetailRoot(
     navController: NavController,
-    image: String
+    imageUriAsString: String
 ) {
-    Uri.parse(image)?.let {
+    Uri.parse(imageUriAsString)?.let {
         PhotoDetailContent(
             image = it,
             onClick = { toolbarAction ->

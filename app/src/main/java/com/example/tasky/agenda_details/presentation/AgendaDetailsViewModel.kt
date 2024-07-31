@@ -2,29 +2,36 @@ package com.example.tasky.agenda_details.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasky.agenda_details.data.model.EventDetails
 import com.example.tasky.agenda_details.data.model.PhotoType
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.Attendee
 import com.example.tasky.agenda_details.domain.model.EventResponse
 import com.example.tasky.agenda_details.domain.model.Photo
+import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
+import com.example.tasky.common.domain.Result
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class AgendaDetailsViewModel @Inject constructor(
-    private val imageCompressor: ImageCompressor
+    private val imageCompressor: ImageCompressor,
+    private val agendaDetailsRemoteRepository: AgendaDetailsRemoteRepository
 ) : ViewModel() {
 
     companion object {
@@ -35,6 +42,10 @@ class AgendaDetailsViewModel @Inject constructor(
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
     private val isNewEvent = false
+
+    // viewEvent triggered by API response
+    private val _viewEvent = Channel<AgendaDetailsViewEvent>()
+    val viewEvent = _viewEvent.receiveAsFlow()
 
     init {
         if (isNewEvent) {
@@ -112,11 +123,76 @@ class AgendaDetailsViewModel @Inject constructor(
             ?: ReminderTime.THIRTY_MINUTES
     }
 
-    fun cancel() {
+    fun restoreViewState(title: String?, description: String?) {
+        println("restore viewstate called")
+        if (title != null) {
+            _viewState.update {
+                it.copy(
+                    title = title
+                )
+            }
+        }
+        if (description != null) {
+            _viewState.update {
+                it.copy(
+                    description = description
+                )
+            }
+        }
+    }
+
+    fun edit() {
+        //set viewstate to editing
     }
 
     fun save() {
-        // todo save all items in local DB and server
+        // todo save all items in local DB
+        val fromInEpochSeconds =
+            DateTimeHelper.getEpochSecondsFromDateAndTime(
+                date = _viewState.value.fromDate,
+                time = _viewState.value.fromTime
+            )
+        val toInEpochSeconds =
+            DateTimeHelper.getEpochSecondsFromDateAndTime(
+                date = _viewState.value.toDate,
+                time = _viewState.value.toTime
+            )
+        val reminderTime = _viewState.value.reminderTime.epochSeconds
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.createEvent(
+                eventDetails = EventDetails(
+                    id = UUID.randomUUID().toString(),
+                    title = _viewState.value.title ?: "",
+                    description = _viewState.value.description ?: "",
+                    from = fromInEpochSeconds,
+                    to = toInEpochSeconds,
+                    remindAt = fromInEpochSeconds - reminderTime,
+                    attendeeIds = listOf("a", "b")
+                ),
+                photosByteArray = getByteArrayFromPhotoList(_viewState.value.photos)
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    println("success event creation!")
+                    _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                    println("response = ${result.data}")
+                }
+
+                is Result.Error -> {
+                    println("failed event creation :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun onDateSelected(
@@ -216,13 +292,19 @@ class AgendaDetailsViewModel @Inject constructor(
         val skippedIndexes = mutableListOf<Int>()
         val compressedByteArrayList = uris.mapIndexedNotNull { index, uri ->
             val drawable = imageCompressor.uriStringToDrawable(uri)
-            val compressedByteArray = imageCompressor.compressImage(drawable, quality = 80)
-            if (compressedByteArray.size > 1024 * 1024) {
+            if (drawable == null) {
                 skipped++
                 skippedIndexes.add(index)
                 null
             } else {
-                compressedByteArray
+                val compressedByteArray = imageCompressor.compressImage(drawable, quality = 80)
+                if (compressedByteArray.size > 1024 * 1024) {
+                    skipped++
+                    skippedIndexes.add(index)
+                    null
+                } else {
+                    compressedByteArray
+                }
             }
         }
 
@@ -254,6 +336,11 @@ class AgendaDetailsViewModel @Inject constructor(
                 is PhotoType.RemotePhoto -> photo.url
             }
         }
+    }
+
+    fun getByteArrayFromPhotoList(photos: List<PhotoType>): List<ByteArray> {
+        return photos.filterIsInstance<PhotoType.LocalPhoto>()
+            .map { it.byteArray }
     }
 
     fun setSelectedImage(photoUri: String) {
@@ -309,6 +396,12 @@ class AgendaDetailsViewModel @Inject constructor(
             }
 
             PhotoDetailAction.NONE -> println("no image action")
+        }
+    }
+
+    fun onErrorDialogDismissed() {
+        _viewState.update {
+            it.copy(showErrorDialog = false)
         }
     }
 }

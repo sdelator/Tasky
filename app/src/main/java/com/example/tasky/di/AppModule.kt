@@ -4,7 +4,9 @@ import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
 import com.example.tasky.agenda_details.data.ImageCompressorImpl
+import com.example.tasky.agenda_details.data.repository.AgendaDetailsRemoteRepositoryImpl
 import com.example.tasky.agenda_details.domain.ImageCompressor
+import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.common.data.PreferenceHelper
 import com.example.tasky.common.data.SessionStateManagerImpl
 import com.example.tasky.common.data.remote.ApiKeyInterceptor
@@ -125,6 +127,14 @@ object AppModule {
         app: Application
     ): UserRemoteRepository {
         return UserRemoteRepositoryImpl(api, app)
+    }
+
+    @Provides
+    @Singleton
+    fun providesAgendaDetailsRemoteRepository(
+        @AuthenticatedApi api: TaskyApi
+    ): AgendaDetailsRemoteRepository {
+        return AgendaDetailsRemoteRepositoryImpl(api)
     }
 
     @Provides

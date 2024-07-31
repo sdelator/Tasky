@@ -4,5 +4,5 @@ import android.graphics.drawable.Drawable
 
 interface ImageCompressor {
     suspend fun compressImage(drawable: Drawable, quality: Int): ByteArray
-    suspend fun uriStringToDrawable(uri: String): Drawable
+    suspend fun uriStringToDrawable(uri: String): Drawable?
 }

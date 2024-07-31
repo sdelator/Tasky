@@ -136,7 +136,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         val imageUriAsString = args.image
         PhotoDetailRoot(
             navController = navController,
-            image = imageUriAsString
+            imageUriAsString = imageUriAsString
         )
     }
 }
