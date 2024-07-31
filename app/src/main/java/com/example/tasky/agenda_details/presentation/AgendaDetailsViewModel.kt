@@ -24,8 +24,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 import javax.inject.Inject
@@ -150,9 +148,15 @@ class AgendaDetailsViewModel @Inject constructor(
     fun save() {
         // todo save all items in local DB
         val fromInEpochSeconds =
-            getEpochSeconds(date = _viewState.value.fromDate, time = _viewState.value.fromTime)
+            DateTimeHelper.getEpochSecondsFromDateAndTime(
+                date = _viewState.value.fromDate,
+                time = _viewState.value.fromTime
+            )
         val toInEpochSeconds =
-            getEpochSeconds(date = _viewState.value.toDate, time = _viewState.value.toTime)
+            DateTimeHelper.getEpochSecondsFromDateAndTime(
+                date = _viewState.value.toDate,
+                time = _viewState.value.toTime
+            )
         val reminderTime = _viewState.value.reminderTime.epochSeconds
 
         viewModelScope.launch {
@@ -241,14 +245,6 @@ class AgendaDetailsViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun getEpochSeconds(date: String, time: String): Long {
-        val dateFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy")
-        val localTime = LocalTime.parse(time)
-        val localDate = LocalDate.parse(date, dateFormatter)
-        val zdt = ZonedDateTime.of(localDate, localTime, ZoneOffset.UTC)
-        return zdt.toEpochSecond()
     }
 
     fun toggleReminderDropdownVisibility() {
