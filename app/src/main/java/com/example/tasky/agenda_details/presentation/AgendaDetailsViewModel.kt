@@ -3,11 +3,10 @@ package com.example.tasky.agenda_details.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.data.model.EventDetails
-import com.example.tasky.agenda_details.data.model.PhotoType
+import com.example.tasky.agenda_details.data.model.Photo
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.Attendee
 import com.example.tasky.agenda_details.domain.model.EventResponse
-import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
@@ -82,11 +81,11 @@ class AgendaDetailsViewModel @Inject constructor(
                         )
                     ),
                     photos = listOf(
-                        Photo(
+                        Photo.RemotePhoto(
                             key = "ca6a8dd2-c2a1-4a0e-b0f3-0681820dbd0d",
                             url = "https://tasky-photos.s3.eu-central-1.amazonaws.com/ca6a8dd2-c2a1-4a0e-b0f3-0681820dbd0d?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240730T165744Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Credential=AKIAXEBKLPAR6LNGJAO5%2F20240730%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Signature=bd34e8f4a81c1015656c6afcf08e62bc8c52043240380f5ff78c59a13f0b0bc6"
                         ),
-                        Photo(
+                        Photo.RemotePhoto(
                             key = "a27f5ccf-b474-4455-a63a-782f72594576",
                             url = "https://tasky-photos.s3.eu-central-1.amazonaws.com/a27f5ccf-b474-4455-a63a-782f72594576?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240730T165744Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Credential=AKIAXEBKLPAR6LNGJAO5%2F20240730%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Signature=7d4d568f500d56562cdbefa127f3aa71aab32ecdbee66ce223de4b28db4eada3"
                         )
@@ -104,7 +103,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     fromDate = DateTimeHelper.getLocalDateFromEpoch(sampleResponse.from)
                         .toFormatted_MMM_dd_yyyy(),
                     photos = sampleResponse.photos.map { photo ->
-                        PhotoType.RemotePhoto(key = photo.key, url = photo.url)
+                        Photo.RemotePhoto(key = photo.key, url = photo.url)
                     },
                     reminderTime = getReminderTime(sampleResponse.remindAt, sampleResponse.from)
                 )
@@ -287,7 +286,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun compressPhoto(uris: List<String>): List<PhotoType.LocalPhoto> {
+    private suspend fun compressPhoto(uris: List<String>): List<Photo.LocalPhoto> {
         var skipped = 0
         val skippedIndexes = mutableListOf<Int>()
         val compressedByteArrayList = uris.mapIndexedNotNull { index, uri ->
@@ -313,7 +312,7 @@ class AgendaDetailsViewModel @Inject constructor(
 
         // create a list of Photo.LocalPhoto objects
         val localPhotos = uriListFiltered.mapIndexed { index, uri ->
-            PhotoType.LocalPhoto(uri = uri, byteArray = compressedByteArrayList[index])
+            Photo.LocalPhoto(uri = uri, byteArray = compressedByteArrayList[index])
         }
 
         _viewState.update {
@@ -325,21 +324,21 @@ class AgendaDetailsViewModel @Inject constructor(
         return localPhotos
     }
 
-    private fun displayPhotos(photos: List<PhotoType>) {
+    private fun displayPhotos(photos: List<Photo>) {
         _viewState.update { it.copy(photos = it.photos + photos) }
     }
 
-    fun getUrisOrUrlsFromPhotoList(photos: List<PhotoType>): List<String> {
+    fun getUrisOrUrlsFromPhotoList(photos: List<Photo>): List<String> {
         return photos.map { photo ->
             when (photo) {
-                is PhotoType.LocalPhoto -> photo.uri
-                is PhotoType.RemotePhoto -> photo.url
+                is Photo.LocalPhoto -> photo.uri
+                is Photo.RemotePhoto -> photo.url
             }
         }
     }
 
-    fun getByteArrayFromPhotoList(photos: List<PhotoType>): List<ByteArray> {
-        return photos.filterIsInstance<PhotoType.LocalPhoto>()
+    fun getByteArrayFromPhotoList(photos: List<Photo>): List<ByteArray> {
+        return photos.filterIsInstance<Photo.LocalPhoto>()
             .map { it.byteArray }
     }
 
@@ -365,8 +364,8 @@ class AgendaDetailsViewModel @Inject constructor(
 
             val imageIndex = oldPhotosList.indexOfFirst { photo ->
                 when (photo) {
-                    is PhotoType.LocalPhoto -> photo.uri == photoUri
-                    is PhotoType.RemotePhoto -> photo.url == photoUri
+                    is Photo.LocalPhoto -> photo.uri == photoUri
+                    is Photo.RemotePhoto -> photo.url == photoUri
                 }
             }
 
