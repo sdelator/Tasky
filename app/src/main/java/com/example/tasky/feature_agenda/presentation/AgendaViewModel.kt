@@ -76,7 +76,8 @@ class AgendaViewModel @Inject constructor(
                             AgendaItem.Event(
                                 title = event.title,
                                 details = event.description,
-                                date = event.to.toString(),
+                                fromDate = event.from,
+                                toDate = event.to,
                                 isChecked = false//todo UI based
                             )
                         }
@@ -212,5 +213,17 @@ class AgendaViewModel @Inject constructor(
         } else {
             date.toFormatted_MMMM_dd_yyyy()
         }
+    }
+
+    fun formatTimeBasedOnEvent(fromDate: Long, toDate: Long? = null): String {
+        println("fromDate $fromDate")
+
+        val startDate = DateTimeHelper.formatEpochToDateString(fromDate)
+
+        if (toDate != null) {
+            val endDate = DateTimeHelper.formatEpochToDateString(toDate)
+            return "$startDate - $endDate"
+        }
+        return startDate
     }
 }

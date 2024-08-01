@@ -56,6 +56,11 @@ fun AgendaRoot(
         agendaViewModel.updateDateSelected(month, day, year)
     }
 
+    val formatTimeBasedOnEvent: (Long, Long?) -> String = { fromDate, toDate ->
+        agendaViewModel.formatTimeBasedOnEvent(fromDate, toDate)
+    }
+
+
     val onFabAgendaItemTypeClick: (AgendaItemType) -> Unit = {
         when (it) {
             AgendaItemType.Event -> navController.navigate(EventNav(viewState.dateSelected))
@@ -79,7 +84,8 @@ fun AgendaRoot(
         onLogoutClick = { agendaViewModel.logOutClicked() },
         onFabActionClick = onFabAgendaItemTypeClick,
         headerDateText = viewState.headerDateText,
-        agendaItems = viewState.agendaItems
+        agendaItems = viewState.agendaItems,
+        formatTimeBasedOnEvent = formatTimeBasedOnEvent
     )
 
     if (viewState.showLoadingSpinner) {
@@ -121,7 +127,8 @@ fun AgendaContent(
     onLogoutClick: () -> Unit,
     onFabActionClick: (AgendaItemType) -> Unit,
     headerDateText: String,
-    agendaItems: List<AgendaItem>?
+    agendaItems: List<AgendaItem>?,
+    formatTimeBasedOnEvent: (Long, Long?) -> String
 ) {
     Box(
         modifier = Modifier
@@ -177,7 +184,22 @@ fun AgendaContent(
                             AgendaCard(
                                 title = agendaItem.title,
                                 details = agendaItem.details,
-                                date = "Mar 5, 10:30 - Mar 5, 11:00",
+                                date = when (agendaItem) {
+                                    is AgendaItem.Event -> formatTimeBasedOnEvent(
+                                        agendaItem.fromDate,
+                                        agendaItem.toDate
+                                    )
+
+                                    is AgendaItem.Task -> formatTimeBasedOnEvent(
+                                        agendaItem.date,
+                                        null
+                                    )
+
+                                    is AgendaItem.Reminder -> formatTimeBasedOnEvent(
+                                        agendaItem.date,
+                                        null
+                                    )
+                                },
                                 cardType = agendaItem.cardType,
                                 isChecked = false
                             )
@@ -222,7 +244,8 @@ fun PreviewAgendaContent() {
         onLogoutClick = { },
         headerDateText = "today",
         onFabActionClick = { },
-        agendaItems = null
+        agendaItems = null,
+        formatTimeBasedOnEvent = { _, _ -> "" }
     )
 }
 
