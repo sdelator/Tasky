@@ -190,12 +190,7 @@ fun AgendaContent(
                                         agendaItem.toDate
                                     )
 
-                                    is AgendaItem.Task -> formatTimeBasedOnEvent(
-                                        agendaItem.date,
-                                        null
-                                    )
-
-                                    is AgendaItem.Reminder -> formatTimeBasedOnEvent(
+                                    is AgendaItem.Task, is AgendaItem.Reminder -> formatTimeBasedOnEvent(
                                         agendaItem.date,
                                         null
                                     )
