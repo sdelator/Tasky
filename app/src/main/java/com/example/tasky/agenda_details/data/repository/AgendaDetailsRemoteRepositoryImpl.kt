@@ -29,9 +29,18 @@ class AgendaDetailsRemoteRepositoryImpl(
             val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaType())
 
             val photoParts = photosByteArray.mapIndexed { index, byteArray ->
+                val mimeType = when (byteArray.take(3)) {
+                    listOf(0xFF.toByte(), 0xD8.toByte(), 0xFF.toByte()) -> "image/jpeg"
+                    listOf(0x89.toByte(), 0x50.toByte(), 0x4e.toByte()) -> "image/png"
+                    else -> throw Exception("invalid Image format")
+                }
                 val requestFile =
-                    byteArray.toRequestBody("image/jpeg".toMediaTypeOrNull(), 0, byteArray.size)
-                MultipartBody.Part.createFormData("photo$index", "image$index.jpg", requestFile)
+                    byteArray.toRequestBody(mimeType.toMediaTypeOrNull(), 0, byteArray.size)
+                MultipartBody.Part.createFormData(
+                    "photo$index",
+                    "image$index.${mimeType.split("/")[1]}",
+                    requestFile
+                )
             }
 
             val response = api.createEvent(requestBody, photoParts)

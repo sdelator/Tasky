@@ -10,11 +10,8 @@ data class EventDetails(
     val attendeeIds: List<String>
 )
 
-sealed class PhotoType {
-    data class LocalPhoto(
-        val byteArray: ByteArray,
-        val uri: String
-    ) : PhotoType()
+sealed class Photo(open val uri: String) {
+    data class LocalPhoto(val byteArray: ByteArray, override val uri: String) : Photo(uri = uri)
 
-    data class RemotePhoto(val key: String, val url: String) : PhotoType()
+    data class RemotePhoto(val key: String, val url: String) : Photo(uri = url)
 }

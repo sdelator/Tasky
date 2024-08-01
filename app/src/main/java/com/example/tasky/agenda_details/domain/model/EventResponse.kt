@@ -1,5 +1,7 @@
 package com.example.tasky.agenda_details.domain.model
 
+import com.example.tasky.agenda_details.data.model.Photo
+
 data class EventResponse(
     val id: String,
     val title: String,
@@ -10,7 +12,7 @@ data class EventResponse(
     val host: String,
     val isUserEventCreator: Boolean,
     val attendees: List<Attendee>,
-    val photos: List<Photo>
+    val photos: List<Photo.RemotePhoto>
 )
 
 data class Attendee(
@@ -20,9 +22,4 @@ data class Attendee(
     val eventId: String,
     val isGoing: Boolean,
     val remindAt: Long
-)
-
-data class Photo(
-    val key: String,
-    val url: String
 )
