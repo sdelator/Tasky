@@ -30,6 +30,9 @@ import com.example.tasky.common.presentation.model.AgendaItemType
 
 @Composable
 fun AgendaCard(
+    title: String,
+    details: String,
+    date: String,
     cardType: AgendaItemType,
     isChecked: Boolean
 ) {
@@ -73,15 +76,15 @@ fun AgendaCard(
         ) {
             CustomCheckbox(isChecked = isChecked, color = headerColor, size = 16.dp)
             HeaderMedium(
-                title = "Place Holder Text",
+                title = title,
                 isChecked = isChecked,
                 textColor = headerColor
             )
             Spacer(modifier = Modifier.weight(1f))
             HorizontalEllipsisIcon()
         }
-        CardDetails(details = "Amet minim mollit non deserunt", textColor = textColor)
-        DateOfAction(date = "Mar 5, 10:30 - Mar 5, 11:00", textColor = textColor)
+        CardDetails(details = details, textColor = textColor)
+        DateOfAction(date = date, textColor = textColor)
     }
 }
 
@@ -142,6 +145,9 @@ fun DateOfAction(date: String, textColor: Color) {
 @Preview
 fun PreviewEventCard() {
     AgendaCard(
+        title = "Place Holder Text",
+        details = "Amet minim mollit non deserunt",
+        date = "Mar 5, 10:30 - Mar 5, 11:00",
         cardType = AgendaItemType.Event,
         isChecked = true
     )
@@ -151,6 +157,9 @@ fun PreviewEventCard() {
 @Preview
 fun PreviewTaskCard() {
     AgendaCard(
+        title = "Place Holder Text",
+        details = "Amet minim mollit non deserunt",
+        date = "Mar 5, 10:30 - Mar 5, 11:00",
         cardType = AgendaItemType.Task,
         isChecked = false
     )
@@ -160,6 +169,9 @@ fun PreviewTaskCard() {
 @Preview
 fun PreviewReminderCard() {
     AgendaCard(
+        title = "Place Holder Text",
+        details = "Amet minim mollit non deserunt",
+        date = "Mar 5, 10:30 - Mar 5, 11:00",
         cardType = AgendaItemType.Reminder,
         isChecked = true
     )

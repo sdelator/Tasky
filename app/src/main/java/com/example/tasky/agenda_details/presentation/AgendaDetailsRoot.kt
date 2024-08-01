@@ -36,9 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.tasky.AgendaNav
 import com.example.tasky.EditingNav
-import com.example.tasky.EventNav
 import com.example.tasky.PhotoDetailNav
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.components.AttendeeSection
@@ -195,11 +193,12 @@ fun AgendaDetailsRoot(
     ObserveAsEvents(flow = agendaDetailsViewModel.viewEvent) { event ->
         when (event) {
             is AgendaDetailsViewEvent.NavigateToAgenda -> {
-                navController.navigate(AgendaNav) {
-                    popUpTo(EventNav) {
-                        inclusive = true
-                    }
-                }
+                navController.navigateUp()
+//                navController.navigate(AgendaNav) {
+//                    popUpTo(EventNav) {
+//                        inclusive = true
+//                    }
+//                }
             }
         }
     }

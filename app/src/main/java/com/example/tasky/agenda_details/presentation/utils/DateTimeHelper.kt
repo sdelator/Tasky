@@ -36,11 +36,11 @@ object DateTimeHelper {
         return duration.seconds
     }
 
-    fun getEpochSecondsFromDateAndTime(date: String, time: String): Long {
+    fun getEpochMillisecondsFromDateAndTime(date: String, time: String): Long {
         val dateFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy")
         val localTime = LocalTime.parse(time)
         val localDate = LocalDate.parse(date, dateFormatter)
         val zdt = ZonedDateTime.of(localDate, localTime, ZoneOffset.UTC)
-        return zdt.toEpochSecond()
+        return zdt.toEpochSecond() * 1000
     }
 }

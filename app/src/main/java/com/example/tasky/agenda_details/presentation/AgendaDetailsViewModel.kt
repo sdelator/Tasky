@@ -147,12 +147,12 @@ class AgendaDetailsViewModel @Inject constructor(
     fun save() {
         // todo save all items in local DB
         val fromInEpochSeconds =
-            DateTimeHelper.getEpochSecondsFromDateAndTime(
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
             )
         val toInEpochSeconds =
-            DateTimeHelper.getEpochSecondsFromDateAndTime(
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
                 date = _viewState.value.toDate,
                 time = _viewState.value.toTime
             )

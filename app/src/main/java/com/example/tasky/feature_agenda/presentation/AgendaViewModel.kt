@@ -70,6 +70,23 @@ class AgendaViewModel @Inject constructor(
                     println("success agenda for ${DateTimeHelper.getLocalDateFromEpoch(time)}!")
                     println("response = ${result.data}")
                     //todo populate a card based on type
+                    val agendaItems = result.data
+                    val agendaItemList = if (agendaItems.events.isNotEmpty()) {
+                        agendaItems.events.map { event ->
+                            AgendaItem.Event(
+                                title = event.title,
+                                details = event.description,
+                                date = event.to.toString(),
+                                isChecked = false//todo UI based
+                            )
+                        }
+                    } else null
+                    _viewState.update {
+                        it.copy(
+                            agendaItems = agendaItemList,
+                            showLoadingSpinner = false
+                        )
+                    }
                 }
 
                 is Result.Error -> {
