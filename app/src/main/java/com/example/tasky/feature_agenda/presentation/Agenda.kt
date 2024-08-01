@@ -167,7 +167,7 @@ fun AgendaContent(
                 )
                 Spacer(modifier = Modifier.padding(top = 10.dp))
                 HeaderSmallBold(title = headerDateText, modifier = Modifier.align(Alignment.Start))
-
+                Spacer(modifier = Modifier.padding(top = 10.dp))
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
