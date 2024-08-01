@@ -161,7 +161,7 @@ fun AgendaContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp), // .verticalScroll(rememberScrollState()),
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 HorizontalCalendar(
@@ -190,10 +190,11 @@ fun AgendaContent(
                                         agendaItem.toDate
                                     )
 
-                                    is AgendaItem.Task, is AgendaItem.Reminder -> formatTimeBasedOnEvent(
-                                        agendaItem.date,
-                                        null
-                                    )
+                                    is AgendaItem.Task, is AgendaItem.Reminder ->
+                                        formatTimeBasedOnEvent(
+                                            agendaItem.date,
+                                            null
+                                        )
                                 },
                                 cardType = agendaItem.cardType,
                                 isChecked = false
