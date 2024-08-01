@@ -19,7 +19,9 @@ import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.TokenManager
 import com.example.tasky.common.domain.repository.TokenRemoteRepository
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
+import com.example.tasky.feature_agenda.data.repository.AgendaRemoteRepositoryImpl
 import com.example.tasky.feature_agenda.data.repository.AuthenticatedRemoteRepositoryImpl
+import com.example.tasky.feature_agenda.domain.repository.AgendaRemoteRepository
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
 import com.example.tasky.feature_login.data.repository.UserRemoteRepositoryImpl
 import com.example.tasky.feature_login.domain.repository.UserRemoteRepository
@@ -127,6 +129,14 @@ object AppModule {
         app: Application
     ): UserRemoteRepository {
         return UserRemoteRepositoryImpl(api, app)
+    }
+
+    @Provides
+    @Singleton
+    fun providesAgendaRemoteRepository(
+        @AuthenticatedApi api: TaskyApi
+    ): AgendaRemoteRepository {
+        return AgendaRemoteRepositoryImpl(api)
     }
 
     @Provides
