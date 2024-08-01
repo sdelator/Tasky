@@ -57,7 +57,7 @@ fun AgendaRoot(
     }
 
     val formatTimeBasedOnEvent: (Long, Long?) -> String = { fromDate, toDate ->
-        agendaViewModel.formatTimeBasedOnEvent(fromDate, toDate)
+        agendaViewModel.formatTimeOnAgendaCard(fromDate, toDate)
     }
 
 

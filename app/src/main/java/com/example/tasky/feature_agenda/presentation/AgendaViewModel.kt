@@ -67,9 +67,8 @@ class AgendaViewModel @Inject constructor(
 
             when (result) {
                 is Result.Success -> {
-                    println("success agenda for ${DateTimeHelper.getLocalDateFromEpoch(time)}!")
+                    println("success agenda for ${DateTimeHelper.formatEpochToDateString(time)}!")
                     println("response = ${result.data}")
-                    //todo populate a card based on type
                     val agendaItems = result.data
                     val agendaItemList = if (agendaItems.events.isNotEmpty()) {
                         agendaItems.events.map { event ->
@@ -78,7 +77,7 @@ class AgendaViewModel @Inject constructor(
                                 details = event.description,
                                 fromDate = event.from,
                                 toDate = event.to,
-                                isChecked = false//todo UI based
+                                isChecked = false//todo remove hardcode
                             )
                         }
                     } else null
@@ -91,7 +90,7 @@ class AgendaViewModel @Inject constructor(
                 }
 
                 is Result.Error -> {
-                    println("failed to load agenda for ${DateTimeHelper.getLocalDateFromEpoch(time)} :(")
+                    println("failed to load agenda for ${DateTimeHelper.formatEpochToDateString(time)} :(")
                     _viewState.update {
                         it.copy(
                             showLoadingSpinner = false,
@@ -215,7 +214,7 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
-    fun formatTimeBasedOnEvent(fromDate: Long, toDate: Long? = null): String {
+    fun formatTimeOnAgendaCard(fromDate: Long, toDate: Long? = null): String {
         println("fromDate $fromDate")
 
         val startDate = DateTimeHelper.formatEpochToDateString(fromDate)
