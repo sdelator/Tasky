@@ -15,7 +15,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
 
@@ -52,8 +51,8 @@ interface TaskyApi {
     @POST("/syncAgenda")
     suspend fun syncAgenda(): Response<SyncAgendaResponse>
 
-    @PUT("/syncAgenda")
-    suspend fun syncAgendaItem(): Response<SyncAgendaResponse>
+//    @PUT("/syncAgenda")
+//    suspend fun syncAgendaItem(): Response<SyncAgendaResponse>
 
     @GET("/fullAgenda")
     suspend fun loadFullAgenda(): Response<AgendaResponse>
