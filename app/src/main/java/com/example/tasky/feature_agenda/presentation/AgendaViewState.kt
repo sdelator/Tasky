@@ -48,7 +48,7 @@ sealed class AgendaItem(
 
     data class Reminder(
         override val title: String,
-        override val details: String,
+        override val details: String?,
         override val date: Long,
         override val isChecked: Boolean
     ) : AgendaItem(title, details, date, isChecked, AgendaItemType.Reminder)

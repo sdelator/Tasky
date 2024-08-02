@@ -57,7 +57,7 @@ class AgendaViewModel @Inject constructor(
                 )
             )
         }
-        loadAgendaForDay(1722520901502)
+        loadAgendaForDay(1722522718200)
     }
 
     private fun loadAgendaForDay(time: Long) {
@@ -77,7 +77,7 @@ class AgendaViewModel @Inject constructor(
                                 details = event.description,
                                 fromDate = event.from,
                                 toDate = event.to,
-                                isChecked = false // TODO: Update according to your logic
+                                isChecked = false // todo updated by ui
                             )
                         })
                         addAll(agendaItems.tasks.map { task ->
@@ -86,6 +86,14 @@ class AgendaViewModel @Inject constructor(
                                 details = task.description,
                                 date = task.time,
                                 isChecked = task.isDone
+                            )
+                        })
+                        addAll(agendaItems.reminders.map { task ->
+                            AgendaItem.Reminder(
+                                title = task.title,
+                                details = task.description,
+                                date = task.time,
+                                isChecked = false // todo updated by ui
                             )
                         })
                     }
