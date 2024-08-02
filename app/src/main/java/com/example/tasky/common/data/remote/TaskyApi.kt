@@ -61,7 +61,7 @@ interface TaskyApi {
     suspend fun loadFullAgenda(): Response<AgendaResponse>
 
     @POST("/task")
-    suspend fun createTask(@Body taskDetails: TaskResponse): Response<TaskResponse>
+    suspend fun createTask(@Body taskDetails: TaskResponse): Response<Unit>
 
     @PUT("/task")
     suspend fun updateTask(@Body taskDetails: TaskResponse): Response<TaskResponse>
@@ -70,5 +70,5 @@ interface TaskyApi {
     suspend fun loadTask(@Query("id") id: String): Response<TaskResponse>
 
     @POST("/reminder")
-    suspend fun createReminder(@Body reminderDetails: ReminderResponse): Response<ReminderResponse>
+    suspend fun createReminder(@Body reminderDetails: ReminderResponse): Response<Unit>
 }

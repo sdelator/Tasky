@@ -91,23 +91,14 @@ class AgendaDetailsRemoteRepositoryImpl(
 
     override suspend fun createTask(
         taskDetails: TaskResponse
-    ): Result<TaskResponse, DataError.Network> {
+    ): Result<Unit, DataError.Network> {
         return try {
             val response = api.createTask(taskDetails)
 
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 if (responseBody != null) {
-                    Result.Success(
-                        TaskResponse(
-                            id = responseBody.id,
-                            title = responseBody.title,
-                            description = responseBody.description,
-                            time = responseBody.time,
-                            remindAt = responseBody.remindAt,
-                            isDone = responseBody.isDone
-                        )
-                    )
+                    Result.Success(Unit)
                 } else {
                     Log.e("Error", "API call failed with code ${response.code()}")
                     Result.Error(DataError.Network.SERVER_ERROR)
@@ -123,22 +114,14 @@ class AgendaDetailsRemoteRepositoryImpl(
 
     override suspend fun createReminder(
         reminderDetails: ReminderResponse
-    ): Result<ReminderResponse, DataError.Network> {
+    ): Result<Unit, DataError.Network> {
         return try {
             val response = api.createReminder(reminderDetails)
 
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 if (responseBody != null) {
-                    Result.Success(
-                        ReminderResponse(
-                            id = responseBody.id,
-                            title = responseBody.title,
-                            description = responseBody.description,
-                            time = responseBody.time,
-                            remindAt = responseBody.remindAt,
-                        )
-                    )
+                    Result.Success(Unit)
                 } else {
                     Log.e("Error", "API call failed with code ${response.code()}")
                     Result.Error(DataError.Network.SERVER_ERROR)

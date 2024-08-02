@@ -21,9 +21,9 @@ interface AgendaDetailsRemoteRepository {
 
     suspend fun createTask(
         taskDetails: TaskResponse
-    ): Result<TaskResponse, DataError.Network>
+    ): Result<Unit, DataError.Network>
 
     suspend fun createReminder(
         reminderDetails: ReminderResponse
-    ): Result<ReminderResponse, DataError.Network>
+    ): Result<Unit, DataError.Network>
 }
