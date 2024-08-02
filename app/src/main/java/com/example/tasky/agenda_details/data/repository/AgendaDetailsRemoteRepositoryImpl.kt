@@ -1,10 +1,10 @@
 package com.example.tasky.agenda_details.data.repository
 
 import android.util.Log
+import com.example.tasky.agenda_details.data.model.EventResponse
+import com.example.tasky.agenda_details.data.model.ReminderResponse
+import com.example.tasky.agenda_details.data.model.TaskResponse
 import com.example.tasky.agenda_details.domain.model.EventDetails
-import com.example.tasky.agenda_details.domain.model.EventResponse
-import com.example.tasky.agenda_details.domain.model.ReminderResponse
-import com.example.tasky.agenda_details.domain.model.TaskResponse
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.common.data.remote.TaskyApi
 import com.example.tasky.common.domain.Result

@@ -33,6 +33,7 @@ import com.example.tasky.EventNav
 import com.example.tasky.R
 import com.example.tasky.ReminderNav
 import com.example.tasky.TaskNav
+import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.AgendaCard
 import com.example.tasky.common.presentation.CreateErrorAlertDialog

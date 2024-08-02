@@ -2,10 +2,10 @@ package com.example.tasky.agenda_details.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasky.agenda_details.data.model.Attendee
+import com.example.tasky.agenda_details.data.model.EventResponse
 import com.example.tasky.agenda_details.domain.ImageCompressor
-import com.example.tasky.agenda_details.domain.model.Attendee
 import com.example.tasky.agenda_details.domain.model.EventDetails
-import com.example.tasky.agenda_details.domain.model.EventResponse
 import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
