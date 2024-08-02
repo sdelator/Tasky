@@ -5,12 +5,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.R
+import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_MMMM_dd_yyyy
 import com.example.tasky.common.presentation.util.toLong
+import com.example.tasky.feature_agenda.domain.repository.AgendaRemoteRepository
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AgendaViewModel @Inject constructor(
     private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
+    private val agendaRemoteRepository: AgendaRemoteRepository,
     private val sessionStateManager: SessionStateManager,
     private val application: Application
 ) : ViewModel() {
@@ -53,6 +56,50 @@ class AgendaViewModel @Inject constructor(
                     headerDateText = application.applicationContext.getString(R.string.today)
                 )
             )
+        }
+        loadAgendaForDay(System.currentTimeMillis())
+    }
+
+    private fun loadAgendaForDay(time: Long) {
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaRemoteRepository.loadAgenda(time)
+
+            when (result) {
+                is Result.Success -> {
+                    println("success agenda for ${DateTimeHelper.formatEpochToDateString(time)}!")
+                    println("response = ${result.data}")
+                    val agendaItems = result.data
+                    val agendaItemList = if (agendaItems.events.isNotEmpty()) {
+                        agendaItems.events.map { event ->
+                            AgendaItem.Event(
+                                title = event.title,
+                                details = event.description,
+                                fromDate = event.from,
+                                toDate = event.to,
+                                isChecked = false//todo remove hardcode
+                            )
+                        }
+                    } else null
+                    _viewState.update {
+                        it.copy(
+                            agendaItems = agendaItemList,
+                            showLoadingSpinner = false
+                        )
+                    }
+                }
+
+                is Result.Error -> {
+                    println("failed to load agenda for ${DateTimeHelper.formatEpochToDateString(time)} :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -165,5 +212,17 @@ class AgendaViewModel @Inject constructor(
         } else {
             date.toFormatted_MMMM_dd_yyyy()
         }
+    }
+
+    fun formatTimeOnAgendaCard(fromDate: Long, toDate: Long? = null): String {
+        println("fromDate $fromDate")
+
+        val startDate = DateTimeHelper.formatEpochToDateString(fromDate)
+
+        if (toDate != null) {
+            val endDate = DateTimeHelper.formatEpochToDateString(toDate)
+            return "$startDate - $endDate"
+        }
+        return startDate
     }
 }

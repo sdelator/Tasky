@@ -3,6 +3,7 @@ package com.example.tasky.feature_agenda.presentation
 import HorizontalCalendar
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,9 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
@@ -33,6 +34,7 @@ import com.example.tasky.R
 import com.example.tasky.ReminderNav
 import com.example.tasky.TaskNav
 import com.example.tasky.common.domain.error.DataError
+import com.example.tasky.common.presentation.AgendaCard
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.FabDropdownRoot
 import com.example.tasky.common.presentation.HeaderSmallBold
@@ -53,6 +55,11 @@ fun AgendaRoot(
     val updateDateSelected: (Int, Int, Int?) -> Unit = { month, day, year ->
         agendaViewModel.updateDateSelected(month, day, year)
     }
+
+    val formatTimeBasedOnEvent: (Long, Long?) -> String = { fromDate, toDate ->
+        agendaViewModel.formatTimeOnAgendaCard(fromDate, toDate)
+    }
+
 
     val onFabAgendaItemTypeClick: (AgendaItemType) -> Unit = {
         when (it) {
@@ -76,7 +83,9 @@ fun AgendaRoot(
         updateDateDialogState = { agendaViewModel.updateDateDialogState(it) },
         onLogoutClick = { agendaViewModel.logOutClicked() },
         onFabActionClick = onFabAgendaItemTypeClick,
-        headerDateText = viewState.headerDateText
+        headerDateText = viewState.headerDateText,
+        agendaItems = viewState.agendaItems,
+        formatTimeBasedOnEvent = formatTimeBasedOnEvent
     )
 
     if (viewState.showLoadingSpinner) {
@@ -117,7 +126,9 @@ fun AgendaContent(
     updateDateDialogState: (MaterialDialogState) -> Unit,
     onLogoutClick: () -> Unit,
     onFabActionClick: (AgendaItemType) -> Unit,
-    headerDateText: String
+    headerDateText: String,
+    agendaItems: List<AgendaItem>?,
+    formatTimeBasedOnEvent: (Long, Long?) -> String
 ) {
     Box(
         modifier = Modifier
@@ -150,8 +161,7 @@ fun AgendaContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 HorizontalCalendar(
@@ -164,6 +174,34 @@ fun AgendaContent(
                 )
                 Spacer(modifier = Modifier.padding(top = 10.dp))
                 HeaderSmallBold(title = headerDateText, modifier = Modifier.align(Alignment.Start))
+                Spacer(modifier = Modifier.padding(top = 10.dp))
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (agendaItems != null) {
+                        items(agendaItems) { agendaItem ->
+                            AgendaCard(
+                                title = agendaItem.title,
+                                details = agendaItem.details,
+                                date = when (agendaItem) {
+                                    is AgendaItem.Event -> formatTimeBasedOnEvent(
+                                        agendaItem.fromDate,
+                                        agendaItem.toDate
+                                    )
+
+                                    is AgendaItem.Task, is AgendaItem.Reminder ->
+                                        formatTimeBasedOnEvent(
+                                            agendaItem.date,
+                                            null
+                                        )
+                                },
+                                cardType = agendaItem.cardType,
+                                isChecked = false
+                            )
+                        }
+                    }
+                }
             }
         }
         Box(
@@ -201,7 +239,9 @@ fun PreviewAgendaContent() {
         updateDateDialogState = { },
         onLogoutClick = { },
         headerDateText = "today",
-        onFabActionClick = { }
+        onFabActionClick = { },
+        agendaItems = null,
+        formatTimeBasedOnEvent = { _, _ -> "" }
     )
 }
 

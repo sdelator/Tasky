@@ -40,7 +40,7 @@ class AgendaDetailsViewModel @Inject constructor(
 
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
-    private val isNewEvent = false
+    private val isNewEvent = true
 
     // viewEvent triggered by API response
     private val _viewEvent = Channel<AgendaDetailsViewEvent>()
@@ -147,12 +147,12 @@ class AgendaDetailsViewModel @Inject constructor(
     fun save() {
         // todo save all items in local DB
         val fromInEpochSeconds =
-            DateTimeHelper.getEpochSecondsFromDateAndTime(
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
             )
         val toInEpochSeconds =
-            DateTimeHelper.getEpochSecondsFromDateAndTime(
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
                 date = _viewState.value.toDate,
                 time = _viewState.value.toTime
             )
