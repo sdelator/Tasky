@@ -1,4 +1,4 @@
-package com.example.tasky.agenda_details.domain.model
+package com.example.tasky.agenda_details.data.model
 
 data class ReminderResponse(
     val id: String,
