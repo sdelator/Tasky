@@ -1,6 +1,7 @@
 package com.example.tasky.common.data.remote
 
 import com.example.tasky.agenda_details.domain.model.EventResponse
+import com.example.tasky.agenda_details.domain.model.ReminderResponse
 import com.example.tasky.agenda_details.domain.model.TaskResponse
 import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.feature_agenda.domain.model.AgendaResponse
@@ -67,4 +68,7 @@ interface TaskyApi {
 
     @GET("/task")
     suspend fun loadTask(@Query("id") id: String): Response<TaskResponse>
+
+    @POST("/reminder")
+    suspend fun createReminder(@Body reminderDetails: ReminderResponse): Response<ReminderResponse>
 }

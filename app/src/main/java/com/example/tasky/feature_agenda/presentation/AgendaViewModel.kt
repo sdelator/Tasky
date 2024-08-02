@@ -57,7 +57,7 @@ class AgendaViewModel @Inject constructor(
                 )
             )
         }
-        loadAgendaForDay(System.currentTimeMillis())
+        loadAgendaForDay(1722520901502)
     }
 
     private fun loadAgendaForDay(time: Long) {
