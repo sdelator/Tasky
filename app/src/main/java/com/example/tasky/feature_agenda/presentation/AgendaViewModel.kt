@@ -70,44 +70,9 @@ class AgendaViewModel @Inject constructor(
                     println("success agenda for ${DateTimeHelper.formatEpochToDateString(time)}!")
                     println("response = ${result.data}")
                     val agendaItems = result.data
-                    val agendaItemList: List<AgendaItem> = mutableListOf<AgendaItem>().apply {
-                        addAll(agendaItems.events.map { event ->
-                            AgendaItem.Event(
-                                title = event.title,
-                                details = event.description,
-                                fromDate = event.from,
-                                toDate = event.to,
-                                isChecked = false // todo updated by ui
-                            )
-                        })
-                        addAll(agendaItems.tasks.map { task ->
-                            AgendaItem.Task(
-                                title = task.title,
-                                details = task.description,
-                                date = task.time,
-                                isChecked = task.isDone
-                            )
-                        })
-                        addAll(agendaItems.reminders.map { task ->
-                            AgendaItem.Reminder(
-                                title = task.title,
-                                details = task.description,
-                                date = task.time,
-                                isChecked = false // todo updated by ui
-                            )
-                        })
-                    }
-                    val agendaSortedByTime = agendaItemList.sortedBy { agendaItem ->
-                        when (agendaItem) {
-                            is AgendaItem.Event -> agendaItem.fromDate
-                            is AgendaItem.Task -> agendaItem.date
-                            is AgendaItem.Reminder -> agendaItem.date
-                        }
-                    }
-
                     _viewState.update {
                         it.copy(
-                            agendaItems = agendaSortedByTime,
+                            agendaItems = agendaItems,
                             showLoadingSpinner = false
                         )
                     }

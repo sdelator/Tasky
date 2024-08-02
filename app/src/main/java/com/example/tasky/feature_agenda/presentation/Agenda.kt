@@ -183,16 +183,16 @@ fun AgendaContent(
                         items(agendaItems) { agendaItem ->
                             AgendaCard(
                                 title = agendaItem.title,
-                                details = agendaItem.details ?: "",
+                                details = agendaItem.description ?: "",
                                 date = when (agendaItem) {
                                     is AgendaItem.Event -> formatTimeBasedOnEvent(
-                                        agendaItem.fromDate,
-                                        agendaItem.toDate
+                                        agendaItem.from,
+                                        agendaItem.to
                                     )
 
                                     is AgendaItem.Task, is AgendaItem.Reminder ->
                                         formatTimeBasedOnEvent(
-                                            agendaItem.date,
+                                            agendaItem.startTime,
                                             null
                                         )
                                 },
