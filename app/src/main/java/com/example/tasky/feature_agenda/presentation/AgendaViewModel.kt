@@ -97,9 +97,17 @@ class AgendaViewModel @Inject constructor(
                             )
                         })
                     }
+                    val agendaSortedByTime = agendaItemList.sortedBy { agendaItem ->
+                        when (agendaItem) {
+                            is AgendaItem.Event -> agendaItem.fromDate
+                            is AgendaItem.Task -> agendaItem.date
+                            is AgendaItem.Reminder -> agendaItem.date
+                        }
+                    }
+
                     _viewState.update {
                         it.copy(
-                            agendaItems = agendaItemList,
+                            agendaItems = agendaSortedByTime,
                             showLoadingSpinner = false
                         )
                     }
