@@ -179,11 +179,11 @@ fun AgendaContent(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    if (agendaItems != null) {
+                    if (!agendaItems.isNullOrEmpty()) {
                         items(agendaItems) { agendaItem ->
                             AgendaCard(
                                 title = agendaItem.title,
-                                details = agendaItem.details,
+                                details = agendaItem.details ?: "",
                                 date = when (agendaItem) {
                                     is AgendaItem.Event -> formatTimeBasedOnEvent(
                                         agendaItem.fromDate,

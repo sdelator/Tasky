@@ -26,7 +26,7 @@ data class AgendaViewState(
 
 sealed class AgendaItem(
     open val title: String,
-    open val details: String,
+    open val details: String?,
     open val date: Long,
     open val isChecked: Boolean,
     open val cardType: AgendaItemType
@@ -41,14 +41,14 @@ sealed class AgendaItem(
 
     data class Task(
         override val title: String,
-        override val details: String,
+        override val details: String?,
         override val date: Long,
         override val isChecked: Boolean
     ) : AgendaItem(title, details, date, isChecked, AgendaItemType.Task)
 
     data class Reminder(
         override val title: String,
-        override val details: String,
+        override val details: String?,
         override val date: Long,
         override val isChecked: Boolean
     ) : AgendaItem(title, details, date, isChecked, AgendaItemType.Reminder)

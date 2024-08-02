@@ -3,6 +3,8 @@ package com.example.tasky.agenda_details.data.repository
 import android.util.Log
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.EventResponse
+import com.example.tasky.agenda_details.domain.model.ReminderResponse
+import com.example.tasky.agenda_details.domain.model.TaskResponse
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.common.data.remote.TaskyApi
 import com.example.tasky.common.domain.Result
@@ -85,5 +87,51 @@ class AgendaDetailsRemoteRepositoryImpl(
 
     override suspend fun updateEvent(): Result<EventResponse, DataError.Network> {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun createTask(
+        taskDetails: TaskResponse
+    ): Result<Unit, DataError.Network> {
+        return try {
+            val response = api.createTask(taskDetails)
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    Result.Success(Unit)
+                } else {
+                    Log.e("Error", "API call failed with code ${response.code()}")
+                    Result.Error(DataError.Network.SERVER_ERROR)
+                }
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
+
+    override suspend fun createReminder(
+        reminderDetails: ReminderResponse
+    ): Result<Unit, DataError.Network> {
+        return try {
+            val response = api.createReminder(reminderDetails)
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    Result.Success(Unit)
+                } else {
+                    Log.e("Error", "API call failed with code ${response.code()}")
+                    Result.Error(DataError.Network.SERVER_ERROR)
+                }
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
     }
 }
