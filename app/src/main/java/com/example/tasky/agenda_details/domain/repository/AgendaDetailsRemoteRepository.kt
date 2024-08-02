@@ -1,6 +1,6 @@
 package com.example.tasky.agenda_details.domain.repository
 
-import com.example.tasky.agenda_details.data.model.EventDetails
+import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.EventResponse
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError

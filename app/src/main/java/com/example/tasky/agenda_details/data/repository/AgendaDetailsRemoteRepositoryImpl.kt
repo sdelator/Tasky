@@ -1,7 +1,7 @@
 package com.example.tasky.agenda_details.data.repository
 
 import android.util.Log
-import com.example.tasky.agenda_details.data.model.EventDetails
+import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.EventResponse
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.common.data.remote.TaskyApi

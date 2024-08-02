@@ -1,7 +1,7 @@
 package com.example.tasky.agenda_details.presentation
 
 import com.example.tasky.R
-import com.example.tasky.agenda_details.data.model.Photo
+import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.ReminderTime
 import com.vanpra.composematerialdialogs.MaterialDialogState
