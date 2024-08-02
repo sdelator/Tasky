@@ -70,17 +70,25 @@ class AgendaViewModel @Inject constructor(
                     println("success agenda for ${DateTimeHelper.formatEpochToDateString(time)}!")
                     println("response = ${result.data}")
                     val agendaItems = result.data
-                    val agendaItemList = if (agendaItems.events.isNotEmpty()) {
-                        agendaItems.events.map { event ->
+                    val agendaItemList: List<AgendaItem> = mutableListOf<AgendaItem>().apply {
+                        addAll(agendaItems.events.map { event ->
                             AgendaItem.Event(
                                 title = event.title,
                                 details = event.description,
                                 fromDate = event.from,
                                 toDate = event.to,
-                                isChecked = false//todo remove hardcode
+                                isChecked = false // TODO: Update according to your logic
                             )
-                        }
-                    } else null
+                        })
+                        addAll(agendaItems.tasks.map { task ->
+                            AgendaItem.Task(
+                                title = task.title,
+                                details = task.description,
+                                date = task.time,
+                                isChecked = task.isDone
+                            )
+                        })
+                    }
                     _viewState.update {
                         it.copy(
                             agendaItems = agendaItemList,
