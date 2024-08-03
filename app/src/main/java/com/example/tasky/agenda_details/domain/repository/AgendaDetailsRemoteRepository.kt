@@ -4,7 +4,6 @@ import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
-import com.example.tasky.feature_agenda.data.model.Reminder
 
 interface AgendaDetailsRemoteRepository {
     suspend fun createEvent(
@@ -23,6 +22,6 @@ interface AgendaDetailsRemoteRepository {
     ): Result<Unit, DataError.Network>
 
     suspend fun createReminder(
-        reminderDetails: Reminder
+        reminderDetails: AgendaItem.Reminder
     ): Result<Unit, DataError.Network>
 }

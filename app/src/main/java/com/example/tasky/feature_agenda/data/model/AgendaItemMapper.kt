@@ -12,3 +12,13 @@ fun AgendaItem.Task.toTaskDto(): Task {
         isDone = this.isDone
     )
 }
+
+fun AgendaItem.Reminder.toReminderDto(): Reminder {
+    return Reminder(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        time = this.time,
+        remindAt = this.remindAt
+    )
+}

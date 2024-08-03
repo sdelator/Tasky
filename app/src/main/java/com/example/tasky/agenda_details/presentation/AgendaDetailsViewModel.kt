@@ -14,7 +14,6 @@ import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.model.AgendaItemType
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
 import com.example.tasky.feature_agenda.data.model.Attendee
-import com.example.tasky.feature_agenda.data.model.Reminder
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -212,7 +211,7 @@ class AgendaDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
             val result = agendaDetailsRemoteRepository.createReminder(
-                reminderDetails = Reminder(
+                reminderDetails = AgendaItem.Reminder(
                     id = UUID.randomUUID().toString(),
                     title = _viewState.value.title ?: "",
                     description = _viewState.value.description ?: "",
