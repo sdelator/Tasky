@@ -1,7 +1,7 @@
 package com.example.tasky.feature_agenda.presentation
 
+import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.error.DataError
-import com.example.tasky.common.presentation.model.AgendaItemType
 import com.example.tasky.common.presentation.util.toLong
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -23,33 +23,3 @@ data class AgendaViewState(
     val dateSelected: Long = LocalDate.now().toLong(),
     val agendaItems: List<AgendaItem>? = null
 )
-
-sealed class AgendaItem(
-    open val title: String,
-    open val details: String?,
-    open val date: Long,
-    open val isChecked: Boolean,
-    open val cardType: AgendaItemType
-) {
-    data class Event(
-        override val title: String,
-        override val details: String,
-        val fromDate: Long,
-        val toDate: Long,
-        override val isChecked: Boolean
-    ) : AgendaItem(title, details, fromDate, isChecked, AgendaItemType.Event)
-
-    data class Task(
-        override val title: String,
-        override val details: String?,
-        override val date: Long,
-        override val isChecked: Boolean
-    ) : AgendaItem(title, details, date, isChecked, AgendaItemType.Task)
-
-    data class Reminder(
-        override val title: String,
-        override val details: String?,
-        override val date: Long,
-        override val isChecked: Boolean
-    ) : AgendaItem(title, details, date, isChecked, AgendaItemType.Reminder)
-}
