@@ -4,11 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
-import com.example.tasky.agenda_details.domain.model.Attendee
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.Photo
-import com.example.tasky.agenda_details.domain.model.Reminder
-import com.example.tasky.agenda_details.domain.model.Task
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
@@ -16,6 +13,8 @@ import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.model.AgendaItemType
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
+import com.example.tasky.feature_agenda.data.model.Attendee
+import com.example.tasky.feature_agenda.data.model.Reminder
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -172,7 +171,7 @@ class AgendaDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
             val result = agendaDetailsRemoteRepository.createTask(
-                taskDetails = Task(
+                taskDetails = AgendaItem.Task(
                     id = UUID.randomUUID().toString(),
                     title = _viewState.value.title ?: "",
                     description = _viewState.value.description ?: "",

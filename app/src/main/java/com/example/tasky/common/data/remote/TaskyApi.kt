@@ -1,10 +1,10 @@
 package com.example.tasky.common.data.remote
 
 import com.example.tasky.agenda_details.domain.model.AgendaItem
-import com.example.tasky.agenda_details.domain.model.Reminder
-import com.example.tasky.agenda_details.domain.model.Task
 import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.feature_agenda.data.model.AgendaResponse
+import com.example.tasky.feature_agenda.data.model.Reminder
+import com.example.tasky.feature_agenda.data.model.Task
 import com.example.tasky.feature_login.data.model.AccessToken
 import com.example.tasky.feature_login.data.model.LoginUserInfo
 import com.example.tasky.feature_login.data.model.RegisterUserInfo

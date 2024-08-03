@@ -3,14 +3,14 @@ package com.example.tasky.agenda_details.data.repository
 import android.util.Log
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.EventDetails
-import com.example.tasky.agenda_details.domain.model.Reminder
-import com.example.tasky.agenda_details.domain.model.Task
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.common.data.remote.TaskyApi
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.util.toNetworkErrorType
 import com.example.tasky.di.AuthenticatedApi
+import com.example.tasky.feature_agenda.data.model.Reminder
+import com.example.tasky.feature_agenda.data.model.toTaskDto
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -90,10 +90,11 @@ class AgendaDetailsRemoteRepositoryImpl(
     }
 
     override suspend fun createTask(
-        taskDetails: Task
+        taskDetails: AgendaItem.Task
     ): Result<Unit, DataError.Network> {
         return try {
-            val response = api.createTask(taskDetails)
+            val task = taskDetails.toTaskDto()
+            val response = api.createTask(task)
 
             if (response.isSuccessful) {
                 val responseBody = response.body()

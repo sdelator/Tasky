@@ -2,10 +2,9 @@ package com.example.tasky.agenda_details.domain.repository
 
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.EventDetails
-import com.example.tasky.agenda_details.domain.model.Reminder
-import com.example.tasky.agenda_details.domain.model.Task
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
+import com.example.tasky.feature_agenda.data.model.Reminder
 
 interface AgendaDetailsRemoteRepository {
     suspend fun createEvent(
@@ -20,7 +19,7 @@ interface AgendaDetailsRemoteRepository {
     suspend fun updateEvent(): Result<AgendaItem.Event, DataError.Network>
 
     suspend fun createTask(
-        taskDetails: Task
+        taskDetails: AgendaItem.Task
     ): Result<Unit, DataError.Network>
 
     suspend fun createReminder(

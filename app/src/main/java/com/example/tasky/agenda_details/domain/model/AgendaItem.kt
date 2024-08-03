@@ -1,6 +1,7 @@
 package com.example.tasky.agenda_details.domain.model
 
 import com.example.tasky.common.presentation.model.AgendaItemType
+import com.example.tasky.feature_agenda.data.model.Attendee
 
 sealed class AgendaItem(
     open val id: String,
