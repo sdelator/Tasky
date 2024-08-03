@@ -5,7 +5,6 @@ import com.example.tasky.agenda_details.data.model.Task
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.feature_agenda.domain.model.AgendaResponse
-import com.example.tasky.feature_agenda.domain.model.SyncAgendaResponse
 import com.example.tasky.feature_login.data.model.AccessToken
 import com.example.tasky.feature_login.data.model.LoginUserInfo
 import com.example.tasky.feature_login.data.model.RegisterUserInfo
@@ -51,8 +50,6 @@ interface TaskyApi {
     @GET("/agenda")
     suspend fun loadAgenda(@Query("time") time: Long): Response<AgendaResponse>
 
-    @POST("/syncAgenda")
-    suspend fun syncAgenda(): Response<SyncAgendaResponse>
 
 //    @PUT("/syncAgenda")
 //    suspend fun syncAgendaItem(): Response<SyncAgendaResponse>

@@ -6,7 +6,6 @@ import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.util.toNetworkErrorType
 import com.example.tasky.di.AuthenticatedApi
-import com.example.tasky.feature_agenda.domain.model.SyncAgendaResponse
 import com.example.tasky.feature_agenda.domain.repository.AgendaRemoteRepository
 import java.io.IOException
 
@@ -124,7 +123,7 @@ class AgendaRemoteRepositoryImpl(
         }
     }
 
-    override suspend fun syncAgenda(): Result<SyncAgendaResponse, DataError.Network> {
-        TODO("Not yet implemented")
-    }
+//    override suspend fun syncAgenda(): Result<SyncAgendaResponse, DataError.Network> {
+//        TODO("Not yet implemented")
+//    }
 }
