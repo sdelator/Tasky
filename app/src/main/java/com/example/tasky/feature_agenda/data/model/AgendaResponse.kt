@@ -1,4 +1,4 @@
-package com.example.tasky.feature_agenda.domain.model
+package com.example.tasky.feature_agenda.data.model
 
 import com.example.tasky.agenda_details.domain.model.Event
 import com.example.tasky.agenda_details.domain.model.Reminder
