@@ -1,7 +1,6 @@
 package com.example.tasky.common.data.remote
 
 import com.example.tasky.agenda_details.domain.model.AgendaItem
-import com.example.tasky.agenda_details.domain.model.Event
 import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.feature_agenda.domain.model.AgendaResponse
 import com.example.tasky.feature_login.data.model.AccessToken
@@ -44,7 +43,7 @@ interface TaskyApi {
     suspend fun createEvent(
         @Part("create_event_request") createEventRequest: RequestBody,
         @Part photos: List<MultipartBody.Part>
-    ): Response<Event>
+    ): Response<AgendaItem.Event>
 
     @GET("/agenda")
     suspend fun loadAgenda(@Query("time") time: Long): Response<AgendaResponse>
