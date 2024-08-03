@@ -6,12 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -106,19 +101,33 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         )
     }
     composable<TaskNav> {
-        // todo remove temporary screen
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Blue)
+        val title = it.savedStateHandle.get<String>(Constants.TITLE)
+        val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
+        val imageAction = it.savedStateHandle.get<String>(Constants.IMAGE_ACTION)
+        val args = it.toRoute<EventNav>()
+        val date = args.date
+        AgendaDetailsRoot(
+            navController = navController,
+            date = date,
+            agendaItemType = AgendaItemType.Task,
+            title = title,
+            description = description,
+            imageAction = imageAction
         )
     }
     composable<ReminderNav> {
-        // todo remove temporary screen
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Red)
+        val title = it.savedStateHandle.get<String>(Constants.TITLE)
+        val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
+        val imageAction = it.savedStateHandle.get<String>(Constants.IMAGE_ACTION)
+        val args = it.toRoute<EventNav>()
+        val date = args.date
+        AgendaDetailsRoot(
+            navController = navController,
+            date = date,
+            agendaItemType = AgendaItemType.Reminder,
+            title = title,
+            description = description,
+            imageAction = imageAction
         )
     }
     composable<EditingNav> {
@@ -162,10 +171,10 @@ object AgendaNav
 data class EventNav(val date: Long)
 
 @Serializable
-object TaskNav
+data class TaskNav(val date: Long)
 
 @Serializable
-object ReminderNav
+data class ReminderNav(val date: Long)
 
 @Serializable
 data class EditingNav(val textFieldType: String, val agendaItemType: String)

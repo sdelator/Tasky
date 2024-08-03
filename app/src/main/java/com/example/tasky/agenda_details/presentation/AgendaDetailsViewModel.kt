@@ -145,6 +145,10 @@ class AgendaDetailsViewModel @Inject constructor(
         //set viewstate to editing
     }
 
+    fun delete() {
+        //todo delete functionality; navigate back to agenda
+    }
+
     fun save() {
         // todo save all items in local DB
         val fromInEpochSeconds =
@@ -201,7 +205,7 @@ class AgendaDetailsViewModel @Inject constructor(
         lineItemType: LineItemType
     ) {
         when (lineItemType) {
-            LineItemType.FROM -> {
+            LineItemType.FROM, LineItemType.AT -> {
                 _viewState.update {
                     it.copy(
                         fromDatePickerDialogState = dialogState,
@@ -227,7 +231,7 @@ class AgendaDetailsViewModel @Inject constructor(
         dialogState: MaterialDialogState
     ) {
         when (lineItemType) {
-            LineItemType.FROM -> {
+            LineItemType.FROM, LineItemType.AT -> {
                 _viewState.update {
                     it.copy(
                         fromTimeDialogState = dialogState,

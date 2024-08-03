@@ -99,5 +99,5 @@ fun customTimePickerColors(): TimePickerColors {
 }
 
 enum class LineItemType {
-    TO, FROM
+    TO, FROM, AT
 }

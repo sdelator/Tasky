@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -176,7 +177,8 @@ fun AgendaDetailsRoot(
         onPhotoClick = { uri ->
             agendaDetailsViewModel.setSelectedImage(uri.toString())
         },
-        resetPhotoSkipCount = { agendaDetailsViewModel.resetPhotoSkipCount() }
+        resetPhotoSkipCount = { agendaDetailsViewModel.resetPhotoSkipCount() },
+        onItemDelete = { agendaDetailsViewModel.delete() }
     )
 
     if (viewState.showLoadingSpinner) {
@@ -234,7 +236,8 @@ fun AgendaDetailsContent(
     photosUriList: List<Uri?>,
     photoSkipCount: Int,
     onPhotoClick: (Uri) -> Unit,
-    resetPhotoSkipCount: () -> Unit
+    resetPhotoSkipCount: () -> Unit,
+    onItemDelete: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -298,11 +301,13 @@ fun AgendaDetailsContent(
                     onDateSelected = onDateSelected,
                     onTimeSelected = onTimeSelected,
                     time = startTime,
-                    buttonType = LineItemType.FROM,
+                    buttonType = if (agendaItemType == AgendaItemType.Event) {
+                        LineItemType.FROM
+                    } else LineItemType.AT,
                     isEditing = isEditMode
                 )
-                GrayDivider()
                 if (agendaItemType == AgendaItemType.Event) {
+                    GrayDivider()
                     DateLineItem(
                         date = toDate,
                         dialogState = toDateDialogState,
@@ -328,7 +333,8 @@ fun AgendaDetailsContent(
                         onAttendeeFilterClick = onAttendeeFilterClick
                     )
                 }
-                //DeleteButton()
+                Spacer(modifier = Modifier.weight(1f))
+                DeleteButton(agendaItemType = agendaItemType, onItemDelete = onItemDelete)
             }
         }
     }
@@ -408,7 +414,7 @@ fun PreviewEventContent() {
         onTimeSelected = { _, _, _ -> },
         startTime = "08:00",
         endTime = "08:15",
-        agendaItemType = AgendaItemType.Event,
+        agendaItemType = AgendaItemType.Task,
         showReminderDropdown = false,
         toggleReminderDropdownVisibility = {},
         onReminderClick = {},
@@ -419,7 +425,8 @@ fun PreviewEventContent() {
         photosUriList = emptyList(),
         photoSkipCount = 0,
         onPhotoClick = {},
-        resetPhotoSkipCount = {}
+        resetPhotoSkipCount = {},
+        onItemDelete = {}
     )
 }
 
@@ -438,5 +445,24 @@ fun getDefaultTitle(agendaItemType: AgendaItemType): String {
         AgendaItemType.Event -> stringResource(id = R.string.new_event)
         AgendaItemType.Task -> stringResource(id = R.string.new_task)
         AgendaItemType.Reminder -> stringResource(id = R.string.new_reminder)
+    }
+}
+
+@Composable
+fun DeleteButton(agendaItemType: AgendaItemType, onItemDelete: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clickable { onItemDelete() }
+            .padding(bottom = 50.dp, top = 50.dp)
+    ) {
+        GrayDivider()
+        Text(
+            text = stringResource(R.string.delete, agendaItemType.name.uppercase()),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = colorResource(id = R.color.gray)
+        )
     }
 }
