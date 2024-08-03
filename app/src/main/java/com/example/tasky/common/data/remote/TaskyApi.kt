@@ -2,7 +2,6 @@ package com.example.tasky.common.data.remote
 
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.Event
-import com.example.tasky.agenda_details.domain.model.Task
 import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.feature_agenda.domain.model.AgendaResponse
 import com.example.tasky.feature_login.data.model.AccessToken
@@ -61,10 +60,10 @@ interface TaskyApi {
     suspend fun createTask(@Body taskDetails: AgendaItem.Task): Response<Unit>
 
     @PUT("/task")
-    suspend fun updateTask(@Body taskDetails: AgendaItem.Task): Response<Task>
+    suspend fun updateTask(@Body taskDetails: AgendaItem.Task): Response<Unit>
 
     @GET("/task")
-    suspend fun loadTask(@Query("id") id: String): Response<Task>
+    suspend fun loadTask(@Query("id") id: String): Response<Unit>
 
     @POST("/reminder")
     suspend fun createReminder(@Body reminderDetails: AgendaItem.Reminder): Response<Unit>
