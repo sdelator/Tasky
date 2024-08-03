@@ -103,6 +103,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     fromDate = DateTimeHelper.getLocalDateFromEpoch(sampleResponse.from)
                         .toFormatted_MMM_dd_yyyy(),
                     photos = sampleResponse.photos.map { photo ->
+                        (photo as Photo.RemotePhoto)
                         Photo.RemotePhoto(key = photo.key, url = photo.url)
                     },
                     reminderTime = getReminderTime(sampleResponse.remindAt, sampleResponse.from)
