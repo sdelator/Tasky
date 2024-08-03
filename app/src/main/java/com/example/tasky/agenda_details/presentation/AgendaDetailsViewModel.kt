@@ -3,7 +3,7 @@ package com.example.tasky.agenda_details.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.data.model.Attendee
-import com.example.tasky.agenda_details.data.model.EventResponse
+import com.example.tasky.agenda_details.data.model.Event
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.Photo
@@ -61,7 +61,7 @@ class AgendaDetailsViewModel @Inject constructor(
         } else {
             //todo make API call to fetch data
             val sampleResponse =
-                EventResponse(
+                Event(
                     id = "a554ff78-4307-41fd-b2ec-01a96db98e00",
                     title = "pool party",
                     description = "bring snacks",

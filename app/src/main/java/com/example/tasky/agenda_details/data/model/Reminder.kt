@@ -1,10 +1,9 @@
 package com.example.tasky.agenda_details.data.model
 
-data class TaskResponse(
+data class Reminder(
     val id: String,
     val title: String,
     val description: String?,
     val time: Long,
-    val remindAt: Long,
-    val isDone: Boolean
+    val remindAt: Long
 )

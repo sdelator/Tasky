@@ -1,7 +1,7 @@
 package com.example.tasky.common.data.remote
 
-import com.example.tasky.agenda_details.data.model.EventResponse
-import com.example.tasky.agenda_details.data.model.TaskResponse
+import com.example.tasky.agenda_details.data.model.Event
+import com.example.tasky.agenda_details.data.model.Task
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.feature_agenda.domain.model.AgendaResponse
@@ -46,7 +46,7 @@ interface TaskyApi {
     suspend fun createEvent(
         @Part("create_event_request") createEventRequest: RequestBody,
         @Part photos: List<MultipartBody.Part>
-    ): Response<EventResponse>
+    ): Response<Event>
 
     @GET("/agenda")
     suspend fun loadAgenda(@Query("time") time: Long): Response<AgendaResponse>
@@ -64,10 +64,10 @@ interface TaskyApi {
     suspend fun createTask(@Body taskDetails: AgendaItem.Task): Response<Unit>
 
     @PUT("/task")
-    suspend fun updateTask(@Body taskDetails: AgendaItem.Task): Response<TaskResponse>
+    suspend fun updateTask(@Body taskDetails: AgendaItem.Task): Response<Task>
 
     @GET("/task")
-    suspend fun loadTask(@Query("id") id: String): Response<TaskResponse>
+    suspend fun loadTask(@Query("id") id: String): Response<Task>
 
     @POST("/reminder")
     suspend fun createReminder(@Body reminderDetails: AgendaItem.Reminder): Response<Unit>

@@ -2,7 +2,7 @@ package com.example.tasky.agenda_details.data.model
 
 import com.example.tasky.agenda_details.domain.model.Photo
 
-data class EventResponse(
+data class Event(
     val id: String,
     val title: String,
     val description: String,
