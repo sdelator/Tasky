@@ -145,6 +145,10 @@ class AgendaDetailsViewModel @Inject constructor(
         //set viewstate to editing
     }
 
+    fun delete() {
+        //todo delete functionality; navigate back to agenda
+    }
+
     fun save() {
         // todo save all items in local DB
         val fromInEpochSeconds =
