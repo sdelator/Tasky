@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
+import com.example.tasky.agenda_details.domain.model.AttendeeDetails
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
@@ -13,7 +14,6 @@ import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
-import com.example.tasky.feature_agenda.data.model.Attendee
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -72,7 +72,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     host = "666e55a7a3e6cb2e00e33a5f",
                     isUserEventCreator = true,
                     attendees = listOf(
-                        Attendee(
+                        AttendeeDetails(
                             email = "s@test.com",
                             fullName = "sandra",
                             userId = "666e55a7a3e6cb2e00e33a5f",

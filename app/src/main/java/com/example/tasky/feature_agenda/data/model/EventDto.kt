@@ -11,11 +11,11 @@ data class EventDto(
     val remindAt: Long,
     val host: String,
     val isUserEventCreator: Boolean,
-    val attendees: List<Attendee>,
+    val attendees: List<AttendeeDto>,
     val photos: List<Photo.RemotePhoto>
 )
 
-data class Attendee(
+data class AttendeeDto(
     val email: String,
     val fullName: String,
     val userId: String,

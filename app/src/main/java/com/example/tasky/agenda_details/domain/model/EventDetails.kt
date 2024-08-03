@@ -15,3 +15,12 @@ sealed class Photo(open val uri: String) {
 
     data class RemotePhoto(val key: String, val url: String) : Photo(uri = url)
 }
+
+data class AttendeeDetails(
+    val email: String,
+    val fullName: String,
+    val userId: String,
+    val eventId: String,
+    val isGoing: Boolean,
+    val remindAt: Long
+)
