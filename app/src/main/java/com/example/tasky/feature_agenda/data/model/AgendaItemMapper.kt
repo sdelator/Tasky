@@ -2,8 +2,8 @@ package com.example.tasky.feature_agenda.data.model
 
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 
-fun AgendaItem.Task.toTaskDto(): Task {
-    return Task(
+fun AgendaItem.Task.toTaskDto(): TaskDto {
+    return TaskDto(
         id = this.id,
         title = this.title,
         description = this.description,
@@ -13,8 +13,8 @@ fun AgendaItem.Task.toTaskDto(): Task {
     )
 }
 
-fun AgendaItem.Reminder.toReminderDto(): Reminder {
-    return Reminder(
+fun AgendaItem.Reminder.toReminderDto(): ReminderDto {
+    return ReminderDto(
         id = this.id,
         title = this.title,
         description = this.description,

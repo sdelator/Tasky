@@ -3,8 +3,8 @@ package com.example.tasky.common.data.remote
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.feature_agenda.data.model.AgendaResponse
-import com.example.tasky.feature_agenda.data.model.Reminder
-import com.example.tasky.feature_agenda.data.model.Task
+import com.example.tasky.feature_agenda.data.model.ReminderDto
+import com.example.tasky.feature_agenda.data.model.TaskDto
 import com.example.tasky.feature_login.data.model.AccessToken
 import com.example.tasky.feature_login.data.model.LoginUserInfo
 import com.example.tasky.feature_login.data.model.RegisterUserInfo
@@ -58,7 +58,7 @@ interface TaskyApi {
     suspend fun loadFullAgenda(): Response<AgendaResponse>
 
     @POST("/task")
-    suspend fun createTask(@Body taskDetails: Task): Response<Unit>
+    suspend fun createTask(@Body taskDtoDetails: TaskDto): Response<Unit>
 
     @PUT("/task")
     suspend fun updateTask(@Body taskDetails: AgendaItem.Task): Response<Unit>
@@ -67,5 +67,5 @@ interface TaskyApi {
     suspend fun loadTask(@Query("id") id: String): Response<AgendaItem.Task>
 
     @POST("/reminder")
-    suspend fun createReminder(@Body reminderDetails: Reminder): Response<Unit>
+    suspend fun createReminder(@Body reminderDtoDetails: ReminderDto): Response<Unit>
 }

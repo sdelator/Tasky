@@ -2,7 +2,7 @@ package com.example.tasky.feature_agenda.data.model
 
 import com.example.tasky.agenda_details.domain.model.Photo
 
-data class Event(
+data class EventDto(
     val id: String,
     val title: String,
     val description: String,
