@@ -1,5 +1,6 @@
 package com.example.tasky.feature_agenda.data.repository
 
+import android.util.Log
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.data.remote.TaskyApi
 import com.example.tasky.common.domain.Result
@@ -18,46 +19,46 @@ class AgendaRemoteRepositoryImpl(
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 if (responseBody != null) {
-                    val agendaItemList: List<AgendaItem> = mutableListOf<AgendaItem>().apply {
-                        addAll(responseBody.events.map { event ->
-                            AgendaItem.Event(
-                                id = event.id,
-                                title = event.title,
-                                description = event.description ?: "",
-                                from = event.from,
-                                to = event.to,
-                                remindAt = event.remindAt,
-                                host = event.host,
-                                isUserEventCreator = event.isUserEventCreator,
-                                attendees = event.attendees,
-                                photos = event.photos
-                            )
-                        })
-                        addAll(responseBody.tasks.map { task ->
-                            AgendaItem.Task(
-                                id = task.id,
-                                title = task.title,
-                                description = task.description,
-                                time = task.time,
-                                remindAt = task.remindAt,
-                                isDone = task.isDone
-                            )
-                        })
-                        addAll(responseBody.reminders.map { reminder ->
-                            AgendaItem.Reminder(
-                                id = reminder.id,
-                                title = reminder.title,
-                                description = reminder.description,
-                                time = reminder.time,
-                                remindAt = reminder.remindAt
-                            )
-                        })
+                    val events = responseBody.events.map { event ->
+                        AgendaItem.Event(
+                            id = event.id,
+                            title = event.title,
+                            description = event.description ?: "",
+                            from = event.from,
+                            to = event.to,
+                            remindAt = event.remindAt,
+                            host = event.host,
+                            isUserEventCreator = event.isUserEventCreator,
+                            attendees = event.attendees,
+                            photos = event.photos
+                        )
                     }
-
+                    val tasks = responseBody.tasks.map { task ->
+                        AgendaItem.Task(
+                            id = task.id,
+                            title = task.title,
+                            description = task.description,
+                            time = task.time,
+                            remindAt = task.remindAt,
+                            isDone = task.isDone
+                        )
+                    }
+                    val reminders = responseBody.reminders.map { reminder ->
+                        AgendaItem.Reminder(
+                            id = reminder.id,
+                            title = reminder.title,
+                            description = reminder.description,
+                            time = reminder.time,
+                            remindAt = reminder.remindAt
+                        )
+                    }
+                    val agendaItemList = events + tasks + reminders
                     val agendaSortedByTime =
                         agendaItemList.sortedBy { agendaItem -> agendaItem.startTime }
+
                     Result.Success(agendaSortedByTime)
                 } else {
+                    Log.e("Error", "API call failed with code ${response.code()}")
                     Result.Error(DataError.Network.SERVER_ERROR)
                 }
             } else {
@@ -75,41 +76,41 @@ class AgendaRemoteRepositoryImpl(
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 if (responseBody != null) {
-                    val agendaItemList: List<AgendaItem> = mutableListOf<AgendaItem>().apply {
-                        addAll(responseBody.events.map { event ->
-                            AgendaItem.Event(
-                                id = event.id,
-                                title = event.title,
-                                description = event.description ?: "",
-                                from = event.from,
-                                to = event.to,
-                                remindAt = event.remindAt,
-                                host = event.host,
-                                isUserEventCreator = event.isUserEventCreator,
-                                attendees = event.attendees,
-                                photos = event.photos
-                            )
-                        })
-                        addAll(responseBody.tasks.map { task ->
-                            AgendaItem.Task(
-                                id = task.id,
-                                title = task.title,
-                                description = task.description,
-                                time = task.time,
-                                remindAt = task.remindAt,
-                                isDone = task.isDone
-                            )
-                        })
-                        addAll(responseBody.reminders.map { reminder ->
-                            AgendaItem.Reminder(
-                                id = reminder.id,
-                                title = reminder.title,
-                                description = reminder.description,
-                                time = reminder.time,
-                                remindAt = reminder.remindAt
-                            )
-                        })
+                    val events = responseBody.events.map { event ->
+                        AgendaItem.Event(
+                            id = event.id,
+                            title = event.title,
+                            description = event.description ?: "",
+                            from = event.from,
+                            to = event.to,
+                            remindAt = event.remindAt,
+                            host = event.host,
+                            isUserEventCreator = event.isUserEventCreator,
+                            attendees = event.attendees,
+                            photos = event.photos
+                        )
                     }
+                    val tasks = responseBody.tasks.map { task ->
+                        AgendaItem.Task(
+                            id = task.id,
+                            title = task.title,
+                            description = task.description,
+                            time = task.time,
+                            remindAt = task.remindAt,
+                            isDone = task.isDone
+                        )
+                    }
+                    val reminders = responseBody.reminders.map { reminder ->
+                        AgendaItem.Reminder(
+                            id = reminder.id,
+                            title = reminder.title,
+                            description = reminder.description,
+                            time = reminder.time,
+                            remindAt = reminder.remindAt
+                        )
+                    }
+                    val agendaItemList = events + tasks + reminders
+                    //todo do we want to sort here by time ?
                     Result.Success(agendaItemList)
                 } else {
                     Result.Error(DataError.Network.SERVER_ERROR)

@@ -1,5 +1,6 @@
 package com.example.tasky.common.domain.util
 
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -9,7 +10,7 @@ import java.util.Date
 import java.util.Locale
 
 fun Long.convertMillisToMonth(): String {
-//    val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault()) //todo remove this
+    val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault()) //todo remove this
     return dateFormat.format(Date(this))
 }
 
