@@ -3,6 +3,8 @@ package com.example.tasky.agenda_details.data.repository
 import android.util.Log
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.EventDetails
+import com.example.tasky.agenda_details.domain.model.Reminder
+import com.example.tasky.agenda_details.domain.model.Task
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.common.data.remote.TaskyApi
 import com.example.tasky.common.domain.Result
@@ -88,7 +90,7 @@ class AgendaDetailsRemoteRepositoryImpl(
     }
 
     override suspend fun createTask(
-        taskDetails: AgendaItem.Task
+        taskDetails: Task
     ): Result<Unit, DataError.Network> {
         return try {
             val response = api.createTask(taskDetails)
@@ -111,7 +113,7 @@ class AgendaDetailsRemoteRepositoryImpl(
     }
 
     override suspend fun createReminder(
-        reminderDetails: AgendaItem.Reminder
+        reminderDetails: Reminder
     ): Result<Unit, DataError.Network> {
         return try {
             val response = api.createReminder(reminderDetails)

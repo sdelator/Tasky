@@ -140,7 +140,7 @@ fun AgendaDetailsRoot(
         dateOnToolbar = date.convertMillisToDate(),
         onToolbarAction = {
             when (it) {
-                ToolbarAction.SAVE -> agendaDetailsViewModel.save()
+                ToolbarAction.SAVE -> agendaDetailsViewModel.save(agendaItemType)
                 ToolbarAction.CANCEL -> navController.navigateUp()
                 ToolbarAction.EDIT -> agendaDetailsViewModel.edit()
             }
@@ -178,7 +178,7 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.setSelectedImage(uri.toString())
         },
         resetPhotoSkipCount = { agendaDetailsViewModel.resetPhotoSkipCount() },
-        onItemDelete = { agendaDetailsViewModel.delete() }
+        onItemDelete = { agendaDetailsViewModel.delete(agendaItemType) }
     )
 
     if (viewState.showLoadingSpinner) {
