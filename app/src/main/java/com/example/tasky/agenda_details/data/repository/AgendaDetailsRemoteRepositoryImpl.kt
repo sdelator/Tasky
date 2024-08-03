@@ -1,9 +1,7 @@
 package com.example.tasky.agenda_details.data.repository
 
 import android.util.Log
-import com.example.tasky.agenda_details.data.model.EventResponse
-import com.example.tasky.agenda_details.data.model.ReminderResponse
-import com.example.tasky.agenda_details.data.model.TaskResponse
+import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.common.data.remote.TaskyApi
@@ -24,7 +22,7 @@ class AgendaDetailsRemoteRepositoryImpl(
     override suspend fun createEvent(
         eventDetails: EventDetails,
         photosByteArray: List<ByteArray>
-    ): Result<EventResponse, DataError.Network> {
+    ): Result<AgendaItem.Event, DataError.Network> {
         return try {
             val gson = Gson()
             val json = gson.toJson(eventDetails)
@@ -51,7 +49,7 @@ class AgendaDetailsRemoteRepositoryImpl(
                 val responseBody = response.body()
                 if (responseBody != null) {
                     Result.Success(
-                        EventResponse(
+                        AgendaItem.Event(
                             id = responseBody.id,
                             title = responseBody.title,
                             description = responseBody.description,
@@ -77,7 +75,7 @@ class AgendaDetailsRemoteRepositoryImpl(
         }
     }
 
-    override suspend fun getEvent(): Result<EventResponse, DataError.Network> {
+    override suspend fun getEvent(): Result<AgendaItem.Event, DataError.Network> {
         TODO("Not yet implemented")
     }
 
@@ -85,12 +83,12 @@ class AgendaDetailsRemoteRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateEvent(): Result<EventResponse, DataError.Network> {
+    override suspend fun updateEvent(): Result<AgendaItem.Event, DataError.Network> {
         TODO("Not yet implemented")
     }
 
     override suspend fun createTask(
-        taskDetails: TaskResponse
+        taskDetails: AgendaItem.Task
     ): Result<Unit, DataError.Network> {
         return try {
             val response = api.createTask(taskDetails)
@@ -113,7 +111,7 @@ class AgendaDetailsRemoteRepositoryImpl(
     }
 
     override suspend fun createReminder(
-        reminderDetails: ReminderResponse
+        reminderDetails: AgendaItem.Reminder
     ): Result<Unit, DataError.Network> {
         return try {
             val response = api.createReminder(reminderDetails)
