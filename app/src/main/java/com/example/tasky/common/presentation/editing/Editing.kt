@@ -30,9 +30,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.tasky.R
 import com.example.tasky.common.domain.Constants
+import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.presentation.GrayDivider
 import com.example.tasky.common.presentation.LeftCarrotIcon
-import com.example.tasky.common.presentation.model.AgendaItemType
 
 @Composable
 fun EditScreenRoot(

@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tasky.R
-import com.example.tasky.common.presentation.model.AgendaItemType
+import com.example.tasky.common.domain.model.AgendaItemType
 
 @Composable
 fun FabDropdownRoot(

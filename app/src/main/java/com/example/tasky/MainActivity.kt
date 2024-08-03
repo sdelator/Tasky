@@ -18,8 +18,8 @@ import androidx.navigation.toRoute
 import com.example.tasky.agenda_details.presentation.AgendaDetailsRoot
 import com.example.tasky.agenda_details.presentation.components.PhotoDetailRoot
 import com.example.tasky.common.domain.Constants
+import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.presentation.editing.EditScreenRoot
-import com.example.tasky.common.presentation.model.AgendaItemType
 import com.example.tasky.feature_agenda.presentation.AgendaRoot
 import com.example.tasky.feature_login.presentation.LoginRoot
 import com.example.tasky.feature_login.presentation.RegisterAccountRoot
