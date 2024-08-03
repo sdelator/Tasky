@@ -1,4 +1,4 @@
-package com.example.tasky.agenda_details.data.model
+package com.example.tasky.agenda_details.domain.model
 
 data class Task(
     val id: String,

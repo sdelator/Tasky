@@ -1,6 +1,4 @@
-package com.example.tasky.agenda_details.data.model
-
-import com.example.tasky.agenda_details.domain.model.Photo
+package com.example.tasky.agenda_details.domain.model
 
 data class Event(
     val id: String,

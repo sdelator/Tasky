@@ -1,6 +1,5 @@
 package com.example.tasky.agenda_details.domain.model
 
-import com.example.tasky.agenda_details.data.model.Attendee
 import com.example.tasky.common.presentation.model.AgendaItemType
 
 sealed class AgendaItem(

@@ -1,8 +1,8 @@
 package com.example.tasky.feature_agenda.domain.model
 
-import com.example.tasky.agenda_details.data.model.Event
-import com.example.tasky.agenda_details.data.model.Reminder
-import com.example.tasky.agenda_details.data.model.Task
+import com.example.tasky.agenda_details.domain.model.Event
+import com.example.tasky.agenda_details.domain.model.Reminder
+import com.example.tasky.agenda_details.domain.model.Task
 
 data class AgendaResponse(
     val events: List<Event> = emptyList(),
