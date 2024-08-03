@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
-import com.example.tasky.common.presentation.model.AgendaItemType
+import com.example.tasky.common.domain.model.AgendaItemType
 
 @Composable
 fun AgendaCard(

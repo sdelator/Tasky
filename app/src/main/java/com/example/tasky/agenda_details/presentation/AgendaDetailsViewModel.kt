@@ -4,12 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
-import com.example.tasky.agenda_details.domain.model.Attendee
+import com.example.tasky.agenda_details.domain.model.AttendeeDetails
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
+import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
@@ -71,7 +72,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     host = "666e55a7a3e6cb2e00e33a5f",
                     isUserEventCreator = true,
                     attendees = listOf(
-                        Attendee(
+                        AttendeeDetails(
                             email = "s@test.com",
                             fullName = "sandra",
                             userId = "666e55a7a3e6cb2e00e33a5f",
@@ -145,12 +146,101 @@ class AgendaDetailsViewModel @Inject constructor(
         //set viewstate to editing
     }
 
-    fun delete() {
+    fun delete(agendaItemType: AgendaItemType) {
         //todo delete functionality; navigate back to agenda
     }
 
-    fun save() {
+    fun save(agendaItemType: AgendaItemType) {
         // todo save all items in local DB
+        when (agendaItemType) {
+            AgendaItemType.Event -> saveEvent()
+            AgendaItemType.Task -> saveTask()
+            AgendaItemType.Reminder -> saveReminder()
+        }
+    }
+
+    private fun saveTask() {
+        val atInEpochSeconds =
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+                date = _viewState.value.fromDate,
+                time = _viewState.value.fromTime
+            )
+        val reminderTime = _viewState.value.reminderTime.epochSeconds
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.createTask(
+                taskDetails = AgendaItem.Task(
+                    id = UUID.randomUUID().toString(),
+                    title = _viewState.value.title ?: "",
+                    description = _viewState.value.description ?: "",
+                    time = atInEpochSeconds,
+                    remindAt = atInEpochSeconds - reminderTime,
+                    isDone = false //todo remove hardcode
+                )
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    println("success task creation!")
+                    _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                }
+
+                is Result.Error -> {
+                    println("failed task creation :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun saveReminder() {
+        val atInEpochSeconds =
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+                date = _viewState.value.fromDate,
+                time = _viewState.value.fromTime
+            )
+        val reminderTime = _viewState.value.reminderTime.epochSeconds
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.createReminder(
+                reminderDetails = AgendaItem.Reminder(
+                    id = UUID.randomUUID().toString(),
+                    title = _viewState.value.title ?: "",
+                    description = _viewState.value.description ?: "",
+                    time = atInEpochSeconds,
+                    remindAt = atInEpochSeconds - reminderTime
+                )
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    println("success reminder creation!")
+                    _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                }
+
+                is Result.Error -> {
+                    println("failed reminder creation :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun saveEvent() {
         val fromInEpochSeconds =
             DateTimeHelper.getEpochMillisecondsFromDateAndTime(
                 date = _viewState.value.fromDate,

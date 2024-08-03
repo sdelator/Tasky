@@ -9,6 +9,8 @@ import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.util.toNetworkErrorType
 import com.example.tasky.di.AuthenticatedApi
+import com.example.tasky.feature_agenda.data.model.toReminderDto
+import com.example.tasky.feature_agenda.data.model.toTaskDto
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -91,7 +93,8 @@ class AgendaDetailsRemoteRepositoryImpl(
         taskDetails: AgendaItem.Task
     ): Result<Unit, DataError.Network> {
         return try {
-            val response = api.createTask(taskDetails)
+            val task = taskDetails.toTaskDto()
+            val response = api.createTask(task)
 
             if (response.isSuccessful) {
                 val responseBody = response.body()
@@ -114,7 +117,8 @@ class AgendaDetailsRemoteRepositoryImpl(
         reminderDetails: AgendaItem.Reminder
     ): Result<Unit, DataError.Network> {
         return try {
-            val response = api.createReminder(reminderDetails)
+            val reminder = reminderDetails.toReminderDto()
+            val response = api.createReminder(reminder)
 
             if (response.isSuccessful) {
                 val responseBody = response.body()

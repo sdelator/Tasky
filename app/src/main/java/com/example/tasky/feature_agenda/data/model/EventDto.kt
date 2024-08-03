@@ -1,6 +1,8 @@
-package com.example.tasky.agenda_details.domain.model
+package com.example.tasky.feature_agenda.data.model
 
-data class Event(
+import com.example.tasky.agenda_details.domain.model.Photo
+
+data class EventDto(
     val id: String,
     val title: String,
     val description: String,
@@ -9,11 +11,11 @@ data class Event(
     val remindAt: Long,
     val host: String,
     val isUserEventCreator: Boolean,
-    val attendees: List<Attendee>,
+    val attendees: List<AttendeeDto>,
     val photos: List<Photo.RemotePhoto>
 )
 
-data class Attendee(
+data class AttendeeDto(
     val email: String,
     val fullName: String,
     val userId: String,

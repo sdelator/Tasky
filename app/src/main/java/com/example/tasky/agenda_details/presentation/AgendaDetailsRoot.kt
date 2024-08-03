@@ -46,6 +46,7 @@ import com.example.tasky.agenda_details.presentation.components.AttendeeSection
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.agenda_details.presentation.components.Photos
 import com.example.tasky.common.domain.Constants
+import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.domain.util.convertMillisToDate
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.DateLineItem
@@ -58,7 +59,6 @@ import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.RightCarrotIcon
 import com.example.tasky.common.presentation.TitleSection
 import com.example.tasky.common.presentation.editing.TextFieldType
-import com.example.tasky.common.presentation.model.AgendaItemType
 import com.example.tasky.feature_agenda.presentation.toLogOutErrorMessage
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import java.time.LocalDate
@@ -140,7 +140,7 @@ fun AgendaDetailsRoot(
         dateOnToolbar = date.convertMillisToDate(),
         onToolbarAction = {
             when (it) {
-                ToolbarAction.SAVE -> agendaDetailsViewModel.save()
+                ToolbarAction.SAVE -> agendaDetailsViewModel.save(agendaItemType)
                 ToolbarAction.CANCEL -> navController.navigateUp()
                 ToolbarAction.EDIT -> agendaDetailsViewModel.edit()
             }
@@ -178,7 +178,7 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.setSelectedImage(uri.toString())
         },
         resetPhotoSkipCount = { agendaDetailsViewModel.resetPhotoSkipCount() },
-        onItemDelete = { agendaDetailsViewModel.delete() }
+        onItemDelete = { agendaDetailsViewModel.delete(agendaItemType) }
     )
 
     if (viewState.showLoadingSpinner) {

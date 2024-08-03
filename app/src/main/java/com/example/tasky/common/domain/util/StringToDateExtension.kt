@@ -10,7 +10,7 @@ import java.util.Date
 import java.util.Locale
 
 fun Long.convertMillisToMonth(): String {
-    val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault()) //todo remove this
     return dateFormat.format(Date(this))
 }
 

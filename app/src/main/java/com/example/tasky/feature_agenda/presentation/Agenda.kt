@@ -35,13 +35,13 @@ import com.example.tasky.ReminderNav
 import com.example.tasky.TaskNav
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.error.DataError
+import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.presentation.AgendaCard
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.FabDropdownRoot
 import com.example.tasky.common.presentation.HeaderSmallBold
 import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
-import com.example.tasky.common.presentation.model.AgendaItemType
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
 
