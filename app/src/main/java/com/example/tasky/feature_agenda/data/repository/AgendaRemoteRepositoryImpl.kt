@@ -129,8 +129,10 @@ class AgendaRemoteRepositoryImpl(
                         )
                     }
                     val agendaItemList = events + tasks + reminders
-                    //todo do we want to sort here by time ?
-                    Result.Success(agendaItemList)
+                    val agendaSortedByTime =
+                        agendaItemList.sortedBy { agendaItem -> agendaItem.startTime }
+
+                    Result.Success(agendaSortedByTime)
                 } else {
                     Result.Error(DataError.Network.SERVER_ERROR)
                 }
