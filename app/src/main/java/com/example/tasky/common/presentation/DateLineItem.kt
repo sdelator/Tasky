@@ -37,8 +37,11 @@ fun DateLineItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = if (buttonType == LineItemType.FROM) stringResource(id = R.string.from)
-            else stringResource(id = R.string.to),
+            text = when (buttonType) {
+                LineItemType.FROM -> stringResource(id = R.string.from)
+                LineItemType.TO -> stringResource(id = R.string.to)
+                LineItemType.AT -> stringResource(id = R.string.at)
+            },
             fontSize = 16.sp,
             modifier = Modifier.weight(1f)
         )

@@ -298,11 +298,13 @@ fun AgendaDetailsContent(
                     onDateSelected = onDateSelected,
                     onTimeSelected = onTimeSelected,
                     time = startTime,
-                    buttonType = LineItemType.FROM,
+                    buttonType = if (agendaItemType == AgendaItemType.Event) {
+                        LineItemType.FROM
+                    } else LineItemType.AT,
                     isEditing = isEditMode
                 )
-                GrayDivider()
                 if (agendaItemType == AgendaItemType.Event) {
+                    GrayDivider()
                     DateLineItem(
                         date = toDate,
                         dialogState = toDateDialogState,
@@ -408,7 +410,7 @@ fun PreviewEventContent() {
         onTimeSelected = { _, _, _ -> },
         startTime = "08:00",
         endTime = "08:15",
-        agendaItemType = AgendaItemType.Event,
+        agendaItemType = AgendaItemType.Task,
         showReminderDropdown = false,
         toggleReminderDropdownVisibility = {},
         onReminderClick = {},

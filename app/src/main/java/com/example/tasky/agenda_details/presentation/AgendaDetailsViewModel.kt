@@ -201,7 +201,7 @@ class AgendaDetailsViewModel @Inject constructor(
         lineItemType: LineItemType
     ) {
         when (lineItemType) {
-            LineItemType.FROM -> {
+            LineItemType.FROM, LineItemType.AT -> {
                 _viewState.update {
                     it.copy(
                         fromDatePickerDialogState = dialogState,
@@ -227,7 +227,7 @@ class AgendaDetailsViewModel @Inject constructor(
         dialogState: MaterialDialogState
     ) {
         when (lineItemType) {
-            LineItemType.FROM -> {
+            LineItemType.FROM, LineItemType.AT -> {
                 _viewState.update {
                     it.copy(
                         fromTimeDialogState = dialogState,
