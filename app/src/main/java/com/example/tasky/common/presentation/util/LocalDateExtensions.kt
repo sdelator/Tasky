@@ -1,7 +1,7 @@
 package com.example.tasky.common.presentation.util
 
 import java.time.LocalDate
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 fun LocalDate.toFormatted_MMMM_dd_yyyy(): String {
@@ -15,5 +15,5 @@ fun LocalDate.toFormatted_MMM_dd_yyyy(): String {
 }
 
 fun LocalDate.toLong(): Long {
-    return this.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+    return this.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
