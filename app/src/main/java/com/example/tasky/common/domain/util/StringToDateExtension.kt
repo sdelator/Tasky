@@ -1,22 +1,33 @@
 package com.example.tasky.common.domain.util
 
-import java.text.SimpleDateFormat
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
-import java.util.Date
 import java.util.Locale
 
-fun Long.convertMillisToMonth(): String {
-    val dateFormat = SimpleDateFormat("MMMM", Locale.getDefault()) //todo remove this
-    return dateFormat.format(Date(this))
+fun Long.convertMillisToMmmm(): String {
+    val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.of("UTC"))
+    val formattedDateTime = DateTimeFormatter.ofPattern("MMMM").format(dateTime)
+    return formattedDateTime
 }
 
-fun Long.convertMillisToDate(): String {
+fun Long.convertMillisToDateDdMmmYyyy(): String {
     val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.of("UTC"))
     val formattedDateTime = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateTime)
+    return formattedDateTime
+}
+
+fun Long.convertMillisToLocalDate(): LocalDate {
+    val zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(this), ZoneId.of("UTC"))
+    return zonedDateTime.toLocalDate()
+}
+
+fun Long.convertMillisToMmmDdYyyy(): String {
+    val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(this), ZoneId.of("UTC"))
+    val formattedDateTime = DateTimeFormatter.ofPattern("MMM dd yyyy").format(dateTime)
     return formattedDateTime
 }
 

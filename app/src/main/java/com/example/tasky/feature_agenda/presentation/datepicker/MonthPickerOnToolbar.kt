@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
-import com.example.tasky.common.domain.util.convertMillisToMonth
+import com.example.tasky.common.domain.util.convertMillisToMmmm
 import com.example.tasky.common.domain.util.convertMonthToString
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -182,7 +182,7 @@ fun Material3MonthPickerOnToolbar(
                     onClick = {
                         // Action to set the selected date and close the dialog
                         selectedDateLabel.value =
-                            datePickerState.selectedDateMillis?.convertMillisToMonth() ?: ""
+                            datePickerState.selectedDateMillis?.convertMillisToMmmm() ?: ""
                         onMonthSelected(selectedDateLabel.value)
                         onMonthClick()
                     }

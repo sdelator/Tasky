@@ -11,6 +11,7 @@ import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRep
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.model.AgendaItemType
+import com.example.tasky.common.domain.util.convertMillisToMmmDdYyyy
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
@@ -99,10 +100,8 @@ class AgendaDetailsViewModel @Inject constructor(
                     description = sampleResponse.description,
                     toTime = DateTimeHelper.getLocalTimeFromEpoch(sampleResponse.to).toString(),
                     fromTime = DateTimeHelper.getLocalTimeFromEpoch(sampleResponse.from).toString(),
-                    toDate = DateTimeHelper.getLocalDateFromEpoch(sampleResponse.to)
-                        .toFormatted_MMM_dd_yyyy(),
-                    fromDate = DateTimeHelper.getLocalDateFromEpoch(sampleResponse.from)
-                        .toFormatted_MMM_dd_yyyy(),
+                    toDate = sampleResponse.to.convertMillisToMmmDdYyyy(),
+                    fromDate = sampleResponse.from.convertMillisToMmmDdYyyy(),
                     photos = sampleResponse.photos.map { photo ->
                         (photo as Photo.RemotePhoto)
                         Photo.RemotePhoto(key = photo.key, url = photo.url)
