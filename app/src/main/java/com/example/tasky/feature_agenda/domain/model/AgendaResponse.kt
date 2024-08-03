@@ -9,9 +9,3 @@ data class AgendaResponse(
     val tasks: List<TaskResponse> = emptyList(),
     val reminders: List<ReminderResponse> = emptyList()
 )
-
-data class SyncAgendaResponse(
-    val deletedEventIds: List<String> = emptyList(),
-    val deletedTasksIds: List<String> = emptyList(),
-    val deletedReminderIds: List<String> = emptyList()
-)
