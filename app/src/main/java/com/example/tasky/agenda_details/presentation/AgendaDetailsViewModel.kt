@@ -51,7 +51,6 @@ class AgendaDetailsViewModel @Inject constructor(
 
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
-    private val isNewEvent = (agendaItemAction == null)
 
     // viewEvent triggered by API response
     private val _viewEvent = Channel<AgendaDetailsViewEvent>()
