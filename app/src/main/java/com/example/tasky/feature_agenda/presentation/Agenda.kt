@@ -37,6 +37,8 @@ import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.presentation.AgendaCard
+import com.example.tasky.common.presentation.CardAction
+import com.example.tasky.common.presentation.CardDropdownRoot
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.FabDropdownRoot
 import com.example.tasky.common.presentation.HeaderSmallBold
@@ -64,9 +66,69 @@ fun AgendaRoot(
 
     val onFabAgendaItemTypeClick: (AgendaItemType) -> Unit = {
         when (it) {
-            AgendaItemType.Event -> navController.navigate(EventNav(viewState.dateSelected))
-            AgendaItemType.Task -> navController.navigate(TaskNav(viewState.dateSelected))
-            AgendaItemType.Reminder -> navController.navigate(ReminderNav(viewState.dateSelected))
+            AgendaItemType.Event -> {
+                navController.navigate(
+                    EventNav(
+                        date = viewState.dateSelected,
+                        agendaItemType = AgendaItemType.Event.name
+                    )
+                )
+            }
+
+            AgendaItemType.Task -> {
+                navController.navigate(
+                    TaskNav(
+                        date = viewState.dateSelected,
+                        agendaItemType = AgendaItemType.Task.name
+                    )
+                )
+            }
+
+            AgendaItemType.Reminder -> {
+                navController.navigate(
+                    ReminderNav(
+                        date = viewState.dateSelected,
+                        agendaItemType = AgendaItemType.Reminder.name
+                    )
+                )
+            }
+        }
+    }
+
+    val onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit = { agendaItem, cardAction ->
+        when (agendaItem.cardType) {
+            AgendaItemType.Event -> {
+                navController.navigate(
+                    EventNav(
+                        date = viewState.dateSelected,
+                        agendaItemId = agendaItem.id,
+                        cardAction = cardAction.name,
+                        agendaItemType = agendaItem.cardType.name
+                    )
+                )
+            }
+
+            AgendaItemType.Task -> {
+                navController.navigate(
+                    TaskNav(
+                        date = viewState.dateSelected,
+                        agendaItemId = agendaItem.id,
+                        cardAction = cardAction.name,
+                        agendaItemType = agendaItem.cardType.name
+                    )
+                )
+            }
+
+            AgendaItemType.Reminder -> {
+                navController.navigate(
+                    ReminderNav(
+                        date = viewState.dateSelected,
+                        agendaItemId = agendaItem.id,
+                        cardAction = cardAction.name,
+                        agendaItemType = agendaItem.cardType.name
+                    )
+                )
+            }
         }
     }
 
@@ -86,7 +148,10 @@ fun AgendaRoot(
         onFabActionClick = onFabAgendaItemTypeClick,
         headerDateText = viewState.headerDateText,
         agendaItems = viewState.agendaItems,
-        formatTimeBasedOnEvent = formatTimeBasedOnEvent
+        formatTimeBasedOnEvent = formatTimeBasedOnEvent,
+        onAgendaCardActionClick = onAgendaCardActionClick,
+        toggleAgendaCardDropdownVisiblity = { agendaViewModel.toggleAgendaDropdownVisibility() },
+        showAgendaCardDropdown = viewState.showAgendaCardDropdown
     )
 
     if (viewState.showLoadingSpinner) {
@@ -129,7 +194,10 @@ fun AgendaContent(
     onFabActionClick: (AgendaItemType) -> Unit,
     headerDateText: String,
     agendaItems: List<AgendaItem>?,
-    formatTimeBasedOnEvent: (Long, Long?) -> String
+    formatTimeBasedOnEvent: (Long, Long?) -> String,
+    showAgendaCardDropdown: Boolean,
+    toggleAgendaCardDropdownVisiblity: () -> Unit,
+    onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -202,7 +270,14 @@ fun AgendaContent(
                                         )
                                 },
                                 cardType = agendaItem.cardType,
-                                isChecked = false
+                                isChecked = false,
+                                toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisiblity
+                            )
+                            CardDropdownRoot(
+                                agendaItem = agendaItem,
+                                showAgendaCardDropdown = showAgendaCardDropdown,
+                                toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisiblity,
+                                onAgendaCardActionClick = onAgendaCardActionClick
                             )
                         }
                     }
@@ -246,7 +321,10 @@ fun PreviewAgendaContent() {
         headerDateText = "today",
         onFabActionClick = { },
         agendaItems = null,
-        formatTimeBasedOnEvent = { _, _ -> "" }
+        formatTimeBasedOnEvent = { _, _ -> "" },
+        onAgendaCardActionClick = { _, _ -> },
+        showAgendaCardDropdown = true,
+        toggleAgendaCardDropdownVisiblity = {}
     )
 }
 

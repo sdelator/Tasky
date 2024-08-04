@@ -104,7 +104,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         val title = it.savedStateHandle.get<String>(Constants.TITLE)
         val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
         val imageAction = it.savedStateHandle.get<String>(Constants.IMAGE_ACTION)
-        val args = it.toRoute<EventNav>()
+        val args = it.toRoute<TaskNav>()
         val date = args.date
         AgendaDetailsRoot(
             navController = navController,
@@ -119,7 +119,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         val title = it.savedStateHandle.get<String>(Constants.TITLE)
         val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
         val imageAction = it.savedStateHandle.get<String>(Constants.IMAGE_ACTION)
-        val args = it.toRoute<EventNav>()
+        val args = it.toRoute<ReminderNav>()
         val date = args.date
         AgendaDetailsRoot(
             navController = navController,
@@ -167,14 +167,30 @@ object LoginNav
 @Serializable
 object AgendaNav
 
+//todo maybe I don't need all these, use ~AgendaDetailsNav instead?
 @Serializable
-data class EventNav(val date: Long)
+data class EventNav(
+    val date: Long,
+    val agendaItemType: String,
+    val agendaItemId: String? = null,
+    val cardAction: String? = null
+)
 
 @Serializable
-data class TaskNav(val date: Long)
+data class TaskNav(
+    val date: Long,
+    val agendaItemType: String,
+    val agendaItemId: String? = null,
+    val cardAction: String? = null
+)
 
 @Serializable
-data class ReminderNav(val date: Long)
+data class ReminderNav(
+    val date: Long,
+    val agendaItemType: String,
+    val agendaItemId: String? = null,
+    val cardAction: String? = null
+)
 
 @Serializable
 data class EditingNav(val textFieldType: String, val agendaItemType: String)
