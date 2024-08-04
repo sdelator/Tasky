@@ -1,6 +1,7 @@
 package com.example.tasky.agenda_details.domain.model
 
 import com.example.tasky.common.domain.model.AgendaItemType
+import com.example.tasky.feature_agenda.data.model.AttendeeDto
 
 sealed class AgendaItem(
     open val id: String,
@@ -19,7 +20,7 @@ sealed class AgendaItem(
         override val remindAt: Long,
         val host: String,
         val isUserEventCreator: Boolean,
-        val attendees: List<AttendeeDetails>,
+        val attendees: List<AttendeeDto>,
         val photos: List<Photo>
     ) : AgendaItem(id, title, description, startTime = from, remindAt, AgendaItemType.Event)
 

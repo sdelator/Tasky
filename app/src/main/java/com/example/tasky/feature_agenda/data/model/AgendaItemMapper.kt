@@ -23,6 +23,21 @@ fun AgendaItem.Reminder.toReminderDto(): ReminderDto {
     )
 }
 
+fun EventDto.toAgendaItemEvent(): AgendaItem.Event {
+    return AgendaItem.Event(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        from = this.from,
+        to = this.to,
+        remindAt = this.remindAt,
+        host = this.host,
+        isUserEventCreator = this.isUserEventCreator,
+        attendees = this.attendees,
+        photos = this.photos
+    )
+}
+
 fun ReminderDto.toAgendaItemReminder(): AgendaItem.Reminder {
     return AgendaItem.Reminder(
         id = this.id,

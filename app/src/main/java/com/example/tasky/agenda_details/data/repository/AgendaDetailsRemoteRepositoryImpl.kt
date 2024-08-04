@@ -9,6 +9,7 @@ import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.util.toNetworkErrorType
 import com.example.tasky.di.AuthenticatedApi
+import com.example.tasky.feature_agenda.data.model.toAgendaItemEvent
 import com.example.tasky.feature_agenda.data.model.toAgendaItemReminder
 import com.example.tasky.feature_agenda.data.model.toAgendaItemTask
 import com.example.tasky.feature_agenda.data.model.toReminderDto
@@ -52,20 +53,7 @@ class AgendaDetailsRemoteRepositoryImpl(
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 if (responseBody != null) {
-                    Result.Success(
-                        AgendaItem.Event(
-                            id = responseBody.id,
-                            title = responseBody.title,
-                            description = responseBody.description,
-                            from = responseBody.from,
-                            to = responseBody.to,
-                            remindAt = responseBody.remindAt,
-                            host = responseBody.host,
-                            isUserEventCreator = responseBody.isUserEventCreator,
-                            attendees = responseBody.attendees,
-                            photos = responseBody.photos
-                        )
-                    )
+                    Result.Success(responseBody.toAgendaItemEvent())
                 } else {
                     Log.e("Error", "API call failed with code ${response.code()}")
                     Result.Error(DataError.Network.SERVER_ERROR)
