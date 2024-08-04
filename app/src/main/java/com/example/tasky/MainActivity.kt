@@ -120,12 +120,10 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
         val imageAction = it.savedStateHandle.get<String>(Constants.IMAGE_ACTION)
         val args = it.toRoute<ReminderNav>()
-        val test = args.date
-        val agendaItemId = args.agendaItemId
-        val cardAction = args.cardAction
+        val date = args.date
         AgendaDetailsRoot(
             navController = navController,
-            date = test,
+            date = date,
             agendaItemType = AgendaItemType.Reminder,
             title = title,
             description = description,
@@ -169,18 +167,29 @@ object LoginNav
 @Serializable
 object AgendaNav
 
+//todo maybe I don't need all these ~AgendaDetailsNav instead
 @Serializable
-data class EventNav(val date: Long)
+data class EventNav(
+    val date: Long,
+    val agendaItemId: String? = null,
+    val cardAction: String? = null,
+    val agendaItemType: String
+)
 
 @Serializable
-data class TaskNav(val date: Long)
+data class TaskNav(
+    val date: Long,
+    val agendaItemId: String? = null,
+    val cardAction: String? = null,
+    val agendaItemType: String
+)
 
 @Serializable
 data class ReminderNav(
     val date: Long,
     val agendaItemId: String? = null,
     val cardAction: String? = null,
-    val agendaItemType: String? = null
+    val agendaItemType: String
 )
 
 @Serializable

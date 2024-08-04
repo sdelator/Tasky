@@ -66,24 +66,69 @@ fun AgendaRoot(
 
     val onFabAgendaItemTypeClick: (AgendaItemType) -> Unit = {
         when (it) {
-            AgendaItemType.Event -> navController.navigate(EventNav(viewState.dateSelected))
-            AgendaItemType.Task -> navController.navigate(TaskNav(viewState.dateSelected))
-            AgendaItemType.Reminder -> navController.navigate(ReminderNav(viewState.dateSelected))
+            AgendaItemType.Event -> {
+                navController.navigate(
+                    EventNav(
+                        date = viewState.dateSelected,
+                        agendaItemType = AgendaItemType.Event.name
+                    )
+                )
+            }
+
+            AgendaItemType.Task -> {
+                navController.navigate(
+                    TaskNav(
+                        date = viewState.dateSelected,
+                        agendaItemType = AgendaItemType.Task.name
+                    )
+                )
+            }
+
+            AgendaItemType.Reminder -> {
+                navController.navigate(
+                    ReminderNav(
+                        date = viewState.dateSelected,
+                        agendaItemType = AgendaItemType.Reminder.name
+                    )
+                )
+            }
         }
     }
 
     val onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit = { agendaItem, cardAction ->
         when (agendaItem.cardType) {
-            AgendaItemType.Event -> navController.navigate(EventNav(viewState.dateSelected))
-            AgendaItemType.Task -> navController.navigate(TaskNav(viewState.dateSelected))
-            AgendaItemType.Reminder -> navController.navigate(
-                ReminderNav(
-                    date = viewState.dateSelected,
-                    agendaItemId = agendaItem.id,
-                    cardAction = cardAction.name,
-                    agendaItemType = agendaItem.cardType.name
+            AgendaItemType.Event -> {
+                navController.navigate(
+                    EventNav(
+                        date = viewState.dateSelected,
+                        agendaItemId = agendaItem.id,
+                        cardAction = cardAction.name,
+                        agendaItemType = agendaItem.cardType.name
+                    )
                 )
-            )
+            }
+
+            AgendaItemType.Task -> {
+                navController.navigate(
+                    TaskNav(
+                        date = viewState.dateSelected,
+                        agendaItemId = agendaItem.id,
+                        cardAction = cardAction.name,
+                        agendaItemType = agendaItem.cardType.name
+                    )
+                )
+            }
+
+            AgendaItemType.Reminder -> {
+                navController.navigate(
+                    ReminderNav(
+                        date = viewState.dateSelected,
+                        agendaItemId = agendaItem.id,
+                        cardAction = cardAction.name,
+                        agendaItemType = agendaItem.cardType.name
+                    )
+                )
+            }
         }
     }
 
