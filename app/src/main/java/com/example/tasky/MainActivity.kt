@@ -167,29 +167,29 @@ object LoginNav
 @Serializable
 object AgendaNav
 
-//todo maybe I don't need all these ~AgendaDetailsNav instead
+//todo maybe I don't need all these, use ~AgendaDetailsNav instead?
 @Serializable
 data class EventNav(
     val date: Long,
+    val agendaItemType: String,
     val agendaItemId: String? = null,
-    val cardAction: String? = null,
-    val agendaItemType: String
+    val cardAction: String? = null
 )
 
 @Serializable
 data class TaskNav(
     val date: Long,
+    val agendaItemType: String,
     val agendaItemId: String? = null,
-    val cardAction: String? = null,
-    val agendaItemType: String
+    val cardAction: String? = null
 )
 
 @Serializable
 data class ReminderNav(
     val date: Long,
+    val agendaItemType: String,
     val agendaItemId: String? = null,
-    val cardAction: String? = null,
-    val agendaItemType: String
+    val cardAction: String? = null
 )
 
 @Serializable
