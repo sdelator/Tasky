@@ -81,8 +81,25 @@ class AgendaDetailsRemoteRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteEvent(): Result<Unit, DataError.Network> {
-        TODO("Not yet implemented")
+    override suspend fun deleteEvent(eventId: String): Result<Unit, DataError.Network> {
+        return try {
+            val response = api.deleteEvent(eventId = eventId)
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    Result.Success(Unit)
+                } else {
+                    Log.e("Error", "API call failed with code ${response.code()}")
+                    Result.Error(DataError.Network.SERVER_ERROR)
+                }
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
     }
 
     override suspend fun updateEvent(): Result<AgendaItem.Event, DataError.Network> {

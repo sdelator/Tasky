@@ -13,7 +13,7 @@ interface AgendaDetailsRemoteRepository {
 
     suspend fun getEvent(): Result<AgendaItem.Event, DataError.Network>
 
-    suspend fun deleteEvent(): Result<Unit, DataError.Network>
+    suspend fun deleteEvent(eventId: String): Result<Unit, DataError.Network>
 
     suspend fun updateEvent(): Result<AgendaItem.Event, DataError.Network>
 

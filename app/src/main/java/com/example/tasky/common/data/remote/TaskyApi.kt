@@ -51,6 +51,8 @@ interface TaskyApi {
     @GET("/agenda")
     suspend fun loadAgenda(@Query("time") time: Long): Response<AgendaResponse>
 
+    @DELETE("/event")
+    suspend fun deleteEvent(@Query("eventId") eventId: String): Response<Unit>
 
 //    @PUT("/syncAgenda")
 //    suspend fun syncAgendaItem(): Response<SyncAgendaResponse>
