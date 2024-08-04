@@ -14,6 +14,7 @@ import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.domain.util.convertMillisToMmmDdYyyy
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
+import com.example.tasky.common.presentation.util.toFormatted_HH_mm
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 import javax.inject.Inject
 
@@ -54,10 +54,8 @@ class AgendaDetailsViewModel @Inject constructor(
                 it.copy(
                     fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
                     toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
-                    fromTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
-                        .toString(),
-                    toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
-                        .format(DateTimeFormatter.ofPattern("HH:mm")).toString()
+                    fromTime = LocalTime.now().toFormatted_HH_mm(),
+                    toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE).toFormatted_HH_mm()
                 )
             }
         } else {
