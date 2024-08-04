@@ -13,6 +13,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -50,6 +51,8 @@ interface TaskyApi {
     @GET("/agenda")
     suspend fun loadAgenda(@Query("time") time: Long): Response<AgendaResponse>
 
+    @DELETE("/event")
+    suspend fun deleteEvent(@Query("eventId") eventId: String): Response<Unit>
 
 //    @PUT("/syncAgenda")
 //    suspend fun syncAgendaItem(): Response<SyncAgendaResponse>
@@ -60,6 +63,9 @@ interface TaskyApi {
     @POST("/task")
     suspend fun createTask(@Body taskDtoDetails: TaskDto): Response<Unit>
 
+    @DELETE("/task")
+    suspend fun deleteTask(@Query("taskId") taskId: String): Response<Unit>
+
     @PUT("/task")
     suspend fun updateTask(@Body taskDetails: AgendaItem.Task): Response<Unit>
 
@@ -68,4 +74,7 @@ interface TaskyApi {
 
     @POST("/reminder")
     suspend fun createReminder(@Body reminderDtoDetails: ReminderDto): Response<Unit>
+
+    @DELETE("/reminder")
+    suspend fun deleteReminder(@Query("reminderId") reminderId: String): Response<Unit>
 }

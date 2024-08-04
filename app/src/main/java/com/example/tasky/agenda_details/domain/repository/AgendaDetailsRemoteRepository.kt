@@ -13,7 +13,7 @@ interface AgendaDetailsRemoteRepository {
 
     suspend fun getEvent(): Result<AgendaItem.Event, DataError.Network>
 
-    suspend fun deleteEvent(): Result<Unit, DataError.Network>
+    suspend fun deleteEvent(eventId: String): Result<Unit, DataError.Network>
 
     suspend fun updateEvent(): Result<AgendaItem.Event, DataError.Network>
 
@@ -21,7 +21,11 @@ interface AgendaDetailsRemoteRepository {
         taskDetails: AgendaItem.Task
     ): Result<Unit, DataError.Network>
 
+    suspend fun deleteTask(taskId: String): Result<Unit, DataError.Network>
+
     suspend fun createReminder(
         reminderDetails: AgendaItem.Reminder
     ): Result<Unit, DataError.Network>
+
+    suspend fun deleteReminder(reminderId: String): Result<Unit, DataError.Network>
 }
