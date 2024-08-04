@@ -45,6 +45,9 @@ class AgendaDetailsViewModel @Inject constructor(
     private val agendaItemAction: CardAction? = savedStateHandle.get<String>("cardAction")?.let {
         CardAction.valueOf(it)
     }
+    private val agendaItemType = savedStateHandle.get<String>("agendaItemType")?.let {
+        AgendaItemType.valueOf(it)
+    }
 
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
@@ -58,6 +61,9 @@ class AgendaDetailsViewModel @Inject constructor(
         when (agendaItemAction) {
             CardAction.Open -> {
                 // api call to fetch data
+                if (agendaItemType != null) {
+                    loadDataForItem(agendaItemType)
+                }
             }
 
             CardAction.Edit -> TODO()
@@ -122,6 +128,26 @@ class AgendaDetailsViewModel @Inject constructor(
 //                reminderTime = getReminderTime(sampleResponse.remindAt, sampleResponse.from)
 //            )
 //        }
+    }
+
+    private fun loadDataForItem(agendaItemType: AgendaItemType) {
+        when (agendaItemType) {
+            AgendaItemType.Event -> loadDataForEvent()
+            AgendaItemType.Task -> loadDataForTask()
+            AgendaItemType.Reminder -> loadDataForReminder()
+        }
+    }
+
+    private fun loadDataForEvent() {
+        // todo
+    }
+
+    private fun loadDataForTask() {
+        // todo
+    }
+
+    private fun loadDataForReminder() {
+        // todo
     }
 
     private fun getReminderTime(remindAt: Long, fromTime: Long): ReminderTime {

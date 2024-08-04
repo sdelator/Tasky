@@ -179,7 +179,8 @@ data class TaskNav(val date: Long)
 data class ReminderNav(
     val date: Long,
     val agendaItemId: String? = null,
-    val cardAction: String? = null
+    val cardAction: String? = null,
+    val agendaItemType: String? = null
 )
 
 @Serializable

@@ -78,9 +78,10 @@ fun AgendaRoot(
             AgendaItemType.Task -> navController.navigate(TaskNav(viewState.dateSelected))
             AgendaItemType.Reminder -> navController.navigate(
                 ReminderNav(
-                    viewState.dateSelected,
-                    agendaItem.id,
-                    cardAction.name
+                    date = viewState.dateSelected,
+                    agendaItemId = agendaItem.id,
+                    cardAction = cardAction.name,
+                    agendaItemType = agendaItem.cardType.name
                 )
             )
         }
