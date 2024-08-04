@@ -183,8 +183,11 @@ class AgendaDetailsViewModel @Inject constructor(
         //set viewstate to editing
     }
 
-    fun delete(agendaItemType: AgendaItemType) {
+    fun delete() {
         //todo if no id (new item) then just navigate back
+        if (agendaItemType == null) {
+            throw IllegalArgumentException("agendaItemType is null")
+        }
         when (agendaItemType) {
             AgendaItemType.Event -> deleteEvent()
             AgendaItemType.Task -> deleteTask()
@@ -270,8 +273,11 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun save(agendaItemType: AgendaItemType) {
+    fun save() {
         // todo save all items in local DB
+        if (agendaItemType == null) {
+            throw IllegalArgumentException("agendaItemType is null")
+        }
         when (agendaItemType) {
             AgendaItemType.Event -> saveEvent()
             AgendaItemType.Task -> saveTask()
