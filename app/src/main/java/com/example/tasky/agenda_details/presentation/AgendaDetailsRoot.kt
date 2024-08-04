@@ -47,7 +47,7 @@ import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.agenda_details.presentation.components.Photos
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.model.AgendaItemType
-import com.example.tasky.common.domain.util.convertMillisToDate
+import com.example.tasky.common.domain.util.convertMillisToDateDdMmmYyyy
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.DateLineItem
 import com.example.tasky.common.presentation.GrayDivider
@@ -137,7 +137,7 @@ fun AgendaDetailsRoot(
         fromDate = viewState.fromDate,
         isEditMode = isEditing,
         onEditClick = { navController.navigate(EditingNav(it.name, agendaItemType.name)) },
-        dateOnToolbar = date.convertMillisToDate(),
+        dateOnToolbar = date.convertMillisToDateDdMmmYyyy(),
         onToolbarAction = {
             when (it) {
                 ToolbarAction.SAVE -> agendaDetailsViewModel.save(agendaItemType)

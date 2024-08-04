@@ -2,6 +2,7 @@ package com.example.tasky.feature_agenda.data.repository
 
 import android.util.Log
 import com.example.tasky.agenda_details.domain.model.AgendaItem
+import com.example.tasky.agenda_details.domain.model.AttendeeDetails
 import com.example.tasky.common.data.remote.TaskyApi
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
@@ -29,7 +30,16 @@ class AgendaRemoteRepositoryImpl(
                             remindAt = event.remindAt,
                             host = event.host,
                             isUserEventCreator = event.isUserEventCreator,
-                            attendees = event.attendees,
+                            attendees = event.attendees.map { attendees ->
+                                AttendeeDetails(
+                                    email = attendees.email,
+                                    fullName = attendees.fullName,
+                                    userId = attendees.userId,
+                                    eventId = attendees.eventId,
+                                    isGoing = attendees.isGoing,
+                                    remindAt = attendees.remindAt
+                                )
+                            },
                             photos = event.photos
                         )
                     }
@@ -86,7 +96,16 @@ class AgendaRemoteRepositoryImpl(
                             remindAt = event.remindAt,
                             host = event.host,
                             isUserEventCreator = event.isUserEventCreator,
-                            attendees = event.attendees,
+                            attendees = event.attendees.map { attendees ->
+                                AttendeeDetails(
+                                    email = attendees.email,
+                                    fullName = attendees.fullName,
+                                    userId = attendees.userId,
+                                    eventId = attendees.eventId,
+                                    isGoing = attendees.isGoing,
+                                    remindAt = attendees.remindAt
+                                )
+                            },
                             photos = event.photos
                         )
                     }
@@ -110,8 +129,10 @@ class AgendaRemoteRepositoryImpl(
                         )
                     }
                     val agendaItemList = events + tasks + reminders
-                    //todo do we want to sort here by time ?
-                    Result.Success(agendaItemList)
+                    val agendaSortedByTime =
+                        agendaItemList.sortedBy { agendaItem -> agendaItem.startTime }
+
+                    Result.Success(agendaSortedByTime)
                 } else {
                     Result.Error(DataError.Network.SERVER_ERROR)
                 }

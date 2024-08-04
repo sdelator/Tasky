@@ -181,8 +181,12 @@ fun AgendaContent(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     if (!agendaItems.isNullOrEmpty()) {
-                        items(agendaItems) { agendaItem ->
+                        items(
+                            items = agendaItems,
+                            key = { it.id }
+                        ) { agendaItem ->
                             AgendaCard(
+                                modifier = Modifier.animateItem(),
                                 title = agendaItem.title,
                                 details = agendaItem.description ?: "",
                                 date = when (agendaItem) {

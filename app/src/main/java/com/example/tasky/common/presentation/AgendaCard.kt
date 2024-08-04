@@ -28,6 +28,7 @@ import com.example.tasky.common.domain.model.AgendaItemType
 
 @Composable
 fun AgendaCard(
+    modifier: Modifier,
     title: String,
     details: String,
     date: String,
@@ -61,7 +62,7 @@ fun AgendaCard(
     }
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
         shape = RoundedCornerShape(20.dp),
@@ -142,6 +143,7 @@ fun DateOfAction(date: String, textColor: Color) {
 @Preview
 fun PreviewEventCard() {
     AgendaCard(
+        modifier = Modifier,
         title = "Place Holder Text",
         details = "Amet minim mollit non deserunt",
         date = "Mar 5, 10:30 - Mar 5, 11:00",
@@ -154,6 +156,7 @@ fun PreviewEventCard() {
 @Preview
 fun PreviewTaskCard() {
     AgendaCard(
+        modifier = Modifier,
         title = "Place Holder Text",
         details = "Amet minim mollit non deserunt",
         date = "Mar 5, 10:30 - Mar 5, 11:00",
@@ -166,6 +169,7 @@ fun PreviewTaskCard() {
 @Preview
 fun PreviewReminderCard() {
     AgendaCard(
+        modifier = Modifier,
         title = "Place Holder Text",
         details = "Amet minim mollit non deserunt",
         date = "Mar 5, 10:30 - Mar 5, 11:00",
