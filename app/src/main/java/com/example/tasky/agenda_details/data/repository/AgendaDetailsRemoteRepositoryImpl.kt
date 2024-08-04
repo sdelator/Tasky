@@ -9,6 +9,7 @@ import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.util.toNetworkErrorType
 import com.example.tasky.di.AuthenticatedApi
+import com.example.tasky.feature_agenda.data.model.toAgendaItemReminder
 import com.example.tasky.feature_agenda.data.model.toReminderDto
 import com.example.tasky.feature_agenda.data.model.toTaskDto
 import com.google.gson.Gson
@@ -175,22 +176,16 @@ class AgendaDetailsRemoteRepositoryImpl(
         }
     }
 
-    override suspend fun loadReminder(reminderId: String): Result<AgendaItem.Reminder, DataError.Network> {
+    override suspend fun loadReminder(
+        reminderId: String
+    ): Result<AgendaItem.Reminder, DataError.Network> {
         return try {
             val response = api.loadReminder(reminderId)
 
             if (response.isSuccessful) {
                 val responseBody = response.body()
                 if (responseBody != null) {
-                    Result.Success(
-                        AgendaItem.Reminder(
-                            id = responseBody.id,
-                            title = responseBody.title,
-                            description = responseBody.description,
-                            time = responseBody.time,
-                            remindAt = responseBody.remindAt
-                        )
-                    )
+                    Result.Success(responseBody.toAgendaItemReminder())
                 } else {
                     Log.e("Error", "API call failed with code ${response.code()}")
                     Result.Error(DataError.Network.SERVER_ERROR)
