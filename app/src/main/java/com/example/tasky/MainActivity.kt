@@ -104,7 +104,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         val title = it.savedStateHandle.get<String>(Constants.TITLE)
         val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
         val imageAction = it.savedStateHandle.get<String>(Constants.IMAGE_ACTION)
-        val args = it.toRoute<EventNav>()
+        val args = it.toRoute<TaskNav>()
         val date = args.date
         AgendaDetailsRoot(
             navController = navController,
@@ -119,11 +119,13 @@ fun NavGraphBuilder.calendarGraph(navController: NavController) {
         val title = it.savedStateHandle.get<String>(Constants.TITLE)
         val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
         val imageAction = it.savedStateHandle.get<String>(Constants.IMAGE_ACTION)
-        val args = it.toRoute<EventNav>()
-        val date = args.date
+        val args = it.toRoute<ReminderNav>()
+        val test = args.date
+        val agendaItemId = args.agendaItemId
+        val cardAction = args.cardAction
         AgendaDetailsRoot(
             navController = navController,
-            date = date,
+            date = test,
             agendaItemType = AgendaItemType.Reminder,
             title = title,
             description = description,
@@ -174,7 +176,11 @@ data class EventNav(val date: Long)
 data class TaskNav(val date: Long)
 
 @Serializable
-data class ReminderNav(val date: Long)
+data class ReminderNav(
+    val date: Long,
+    val agendaItemId: String? = null,
+    val cardAction: String? = null
+)
 
 @Serializable
 data class EditingNav(val textFieldType: String, val agendaItemType: String)

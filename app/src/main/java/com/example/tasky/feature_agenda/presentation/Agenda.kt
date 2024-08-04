@@ -73,10 +73,16 @@ fun AgendaRoot(
     }
 
     val onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit = { agendaItem, cardAction ->
-        when (cardAction) { //open specific event populated w/id
-            CardAction.Open -> println("$agendaItem")//navController.navigate(EventNav(viewState.dateSelected))
-            CardAction.Edit -> println("$agendaItem")//navController.navigate(TaskNav(viewState.dateSelected))
-            CardAction.Delete -> println("$agendaItem")//navController.navigate(ReminderNav(viewState.dateSelected))
+        when (agendaItem.cardType) {
+            AgendaItemType.Event -> navController.navigate(EventNav(viewState.dateSelected))
+            AgendaItemType.Task -> navController.navigate(TaskNav(viewState.dateSelected))
+            AgendaItemType.Reminder -> navController.navigate(
+                ReminderNav(
+                    viewState.dateSelected,
+                    agendaItem.id,
+                    cardAction.name
+                )
+            )
         }
     }
 

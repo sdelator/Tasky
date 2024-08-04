@@ -1,17 +1,17 @@
 package com.example.tasky.agenda_details.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
-import com.example.tasky.agenda_details.domain.model.AttendeeDetails
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.model.AgendaItemType
-import com.example.tasky.common.domain.util.convertMillisToMmmDdYyyy
+import com.example.tasky.common.presentation.CardAction
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.toFormatted_HH_mm
@@ -32,7 +32,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AgendaDetailsViewModel @Inject constructor(
     private val imageCompressor: ImageCompressor,
-    private val agendaDetailsRemoteRepository: AgendaDetailsRemoteRepository
+    private val agendaDetailsRemoteRepository: AgendaDetailsRemoteRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     companion object {
@@ -40,74 +41,87 @@ class AgendaDetailsViewModel @Inject constructor(
         const val DEFAULT_TIME_RANGE = 15L
     }
 
+    private val agendaItemId: String? = savedStateHandle.get<String>("agendaItemId")
+    private val agendaItemAction: CardAction? = savedStateHandle.get<String>("cardAction")?.let {
+        CardAction.valueOf(it)
+    }
+
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
-    private val isNewEvent = true
+    private val isNewEvent = (agendaItemAction == null)
 
     // viewEvent triggered by API response
     private val _viewEvent = Channel<AgendaDetailsViewEvent>()
     val viewEvent = _viewEvent.receiveAsFlow()
 
     init {
-        if (isNewEvent) {
-            _viewState.update {
-                it.copy(
-                    fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
-                    toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
-                    fromTime = LocalTime.now().toFormatted_HH_mm(),
-                    toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE).toFormatted_HH_mm()
-                )
+        when (agendaItemAction) {
+            CardAction.Open -> {
+                // api call to fetch data
             }
-        } else {
-            //todo make API call to fetch data
-            val sampleResponse =
-                AgendaItem.Event(
-                    id = "a554ff78-4307-41fd-b2ec-01a96db98e00",
-                    title = "pool party",
-                    description = "bring snacks",
-                    from = 1722502800,
-                    to = 1722510000,
-                    remindAt = 1722416400,
-                    host = "666e55a7a3e6cb2e00e33a5f",
-                    isUserEventCreator = true,
-                    attendees = listOf(
-                        AttendeeDetails(
-                            email = "s@test.com",
-                            fullName = "sandra",
-                            userId = "666e55a7a3e6cb2e00e33a5f",
-                            eventId = "a554ff78-4307-41fd-b2ec-01a96db98e00",
-                            isGoing = true,
-                            remindAt = 1722416400
-                        )
-                    ),
-                    photos = listOf(
-                        Photo.RemotePhoto(
-                            key = "ca6a8dd2-c2a1-4a0e-b0f3-0681820dbd0d",
-                            url = "https://tasky-photos.s3.eu-central-1.amazonaws.com/ca6a8dd2-c2a1-4a0e-b0f3-0681820dbd0d?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240730T165744Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Credential=AKIAXEBKLPAR6LNGJAO5%2F20240730%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Signature=bd34e8f4a81c1015656c6afcf08e62bc8c52043240380f5ff78c59a13f0b0bc6"
-                        ),
-                        Photo.RemotePhoto(
-                            key = "a27f5ccf-b474-4455-a63a-782f72594576",
-                            url = "https://tasky-photos.s3.eu-central-1.amazonaws.com/a27f5ccf-b474-4455-a63a-782f72594576?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240730T165744Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Credential=AKIAXEBKLPAR6LNGJAO5%2F20240730%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Signature=7d4d568f500d56562cdbefa127f3aa71aab32ecdbee66ce223de4b28db4eada3"
-                        )
-                    )
-                )
 
-            _viewState.update {
-                it.copy(
-                    title = sampleResponse.title,
-                    description = sampleResponse.description,
-                    toTime = DateTimeHelper.getLocalTimeFromEpoch(sampleResponse.to).toString(),
-                    fromTime = DateTimeHelper.getLocalTimeFromEpoch(sampleResponse.from).toString(),
-                    toDate = sampleResponse.to.convertMillisToMmmDdYyyy(),
-                    fromDate = sampleResponse.from.convertMillisToMmmDdYyyy(),
-                    photos = sampleResponse.photos.map { photo ->
-                        (photo as Photo.RemotePhoto)
-                        Photo.RemotePhoto(key = photo.key, url = photo.url)
-                    },
-                    reminderTime = getReminderTime(sampleResponse.remindAt, sampleResponse.from)
-                )
+            CardAction.Edit -> TODO()
+            CardAction.Delete -> TODO()
+            null -> {
+                // isNewEvent
+                _viewState.update {
+                    it.copy(
+                        fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
+                        toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
+                        fromTime = LocalTime.now().toFormatted_HH_mm(),
+                        toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE).toFormatted_HH_mm()
+                    )
+                }
             }
         }
+//        //todo make API call to fetch data
+//        val sampleResponse =
+//            AgendaItem.Event(
+//                id = "a554ff78-4307-41fd-b2ec-01a96db98e00",
+//                title = "pool party",
+//                description = "bring snacks",
+//                from = 1722502800,
+//                to = 1722510000,
+//                remindAt = 1722416400,
+//                host = "666e55a7a3e6cb2e00e33a5f",
+//                isUserEventCreator = true,
+//                attendees = listOf(
+//                    AttendeeDetails(
+//                        email = "s@test.com",
+//                        fullName = "sandra",
+//                        userId = "666e55a7a3e6cb2e00e33a5f",
+//                        eventId = "a554ff78-4307-41fd-b2ec-01a96db98e00",
+//                        isGoing = true,
+//                        remindAt = 1722416400
+//                    )
+//                ),
+//                photos = listOf(
+//                    Photo.RemotePhoto(
+//                        key = "ca6a8dd2-c2a1-4a0e-b0f3-0681820dbd0d",
+//                        url = "https://tasky-photos.s3.eu-central-1.amazonaws.com/ca6a8dd2-c2a1-4a0e-b0f3-0681820dbd0d?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240730T165744Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Credential=AKIAXEBKLPAR6LNGJAO5%2F20240730%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Signature=bd34e8f4a81c1015656c6afcf08e62bc8c52043240380f5ff78c59a13f0b0bc6"
+//                    ),
+//                    Photo.RemotePhoto(
+//                        key = "a27f5ccf-b474-4455-a63a-782f72594576",
+//                        url = "https://tasky-photos.s3.eu-central-1.amazonaws.com/a27f5ccf-b474-4455-a63a-782f72594576?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240730T165744Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Credential=AKIAXEBKLPAR6LNGJAO5%2F20240730%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Signature=7d4d568f500d56562cdbefa127f3aa71aab32ecdbee66ce223de4b28db4eada3"
+//                    )
+//                )
+//            )
+//
+//        _viewState.update {
+//            it.copy(
+//                title = sampleResponse.title,
+//                description = sampleResponse.description,
+//                toTime = DateTimeHelper.getLocalTimeFromEpoch(sampleResponse.to).toString(),
+//                fromTime = DateTimeHelper.getLocalTimeFromEpoch(sampleResponse.from).toString(),
+//                toDate = sampleResponse.to.convertMillisToMmmDdYyyy(),
+//                fromDate = sampleResponse.from.convertMillisToMmmDdYyyy(),
+//                photos = sampleResponse.photos.map { photo ->
+//                    (photo as Photo.RemotePhoto)
+//                    Photo.RemotePhoto(key = photo.key, url = photo.url)
+//                },
+//                reminderTime = getReminderTime(sampleResponse.remindAt, sampleResponse.from)
+//            )
+//        }
     }
 
     private fun getReminderTime(remindAt: Long, fromTime: Long): ReminderTime {
