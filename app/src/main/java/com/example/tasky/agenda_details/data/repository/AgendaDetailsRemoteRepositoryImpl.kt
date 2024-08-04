@@ -175,6 +175,35 @@ class AgendaDetailsRemoteRepositoryImpl(
         }
     }
 
+    override suspend fun loadReminder(reminderId: String): Result<AgendaItem.Reminder, DataError.Network> {
+        return try {
+            val response = api.loadReminder(reminderId)
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    Result.Success(
+                        AgendaItem.Reminder(
+                            id = responseBody.id,
+                            title = responseBody.title,
+                            description = responseBody.description,
+                            time = responseBody.time,
+                            remindAt = responseBody.remindAt
+                        )
+                    )
+                } else {
+                    Log.e("Error", "API call failed with code ${response.code()}")
+                    Result.Error(DataError.Network.SERVER_ERROR)
+                }
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
+
     override suspend fun deleteReminder(reminderId: String): Result<Unit, DataError.Network> {
         return try {
             val response = api.deleteReminder(reminderId = reminderId)

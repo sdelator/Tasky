@@ -70,11 +70,14 @@ interface TaskyApi {
     suspend fun updateTask(@Body taskDetails: AgendaItem.Task): Response<Unit>
 
     @GET("/task")
-    suspend fun loadTask(@Query("id") id: String): Response<AgendaItem.Task>
+    suspend fun loadTask(@Query("taskId") taskId: String): Response<AgendaItem.Task>
 
     @POST("/reminder")
     suspend fun createReminder(@Body reminderDtoDetails: ReminderDto): Response<Unit>
 
     @DELETE("/reminder")
     suspend fun deleteReminder(@Query("reminderId") reminderId: String): Response<Unit>
+
+    @GET("/reminder")
+    suspend fun loadReminder(@Query("reminderId") reminderId: String): Response<AgendaItem.Reminder>
 }

@@ -11,6 +11,7 @@ import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRep
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.model.AgendaItemType
+import com.example.tasky.common.domain.util.convertMillisToMmmDdYyyy
 import com.example.tasky.common.presentation.CardAction
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
@@ -99,7 +100,42 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun loadDataForReminder() {
-        // todo
+        if (agendaItemId == null) {
+            throw IllegalArgumentException("agendaItemId is null")
+        }
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.loadReminder(reminderId = agendaItemId)
+
+            when (result) {
+                is Result.Success -> {
+                    println("reminder loaded!")
+                    _viewState.update {
+                        it.copy(
+                            title = result.data.title,
+                            description = result.data.description,
+                            fromTime = DateTimeHelper.getLocalTimeFromEpoch(result.data.time)
+                                .toString(),
+                            fromDate = result.data.time.convertMillisToMmmDdYyyy(),
+                            reminderTime = getReminderTime(result.data.remindAt, result.data.time)
+                        )
+                    }
+
+                }
+
+                is Result.Error -> {
+                    println("failed to load reminder :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun getReminderTime(remindAt: Long, fromTime: Long): ReminderTime {
