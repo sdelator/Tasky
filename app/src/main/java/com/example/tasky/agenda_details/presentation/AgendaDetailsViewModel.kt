@@ -11,6 +11,7 @@ import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRep
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.model.AgendaItemType
+import com.example.tasky.common.domain.util.convertMillisToHhmm
 import com.example.tasky.common.domain.util.convertMillisToMmmDdYyyy
 import com.example.tasky.common.presentation.CardAction
 import com.example.tasky.common.presentation.LineItemType
@@ -115,8 +116,7 @@ class AgendaDetailsViewModel @Inject constructor(
                         it.copy(
                             title = result.data.title,
                             description = result.data.description,
-                            fromTime = DateTimeHelper.getLocalTimeFromEpoch(result.data.time)
-                                .toString(),
+                            fromTime = result.data.time.convertMillisToHhmm(),
                             fromDate = result.data.time.convertMillisToMmmDdYyyy(),
                             reminderTime = getReminderTime(result.data.remindAt, result.data.time)
                         )

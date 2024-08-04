@@ -11,15 +11,6 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object DateTimeHelper {
-    fun getLocalTimeFromEpoch(
-        epochSeconds: Long,
-        zoneId: ZoneId = ZoneId.systemDefault()
-    ): LocalTime {
-        val instant = Instant.ofEpochSecond(epochSeconds)
-        val zonedDateTime = ZonedDateTime.ofInstant(instant, zoneId)
-        return zonedDateTime.toLocalTime()
-    }
-
     fun calculateTimeDifferenceInSeconds(startTime: Long, endTime: Long): Long {
         val startTimeInSeconds = Instant.ofEpochSecond(startTime)
         val endTimeInSeconds = Instant.ofEpochSecond(endTime)

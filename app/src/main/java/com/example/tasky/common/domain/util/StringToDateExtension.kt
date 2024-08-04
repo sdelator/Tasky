@@ -14,6 +14,12 @@ fun Long.convertMillisToMmmm(): String {
     return formattedDateTime
 }
 
+fun Long.convertMillisToHhmm(): String {
+    val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
+    val formattedDateTime = DateTimeFormatter.ofPattern("HH:mm").format(dateTime)
+    return formattedDateTime
+}
+
 fun Long.convertMillisToDateDdMmmYyyy(): String {
     val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
     val formattedDateTime = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateTime)
@@ -26,7 +32,7 @@ fun Long.convertMillisToLocalDate(): LocalDate {
 }
 
 fun Long.convertMillisToMmmDdYyyy(): String {
-    val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(this), ZoneId.systemDefault())
+    val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
     val formattedDateTime = DateTimeFormatter.ofPattern("MMM dd yyyy").format(dateTime)
     return formattedDateTime
 }
