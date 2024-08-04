@@ -149,7 +149,7 @@ class AgendaDetailsViewModel @Inject constructor(
         when (agendaItemType) {
             AgendaItemType.Event -> println("delete event")//todo deleteEvent()
             AgendaItemType.Task -> deleteTask()
-            AgendaItemType.Reminder -> println("delete reminder") //todo deleteReminder()
+            AgendaItemType.Reminder -> deleteReminder()
         }
     }
 
@@ -167,6 +167,32 @@ class AgendaDetailsViewModel @Inject constructor(
 
                 is Result.Error -> {
                     println("failed task deletion :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteReminder() {
+        val reminderId = "12345abcd" //todo remove hard-coded
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.deleteReminder(reminderId)
+
+            when (result) {
+                is Result.Success -> {
+                    println("reminder deleted!")
+                    _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                }
+
+                is Result.Error -> {
+                    println("failed reminder deletion :(")
                     _viewState.update {
                         it.copy(
                             showLoadingSpinner = false,
