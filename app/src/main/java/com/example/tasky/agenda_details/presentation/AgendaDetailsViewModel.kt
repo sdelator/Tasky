@@ -145,6 +145,38 @@ class AgendaDetailsViewModel @Inject constructor(
 
     fun delete(agendaItemType: AgendaItemType) {
         //todo delete functionality; navigate back to agenda
+        // if no id (new item) then just navigate back
+        when (agendaItemType) {
+            AgendaItemType.Event -> println("delete event")//todo deleteEvent()
+            AgendaItemType.Task -> deleteTask()
+            AgendaItemType.Reminder -> println("delete reminder") //todo deleteReminder()
+        }
+    }
+
+    private fun deleteTask() {
+        val taskId = "372a6800-0b04-4828-b12d-280cfc55df12" //todo remove hard-coded
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.deleteTask(taskId)
+
+            when (result) {
+                is Result.Success -> {
+                    println("task deleted!")
+                    _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                }
+
+                is Result.Error -> {
+                    println("failed task deletion :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun save(agendaItemType: AgendaItemType) {

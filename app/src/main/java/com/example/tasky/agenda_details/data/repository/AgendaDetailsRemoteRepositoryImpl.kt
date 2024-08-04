@@ -113,12 +113,54 @@ class AgendaDetailsRemoteRepositoryImpl(
         }
     }
 
+    override suspend fun deleteTask(taskId: String): Result<Unit, DataError.Network> {
+        return try {
+            val response = api.deleteTask(taskId = taskId)
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    Result.Success(Unit)
+                } else {
+                    Log.e("Error", "API call failed with code ${response.code()}")
+                    Result.Error(DataError.Network.SERVER_ERROR)
+                }
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
+
     override suspend fun createReminder(
         reminderDetails: AgendaItem.Reminder
     ): Result<Unit, DataError.Network> {
         return try {
             val reminder = reminderDetails.toReminderDto()
             val response = api.createReminder(reminder)
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    Result.Success(Unit)
+                } else {
+                    Log.e("Error", "API call failed with code ${response.code()}")
+                    Result.Error(DataError.Network.SERVER_ERROR)
+                }
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
+
+    override suspend fun deleteReminder(reminderId: String): Result<Unit, DataError.Network> {
+        return try {
+            val response = api.deleteReminder(reminderId = reminderId)
 
             if (response.isSuccessful) {
                 val responseBody = response.body()
