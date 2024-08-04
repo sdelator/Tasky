@@ -37,6 +37,8 @@ import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.presentation.AgendaCard
+import com.example.tasky.common.presentation.CardAction
+import com.example.tasky.common.presentation.CardDropdownRoot
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.FabDropdownRoot
 import com.example.tasky.common.presentation.HeaderSmallBold
@@ -70,6 +72,14 @@ fun AgendaRoot(
         }
     }
 
+    val onAgendaCardActionClick: (CardAction) -> Unit = {
+        when (it) { //open specific event populated w/id
+            CardAction.Open -> navController.navigate(EventNav(viewState.dateSelected))
+            CardAction.Edit -> navController.navigate(TaskNav(viewState.dateSelected))
+            CardAction.Delete -> navController.navigate(ReminderNav(viewState.dateSelected))
+        }
+    }
+
     AgendaContent(
         calendarDays = viewState.calendarDays,
         monthSelected = viewState.monthSelected,
@@ -86,7 +96,10 @@ fun AgendaRoot(
         onFabActionClick = onFabAgendaItemTypeClick,
         headerDateText = viewState.headerDateText,
         agendaItems = viewState.agendaItems,
-        formatTimeBasedOnEvent = formatTimeBasedOnEvent
+        formatTimeBasedOnEvent = formatTimeBasedOnEvent,
+        onAgendaCardActionClick = onAgendaCardActionClick,
+        toggleAgendaCardDropdownVisiblity = { agendaViewModel.toggleAgendaDropdownVisibility() },
+        showAgendaCardDropdown = viewState.showAgendaCardDropdown
     )
 
     if (viewState.showLoadingSpinner) {
@@ -129,7 +142,10 @@ fun AgendaContent(
     onFabActionClick: (AgendaItemType) -> Unit,
     headerDateText: String,
     agendaItems: List<AgendaItem>?,
-    formatTimeBasedOnEvent: (Long, Long?) -> String
+    formatTimeBasedOnEvent: (Long, Long?) -> String,
+    showAgendaCardDropdown: Boolean,
+    toggleAgendaCardDropdownVisiblity: () -> Unit,
+    onAgendaCardActionClick: (CardAction) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -204,6 +220,11 @@ fun AgendaContent(
                                 cardType = agendaItem.cardType,
                                 isChecked = false
                             )
+                            CardDropdownRoot(
+                                showAgendaCardDropdown = showAgendaCardDropdown,
+                                toggleAgendaCardDropdownVisiblity = toggleAgendaCardDropdownVisiblity,
+                                onAgendaCardActionClick = onAgendaCardActionClick
+                            )
                         }
                     }
                 }
@@ -246,7 +267,10 @@ fun PreviewAgendaContent() {
         headerDateText = "today",
         onFabActionClick = { },
         agendaItems = null,
-        formatTimeBasedOnEvent = { _, _ -> "" }
+        formatTimeBasedOnEvent = { _, _ -> "" },
+        onAgendaCardActionClick = {},
+        showAgendaCardDropdown = true,
+        toggleAgendaCardDropdownVisiblity = {}
     )
 }
 

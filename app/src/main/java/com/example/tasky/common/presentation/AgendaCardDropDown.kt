@@ -12,27 +12,27 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CardDropdownRoot(
-    showCardDropdown: Boolean,
-    toggleCardDropdownVisiblity: () -> Unit,
-    modifier: Modifier,
-    onActionClick: (CardAction) -> Unit
+    showAgendaCardDropdown: Boolean,
+    toggleAgendaCardDropdownVisiblity: () -> Unit,
+    modifier: Modifier = Modifier,
+    onAgendaCardActionClick: (CardAction) -> Unit
 ) {
     DropdownMenu(
-        expanded = showCardDropdown,
-        onDismissRequest = toggleCardDropdownVisiblity,
+        expanded = showAgendaCardDropdown,
+        onDismissRequest = toggleAgendaCardDropdownVisiblity,
         modifier = Modifier
     ) {
         DropdownMenuItem(
             text = { Text(CardAction.Open.name) },
-            onClick = { onActionClick(CardAction.Open) }
+            onClick = { onAgendaCardActionClick(CardAction.Open) }
         )
         DropdownMenuItem(
             text = { Text(CardAction.Edit.name) },
-            onClick = { onActionClick(CardAction.Edit) }
+            onClick = { onAgendaCardActionClick(CardAction.Edit) }
         )
         DropdownMenuItem(
             text = { Text(CardAction.Delete.name) },
-            onClick = { onActionClick(CardAction.Delete) }
+            onClick = { onAgendaCardActionClick(CardAction.Delete) }
         )
     }
 }
@@ -42,10 +42,10 @@ fun CardDropdownRoot(
 fun PreviewAgendaCardDropdownMenu() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CardDropdownRoot(
-            showCardDropdown = true,
-            toggleCardDropdownVisiblity = { },
+            showAgendaCardDropdown = true,
+            toggleAgendaCardDropdownVisiblity = { },
             Modifier.align(Alignment.TopEnd),
-            onActionClick = { }
+            onAgendaCardActionClick = { }
         )
     }
 }

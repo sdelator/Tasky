@@ -136,6 +136,12 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
+    fun toggleAgendaDropdownVisibility() {
+        _viewState.update {
+            it.copy(showAgendaCardDropdown = !_viewState.value.showAgendaCardDropdown)
+        }
+    }
+
     fun updateDateDialogState(dialogState: MaterialDialogState) {
         _viewState.update {
             it.copy(datePickerDialogState = dialogState)
