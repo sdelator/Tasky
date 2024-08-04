@@ -38,6 +38,7 @@ fun AgendaCard(
     var cardColor = CardDefaults.cardColors()
     var textColor = colorResource(id = R.color.dark_gray)
     var headerColor = Color.Black
+    var tintColor = Color.Black
 
     when (cardType) {
         AgendaItemType.Event -> {
@@ -52,6 +53,7 @@ fun AgendaCard(
             )
             textColor = Color.White
             headerColor = Color.White
+            tintColor = Color.White
         }
 
         AgendaItemType.Reminder -> {
@@ -79,7 +81,7 @@ fun AgendaCard(
                 textColor = headerColor
             )
             Spacer(modifier = Modifier.weight(1f))
-            HorizontalEllipsisIcon()
+            HorizontalEllipsisIcon(tint = tintColor)
         }
         CardDetails(details = details, textColor = textColor)
         DateOfAction(date = date, textColor = textColor)
@@ -104,10 +106,11 @@ fun CustomCheckbox(isChecked: Boolean, color: Color, size: Dp) {
 }
 
 @Composable
-fun HorizontalEllipsisIcon() {
+fun HorizontalEllipsisIcon(tint: Color) {
     Icon(
         painter = painterResource(id = R.drawable.ic_more_horizontal),
-        contentDescription = stringResource(R.string.more_options)
+        contentDescription = stringResource(R.string.more_options),
+        tint = tint
     )
 }
 
