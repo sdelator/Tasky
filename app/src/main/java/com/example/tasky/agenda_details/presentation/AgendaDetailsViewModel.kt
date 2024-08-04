@@ -118,7 +118,8 @@ class AgendaDetailsViewModel @Inject constructor(
                             description = result.data.description,
                             fromTime = result.data.time.convertMillisToHhmm(),
                             fromDate = result.data.time.convertMillisToMmmDdYyyy(),
-                            reminderTime = getReminderTime(result.data.remindAt, result.data.time)
+                            reminderTime = getReminderTime(result.data.remindAt, result.data.time),
+                            showLoadingSpinner = false
                         )
                     }
 
