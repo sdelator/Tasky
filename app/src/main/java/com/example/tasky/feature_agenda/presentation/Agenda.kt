@@ -72,11 +72,11 @@ fun AgendaRoot(
         }
     }
 
-    val onAgendaCardActionClick: (CardAction) -> Unit = {
-        when (it) { //open specific event populated w/id
-            CardAction.Open -> navController.navigate(EventNav(viewState.dateSelected))
-            CardAction.Edit -> navController.navigate(TaskNav(viewState.dateSelected))
-            CardAction.Delete -> navController.navigate(ReminderNav(viewState.dateSelected))
+    val onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit = { agendaItem, cardAction ->
+        when (cardAction) { //open specific event populated w/id
+            CardAction.Open -> println("$agendaItem")//navController.navigate(EventNav(viewState.dateSelected))
+            CardAction.Edit -> println("$agendaItem")//navController.navigate(TaskNav(viewState.dateSelected))
+            CardAction.Delete -> println("$agendaItem")//navController.navigate(ReminderNav(viewState.dateSelected))
         }
     }
 
@@ -145,7 +145,7 @@ fun AgendaContent(
     formatTimeBasedOnEvent: (Long, Long?) -> String,
     showAgendaCardDropdown: Boolean,
     toggleAgendaCardDropdownVisiblity: () -> Unit,
-    onAgendaCardActionClick: (CardAction) -> Unit
+    onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -218,11 +218,13 @@ fun AgendaContent(
                                         )
                                 },
                                 cardType = agendaItem.cardType,
-                                isChecked = false
+                                isChecked = false,
+                                toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisiblity
                             )
                             CardDropdownRoot(
+                                agendaItem = agendaItem,
                                 showAgendaCardDropdown = showAgendaCardDropdown,
-                                toggleAgendaCardDropdownVisiblity = toggleAgendaCardDropdownVisiblity,
+                                toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisiblity,
                                 onAgendaCardActionClick = onAgendaCardActionClick
                             )
                         }
@@ -268,7 +270,7 @@ fun PreviewAgendaContent() {
         onFabActionClick = { },
         agendaItems = null,
         formatTimeBasedOnEvent = { _, _ -> "" },
-        onAgendaCardActionClick = {},
+        onAgendaCardActionClick = { _, _ -> },
         showAgendaCardDropdown = true,
         toggleAgendaCardDropdownVisiblity = {}
     )

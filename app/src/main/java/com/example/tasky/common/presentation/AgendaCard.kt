@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,7 +34,8 @@ fun AgendaCard(
     details: String,
     date: String,
     cardType: AgendaItemType,
-    isChecked: Boolean
+    isChecked: Boolean,
+    toggleAgendaCardDropdownVisibility: () -> Unit
 ) {
     var cardColor = CardDefaults.cardColors()
     var textColor = colorResource(id = R.color.dark_gray)
@@ -71,7 +73,6 @@ fun AgendaCard(
         colors = cardColor
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             CustomCheckbox(isChecked = isChecked, color = headerColor, size = 16.dp)
@@ -81,7 +82,7 @@ fun AgendaCard(
                 textColor = headerColor
             )
             Spacer(modifier = Modifier.weight(1f))
-            HorizontalEllipsisIcon(tint = tintColor)
+            HorizontalEllipsisIcon(tint = tintColor, toggleAgendaCardDropdownVisibility)
         }
         CardDetails(details = details, textColor = textColor)
         DateOfAction(date = date, textColor = textColor)
@@ -90,28 +91,31 @@ fun AgendaCard(
 
 @Composable
 fun CustomCheckbox(isChecked: Boolean, color: Color, size: Dp) {
-    Icon(
-        painter = if (isChecked) {
-            painterResource(id = R.drawable.ic_closed_checkbox)
-        } else {
-            painterResource(id = R.drawable.ic_open_checkbox)
-        },
-        modifier = Modifier
-            .padding(end = 8.dp)
-            .size(size),
-        contentDescription = stringResource(R.string.checkbox_circle_icon),
-        tint = color,
+    IconButton(onClick = { /*TODO*/ }) {
+        Icon(
+            painter = if (isChecked) {
+                painterResource(id = R.drawable.ic_closed_checkbox)
+            } else {
+                painterResource(id = R.drawable.ic_open_checkbox)
+            },
+            modifier = Modifier
+                .size(size),
+            contentDescription = stringResource(R.string.checkbox_circle_icon),
+            tint = color,
 
-    )
+            )
+    }
 }
 
 @Composable
-fun HorizontalEllipsisIcon(tint: Color) {
-    Icon(
-        painter = painterResource(id = R.drawable.ic_more_horizontal),
-        contentDescription = stringResource(R.string.more_options),
-        tint = tint
-    )
+fun HorizontalEllipsisIcon(tint: Color, toggleAgendaCardDropdownVisibility: () -> Unit) {
+    IconButton(onClick = { toggleAgendaCardDropdownVisibility() }) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_more_horizontal),
+            contentDescription = stringResource(R.string.more_options),
+            tint = tint
+        )
+    }
 }
 
 @Composable
@@ -151,7 +155,8 @@ fun PreviewEventCard() {
         details = "Amet minim mollit non deserunt",
         date = "Mar 5, 10:30 - Mar 5, 11:00",
         cardType = AgendaItemType.Event,
-        isChecked = true
+        isChecked = true,
+        toggleAgendaCardDropdownVisibility = {}
     )
 }
 
@@ -164,7 +169,8 @@ fun PreviewTaskCard() {
         details = "Amet minim mollit non deserunt",
         date = "Mar 5, 10:30 - Mar 5, 11:00",
         cardType = AgendaItemType.Task,
-        isChecked = false
+        isChecked = false,
+        toggleAgendaCardDropdownVisibility = {}
     )
 }
 
@@ -177,7 +183,8 @@ fun PreviewReminderCard() {
         details = "Amet minim mollit non deserunt",
         date = "Mar 5, 10:30 - Mar 5, 11:00",
         cardType = AgendaItemType.Reminder,
-        isChecked = true
+        isChecked = true,
+        toggleAgendaCardDropdownVisibility = {}
     )
 }
 

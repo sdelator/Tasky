@@ -28,18 +28,21 @@ fun FabDropdownRoot(
         DropdownMenuItem(
             text = { Text(stringResource(R.string.event)) },
             onClick = {
+                toggleFabDropdownVisibility()
                 onFabActionClick(AgendaItemType.Event)
             }
         )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.task)) },
             onClick = {
+                toggleFabDropdownVisibility()
                 onFabActionClick(AgendaItemType.Task)
             }
         )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.reminder)) },
             onClick = {
+                toggleFabDropdownVisibility()
                 onFabActionClick(AgendaItemType.Reminder)
             }
         )
