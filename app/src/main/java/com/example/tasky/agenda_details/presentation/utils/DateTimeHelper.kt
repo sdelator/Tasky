@@ -19,6 +19,6 @@ object DateTimeHelper {
     fun getEpochMillisecondsFromDateAndTime(date: String, time: String): Long {
         val dateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm")
         val datePart = LocalDateTime.parse("$date $time", dateTimeFormatter)
-        return datePart.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli()
+        return datePart.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
     }
 }
