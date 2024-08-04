@@ -5,9 +5,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.R
-import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
+import com.example.tasky.common.domain.util.convertMillisToMMMdHHmm
 import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_MMMM_dd_yyyy
@@ -67,7 +67,7 @@ class AgendaViewModel @Inject constructor(
 
             when (result) {
                 is Result.Success -> {
-                    println("success agenda for ${DateTimeHelper.formatEpochToDateString(time)}!")
+                    println("success agenda for ${time.convertMillisToMMMdHHmm()}!")
                     println("response = ${result.data}")
                     val agendaItems = result.data
                     _viewState.update {
@@ -79,7 +79,7 @@ class AgendaViewModel @Inject constructor(
                 }
 
                 is Result.Error -> {
-                    println("failed to load agenda for ${DateTimeHelper.formatEpochToDateString(time)} :(")
+                    println("failed to load agenda for ${time.convertMillisToMMMdHHmm()} :(")
                     _viewState.update {
                         it.copy(
                             showLoadingSpinner = false,
@@ -212,10 +212,10 @@ class AgendaViewModel @Inject constructor(
     fun formatTimeOnAgendaCard(fromDate: Long, toDate: Long? = null): String {
         println("fromDate $fromDate")
 
-        val startDate = DateTimeHelper.formatEpochToDateString(fromDate)
+        val startDate = fromDate.convertMillisToMMMdHHmm()
 
         if (toDate != null) {
-            val endDate = DateTimeHelper.formatEpochToDateString(toDate)
+            val endDate = toDate.convertMillisToMMMdHHmm()
             return "$startDate - $endDate"
         }
         return startDate

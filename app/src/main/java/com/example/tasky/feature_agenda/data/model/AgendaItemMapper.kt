@@ -32,3 +32,14 @@ fun ReminderDto.toAgendaItemReminder(): AgendaItem.Reminder {
         remindAt = this.remindAt
     )
 }
+
+fun TaskDto.toAgendaItemTask(): AgendaItem.Task {
+    return AgendaItem.Task(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        time = this.time,
+        remindAt = this.remindAt,
+        isDone = this.isDone
+    )
+}

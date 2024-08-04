@@ -10,6 +10,7 @@ import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.util.toNetworkErrorType
 import com.example.tasky.di.AuthenticatedApi
 import com.example.tasky.feature_agenda.data.model.toAgendaItemReminder
+import com.example.tasky.feature_agenda.data.model.toAgendaItemTask
 import com.example.tasky.feature_agenda.data.model.toReminderDto
 import com.example.tasky.feature_agenda.data.model.toTaskDto
 import com.google.gson.Gson
@@ -118,6 +119,27 @@ class AgendaDetailsRemoteRepositoryImpl(
                 val responseBody = response.body()
                 if (responseBody != null) {
                     Result.Success(Unit)
+                } else {
+                    Log.e("Error", "API call failed with code ${response.code()}")
+                    Result.Error(DataError.Network.SERVER_ERROR)
+                }
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
+
+    override suspend fun loadTask(taskId: String): Result<AgendaItem.Task, DataError.Network> {
+        return try {
+            val response = api.loadTask(taskId = taskId)
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()
+                if (responseBody != null) {
+                    Result.Success(responseBody.toAgendaItemTask())
                 } else {
                     Log.e("Error", "API call failed with code ${response.code()}")
                     Result.Error(DataError.Network.SERVER_ERROR)

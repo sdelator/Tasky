@@ -21,6 +21,8 @@ interface AgendaDetailsRemoteRepository {
         taskDetails: AgendaItem.Task
     ): Result<Unit, DataError.Network>
 
+    suspend fun loadTask(taskId: String): Result<AgendaItem.Task, DataError.Network>
+
     suspend fun deleteTask(taskId: String): Result<Unit, DataError.Network>
 
     suspend fun createReminder(
