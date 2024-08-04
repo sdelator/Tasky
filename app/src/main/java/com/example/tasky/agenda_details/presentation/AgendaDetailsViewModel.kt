@@ -61,9 +61,7 @@ class AgendaDetailsViewModel @Inject constructor(
         when (agendaItemAction) {
             CardAction.Open -> {
                 // api call to fetch data
-                if (agendaItemType != null) {
-                    loadDataForItem(agendaItemType)
-                }
+                loadDataForItem()
             }
 
             CardAction.Edit -> TODO()
@@ -80,57 +78,12 @@ class AgendaDetailsViewModel @Inject constructor(
                 }
             }
         }
-//        //todo make API call to fetch data
-//        val sampleResponse =
-//            AgendaItem.Event(
-//                id = "a554ff78-4307-41fd-b2ec-01a96db98e00",
-//                title = "pool party",
-//                description = "bring snacks",
-//                from = 1722502800,
-//                to = 1722510000,
-//                remindAt = 1722416400,
-//                host = "666e55a7a3e6cb2e00e33a5f",
-//                isUserEventCreator = true,
-//                attendees = listOf(
-//                    AttendeeDetails(
-//                        email = "s@test.com",
-//                        fullName = "sandra",
-//                        userId = "666e55a7a3e6cb2e00e33a5f",
-//                        eventId = "a554ff78-4307-41fd-b2ec-01a96db98e00",
-//                        isGoing = true,
-//                        remindAt = 1722416400
-//                    )
-//                ),
-//                photos = listOf(
-//                    Photo.RemotePhoto(
-//                        key = "ca6a8dd2-c2a1-4a0e-b0f3-0681820dbd0d",
-//                        url = "https://tasky-photos.s3.eu-central-1.amazonaws.com/ca6a8dd2-c2a1-4a0e-b0f3-0681820dbd0d?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240730T165744Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Credential=AKIAXEBKLPAR6LNGJAO5%2F20240730%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Signature=bd34e8f4a81c1015656c6afcf08e62bc8c52043240380f5ff78c59a13f0b0bc6"
-//                    ),
-//                    Photo.RemotePhoto(
-//                        key = "a27f5ccf-b474-4455-a63a-782f72594576",
-//                        url = "https://tasky-photos.s3.eu-central-1.amazonaws.com/a27f5ccf-b474-4455-a63a-782f72594576?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20240730T165744Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Credential=AKIAXEBKLPAR6LNGJAO5%2F20240730%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Signature=7d4d568f500d56562cdbefa127f3aa71aab32ecdbee66ce223de4b28db4eada3"
-//                    )
-//                )
-//            )
-//
-//        _viewState.update {
-//            it.copy(
-//                title = sampleResponse.title,
-//                description = sampleResponse.description,
-//                toTime = DateTimeHelper.getLocalTimeFromEpoch(sampleResponse.to).toString(),
-//                fromTime = DateTimeHelper.getLocalTimeFromEpoch(sampleResponse.from).toString(),
-//                toDate = sampleResponse.to.convertMillisToMmmDdYyyy(),
-//                fromDate = sampleResponse.from.convertMillisToMmmDdYyyy(),
-//                photos = sampleResponse.photos.map { photo ->
-//                    (photo as Photo.RemotePhoto)
-//                    Photo.RemotePhoto(key = photo.key, url = photo.url)
-//                },
-//                reminderTime = getReminderTime(sampleResponse.remindAt, sampleResponse.from)
-//            )
-//        }
     }
 
-    private fun loadDataForItem(agendaItemType: AgendaItemType) {
+    private fun loadDataForItem() {
+        if (agendaItemType == null) {
+            throw IllegalArgumentException("agendaItemType is null")
+        }
         when (agendaItemType) {
             AgendaItemType.Event -> loadDataForEvent()
             AgendaItemType.Task -> loadDataForTask()
