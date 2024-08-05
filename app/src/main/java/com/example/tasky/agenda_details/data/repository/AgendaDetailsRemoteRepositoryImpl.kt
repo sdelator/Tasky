@@ -146,6 +146,23 @@ class AgendaDetailsRemoteRepositoryImpl(
         }
     }
 
+    override suspend fun updateTask(taskDetails: AgendaItem.Task): Result<Unit, DataError.Network> {
+        return try {
+            val task = taskDetails.toTaskDto()
+            val response = api.updateTask(task)
+            val responseBody = response.body()
+
+            if (response.isSuccessful && responseBody != null) {
+                Result.Success(Unit)
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
+
     override suspend fun createReminder(
         reminderDetails: AgendaItem.Reminder
     ): Result<Unit, DataError.Network> {

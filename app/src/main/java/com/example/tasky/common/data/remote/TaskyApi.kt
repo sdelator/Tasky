@@ -1,6 +1,5 @@
 package com.example.tasky.common.data.remote
 
-import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.feature_agenda.data.model.AgendaResponse
 import com.example.tasky.feature_agenda.data.model.EventDto
@@ -71,7 +70,7 @@ interface TaskyApi {
     suspend fun deleteTask(@Query("taskId") taskId: String): Response<Unit>
 
     @PUT("/task")
-    suspend fun updateTask(@Body taskDetails: AgendaItem.Task): Response<Unit>
+    suspend fun updateTask(@Body taskDtoDetails: TaskDto): Response<Unit>
 
     @GET("/task")
     suspend fun loadTask(@Query("taskId") taskId: String): Response<TaskDto>

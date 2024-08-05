@@ -337,6 +337,48 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
+    private fun updateTask() {
+        val taskId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
+        val atInEpochSeconds =
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+                date = _viewState.value.fromDate,
+                time = _viewState.value.fromTime
+            )
+        val reminderTime = _viewState.value.reminderTime.epochSeconds
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.updateTask(
+                taskDetails = AgendaItem.Task(
+                    id = taskId,
+                    title = _viewState.value.title ?: "",
+                    description = _viewState.value.description ?: "",
+                    time = atInEpochSeconds,
+                    remindAt = atInEpochSeconds - reminderTime,
+                    isDone = false //todo remove hardcode
+                )
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    println("success task updated!")
+                    _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                }
+
+                is Result.Error -> {
+                    println("failed task updated :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     private fun updateReminder() {
         val reminderId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
         val atInEpochSeconds =
