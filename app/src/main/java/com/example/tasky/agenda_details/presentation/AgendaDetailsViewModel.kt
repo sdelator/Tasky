@@ -80,7 +80,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun editAgendaItem() {
+    fun activateEditModeForAgendaItem() {
         _viewState.update {
             it.copy(isInEditMode = true)
         }
@@ -473,7 +473,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun save() {
+    fun saveAgendaItem() {
         // todo save all items in local DB
         if (agendaItemType == null) {
             throw IllegalArgumentException("agendaItemType is null")

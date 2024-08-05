@@ -139,9 +139,9 @@ fun AgendaDetailsRoot(
         dateOnToolbar = date.convertMillisToDateDdMmmYyyy(),
         onToolbarAction = {
             when (it) {
-                ToolbarAction.SAVE -> agendaDetailsViewModel.save()
+                ToolbarAction.SAVE -> agendaDetailsViewModel.saveAgendaItem()
                 ToolbarAction.CANCEL -> navController.navigateUp()
-                ToolbarAction.EDIT -> agendaDetailsViewModel.editAgendaItem()
+                ToolbarAction.EDIT -> agendaDetailsViewModel.activateEditModeForAgendaItem()
             }
         },
         fromDateDialogState = viewState.fromDatePickerDialogState,
