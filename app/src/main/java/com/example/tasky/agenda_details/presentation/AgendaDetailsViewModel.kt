@@ -111,7 +111,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     _viewState.update {
                         it.copy(
                             title = result.data.title,
-                            description = result.data.description, // todo 1722774960000
+                            description = result.data.description,
                             fromTime = result.data.time.convertMillisToHhmm(),
                             fromDate = result.data.time.convertMillisToMmmDdYyyy(),
                             reminderTime = getReminderTime(result.data.remindAt, result.data.time),
