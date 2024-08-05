@@ -37,7 +37,9 @@ fun AgendaCard(
     isChecked: Boolean,
     toggleAgendaCardDropdownVisibility: () -> Unit,
     showAgendaCardDropdown: Boolean,
-    onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit
+    onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit,
+    visibleAgendaCardDropdownId: String?,
+    setVisibleAgendaItemId: (String) -> Unit
 ) {
     var cardColor = CardDefaults.cardColors()
     var textColor = colorResource(id = R.color.dark_gray)
@@ -88,8 +90,10 @@ fun AgendaCard(
                 tint = tintColor,
                 toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisibility,
                 agendaItem = agendaItem,
+                onAgendaCardActionClick = onAgendaCardActionClick,
                 showAgendaCardDropdown = showAgendaCardDropdown,
-                onAgendaCardActionClick = onAgendaCardActionClick
+                visibleAgendaCardDropdownId = visibleAgendaCardDropdownId,
+                setVisibleAgendaItemId = setVisibleAgendaItemId
             )
         }
         CardDetails(details = agendaItem.description ?: "", textColor = textColor)
@@ -121,10 +125,15 @@ fun HorizontalEllipsisIcon(
     toggleAgendaCardDropdownVisibility: () -> Unit,
     agendaItem: AgendaItem,
     showAgendaCardDropdown: Boolean,
-    onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit
+    onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit,
+    visibleAgendaCardDropdownId: String?,
+    setVisibleAgendaItemId: (String) -> Unit
 ) {
     Box {
-        IconButton(onClick = { toggleAgendaCardDropdownVisibility() }) {
+        IconButton(onClick = {
+            setVisibleAgendaItemId(agendaItem.id)
+            toggleAgendaCardDropdownVisibility()
+        }) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_more_horizontal),
                 contentDescription = stringResource(R.string.more_options),
@@ -133,9 +142,9 @@ fun HorizontalEllipsisIcon(
         }
         CardDropdownRoot(
             agendaItem = agendaItem,
-            showAgendaCardDropdown = showAgendaCardDropdown,
             toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisibility,
-            onAgendaCardActionClick = onAgendaCardActionClick
+            onAgendaCardActionClick = onAgendaCardActionClick,
+            showAgendaCardDropdown = showAgendaCardDropdown && (visibleAgendaCardDropdownId == agendaItem.id)
         )
     }
 }
@@ -188,8 +197,10 @@ fun PreviewEventCard() {
             listOf(),
             listOf()
         ),
-        showAgendaCardDropdown = true,
-        onAgendaCardActionClick = { _, _ -> }
+        onAgendaCardActionClick = { _, _ -> },
+        visibleAgendaCardDropdownId = null,
+        setVisibleAgendaItemId = {},
+        showAgendaCardDropdown = true
     )
 }
 
@@ -209,8 +220,10 @@ fun PreviewTaskCard() {
             123,
             isDone = false
         ),
-        showAgendaCardDropdown = true,
-        onAgendaCardActionClick = { _, _ -> }
+        onAgendaCardActionClick = { _, _ -> },
+        visibleAgendaCardDropdownId = null,
+        setVisibleAgendaItemId = {},
+        showAgendaCardDropdown = true
     )
 }
 
@@ -229,8 +242,10 @@ fun PreviewReminderCard() {
             123,
             123
         ),
-        showAgendaCardDropdown = true,
-        onAgendaCardActionClick = { _, _ -> }
+        onAgendaCardActionClick = { _, _ -> },
+        visibleAgendaCardDropdownId = null,
+        setVisibleAgendaItemId = {},
+        showAgendaCardDropdown = true
     )
 }
 

@@ -150,7 +150,9 @@ fun AgendaRoot(
         formatTimeBasedOnEvent = formatTimeBasedOnEvent,
         onAgendaCardActionClick = onAgendaCardActionClick,
         toggleAgendaCardDropdownVisibility = { agendaViewModel.toggleAgendaDropdownVisibility() },
-        showAgendaCardDropdown = viewState.showAgendaCardDropdown
+        showAgendaCardDropdown = viewState.showAgendaCardDropdown,
+        visibleAgendaCardDropdownId = viewState.visibleAgendaCardDropdownId,
+        setVisibleAgendaItemId = { agendaViewModel.setVisibleAgendaItemId(it) }
     )
 
     if (viewState.showLoadingSpinner) {
@@ -196,7 +198,9 @@ fun AgendaContent(
     formatTimeBasedOnEvent: (Long, Long?) -> String,
     showAgendaCardDropdown: Boolean,
     toggleAgendaCardDropdownVisibility: () -> Unit,
-    onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit
+    onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit,
+    visibleAgendaCardDropdownId: String?,
+    setVisibleAgendaItemId: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -269,8 +273,10 @@ fun AgendaContent(
                                 },
                                 isChecked = false,
                                 toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisibility,
-                                showAgendaCardDropdown = showAgendaCardDropdown,
-                                onAgendaCardActionClick = onAgendaCardActionClick
+                                onAgendaCardActionClick = onAgendaCardActionClick,
+                                visibleAgendaCardDropdownId = visibleAgendaCardDropdownId,
+                                setVisibleAgendaItemId = setVisibleAgendaItemId,
+                                showAgendaCardDropdown = showAgendaCardDropdown
                             )
                         }
                     }
@@ -317,7 +323,9 @@ fun PreviewAgendaContent() {
         formatTimeBasedOnEvent = { _, _ -> "" },
         onAgendaCardActionClick = { _, _ -> },
         showAgendaCardDropdown = true,
-        toggleAgendaCardDropdownVisibility = {}
+        toggleAgendaCardDropdownVisibility = {},
+        visibleAgendaCardDropdownId = null,
+        setVisibleAgendaItemId = { _ -> }
     )
 }
 

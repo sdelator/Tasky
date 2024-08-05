@@ -13,6 +13,7 @@ data class AgendaViewState(
     val showLogoutDropdown: Boolean = false,
     val showFabDropdown: Boolean = false,
     val showAgendaCardDropdown: Boolean = false,
+    val visibleAgendaCardDropdownId: String? = null,
     val monthSelected: Int = LocalDate.now().monthValue,
     val daySelected: Int = LocalDate.now().dayOfMonth,
     val calendarDays: List<CalendarDay> = emptyList(),

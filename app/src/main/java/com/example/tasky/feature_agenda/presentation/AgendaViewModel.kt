@@ -138,7 +138,17 @@ class AgendaViewModel @Inject constructor(
 
     fun toggleAgendaDropdownVisibility() {
         _viewState.update {
-            it.copy(showAgendaCardDropdown = !_viewState.value.showAgendaCardDropdown)
+            it.copy(
+                showAgendaCardDropdown = !_viewState.value.showAgendaCardDropdown
+            )
+        }
+    }
+
+    fun setVisibleAgendaItemId(agendaItemId: String) {
+        _viewState.update {
+            it.copy(
+                visibleAgendaCardDropdownId = agendaItemId
+            )
         }
     }
 
