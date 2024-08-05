@@ -11,7 +11,7 @@ interface AgendaDetailsRemoteRepository {
         photosByteArray: List<ByteArray>
     ): Result<AgendaItem.Event, DataError.Network>
 
-    suspend fun getEvent(): Result<AgendaItem.Event, DataError.Network>
+    suspend fun loadEvent(eventId: String): Result<AgendaItem.Event, DataError.Network>
 
     suspend fun deleteEvent(eventId: String): Result<Unit, DataError.Network>
 

@@ -61,8 +61,20 @@ class AgendaDetailsRemoteRepositoryImpl(
         }
     }
 
-    override suspend fun getEvent(): Result<AgendaItem.Event, DataError.Network> {
-        TODO("Not yet implemented")
+    override suspend fun loadEvent(eventId: String): Result<AgendaItem.Event, DataError.Network> {
+        return try {
+            val response = api.loadEvent(eventId = eventId)
+            val responseBody = response.body()
+
+            if (response.isSuccessful && responseBody != null) {
+                Result.Success(responseBody.toAgendaItemEvent())
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
     }
 
     override suspend fun deleteEvent(eventId: String): Result<Unit, DataError.Network> {

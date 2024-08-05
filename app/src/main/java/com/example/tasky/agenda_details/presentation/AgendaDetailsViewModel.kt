@@ -93,7 +93,44 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun loadDataForEvent() {
-        // todo
+        if (agendaItemId == null) {
+            throw IllegalArgumentException("agendaItemId is null")
+        }
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.loadEvent(eventId = agendaItemId)
+
+            when (result) {
+                is Result.Success -> {
+                    println("event loaded!")
+                    _viewState.update {
+                        it.copy(
+                            title = result.data.title,
+                            description = result.data.description,
+                            fromTime = result.data.from.convertMillisToHhmm(),
+                            fromDate = result.data.from.convertMillisToMmmDdYyyy(),
+                            toTime = result.data.to.convertMillisToHhmm(),
+                            toDate = result.data.to.convertMillisToMmmDdYyyy(),
+                            reminderTime = getReminderTime(result.data.remindAt, result.data.from),
+                            showLoadingSpinner = false
+                        )
+                    }
+
+                }
+
+                is Result.Error -> {
+                    println("failed to load event :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun loadDataForTask() {

@@ -55,6 +55,9 @@ interface TaskyApi {
     @DELETE("/event")
     suspend fun deleteEvent(@Query("eventId") eventId: String): Response<Unit>
 
+    @GET("/event")
+    suspend fun loadEvent(@Query("eventId") eventId: String): Response<EventDto>
+
 //    @PUT("/syncAgenda")
 //    suspend fun syncAgendaItem(): Response<SyncAgendaResponse>
 
