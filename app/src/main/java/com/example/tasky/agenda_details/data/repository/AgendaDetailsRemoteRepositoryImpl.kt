@@ -1,6 +1,5 @@
 package com.example.tasky.agenda_details.data.repository
 
-import android.util.Log
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
@@ -49,15 +48,10 @@ class AgendaDetailsRemoteRepositoryImpl(
             }
 
             val response = api.createEvent(requestBody, photoParts)
+            val responseBody = response.body()
 
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    Result.Success(responseBody.toAgendaItemEvent())
-                } else {
-                    Log.e("Error", "API call failed with code ${response.code()}")
-                    Result.Error(DataError.Network.SERVER_ERROR)
-                }
+            if (response.isSuccessful && responseBody != null) {
+                Result.Success(responseBody.toAgendaItemEvent())
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)
@@ -76,13 +70,7 @@ class AgendaDetailsRemoteRepositoryImpl(
             val response = api.deleteEvent(eventId = eventId)
 
             if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    Result.Success(Unit)
-                } else {
-                    Log.e("Error", "API call failed with code ${response.code()}")
-                    Result.Error(DataError.Network.SERVER_ERROR)
-                }
+                Result.Success(Unit)
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)
@@ -102,15 +90,10 @@ class AgendaDetailsRemoteRepositoryImpl(
         return try {
             val task = taskDetails.toTaskDto()
             val response = api.createTask(task)
+            val responseBody = response.body()
 
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    Result.Success(Unit)
-                } else {
-                    Log.e("Error", "API call failed with code ${response.code()}")
-                    Result.Error(DataError.Network.SERVER_ERROR)
-                }
+            if (response.isSuccessful && responseBody != null) {
+                Result.Success(Unit)
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)
@@ -123,15 +106,10 @@ class AgendaDetailsRemoteRepositoryImpl(
     override suspend fun loadTask(taskId: String): Result<AgendaItem.Task, DataError.Network> {
         return try {
             val response = api.loadTask(taskId = taskId)
+            val responseBody = response.body()
 
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    Result.Success(responseBody.toAgendaItemTask())
-                } else {
-                    Log.e("Error", "API call failed with code ${response.code()}")
-                    Result.Error(DataError.Network.SERVER_ERROR)
-                }
+            if (response.isSuccessful && responseBody != null) {
+                Result.Success(responseBody.toAgendaItemTask())
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)
@@ -146,13 +124,7 @@ class AgendaDetailsRemoteRepositoryImpl(
             val response = api.deleteTask(taskId = taskId)
 
             if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    Result.Success(Unit)
-                } else {
-                    Log.e("Error", "API call failed with code ${response.code()}")
-                    Result.Error(DataError.Network.SERVER_ERROR)
-                }
+                Result.Success(Unit)
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)
@@ -170,13 +142,7 @@ class AgendaDetailsRemoteRepositoryImpl(
             val response = api.createReminder(reminder)
 
             if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    Result.Success(Unit)
-                } else {
-                    Log.e("Error", "API call failed with code ${response.code()}")
-                    Result.Error(DataError.Network.SERVER_ERROR)
-                }
+                Result.Success(Unit)
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)
@@ -191,15 +157,10 @@ class AgendaDetailsRemoteRepositoryImpl(
     ): Result<AgendaItem.Reminder, DataError.Network> {
         return try {
             val response = api.loadReminder(reminderId)
+            val responseBody = response.body()
 
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    Result.Success(responseBody.toAgendaItemReminder())
-                } else {
-                    Log.e("Error", "API call failed with code ${response.code()}")
-                    Result.Error(DataError.Network.SERVER_ERROR)
-                }
+            if (response.isSuccessful && responseBody != null) {
+                Result.Success(responseBody.toAgendaItemReminder())
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)
@@ -214,13 +175,7 @@ class AgendaDetailsRemoteRepositoryImpl(
             val response = api.deleteReminder(reminderId = reminderId)
 
             if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    Result.Success(Unit)
-                } else {
-                    Log.e("Error", "API call failed with code ${response.code()}")
-                    Result.Error(DataError.Network.SERVER_ERROR)
-                }
+                Result.Success(Unit)
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)
