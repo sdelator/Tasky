@@ -478,14 +478,25 @@ class AgendaDetailsViewModel @Inject constructor(
         if (agendaItemType == null) {
             throw IllegalArgumentException("agendaItemType is null")
         }
-        when (agendaItemType) {
-            AgendaItemType.Event -> saveEvent()
-            AgendaItemType.Task -> saveTask()
-            AgendaItemType.Reminder -> saveReminder()
+
+        if (agendaItemId == null) {
+            println("saved button clicked - create $agendaItemType")
+            when (agendaItemType) {
+                AgendaItemType.Event -> createEvent()
+                AgendaItemType.Task -> createTask()
+                AgendaItemType.Reminder -> createReminder()
+            }
+        } else {
+            println("saved button clicked - update $agendaItemType")
+            when (agendaItemType) {
+                AgendaItemType.Event -> updateEvent()
+                AgendaItemType.Task -> updateTask()
+                AgendaItemType.Reminder -> updateReminder()
+            }
         }
     }
 
-    private fun saveTask() {
+    private fun createTask() {
         val atInEpochSeconds =
             DateTimeHelper.getEpochMillisecondsFromDateAndTime(
                 date = _viewState.value.fromDate,
@@ -526,7 +537,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun saveReminder() {
+    private fun createReminder() {
         val atInEpochSeconds =
             DateTimeHelper.getEpochMillisecondsFromDateAndTime(
                 date = _viewState.value.fromDate,
@@ -566,7 +577,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun saveEvent() {
+    private fun createEvent() {
         val fromInEpochSeconds =
             DateTimeHelper.getEpochMillisecondsFromDateAndTime(
                 date = _viewState.value.fromDate,
