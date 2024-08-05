@@ -362,9 +362,9 @@ class AgendaDetailsViewModel @Inject constructor(
                     from = fromInEpochSeconds,
                     to = toInEpochSeconds,
                     remindAt = fromInEpochSeconds - reminderTime,
-                    attendeeIds = listOf("a", "b"),
-                    deletedPhotoKeys = listOf(),
-                    isGoing = false
+                    attendeeIds = listOf("a", "b"), //todo fix
+                    deletedPhotoKeys = listOf(), //todo fix
+                    isGoing = false //todo fix
                 ),
                 photosByteArray = getByteArrayFromPhotoList(_viewState.value.photos)
             )
