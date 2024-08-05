@@ -60,8 +60,8 @@ class AgendaDetailsViewModel @Inject constructor(
 
     init {
         when (agendaItemAction) {
-            CardAction.Open -> loadDataForAgendaItem()
-            CardAction.Edit -> TODO()
+            CardAction.Open -> loadDataForAgendaItem(isEditMode = false)
+            CardAction.Edit -> loadDataForAgendaItem(isEditMode = true)
             CardAction.Delete -> deleteAgendaItem()
             null -> {
                 // isNewEvent
@@ -70,25 +70,33 @@ class AgendaDetailsViewModel @Inject constructor(
                         fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
                         toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
                         fromTime = LocalTime.now().toFormatted_HH_mm(),
-                        toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE).toFormatted_HH_mm()
+                        toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
+                            .toFormatted_HH_mm(),
+                        isInEditMode = true
                     )
                 }
             }
         }
     }
 
-    private fun loadDataForAgendaItem() {
+    fun editAgendaItem() {
+        _viewState.update {
+            it.copy(isInEditMode = true)
+        }
+    }
+
+    private fun loadDataForAgendaItem(isEditMode: Boolean) {
         if (agendaItemType == null) {
             throw IllegalArgumentException("agendaItemType is null")
         }
         when (agendaItemType) {
-            AgendaItemType.Event -> loadDataForEvent()
-            AgendaItemType.Task -> loadDataForTask()
-            AgendaItemType.Reminder -> loadDataForReminder()
+            AgendaItemType.Event -> loadDataForEvent(isEditMode)
+            AgendaItemType.Task -> loadDataForTask(isEditMode)
+            AgendaItemType.Reminder -> loadDataForReminder(isEditMode)
         }
     }
 
-    private fun loadDataForEvent() {
+    private fun loadDataForEvent(isEditMode: Boolean) {
         if (agendaItemId == null) {
             throw IllegalArgumentException("agendaItemId is null")
         }
@@ -109,7 +117,8 @@ class AgendaDetailsViewModel @Inject constructor(
                             toTime = result.data.to.convertMillisToHhmm(),
                             toDate = result.data.to.convertMillisToMmmDdYyyy(),
                             reminderTime = getReminderTime(result.data.remindAt, result.data.from),
-                            showLoadingSpinner = false
+                            showLoadingSpinner = false,
+                            isInEditMode = isEditMode
                         )
                     }
 
@@ -129,7 +138,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun loadDataForTask() {
+    private fun loadDataForTask(isEditMode: Boolean) {
         if (agendaItemId == null) {
             throw IllegalArgumentException("agendaItemId is null")
         }
@@ -148,7 +157,8 @@ class AgendaDetailsViewModel @Inject constructor(
                             fromTime = result.data.time.convertMillisToHhmm(),
                             fromDate = result.data.time.convertMillisToMmmDdYyyy(),
                             reminderTime = getReminderTime(result.data.remindAt, result.data.time),
-                            showLoadingSpinner = false
+                            showLoadingSpinner = false,
+                            isInEditMode = isEditMode
                         )
                     }
 
@@ -168,7 +178,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun loadDataForReminder() {
+    private fun loadDataForReminder(isEditMode: Boolean) {
         if (agendaItemId == null) {
             throw IllegalArgumentException("agendaItemId is null")
         }
@@ -187,7 +197,8 @@ class AgendaDetailsViewModel @Inject constructor(
                             fromTime = result.data.time.convertMillisToHhmm(),
                             fromDate = result.data.time.convertMillisToMmmDdYyyy(),
                             reminderTime = getReminderTime(result.data.remindAt, result.data.time),
-                            showLoadingSpinner = false
+                            showLoadingSpinner = false,
+                            isInEditMode = isEditMode
                         )
                     }
 
@@ -234,10 +245,6 @@ class AgendaDetailsViewModel @Inject constructor(
                 )
             }
         }
-    }
-
-    fun edit() {
-        //set viewstate to editing
     }
 
     fun deleteAgendaItem() {

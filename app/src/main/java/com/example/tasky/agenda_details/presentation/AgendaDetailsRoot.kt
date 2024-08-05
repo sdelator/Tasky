@@ -75,7 +75,6 @@ fun AgendaDetailsRoot(
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
-    val isEditing = true
     val maxPhotoCount = 10
 
     LaunchedEffect(navController.currentBackStackEntry) {
@@ -135,14 +134,14 @@ fun AgendaDetailsRoot(
         ),
         toDate = viewState.toDate,
         fromDate = viewState.fromDate,
-        isEditMode = isEditing,
+        isEditMode = viewState.isInEditMode,
         onEditClick = { navController.navigate(EditingNav(it.name, agendaItemType.name)) },
         dateOnToolbar = date.convertMillisToDateDdMmmYyyy(),
         onToolbarAction = {
             when (it) {
                 ToolbarAction.SAVE -> agendaDetailsViewModel.save()
                 ToolbarAction.CANCEL -> navController.navigateUp()
-                ToolbarAction.EDIT -> agendaDetailsViewModel.edit()
+                ToolbarAction.EDIT -> agendaDetailsViewModel.editAgendaItem()
             }
         },
         fromDateDialogState = viewState.fromDatePickerDialogState,
@@ -248,7 +247,7 @@ fun AgendaDetailsContent(
         AgendaDetailsToolbar(
             date = dateOnToolbar,
             onToolbarAction = onToolbarAction,
-            isEditing = true
+            isEditing = isEditMode
         )
         Card(
             modifier = Modifier
