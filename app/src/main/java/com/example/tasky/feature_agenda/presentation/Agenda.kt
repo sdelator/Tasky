@@ -38,7 +38,6 @@ import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.presentation.AgendaCard
 import com.example.tasky.common.presentation.CardAction
-import com.example.tasky.common.presentation.CardDropdownRoot
 import com.example.tasky.common.presentation.CreateErrorAlertDialog
 import com.example.tasky.common.presentation.FabDropdownRoot
 import com.example.tasky.common.presentation.HeaderSmallBold
@@ -150,7 +149,7 @@ fun AgendaRoot(
         agendaItems = viewState.agendaItems,
         formatTimeBasedOnEvent = formatTimeBasedOnEvent,
         onAgendaCardActionClick = onAgendaCardActionClick,
-        toggleAgendaCardDropdownVisiblity = { agendaViewModel.toggleAgendaDropdownVisibility() },
+        toggleAgendaCardDropdownVisibility = { agendaViewModel.toggleAgendaDropdownVisibility() },
         showAgendaCardDropdown = viewState.showAgendaCardDropdown
     )
 
@@ -196,7 +195,7 @@ fun AgendaContent(
     agendaItems: List<AgendaItem>?,
     formatTimeBasedOnEvent: (Long, Long?) -> String,
     showAgendaCardDropdown: Boolean,
-    toggleAgendaCardDropdownVisiblity: () -> Unit,
+    toggleAgendaCardDropdownVisibility: () -> Unit,
     onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit
 ) {
     Box(
@@ -254,9 +253,8 @@ fun AgendaContent(
                             key = { it.id }
                         ) { agendaItem ->
                             AgendaCard(
+                                agendaItem = agendaItem,
                                 modifier = Modifier.animateItem(),
-                                title = agendaItem.title,
-                                details = agendaItem.description ?: "",
                                 date = when (agendaItem) {
                                     is AgendaItem.Event -> formatTimeBasedOnEvent(
                                         agendaItem.from,
@@ -269,14 +267,9 @@ fun AgendaContent(
                                             null
                                         )
                                 },
-                                cardType = agendaItem.cardType,
                                 isChecked = false,
-                                toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisiblity
-                            )
-                            CardDropdownRoot(
-                                agendaItem = agendaItem,
+                                toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisibility,
                                 showAgendaCardDropdown = showAgendaCardDropdown,
-                                toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisiblity,
                                 onAgendaCardActionClick = onAgendaCardActionClick
                             )
                         }
@@ -324,7 +317,7 @@ fun PreviewAgendaContent() {
         formatTimeBasedOnEvent = { _, _ -> "" },
         onAgendaCardActionClick = { _, _ -> },
         showAgendaCardDropdown = true,
-        toggleAgendaCardDropdownVisiblity = {}
+        toggleAgendaCardDropdownVisibility = {}
     )
 }
 
