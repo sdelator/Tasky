@@ -2,6 +2,7 @@ package com.example.tasky.agenda_details.domain.repository
 
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.EventDetails
+import com.example.tasky.agenda_details.domain.model.EventDetailsUpdated
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
 
@@ -15,7 +16,10 @@ interface AgendaDetailsRemoteRepository {
 
     suspend fun deleteEvent(eventId: String): Result<Unit, DataError.Network>
 
-    suspend fun updateEvent(): Result<AgendaItem.Event, DataError.Network>
+    suspend fun updateEvent(
+        eventDetails: EventDetailsUpdated,
+        photosByteArray: List<ByteArray>
+    ): Result<AgendaItem.Event, DataError.Network>
 
     suspend fun createTask(taskDetails: AgendaItem.Task): Result<Unit, DataError.Network>
 

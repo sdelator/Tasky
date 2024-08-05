@@ -48,14 +48,21 @@ interface TaskyApi {
         @Part photos: List<MultipartBody.Part>
     ): Response<EventDto>
 
-    @GET("/agenda")
-    suspend fun loadAgenda(@Query("time") time: Long): Response<AgendaResponse>
-
     @DELETE("/event")
     suspend fun deleteEvent(@Query("eventId") eventId: String): Response<Unit>
 
     @GET("/event")
     suspend fun loadEvent(@Query("eventId") eventId: String): Response<EventDto>
+
+    @Multipart
+    @PUT("/event")
+    suspend fun updateEvent(
+        @Part("update_event_request") updateEventRequest: RequestBody,
+        @Part photos: List<MultipartBody.Part>
+    ): Response<EventDto>
+
+    @GET("/agenda")
+    suspend fun loadAgenda(@Query("time") time: Long): Response<AgendaResponse>
 
 //    @PUT("/syncAgenda")
 //    suspend fun syncAgendaItem(): Response<SyncAgendaResponse>
@@ -69,11 +76,11 @@ interface TaskyApi {
     @DELETE("/task")
     suspend fun deleteTask(@Query("taskId") taskId: String): Response<Unit>
 
-    @PUT("/task")
-    suspend fun updateTask(@Body taskDtoDetails: TaskDto): Response<Unit>
-
     @GET("/task")
     suspend fun loadTask(@Query("taskId") taskId: String): Response<TaskDto>
+
+    @PUT("/task")
+    suspend fun updateTask(@Body taskDtoDetails: TaskDto): Response<Unit>
 
     @POST("/reminder")
     suspend fun createReminder(@Body reminderDtoDetails: ReminderDto): Response<Unit>

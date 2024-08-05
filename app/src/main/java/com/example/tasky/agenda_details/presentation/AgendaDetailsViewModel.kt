@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.EventDetails
+import com.example.tasky.agenda_details.domain.model.EventDetailsUpdated
 import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
@@ -325,6 +326,58 @@ class AgendaDetailsViewModel @Inject constructor(
 
                 is Result.Error -> {
                     println("failed reminder deletion :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateEvent() {
+        val eventId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
+        val fromInEpochSeconds =
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+                date = _viewState.value.fromDate,
+                time = _viewState.value.fromTime
+            )
+        val toInEpochSeconds =
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+                date = _viewState.value.toDate,
+                time = _viewState.value.toTime
+            )
+        val reminderTime = _viewState.value.reminderTime.epochSeconds
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.updateEvent(
+                eventDetails = EventDetailsUpdated(
+                    id = eventId,
+                    title = _viewState.value.title ?: "",
+                    description = _viewState.value.description ?: "",
+                    from = fromInEpochSeconds,
+                    to = toInEpochSeconds,
+                    remindAt = fromInEpochSeconds - reminderTime,
+                    attendeeIds = listOf("a", "b"),
+                    deletedPhotoKeys = listOf(),
+                    isGoing = false
+                ),
+                photosByteArray = getByteArrayFromPhotoList(_viewState.value.photos)
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    println("success update event!")
+                    _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                    println("response = ${result.data}")
+                }
+
+                is Result.Error -> {
+                    println("failed event update :(")
                     _viewState.update {
                         it.copy(
                             showLoadingSpinner = false,
