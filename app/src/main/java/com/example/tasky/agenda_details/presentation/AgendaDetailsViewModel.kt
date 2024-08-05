@@ -11,6 +11,8 @@ import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRep
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.model.AgendaItemType
+import com.example.tasky.common.domain.util.convertMillisToHhmm
+import com.example.tasky.common.domain.util.convertMillisToMmmDdYyyy
 import com.example.tasky.common.presentation.CardAction
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
@@ -91,15 +93,122 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun loadDataForEvent() {
-        // todo
+        if (agendaItemId == null) {
+            throw IllegalArgumentException("agendaItemId is null")
+        }
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.loadEvent(eventId = agendaItemId)
+
+            when (result) {
+                is Result.Success -> {
+                    println("event loaded!")
+                    _viewState.update {
+                        it.copy(
+                            title = result.data.title,
+                            description = result.data.description,
+                            fromTime = result.data.from.convertMillisToHhmm(),
+                            fromDate = result.data.from.convertMillisToMmmDdYyyy(),
+                            toTime = result.data.to.convertMillisToHhmm(),
+                            toDate = result.data.to.convertMillisToMmmDdYyyy(),
+                            reminderTime = getReminderTime(result.data.remindAt, result.data.from),
+                            showLoadingSpinner = false
+                        )
+                    }
+
+                }
+
+                is Result.Error -> {
+                    println("failed to load event :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun loadDataForTask() {
-        // todo
+        if (agendaItemId == null) {
+            throw IllegalArgumentException("agendaItemId is null")
+        }
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.loadTask(taskId = agendaItemId)
+
+            when (result) {
+                is Result.Success -> {
+                    println("task loaded!")
+                    _viewState.update {
+                        it.copy(
+                            title = result.data.title,
+                            description = result.data.description,
+                            fromTime = result.data.time.convertMillisToHhmm(),
+                            fromDate = result.data.time.convertMillisToMmmDdYyyy(),
+                            reminderTime = getReminderTime(result.data.remindAt, result.data.time),
+                            showLoadingSpinner = false
+                        )
+                    }
+
+                }
+
+                is Result.Error -> {
+                    println("failed to load task :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun loadDataForReminder() {
-        // todo
+        if (agendaItemId == null) {
+            throw IllegalArgumentException("agendaItemId is null")
+        }
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.loadReminder(reminderId = agendaItemId)
+
+            when (result) {
+                is Result.Success -> {
+                    println("reminder loaded!")
+                    _viewState.update {
+                        it.copy(
+                            title = result.data.title,
+                            description = result.data.description,
+                            fromTime = result.data.time.convertMillisToHhmm(),
+                            fromDate = result.data.time.convertMillisToMmmDdYyyy(),
+                            reminderTime = getReminderTime(result.data.remindAt, result.data.time),
+                            showLoadingSpinner = false
+                        )
+                    }
+
+                }
+
+                is Result.Error -> {
+                    println("failed to load reminder :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun getReminderTime(remindAt: Long, fromTime: Long): ReminderTime {

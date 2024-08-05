@@ -1,13 +1,14 @@
 package com.example.tasky.feature_agenda.data.repository
 
-import android.util.Log
 import com.example.tasky.agenda_details.domain.model.AgendaItem
-import com.example.tasky.agenda_details.domain.model.AttendeeDetails
 import com.example.tasky.common.data.remote.TaskyApi
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.domain.util.toNetworkErrorType
 import com.example.tasky.di.AuthenticatedApi
+import com.example.tasky.feature_agenda.data.model.toAgendaItemEvent
+import com.example.tasky.feature_agenda.data.model.toAgendaItemReminder
+import com.example.tasky.feature_agenda.data.model.toAgendaItemTask
 import com.example.tasky.feature_agenda.domain.repository.AgendaRemoteRepository
 import java.io.IOException
 
@@ -17,60 +18,22 @@ class AgendaRemoteRepositoryImpl(
     override suspend fun loadAgenda(time: Long): Result<List<AgendaItem>, DataError.Network> {
         return try {
             val response = api.loadAgenda(time)
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    val events = responseBody.events.map { event ->
-                        AgendaItem.Event(
-                            id = event.id,
-                            title = event.title,
-                            description = event.description ?: "",
-                            from = event.from,
-                            to = event.to,
-                            remindAt = event.remindAt,
-                            host = event.host,
-                            isUserEventCreator = event.isUserEventCreator,
-                            attendees = event.attendees.map { attendees ->
-                                AttendeeDetails(
-                                    email = attendees.email,
-                                    fullName = attendees.fullName,
-                                    userId = attendees.userId,
-                                    eventId = attendees.eventId,
-                                    isGoing = attendees.isGoing,
-                                    remindAt = attendees.remindAt
-                                )
-                            },
-                            photos = event.photos
-                        )
-                    }
-                    val tasks = responseBody.tasks.map { task ->
-                        AgendaItem.Task(
-                            id = task.id,
-                            title = task.title,
-                            description = task.description,
-                            time = task.time,
-                            remindAt = task.remindAt,
-                            isDone = task.isDone
-                        )
-                    }
-                    val reminders = responseBody.reminders.map { reminder ->
-                        AgendaItem.Reminder(
-                            id = reminder.id,
-                            title = reminder.title,
-                            description = reminder.description,
-                            time = reminder.time,
-                            remindAt = reminder.remindAt
-                        )
-                    }
-                    val agendaItemList = events + tasks + reminders
-                    val agendaSortedByTime =
-                        agendaItemList.sortedBy { agendaItem -> agendaItem.startTime }
-
-                    Result.Success(agendaSortedByTime)
-                } else {
-                    Log.e("Error", "API call failed with code ${response.code()}")
-                    Result.Error(DataError.Network.SERVER_ERROR)
+            val responseBody = response.body()
+            if (response.isSuccessful && responseBody != null) {
+                val events = responseBody.events.map { event ->
+                    event.toAgendaItemEvent()
                 }
+                val tasks = responseBody.tasks.map { task ->
+                    task.toAgendaItemTask()
+                }
+                val reminders = responseBody.reminders.map { reminder ->
+                    reminder.toAgendaItemReminder()
+                }
+                val agendaItemList = events + tasks + reminders
+                val agendaSortedByTime =
+                    agendaItemList.sortedBy { agendaItem -> agendaItem.startTime }
+
+                Result.Success(agendaSortedByTime)
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)
@@ -83,59 +46,22 @@ class AgendaRemoteRepositoryImpl(
     override suspend fun loadFullAgenda(): Result<List<AgendaItem>, DataError.Network> {
         return try {
             val response = api.loadFullAgenda()
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    val events = responseBody.events.map { event ->
-                        AgendaItem.Event(
-                            id = event.id,
-                            title = event.title,
-                            description = event.description ?: "",
-                            from = event.from,
-                            to = event.to,
-                            remindAt = event.remindAt,
-                            host = event.host,
-                            isUserEventCreator = event.isUserEventCreator,
-                            attendees = event.attendees.map { attendees ->
-                                AttendeeDetails(
-                                    email = attendees.email,
-                                    fullName = attendees.fullName,
-                                    userId = attendees.userId,
-                                    eventId = attendees.eventId,
-                                    isGoing = attendees.isGoing,
-                                    remindAt = attendees.remindAt
-                                )
-                            },
-                            photos = event.photos
-                        )
-                    }
-                    val tasks = responseBody.tasks.map { task ->
-                        AgendaItem.Task(
-                            id = task.id,
-                            title = task.title,
-                            description = task.description,
-                            time = task.time,
-                            remindAt = task.remindAt,
-                            isDone = task.isDone
-                        )
-                    }
-                    val reminders = responseBody.reminders.map { reminder ->
-                        AgendaItem.Reminder(
-                            id = reminder.id,
-                            title = reminder.title,
-                            description = reminder.description,
-                            time = reminder.time,
-                            remindAt = reminder.remindAt
-                        )
-                    }
-                    val agendaItemList = events + tasks + reminders
-                    val agendaSortedByTime =
-                        agendaItemList.sortedBy { agendaItem -> agendaItem.startTime }
-
-                    Result.Success(agendaSortedByTime)
-                } else {
-                    Result.Error(DataError.Network.SERVER_ERROR)
+            val responseBody = response.body()
+            if (response.isSuccessful && responseBody != null) {
+                val events = responseBody.events.map { event ->
+                    event.toAgendaItemEvent()
                 }
+                val tasks = responseBody.tasks.map { task ->
+                    task.toAgendaItemTask()
+                }
+                val reminders = responseBody.reminders.map { reminder ->
+                    reminder.toAgendaItemReminder()
+                }
+                val agendaItemList = events + tasks + reminders
+                val agendaSortedByTime =
+                    agendaItemList.sortedBy { agendaItem -> agendaItem.startTime }
+
+                Result.Success(agendaSortedByTime)
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)
