@@ -178,7 +178,7 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.setSelectedImage(uri.toString())
         },
         resetPhotoSkipCount = { agendaDetailsViewModel.resetPhotoSkipCount() },
-        onItemDelete = { agendaDetailsViewModel.delete() }
+        onItemDelete = { agendaDetailsViewModel.deleteAgendaItem() }
     )
 
     if (viewState.showLoadingSpinner) {

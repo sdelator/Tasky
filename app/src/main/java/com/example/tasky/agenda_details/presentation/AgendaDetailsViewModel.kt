@@ -60,13 +60,9 @@ class AgendaDetailsViewModel @Inject constructor(
 
     init {
         when (agendaItemAction) {
-            CardAction.Open -> {
-                // api call to fetch data
-                loadDataForItem()
-            }
-
+            CardAction.Open -> loadDataForAgendaItem()
             CardAction.Edit -> TODO()
-            CardAction.Delete -> TODO()
+            CardAction.Delete -> deleteAgendaItem()
             null -> {
                 // isNewEvent
                 _viewState.update {
@@ -81,7 +77,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun loadDataForItem() {
+    private fun loadDataForAgendaItem() {
         if (agendaItemType == null) {
             throw IllegalArgumentException("agendaItemType is null")
         }
@@ -244,7 +240,7 @@ class AgendaDetailsViewModel @Inject constructor(
         //set viewstate to editing
     }
 
-    fun delete() {
+    fun deleteAgendaItem() {
         //todo if no id (new item) then just navigate back
         if (agendaItemType == null) {
             throw IllegalArgumentException("agendaItemType is null")
@@ -257,7 +253,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun deleteEvent() {
-        val eventId = "96faff73-8dba-43eb-a123-b32d15ab6395" //todo remove hard-coded
+        val eventId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
             val result = agendaDetailsRemoteRepository.deleteEvent(eventId = eventId)
@@ -283,7 +279,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun deleteTask() {
-        val taskId = "372a6800-0b04-4828-b12d-280cfc55df12" //todo remove hard-coded
+        val taskId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
             val result = agendaDetailsRemoteRepository.deleteTask(taskId)
@@ -309,7 +305,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun deleteReminder() {
-        val reminderId = "12345abcd" //todo remove hard-coded
+        val reminderId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
             val result = agendaDetailsRemoteRepository.deleteReminder(reminderId)
