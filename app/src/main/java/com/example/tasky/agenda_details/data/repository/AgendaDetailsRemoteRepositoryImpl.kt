@@ -199,7 +199,8 @@ class AgendaDetailsRemoteRepositoryImpl(
 
     override suspend fun updateReminder(reminderDetails: AgendaItem.Reminder): Result<Unit, DataError.Network> {
         return try {
-            val response = api.updateReminder(reminderDetails = reminderDetails)
+            val reminder = reminderDetails.toReminderDto()
+            val response = api.updateReminder(reminder)
 
             if (response.isSuccessful) {
                 Result.Success(Unit)

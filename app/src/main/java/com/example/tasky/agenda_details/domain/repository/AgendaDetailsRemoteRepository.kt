@@ -17,17 +17,13 @@ interface AgendaDetailsRemoteRepository {
 
     suspend fun updateEvent(): Result<AgendaItem.Event, DataError.Network>
 
-    suspend fun createTask(
-        taskDetails: AgendaItem.Task
-    ): Result<Unit, DataError.Network>
+    suspend fun createTask(taskDetails: AgendaItem.Task): Result<Unit, DataError.Network>
 
     suspend fun loadTask(taskId: String): Result<AgendaItem.Task, DataError.Network>
 
     suspend fun deleteTask(taskId: String): Result<Unit, DataError.Network>
 
-    suspend fun createReminder(
-        reminderDetails: AgendaItem.Reminder
-    ): Result<Unit, DataError.Network>
+    suspend fun createReminder(reminderDetails: AgendaItem.Reminder): Result<Unit, DataError.Network>
 
     suspend fun loadReminder(reminderId: String): Result<AgendaItem.Reminder, DataError.Network>
 
