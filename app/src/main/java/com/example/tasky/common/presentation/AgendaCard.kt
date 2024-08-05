@@ -1,5 +1,6 @@
 package com.example.tasky.common.presentation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,24 +26,27 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
+import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.model.AgendaItemType
 
 @Composable
 fun AgendaCard(
+    agendaItem: AgendaItem,
     modifier: Modifier,
-    title: String,
-    details: String,
     date: String,
-    cardType: AgendaItemType,
     isChecked: Boolean,
-    toggleAgendaCardDropdownVisibility: () -> Unit
+    toggleAgendaCardDropdownVisibility: () -> Unit,
+    showAgendaCardDropdown: Boolean,
+    onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit,
+    visibleAgendaCardDropdownId: String?,
+    setVisibleAgendaItemId: (String) -> Unit
 ) {
     var cardColor = CardDefaults.cardColors()
     var textColor = colorResource(id = R.color.dark_gray)
     var headerColor = Color.Black
     var tintColor = Color.Black
 
-    when (cardType) {
+    when (agendaItem.cardType) {
         AgendaItemType.Event -> {
             cardColor = CardDefaults.cardColors(
                 containerColor = colorResource(id = R.color.event_light_green)
@@ -77,14 +81,22 @@ fun AgendaCard(
         ) {
             CustomCheckbox(isChecked = isChecked, color = headerColor, size = 16.dp)
             HeaderMedium(
-                title = title,
+                title = agendaItem.title,
                 isChecked = isChecked,
                 textColor = headerColor
             )
             Spacer(modifier = Modifier.weight(1f))
-            HorizontalEllipsisIcon(tint = tintColor, toggleAgendaCardDropdownVisibility)
+            HorizontalEllipsisIcon(
+                tint = tintColor,
+                toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisibility,
+                agendaItem = agendaItem,
+                onAgendaCardActionClick = onAgendaCardActionClick,
+                showAgendaCardDropdown = showAgendaCardDropdown,
+                visibleAgendaCardDropdownId = visibleAgendaCardDropdownId,
+                setVisibleAgendaItemId = setVisibleAgendaItemId
+            )
         }
-        CardDetails(details = details, textColor = textColor)
+        CardDetails(details = agendaItem.description ?: "", textColor = textColor)
         DateOfAction(date = date, textColor = textColor)
     }
 }
@@ -108,12 +120,31 @@ fun CustomCheckbox(isChecked: Boolean, color: Color, size: Dp) {
 }
 
 @Composable
-fun HorizontalEllipsisIcon(tint: Color, toggleAgendaCardDropdownVisibility: () -> Unit) {
-    IconButton(onClick = { toggleAgendaCardDropdownVisibility() }) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_more_horizontal),
-            contentDescription = stringResource(R.string.more_options),
-            tint = tint
+fun HorizontalEllipsisIcon(
+    tint: Color,
+    toggleAgendaCardDropdownVisibility: () -> Unit,
+    agendaItem: AgendaItem,
+    showAgendaCardDropdown: Boolean,
+    onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit,
+    visibleAgendaCardDropdownId: String?,
+    setVisibleAgendaItemId: (String) -> Unit
+) {
+    Box {
+        IconButton(onClick = {
+            setVisibleAgendaItemId(agendaItem.id)
+            toggleAgendaCardDropdownVisibility()
+        }) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_more_horizontal),
+                contentDescription = stringResource(R.string.more_options),
+                tint = tint
+            )
+        }
+        CardDropdownRoot(
+            agendaItem = agendaItem,
+            toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisibility,
+            onAgendaCardActionClick = onAgendaCardActionClick,
+            showAgendaCardDropdown = showAgendaCardDropdown && (visibleAgendaCardDropdownId == agendaItem.id)
         )
     }
 }
@@ -151,12 +182,25 @@ fun DateOfAction(date: String, textColor: Color) {
 fun PreviewEventCard() {
     AgendaCard(
         modifier = Modifier,
-        title = "Place Holder Text",
-        details = "Amet minim mollit non deserunt",
         date = "Mar 5, 10:30 - Mar 5, 11:00",
-        cardType = AgendaItemType.Event,
         isChecked = true,
-        toggleAgendaCardDropdownVisibility = {}
+        toggleAgendaCardDropdownVisibility = {},
+        agendaItem = AgendaItem.Event(
+            "123",
+            "Place Holder Text",
+            "Amet minim mollit non deserunt",
+            123,
+            123,
+            123,
+            "",
+            true,
+            listOf(),
+            listOf()
+        ),
+        onAgendaCardActionClick = { _, _ -> },
+        visibleAgendaCardDropdownId = null,
+        setVisibleAgendaItemId = {},
+        showAgendaCardDropdown = true
     )
 }
 
@@ -165,12 +209,21 @@ fun PreviewEventCard() {
 fun PreviewTaskCard() {
     AgendaCard(
         modifier = Modifier,
-        title = "Place Holder Text",
-        details = "Amet minim mollit non deserunt",
         date = "Mar 5, 10:30 - Mar 5, 11:00",
-        cardType = AgendaItemType.Task,
         isChecked = false,
-        toggleAgendaCardDropdownVisibility = {}
+        toggleAgendaCardDropdownVisibility = {},
+        agendaItem = AgendaItem.Task(
+            "123",
+            "Place Holder Text",
+            "Amet minim mollit non deserunt",
+            123,
+            123,
+            isDone = false
+        ),
+        onAgendaCardActionClick = { _, _ -> },
+        visibleAgendaCardDropdownId = null,
+        setVisibleAgendaItemId = {},
+        showAgendaCardDropdown = true
     )
 }
 
@@ -179,12 +232,20 @@ fun PreviewTaskCard() {
 fun PreviewReminderCard() {
     AgendaCard(
         modifier = Modifier,
-        title = "Place Holder Text",
-        details = "Amet minim mollit non deserunt",
         date = "Mar 5, 10:30 - Mar 5, 11:00",
-        cardType = AgendaItemType.Reminder,
         isChecked = true,
-        toggleAgendaCardDropdownVisibility = {}
+        toggleAgendaCardDropdownVisibility = {},
+        agendaItem = AgendaItem.Reminder(
+            "123",
+            "Place Holder Text",
+            "Amet minim mollit non deserunt",
+            123,
+            123
+        ),
+        onAgendaCardActionClick = { _, _ -> },
+        visibleAgendaCardDropdownId = null,
+        setVisibleAgendaItemId = {},
+        showAgendaCardDropdown = true
     )
 }
 
