@@ -32,4 +32,6 @@ interface AgendaDetailsRemoteRepository {
     suspend fun loadReminder(reminderId: String): Result<AgendaItem.Reminder, DataError.Network>
 
     suspend fun deleteReminder(reminderId: String): Result<Unit, DataError.Network>
+
+    suspend fun updateReminder(reminderDetails: AgendaItem.Reminder): Result<Unit, DataError.Network>
 }

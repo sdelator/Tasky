@@ -196,4 +196,19 @@ class AgendaDetailsRemoteRepositoryImpl(
             Result.Error(DataError.Network.NO_INTERNET)
         }
     }
+
+    override suspend fun updateReminder(reminderDetails: AgendaItem.Reminder): Result<Unit, DataError.Network> {
+        return try {
+            val response = api.updateReminder(reminderDetails = reminderDetails)
+
+            if (response.isSuccessful) {
+                Result.Success(Unit)
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
 }
