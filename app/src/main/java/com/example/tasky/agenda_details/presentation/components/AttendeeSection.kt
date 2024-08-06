@@ -37,6 +37,7 @@ import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.AttendeeFilter
 import com.example.tasky.common.presentation.HeaderMedium
 import com.example.tasky.common.presentation.PillButton
+import com.example.tasky.common.presentation.TextBox
 
 @Composable
 fun AttendeeSection(
@@ -56,7 +57,7 @@ fun AttendeeSection(
                 textColor = Color.Black
             )
             if (isEditMode) {
-                AddAttendeeButton()
+                AddVisitorButton()
             }
         }
         Spacer(modifier = Modifier.padding(16.dp))
@@ -70,7 +71,7 @@ fun AttendeeSection(
 }
 
 @Composable
-fun AddAttendeeButton() {
+fun AddVisitorButton() {
     Surface(
         shape = RoundedCornerShape(5.dp)
     ) {
@@ -91,9 +92,12 @@ fun AddAttendeeButton() {
 }
 
 @Composable
-fun AddAttendeeDialog(
+fun AddVisitorDialog(
+    email: String,
+    isEmailValid: Boolean,
+    onEmailChange: (String) -> Unit,
     onDismiss: () -> Unit,
-    onAddVisitor: (String) -> Unit
+    onAddVisitorClick: () -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismiss
@@ -120,9 +124,18 @@ fun AddAttendeeDialog(
                 }
                 AddVisitorHeader(modifier = Modifier.align(Alignment.CenterHorizontally))
                 Spacer(modifier = Modifier.padding(bottom = 10.dp))
-                EmailAddressTextField()
+                TextBox(
+                    hintText = stringResource(R.string.email_address),
+                    text = email,
+                    isValid = isEmailValid,
+                    onValueChange = onEmailChange
+                )
+                //EmailAddressTextField()
                 Spacer(modifier = Modifier.padding(bottom = 3.dp))
-                AddButton()
+                AddButton(
+                    enabled = isEmailValid,
+                    onClick = { onAddVisitorClick() }
+                )
                 Spacer(modifier = Modifier.padding(5.dp))
             }
         }
@@ -141,18 +154,17 @@ fun AddVisitorHeader(modifier: Modifier) {
 }
 
 @Composable
-fun AddButton() {
+fun AddButton(enabled: Boolean, onClick: () -> Unit) {
     Button(
+        onClick = { onClick() },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        enabled = enabled,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Black,
             contentColor = Color.White
-        ),
-        onClick = {
-            //todo add api call?
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        )
     ) {
         Text(stringResource(R.string.add))
     }
@@ -219,8 +231,11 @@ fun PreviewAttendeeSection() {
 @Preview
 @Composable
 fun PreviewAttendeeDialog() {
-    AddAttendeeDialog(
+    AddVisitorDialog(
+        email = "test",
+        isEmailValid = true,
+        onEmailChange = {},
         onDismiss = {},
-        onAddVisitor = {}
+        onAddVisitorClick = {}
     )
 }
