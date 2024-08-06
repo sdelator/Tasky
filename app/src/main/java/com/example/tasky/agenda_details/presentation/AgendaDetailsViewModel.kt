@@ -12,6 +12,7 @@ import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRep
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.model.AgendaItemType
+import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.util.convertMillisToHhmm
 import com.example.tasky.common.domain.util.convertMillisToMmmDdYyyy
 import com.example.tasky.common.presentation.CardAction
@@ -34,6 +35,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AgendaDetailsViewModel @Inject constructor(
+    private val emailPatternValidator: EmailPatternValidatorImpl,
     private val imageCompressor: ImageCompressor,
     private val agendaDetailsRemoteRepository: AgendaDetailsRemoteRepository,
     private val savedStateHandle: SavedStateHandle
@@ -835,5 +837,28 @@ class AgendaDetailsViewModel @Inject constructor(
         _viewState.update {
             it.copy(showErrorDialog = false)
         }
+    }
+
+    fun onEmailChange(email: String) {
+        val isEmailValid = emailPatternValidator.isValidEmailPattern(email)
+        //viewstate
+        _viewState.update {
+            it.copy(
+                isVisitorEmailValid = isEmailValid
+            )
+        }
+    }
+
+    fun toggleVisitorDialog() {
+        _viewState.update {
+            it.copy(
+                isAddVisitorDialogVisible = !it.isAddVisitorDialogVisible
+            )
+        }
+    }
+
+    fun addVisitor() {
+        println("add visitor ${_viewState.value.visitorEmail}")
+
     }
 }

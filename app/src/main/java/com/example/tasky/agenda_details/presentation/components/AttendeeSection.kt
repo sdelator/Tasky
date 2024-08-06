@@ -43,7 +43,13 @@ import com.example.tasky.common.presentation.TextBox
 fun AttendeeSection(
     isEditMode: Boolean,
     attendeeFilter: AttendeeFilter,
-    onAttendeeFilterClick: (AttendeeFilter) -> Unit
+    onAttendeeFilterClick: (AttendeeFilter) -> Unit,
+    visitorEmail: String,
+    isVisitorEmailValid: Boolean,
+    onVisitorEmailChange: (String) -> Unit,
+    onToggleVisitorDialog: () -> Unit,
+    onAddVisitorClick: () -> Unit,
+    isAddVisitorDialogVisible: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -57,7 +63,9 @@ fun AttendeeSection(
                 textColor = Color.Black
             )
             if (isEditMode) {
-                AddVisitorButton()
+                AddVisitorButton(
+                    onToggleVisitorDialog = onToggleVisitorDialog
+                )
             }
         }
         Spacer(modifier = Modifier.padding(16.dp))
@@ -68,10 +76,20 @@ fun AttendeeSection(
         GoingSection(headerText = stringResource(R.string.going))
         GoingSection(headerText = stringResource(R.string.not_going))
     }
+
+    if (isAddVisitorDialogVisible) {
+        AddVisitorDialog(
+            email = visitorEmail,
+            isEmailValid = isVisitorEmailValid,
+            onEmailChange = onVisitorEmailChange,
+            onDismiss = onToggleVisitorDialog,
+            onAddVisitorClick = onAddVisitorClick
+        )
+    }
 }
 
 @Composable
-fun AddVisitorButton() {
+fun AddVisitorButton(onToggleVisitorDialog: () -> Unit) {
     Surface(
         shape = RoundedCornerShape(5.dp)
     ) {
@@ -79,7 +97,7 @@ fun AddVisitorButton() {
             modifier = Modifier
                 .size(35.dp)
                 .background(colorResource(id = R.color.reminder_gray))
-                .clickable(onClick = { }),
+                .clickable(onClick = { onToggleVisitorDialog() }),
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -224,7 +242,13 @@ fun PreviewAttendeeSection() {
     AttendeeSection(
         isEditMode = true,
         attendeeFilter = AttendeeFilter.ALL,
-        onAttendeeFilterClick = {}
+        onAttendeeFilterClick = {},
+        visitorEmail = "",
+        isVisitorEmailValid = true,
+        onToggleVisitorDialog = {},
+        onVisitorEmailChange = {},
+        onAddVisitorClick = {},
+        isAddVisitorDialogVisible = true
     )
 }
 

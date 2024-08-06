@@ -177,7 +177,13 @@ fun AgendaDetailsRoot(
             agendaDetailsViewModel.setSelectedImage(uri.toString())
         },
         resetPhotoSkipCount = { agendaDetailsViewModel.resetPhotoSkipCount() },
-        onItemDelete = { agendaDetailsViewModel.deleteAgendaItem() }
+        onItemDelete = { agendaDetailsViewModel.deleteAgendaItem() },
+        visitorEmail = viewState.visitorEmail,
+        isVisitorEmailValid = viewState.isVisitorEmailValid,
+        onVisitorEmailChange = { agendaDetailsViewModel.onEmailChange(it) },//(String) -> Unit,
+        onToggleVisitorDialog = { agendaDetailsViewModel.toggleVisitorDialog() },
+        onAddVisitorClick = { agendaDetailsViewModel.addVisitor() },
+        isAddVisitorDialogVisible = viewState.isAddVisitorDialogVisible
     )
 
     if (viewState.showLoadingSpinner) {
@@ -236,7 +242,13 @@ fun AgendaDetailsContent(
     photoSkipCount: Int,
     onPhotoClick: (Uri) -> Unit,
     resetPhotoSkipCount: () -> Unit,
-    onItemDelete: () -> Unit
+    onItemDelete: () -> Unit,
+    visitorEmail: String,
+    isVisitorEmailValid: Boolean,
+    onVisitorEmailChange: (String) -> Unit,
+    onToggleVisitorDialog: () -> Unit,
+    onAddVisitorClick: () -> Unit,
+    isAddVisitorDialogVisible: Boolean
 ) {
     Box(
         modifier = Modifier
@@ -330,7 +342,13 @@ fun AgendaDetailsContent(
                     AttendeeSection(
                         isEditMode = isEditMode,
                         attendeeFilter = attendeeFilter,
-                        onAttendeeFilterClick = onAttendeeFilterClick
+                        onAttendeeFilterClick = onAttendeeFilterClick,
+                        visitorEmail = visitorEmail,
+                        isVisitorEmailValid = isVisitorEmailValid,
+                        onVisitorEmailChange = onVisitorEmailChange,
+                        onToggleVisitorDialog = onToggleVisitorDialog,
+                        onAddVisitorClick = onAddVisitorClick,
+                        isAddVisitorDialogVisible = isAddVisitorDialogVisible
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -426,7 +444,13 @@ fun PreviewEventContent() {
         photoSkipCount = 0,
         onPhotoClick = {},
         resetPhotoSkipCount = {},
-        onItemDelete = {}
+        onItemDelete = {},
+        visitorEmail = "",
+        isVisitorEmailValid = true,
+        onVisitorEmailChange = { _ -> },
+        onToggleVisitorDialog = {},
+        onAddVisitorClick = {},
+        isAddVisitorDialogVisible = true
     )
 }
 
