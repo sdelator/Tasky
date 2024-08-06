@@ -5,6 +5,7 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object DateTimeHelper {
@@ -16,9 +17,9 @@ object DateTimeHelper {
         return duration.seconds
     }
 
-    fun getEpochMillisecondsFromDateAndTime(date: String, time: String): Long {
+    fun getZonedDateTimeFromDateAndTime(date: String, time: String): ZonedDateTime {
         val dateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm")
         val datePart = LocalDateTime.parse("$date $time", dateTimeFormatter)
-        return datePart.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        return datePart.atZone(ZoneId.systemDefault())
     }
 }

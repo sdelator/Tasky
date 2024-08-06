@@ -15,8 +15,9 @@ import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
-import com.example.tasky.common.domain.util.convertMillisToHhmm
-import com.example.tasky.common.domain.util.convertMillisToMmmDdYyyy
+import com.example.tasky.common.domain.util.toEpochMillis
+import com.example.tasky.common.domain.util.toHHmmString
+import com.example.tasky.common.domain.util.toMillisToMmmDdYyyy
 import com.example.tasky.common.presentation.CardAction
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
@@ -141,10 +142,10 @@ class AgendaDetailsViewModel @Inject constructor(
                         it.copy(
                             title = result.data.title,
                             description = result.data.description,
-                            fromTime = result.data.from.convertMillisToHhmm(),
-                            fromDate = result.data.from.convertMillisToMmmDdYyyy(),
-                            toTime = result.data.to.convertMillisToHhmm(),
-                            toDate = result.data.to.convertMillisToMmmDdYyyy(),
+                            fromTime = result.data.from.toHHmmString(),
+                            fromDate = result.data.from.toMillisToMmmDdYyyy(),
+                            toTime = result.data.to.toHHmmString(),
+                            toDate = result.data.to.toMillisToMmmDdYyyy(),
                             reminderTime = getReminderTime(result.data.remindAt, result.data.from),
                             photos = result.data.photos,
                             showLoadingSpinner = false,
@@ -183,8 +184,8 @@ class AgendaDetailsViewModel @Inject constructor(
                         it.copy(
                             title = result.data.title,
                             description = result.data.description,
-                            fromTime = result.data.time.convertMillisToHhmm(),
-                            fromDate = result.data.time.convertMillisToMmmDdYyyy(),
+                            fromTime = result.data.time.toHHmmString(),
+                            fromDate = result.data.time.toMillisToMmmDdYyyy(),
                             reminderTime = getReminderTime(result.data.remindAt, result.data.time),
                             showLoadingSpinner = false,
                             isInEditMode = isEditMode
@@ -223,8 +224,8 @@ class AgendaDetailsViewModel @Inject constructor(
                         it.copy(
                             title = result.data.title,
                             description = result.data.description,
-                            fromTime = result.data.time.convertMillisToHhmm(),
-                            fromDate = result.data.time.convertMillisToMmmDdYyyy(),
+                            fromTime = result.data.time.toHHmmString(),
+                            fromDate = result.data.time.toMillisToMmmDdYyyy(),
                             reminderTime = getReminderTime(result.data.remindAt, result.data.time),
                             showLoadingSpinner = false,
                             isInEditMode = isEditMode
@@ -254,7 +255,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun getReminderTimeForDuration(durationInSeconds: Long): ReminderTime {
-        return ReminderTime.entries.find { it.epochSeconds == durationInSeconds }
+        return ReminderTime.entries.find { it.epochMilliSeconds == durationInSeconds }
             ?: ReminderTime.THIRTY_MINUTES
     }
 
@@ -368,17 +369,17 @@ class AgendaDetailsViewModel @Inject constructor(
 
     private fun updateEvent() {
         val eventId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
-        val fromInEpochSeconds =
-            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+        val fromInZoneDateTime =
+            DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
             )
-        val toInEpochSeconds =
-            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+        val toInZoneDateTime =
+            DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.toDate,
                 time = _viewState.value.toTime
             )
-        val reminderTime = _viewState.value.reminderTime.epochSeconds
+        val reminderTime = _viewState.value.reminderTime.epochMilliSeconds
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
@@ -387,9 +388,9 @@ class AgendaDetailsViewModel @Inject constructor(
                     id = eventId,
                     title = _viewState.value.title ?: "",
                     description = _viewState.value.description ?: "",
-                    from = fromInEpochSeconds,
-                    to = toInEpochSeconds,
-                    remindAt = fromInEpochSeconds - reminderTime,
+                    from = fromInZoneDateTime.toEpochMillis(),
+                    to = toInZoneDateTime.toEpochMillis(),
+                    remindAt = fromInZoneDateTime - reminderTime,
                     attendeeIds = listOf("a", "b"), //todo fix
                     deletedPhotoKeys = listOf(), //todo fix
                     isGoing = false //todo fix
@@ -421,11 +422,11 @@ class AgendaDetailsViewModel @Inject constructor(
     private fun updateTask() {
         val taskId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
         val atInEpochSeconds =
-            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+            DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
             )
-        val reminderTime = _viewState.value.reminderTime.epochSeconds
+        val reminderTime = _viewState.value.reminderTime.epochMilliSeconds
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
@@ -463,11 +464,11 @@ class AgendaDetailsViewModel @Inject constructor(
     private fun updateReminder() {
         val reminderId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
         val atInEpochSeconds =
-            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+            DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
             )
-        val reminderTime = _viewState.value.reminderTime.epochSeconds
+        val reminderTime = _viewState.value.reminderTime.epochMilliSeconds
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
@@ -526,11 +527,11 @@ class AgendaDetailsViewModel @Inject constructor(
 
     private fun createTask() {
         val atInEpochSeconds =
-            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+            DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
             )
-        val reminderTime = _viewState.value.reminderTime.epochSeconds
+        val reminderTime = _viewState.value.reminderTime.epochMilliSeconds
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
@@ -567,11 +568,11 @@ class AgendaDetailsViewModel @Inject constructor(
 
     private fun createReminder() {
         val atInEpochSeconds =
-            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+            DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
             )
-        val reminderTime = _viewState.value.reminderTime.epochSeconds
+        val reminderTime = _viewState.value.reminderTime.epochMilliSeconds
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
@@ -606,17 +607,17 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun createEvent() {
-        val fromInEpochSeconds =
-            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+        val fromInZoneDateTime =
+            DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
             )
-        val toInEpochSeconds =
-            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+        val toInZoneDateTime =
+            DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.toDate,
                 time = _viewState.value.toTime
             )
-        val reminderTime = _viewState.value.reminderTime.epochSeconds
+        val reminderTime = _viewState.value.reminderTime.epochMilliSeconds
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
@@ -625,9 +626,9 @@ class AgendaDetailsViewModel @Inject constructor(
                     id = UUID.randomUUID().toString(),
                     title = _viewState.value.title ?: "",
                     description = _viewState.value.description ?: "",
-                    from = fromInEpochSeconds,
-                    to = toInEpochSeconds,
-                    remindAt = fromInEpochSeconds - reminderTime,
+                    from = fromInZoneDateTime.toEpochMillis(),
+                    to = toInZoneDateTime.toEpochMillis(),
+                    remindAt = fromInZoneDateTime.toEpochMillis() - reminderTime,
                     attendeeIds = listOf("a", "b")
                 ),
                 photos = _viewState.value.photos.filterIsInstance<Photo.LocalPhoto>()
