@@ -928,7 +928,8 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun deleteAttendee(eventId: String) {
+    fun deleteAttendee() {
+        val eventId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
             val result = agendaDetailsRemoteRepository.deleteAttendee(eventId = eventId)
