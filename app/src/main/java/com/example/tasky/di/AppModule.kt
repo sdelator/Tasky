@@ -142,9 +142,10 @@ object AppModule {
     @Provides
     @Singleton
     fun providesAgendaDetailsRemoteRepository(
-        @AuthenticatedApi api: TaskyApi
+        @AuthenticatedApi api: TaskyApi,
+        contentResolver: ContentResolver
     ): AgendaDetailsRemoteRepository {
-        return AgendaDetailsRemoteRepositoryImpl(api)
+        return AgendaDetailsRemoteRepositoryImpl(api, contentResolver = contentResolver)
     }
 
     @Provides

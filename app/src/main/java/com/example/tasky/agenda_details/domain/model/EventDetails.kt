@@ -10,6 +10,18 @@ data class EventDetails(
     val attendeeIds: List<String>
 )
 
+data class EventDetailsUpdated(
+    val id: String,
+    val title: String,
+    val description: String,
+    val from: Long,
+    val to: Long,
+    val remindAt: Long,
+    val attendeeIds: List<String>,
+    val deletedPhotoKeys: List<String>,
+    val isGoing: Boolean
+)
+
 sealed class Photo(open val uri: String) {
     data class LocalPhoto(val byteArray: ByteArray, override val uri: String) : Photo(uri = uri)
 

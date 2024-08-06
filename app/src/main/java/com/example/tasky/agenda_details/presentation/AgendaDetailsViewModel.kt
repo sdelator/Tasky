@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.EventDetails
+import com.example.tasky.agenda_details.domain.model.EventDetailsUpdated
 import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
@@ -60,13 +61,9 @@ class AgendaDetailsViewModel @Inject constructor(
 
     init {
         when (agendaItemAction) {
-            CardAction.Open -> {
-                // api call to fetch data
-                loadDataForItem()
-            }
-
-            CardAction.Edit -> TODO()
-            CardAction.Delete -> TODO()
+            CardAction.Open -> loadDataForAgendaItem(isEditMode = false)
+            CardAction.Edit -> loadDataForAgendaItem(isEditMode = true)
+            CardAction.Delete -> deleteAgendaItem()
             null -> {
                 // isNewEvent
                 _viewState.update {
@@ -74,25 +71,33 @@ class AgendaDetailsViewModel @Inject constructor(
                         fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
                         toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
                         fromTime = LocalTime.now().toFormatted_HH_mm(),
-                        toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE).toFormatted_HH_mm()
+                        toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
+                            .toFormatted_HH_mm(),
+                        isInEditMode = true
                     )
                 }
             }
         }
     }
 
-    private fun loadDataForItem() {
+    fun activateEditModeForAgendaItem() {
+        _viewState.update {
+            it.copy(isInEditMode = true)
+        }
+    }
+
+    private fun loadDataForAgendaItem(isEditMode: Boolean) {
         if (agendaItemType == null) {
             throw IllegalArgumentException("agendaItemType is null")
         }
         when (agendaItemType) {
-            AgendaItemType.Event -> loadDataForEvent()
-            AgendaItemType.Task -> loadDataForTask()
-            AgendaItemType.Reminder -> loadDataForReminder()
+            AgendaItemType.Event -> loadDataForEvent(isEditMode)
+            AgendaItemType.Task -> loadDataForTask(isEditMode)
+            AgendaItemType.Reminder -> loadDataForReminder(isEditMode)
         }
     }
 
-    private fun loadDataForEvent() {
+    private fun loadDataForEvent(isEditMode: Boolean) {
         if (agendaItemId == null) {
             throw IllegalArgumentException("agendaItemId is null")
         }
@@ -113,7 +118,9 @@ class AgendaDetailsViewModel @Inject constructor(
                             toTime = result.data.to.convertMillisToHhmm(),
                             toDate = result.data.to.convertMillisToMmmDdYyyy(),
                             reminderTime = getReminderTime(result.data.remindAt, result.data.from),
-                            showLoadingSpinner = false
+                            photos = result.data.photos,
+                            showLoadingSpinner = false,
+                            isInEditMode = isEditMode
                         )
                     }
 
@@ -133,7 +140,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun loadDataForTask() {
+    private fun loadDataForTask(isEditMode: Boolean) {
         if (agendaItemId == null) {
             throw IllegalArgumentException("agendaItemId is null")
         }
@@ -152,7 +159,8 @@ class AgendaDetailsViewModel @Inject constructor(
                             fromTime = result.data.time.convertMillisToHhmm(),
                             fromDate = result.data.time.convertMillisToMmmDdYyyy(),
                             reminderTime = getReminderTime(result.data.remindAt, result.data.time),
-                            showLoadingSpinner = false
+                            showLoadingSpinner = false,
+                            isInEditMode = isEditMode
                         )
                     }
 
@@ -172,7 +180,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun loadDataForReminder() {
+    private fun loadDataForReminder(isEditMode: Boolean) {
         if (agendaItemId == null) {
             throw IllegalArgumentException("agendaItemId is null")
         }
@@ -191,7 +199,8 @@ class AgendaDetailsViewModel @Inject constructor(
                             fromTime = result.data.time.convertMillisToHhmm(),
                             fromDate = result.data.time.convertMillisToMmmDdYyyy(),
                             reminderTime = getReminderTime(result.data.remindAt, result.data.time),
-                            showLoadingSpinner = false
+                            showLoadingSpinner = false,
+                            isInEditMode = isEditMode
                         )
                     }
 
@@ -240,11 +249,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun edit() {
-        //set viewstate to editing
-    }
-
-    fun delete() {
+    fun deleteAgendaItem() {
         //todo if no id (new item) then just navigate back
         if (agendaItemType == null) {
             throw IllegalArgumentException("agendaItemType is null")
@@ -257,7 +262,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun deleteEvent() {
-        val eventId = "96faff73-8dba-43eb-a123-b32d15ab6395" //todo remove hard-coded
+        val eventId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
             val result = agendaDetailsRemoteRepository.deleteEvent(eventId = eventId)
@@ -283,7 +288,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun deleteTask() {
-        val taskId = "372a6800-0b04-4828-b12d-280cfc55df12" //todo remove hard-coded
+        val taskId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
             val result = agendaDetailsRemoteRepository.deleteTask(taskId)
@@ -309,7 +314,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun deleteReminder() {
-        val reminderId = "12345abcd" //todo remove hard-coded
+        val reminderId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
             val result = agendaDetailsRemoteRepository.deleteReminder(reminderId)
@@ -334,19 +339,165 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun save() {
+    private fun updateEvent() {
+        val eventId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
+        val fromInEpochSeconds =
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+                date = _viewState.value.fromDate,
+                time = _viewState.value.fromTime
+            )
+        val toInEpochSeconds =
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+                date = _viewState.value.toDate,
+                time = _viewState.value.toTime
+            )
+        val reminderTime = _viewState.value.reminderTime.epochSeconds
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.updateEvent(
+                eventDetails = EventDetailsUpdated(
+                    id = eventId,
+                    title = _viewState.value.title ?: "",
+                    description = _viewState.value.description ?: "",
+                    from = fromInEpochSeconds,
+                    to = toInEpochSeconds,
+                    remindAt = fromInEpochSeconds - reminderTime,
+                    attendeeIds = listOf("a", "b"), //todo fix
+                    deletedPhotoKeys = listOf(), //todo fix
+                    isGoing = false //todo fix
+                ),
+                photos = _viewState.value.photos.filterIsInstance<Photo.LocalPhoto>()
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    println("success update event!")
+                    _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                    println("response = ${result.data}")
+                }
+
+                is Result.Error -> {
+                    println("failed event update :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateTask() {
+        val taskId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
+        val atInEpochSeconds =
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+                date = _viewState.value.fromDate,
+                time = _viewState.value.fromTime
+            )
+        val reminderTime = _viewState.value.reminderTime.epochSeconds
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.updateTask(
+                taskDetails = AgendaItem.Task(
+                    id = taskId,
+                    title = _viewState.value.title ?: "",
+                    description = _viewState.value.description ?: "",
+                    time = atInEpochSeconds,
+                    remindAt = atInEpochSeconds - reminderTime,
+                    isDone = false //todo remove hardcode
+                )
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    println("success task updated!")
+                    _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                }
+
+                is Result.Error -> {
+                    println("failed task updated :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateReminder() {
+        val reminderId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
+        val atInEpochSeconds =
+            DateTimeHelper.getEpochMillisecondsFromDateAndTime(
+                date = _viewState.value.fromDate,
+                time = _viewState.value.fromTime
+            )
+        val reminderTime = _viewState.value.reminderTime.epochSeconds
+
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.updateReminder(
+                reminderDetails = AgendaItem.Reminder(
+                    id = reminderId,
+                    title = _viewState.value.title ?: "",
+                    description = _viewState.value.description ?: "",
+                    time = atInEpochSeconds,
+                    remindAt = atInEpochSeconds - reminderTime
+                )
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    println("success reminder updated!")
+                    _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
+                }
+
+                is Result.Error -> {
+                    println("failed reminder updated :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun saveAgendaItem() {
         // todo save all items in local DB
         if (agendaItemType == null) {
             throw IllegalArgumentException("agendaItemType is null")
         }
-        when (agendaItemType) {
-            AgendaItemType.Event -> saveEvent()
-            AgendaItemType.Task -> saveTask()
-            AgendaItemType.Reminder -> saveReminder()
+
+        if (agendaItemId == null) {
+            println("saved button clicked - create $agendaItemType")
+            when (agendaItemType) {
+                AgendaItemType.Event -> createEvent()
+                AgendaItemType.Task -> createTask()
+                AgendaItemType.Reminder -> createReminder()
+            }
+        } else {
+            println("saved button clicked - update $agendaItemType")
+            when (agendaItemType) {
+                AgendaItemType.Event -> updateEvent()
+                AgendaItemType.Task -> updateTask()
+                AgendaItemType.Reminder -> updateReminder()
+            }
         }
     }
 
-    private fun saveTask() {
+    private fun createTask() {
         val atInEpochSeconds =
             DateTimeHelper.getEpochMillisecondsFromDateAndTime(
                 date = _viewState.value.fromDate,
@@ -387,7 +538,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun saveReminder() {
+    private fun createReminder() {
         val atInEpochSeconds =
             DateTimeHelper.getEpochMillisecondsFromDateAndTime(
                 date = _viewState.value.fromDate,
@@ -427,7 +578,7 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun saveEvent() {
+    private fun createEvent() {
         val fromInEpochSeconds =
             DateTimeHelper.getEpochMillisecondsFromDateAndTime(
                 date = _viewState.value.fromDate,
@@ -452,7 +603,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     remindAt = fromInEpochSeconds - reminderTime,
                     attendeeIds = listOf("a", "b")
                 ),
-                photosByteArray = getByteArrayFromPhotoList(_viewState.value.photos)
+                photos = _viewState.value.photos.filterIsInstance<Photo.LocalPhoto>()
             )
 
             when (result) {

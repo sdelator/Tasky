@@ -277,7 +277,7 @@ fun AgendaContent(
                                 visibleAgendaCardDropdownId = visibleAgendaCardDropdownId,
                                 setVisibleAgendaItemId = setVisibleAgendaItemId,
                                 showAgendaCardDropdown = showAgendaCardDropdown
-                            )
+                            ) 
                         }
                     }
                 }

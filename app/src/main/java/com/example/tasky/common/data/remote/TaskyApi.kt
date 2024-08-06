@@ -1,6 +1,5 @@
 package com.example.tasky.common.data.remote
 
-import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.feature_agenda.data.model.AgendaResponse
 import com.example.tasky.feature_agenda.data.model.EventDto
@@ -49,14 +48,21 @@ interface TaskyApi {
         @Part photos: List<MultipartBody.Part>
     ): Response<EventDto>
 
-    @GET("/agenda")
-    suspend fun loadAgenda(@Query("time") time: Long): Response<AgendaResponse>
-
     @DELETE("/event")
     suspend fun deleteEvent(@Query("eventId") eventId: String): Response<Unit>
 
     @GET("/event")
     suspend fun loadEvent(@Query("eventId") eventId: String): Response<EventDto>
+
+    @Multipart
+    @PUT("/event")
+    suspend fun updateEvent(
+        @Part("update_event_request") updateEventRequest: RequestBody,
+        @Part photos: List<MultipartBody.Part>
+    ): Response<EventDto>
+
+    @GET("/agenda")
+    suspend fun loadAgenda(@Query("time") time: Long): Response<AgendaResponse>
 
 //    @PUT("/syncAgenda")
 //    suspend fun syncAgendaItem(): Response<SyncAgendaResponse>
@@ -70,11 +76,11 @@ interface TaskyApi {
     @DELETE("/task")
     suspend fun deleteTask(@Query("taskId") taskId: String): Response<Unit>
 
-    @PUT("/task")
-    suspend fun updateTask(@Body taskDetails: AgendaItem.Task): Response<Unit>
-
     @GET("/task")
     suspend fun loadTask(@Query("taskId") taskId: String): Response<TaskDto>
+
+    @PUT("/task")
+    suspend fun updateTask(@Body taskDtoDetails: TaskDto): Response<Unit>
 
     @POST("/reminder")
     suspend fun createReminder(@Body reminderDtoDetails: ReminderDto): Response<Unit>
@@ -84,4 +90,7 @@ interface TaskyApi {
 
     @GET("/reminder")
     suspend fun loadReminder(@Query("reminderId") reminderId: String): Response<ReminderDto>
+
+    @PUT("/reminder")
+    suspend fun updateReminder(@Body reminderDtoDetails: ReminderDto): Response<Unit>
 }
