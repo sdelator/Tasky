@@ -101,24 +101,25 @@ class AgendaDetailsRemoteRepositoryImpl(
 
     override suspend fun updateEvent(
         eventDetails: EventDetailsUpdated,
-        photosByteArray: List<ByteArray>
+        photos: List<Photo.LocalPhoto>
     ): Result<AgendaItem.Event, DataError.Network> {
         return try {
             val gson = Gson()
             val json = gson.toJson(eventDetails)
             val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaType())
 
-            val photoParts = photosByteArray.mapIndexed { index, byteArray ->
-                val mimeType = when (byteArray.take(3)) {
-                    listOf(0xFF.toByte(), 0xD8.toByte(), 0xFF.toByte()) -> "image/jpeg"
-                    listOf(0x89.toByte(), 0x50.toByte(), 0x4e.toByte()) -> "image/png"
-                    else -> throw Exception("invalid Image format")
-                }
-                val requestFile =
-                    byteArray.toRequestBody(mimeType.toMediaTypeOrNull(), 0, byteArray.size)
+            val photoParts = photos.mapIndexed { index, localPhoto ->
+                val mimeTypeMap = MimeTypeMap.getSingleton()
+                val type = contentResolver.getType(Uri.parse(localPhoto.uri))
+                val extension = mimeTypeMap.getExtensionFromMimeType(type)
+                val requestFile = localPhoto.byteArray.toRequestBody(
+                    type?.toMediaTypeOrNull(),
+                    0,
+                    localPhoto.byteArray.size
+                )
                 MultipartBody.Part.createFormData(
                     "photo$index",
-                    "image$index.${mimeType.split("/")[1]}",
+                    "image$index.${extension}",
                     requestFile
                 )
             }

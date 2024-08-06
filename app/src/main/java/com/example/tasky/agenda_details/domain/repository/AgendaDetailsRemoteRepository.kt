@@ -19,7 +19,7 @@ interface AgendaDetailsRemoteRepository {
 
     suspend fun updateEvent(
         eventDetails: EventDetailsUpdated,
-        photosByteArray: List<ByteArray>
+        photos: List<Photo.LocalPhoto>
     ): Result<AgendaItem.Event, DataError.Network>
 
     suspend fun createTask(taskDetails: AgendaItem.Task): Result<Unit, DataError.Network>
