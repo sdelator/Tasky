@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import com.example.tasky.agenda_details.domain.model.AgendaItem
+import com.example.tasky.agenda_details.domain.model.AttendeeAccountDetails
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.EventDetailsUpdated
 import com.example.tasky.agenda_details.domain.model.Photo
@@ -16,6 +17,7 @@ import com.example.tasky.di.AuthenticatedApi
 import com.example.tasky.feature_agenda.data.model.toAgendaItemEvent
 import com.example.tasky.feature_agenda.data.model.toAgendaItemReminder
 import com.example.tasky.feature_agenda.data.model.toAgendaItemTask
+import com.example.tasky.feature_agenda.data.model.toAttendeeAccountDetails
 import com.example.tasky.feature_agenda.data.model.toReminderDto
 import com.example.tasky.feature_agenda.data.model.toTaskDto
 import com.google.gson.Gson
@@ -129,6 +131,37 @@ class AgendaDetailsRemoteRepositoryImpl(
 
             if (response.isSuccessful && responseBody != null) {
                 Result.Success(responseBody.toAgendaItemEvent())
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
+
+    override suspend fun getAttendee(attendeeEmail: String): Result<AttendeeAccountDetails, DataError.Network> {
+        return try {
+            val response = api.getAttendee(attendeeEmail)
+            val responseBody = response.body()
+
+            if (response.isSuccessful && responseBody != null) {
+                Result.Success(responseBody.toAttendeeAccountDetails())
+            } else {
+                val error = response.code().toNetworkErrorType()
+                Result.Error(error)
+            }
+        } catch (e: IOException) {
+            Result.Error(DataError.Network.NO_INTERNET)
+        }
+    }
+
+    override suspend fun deleteAttendee(eventId: String): Result<Unit, DataError.Network> {
+        return try {
+            val response = api.deleteEvent(eventId = eventId)
+
+            if (response.isSuccessful) {
+                Result.Success(Unit)
             } else {
                 val error = response.code().toNetworkErrorType()
                 Result.Error(error)

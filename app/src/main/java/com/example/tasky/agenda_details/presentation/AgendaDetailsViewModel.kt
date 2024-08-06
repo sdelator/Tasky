@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
+import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.EventDetailsUpdated
 import com.example.tasky.agenda_details.domain.model.Photo
@@ -134,7 +135,6 @@ class AgendaDetailsViewModel @Inject constructor(
                             isInEditMode = isEditMode
                         )
                     }
-
                 }
 
                 is Result.Error -> {
@@ -861,7 +861,44 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun addVisitor() {
-        println("add visitor ${_email.value}")
-        //todo loading spinner and api call to verify email
+        viewModelScope.launch {
+            println("add visitor ${_email.value}")
+            val result = agendaDetailsRemoteRepository.getAttendee(_email.value)
+
+            when (result) {
+                is Result.Success -> {
+                    println("get visitor info success!")
+                    if (result.data.doesUserExist) {
+                        println("add visitor success!")
+                        val attendee = result.data.attendee
+                        val newVisitor = AttendeeBasicInfoDetails(
+                            email = attendee.email,
+                            fullName = attendee.fullName,
+                            userId = attendee.userId
+                        )
+                        _viewState.update {
+                            it.copy(
+                                showLoadingSpinner = false,
+                                visitorList = it.visitorList + newVisitor
+                            )
+                        }
+                        println("visitorList = ${_viewState.value.visitorList}")
+                    } else {
+                        println("visitor email does not exist")
+                    }
+                }
+
+                is Result.Error -> {
+                    println("failed to add visitor :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 }

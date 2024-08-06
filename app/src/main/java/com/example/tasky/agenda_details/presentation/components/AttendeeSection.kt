@@ -19,8 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -148,7 +146,6 @@ fun AddVisitorDialog(
                     isValid = isEmailValid,
                     onValueChange = onEmailChange
                 )
-                //EmailAddressTextField()
                 Spacer(modifier = Modifier.padding(bottom = 3.dp))
                 AddButton(
                     enabled = isEmailValid,
@@ -186,23 +183,6 @@ fun AddButton(enabled: Boolean, onClick: () -> Unit) {
     ) {
         Text(stringResource(R.string.add))
     }
-}
-
-@Composable
-fun EmailAddressTextField() {
-    TextField(
-        value = "",
-        onValueChange = { },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        label = { Text(stringResource(R.string.email_address)) }
-    )
 }
 
 @Composable
