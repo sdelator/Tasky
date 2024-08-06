@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.tasky.R
+import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.presentation.AttendeeFilter
 import com.example.tasky.common.presentation.HeaderMedium
 import com.example.tasky.common.presentation.PillButton
@@ -47,7 +48,9 @@ fun AttendeeSection(
     onVisitorEmailChange: (String) -> Unit,
     onToggleVisitorDialog: () -> Unit,
     onAddVisitorClick: () -> Unit,
-    isAddVisitorDialogVisible: Boolean
+    isAddVisitorDialogVisible: Boolean,
+    visitorList: List<AttendeeBasicInfoDetails>,
+    showVisitorDoesNotExist: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -71,8 +74,14 @@ fun AttendeeSection(
             attendeeFilter = attendeeFilter,
             onAttendeeFilterClick = onAttendeeFilterClick
         )
-        GoingSection(headerText = stringResource(R.string.going))
-        GoingSection(headerText = stringResource(R.string.not_going))
+        GoingSection(
+            headerText = stringResource(R.string.going),
+            visitorList = visitorList
+        )
+        GoingSection(
+            headerText = stringResource(R.string.not_going),
+            visitorList = visitorList
+        )
     }
 
     if (isAddVisitorDialogVisible) {
@@ -81,7 +90,8 @@ fun AttendeeSection(
             isEmailValid = isVisitorEmailValid,
             onEmailChange = onVisitorEmailChange,
             onDismiss = onToggleVisitorDialog,
-            onAddVisitorClick = onAddVisitorClick
+            onAddVisitorClick = onAddVisitorClick,
+            showVisitorDoesNotExist = showVisitorDoesNotExist
         )
     }
 }
@@ -113,7 +123,8 @@ fun AddVisitorDialog(
     isEmailValid: Boolean,
     onEmailChange: (String) -> Unit,
     onDismiss: () -> Unit,
-    onAddVisitorClick: () -> Unit
+    onAddVisitorClick: () -> Unit,
+    showVisitorDoesNotExist: Boolean
 ) {
     Dialog(
         onDismissRequest = onDismiss
@@ -146,6 +157,14 @@ fun AddVisitorDialog(
                     isValid = isEmailValid,
                     onValueChange = onEmailChange
                 )
+
+                if (showVisitorDoesNotExist) {
+                    Text(
+                        text = stringResource(id = R.string.visitor_does_not_exist),
+                        color = Color.Red,
+                        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.padding(bottom = 3.dp))
                 AddButton(
                     enabled = isEmailValid,
@@ -228,7 +247,9 @@ fun PreviewAttendeeSection() {
         onToggleVisitorDialog = {},
         onVisitorEmailChange = {},
         onAddVisitorClick = {},
-        isAddVisitorDialogVisible = true
+        isAddVisitorDialogVisible = true,
+        visitorList = listOf(),
+        showVisitorDoesNotExist = true
     )
 }
 
@@ -240,6 +261,7 @@ fun PreviewAttendeeDialog() {
         isEmailValid = true,
         onEmailChange = {},
         onDismiss = {},
-        onAddVisitorClick = {}
+        onAddVisitorClick = {},
+        showVisitorDoesNotExist = false
     )
 }

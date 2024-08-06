@@ -42,6 +42,7 @@ import com.example.tasky.CalendarNavRoute
 import com.example.tasky.EditingNav
 import com.example.tasky.PhotoDetailNav
 import com.example.tasky.R
+import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.presentation.components.AttendeeSection
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.agenda_details.presentation.components.Photos
@@ -185,7 +186,9 @@ fun AgendaDetailsRoot(
         onVisitorEmailChange = { agendaDetailsViewModel.onEmailChange(it) },//(String) -> Unit,
         onToggleVisitorDialog = { agendaDetailsViewModel.toggleVisitorDialog() },
         onAddVisitorClick = { agendaDetailsViewModel.addVisitor() },
-        isAddVisitorDialogVisible = viewState.isAddVisitorDialogVisible
+        isAddVisitorDialogVisible = viewState.isAddVisitorDialogVisible,
+        visitorList = viewState.visitorList,
+        showVisitorDoesNotExist = viewState.showVisitorDoesNotExist
     )
 
     if (viewState.showLoadingSpinner) {
@@ -198,15 +201,6 @@ fun AgendaDetailsRoot(
             showDialog = true,
             dialogMessage = message,
             onDismiss = { agendaDetailsViewModel.onErrorDialogDismissed() }
-        )
-    }
-
-    if (viewState.showVisitorErrorDialog) {
-        val message = stringResource(R.string.visitor_does_not_exist)
-        CreateErrorAlertDialog(
-            showDialog = true,
-            dialogMessage = message,
-            onDismiss = { agendaDetailsViewModel.onVisitorErrorDialogDismissed() }
         )
     }
 
@@ -259,7 +253,9 @@ fun AgendaDetailsContent(
     onVisitorEmailChange: (String) -> Unit,
     onToggleVisitorDialog: () -> Unit,
     onAddVisitorClick: () -> Unit,
-    isAddVisitorDialogVisible: Boolean
+    isAddVisitorDialogVisible: Boolean,
+    visitorList: List<AttendeeBasicInfoDetails>,
+    showVisitorDoesNotExist: Boolean
 ) {
     Box(
         modifier = Modifier
@@ -359,7 +355,9 @@ fun AgendaDetailsContent(
                         onVisitorEmailChange = onVisitorEmailChange,
                         onToggleVisitorDialog = onToggleVisitorDialog,
                         onAddVisitorClick = onAddVisitorClick,
-                        isAddVisitorDialogVisible = isAddVisitorDialogVisible
+                        isAddVisitorDialogVisible = isAddVisitorDialogVisible,
+                        visitorList = visitorList,
+                        showVisitorDoesNotExist = showVisitorDoesNotExist
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -461,7 +459,9 @@ fun PreviewEventContent() {
         onVisitorEmailChange = { _ -> },
         onToggleVisitorDialog = {},
         onAddVisitorClick = {},
-        isAddVisitorDialogVisible = true
+        isAddVisitorDialogVisible = true,
+        visitorList = listOf(),
+        showVisitorDoesNotExist = false
     )
 }
 

@@ -26,11 +26,11 @@ data class AgendaDetailsViewState(
     val photoUri: String? = null,
     val showLoadingSpinner: Boolean = false,
     val showErrorDialog: Boolean = false,
-    val showVisitorErrorDialog: Boolean = false,
     val dataError: DataError = DataError.Network.UNKNOWN,
     val isInEditMode: Boolean = false,
     val isAddVisitorDialogVisible: Boolean = false,
-    val visitorList: List<AttendeeBasicInfoDetails> = emptyList()
+    val visitorList: List<AttendeeBasicInfoDetails> = emptyList(),
+    val showVisitorDoesNotExist: Boolean = false
 )
 
 enum class AttendeeFilter(val typeName: Int) {

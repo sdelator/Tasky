@@ -1,14 +1,18 @@
 package com.example.tasky.agenda_details.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -26,10 +30,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
+import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.common.presentation.HeaderSmall
 
 @Composable
-fun GoingSection(headerText: String) {
+fun GoingSection(
+    headerText: String,
+    visitorList: List<AttendeeBasicInfoDetails>,
+    onRemoveVisitor: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,14 +46,28 @@ fun GoingSection(headerText: String) {
     ) {
         HeaderSmall(title = headerText)
         Spacer(modifier = Modifier.padding(bottom = 5.dp))
-        //TODO add a scrollable adapter
-        Attendee(name = "Ann Bailey", isCreator = true)
-        Attendee(name = "Bertha Cole", isCreator = false)
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            if (visitorList.isNotEmpty()) {
+                items(
+                    items = visitorList,
+                    key = { it.userId }
+                ) { visitor ->
+                    Attendee(
+                        visitor = visitor
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
-fun Attendee(name: String, isCreator: Boolean) {
+fun Attendee(visitor: AttendeeBasicInfoDetails) {
     Surface(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
@@ -60,7 +83,8 @@ fun Attendee(name: String, isCreator: Boolean) {
             AttendeeProfile(
                 initials = "AB" // TODO getInitials from name
             )
-            AttendeeName(name, modifier = Modifier.weight(1f))
+            AttendeeName(visitor.fullName, modifier = Modifier.weight(1f))
+            val isCreator = true
             if (isCreator) {
                 CreatorText()
             } else {

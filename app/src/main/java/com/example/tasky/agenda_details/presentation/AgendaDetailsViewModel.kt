@@ -848,12 +848,6 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun onVisitorErrorDialogDismissed() {
-        _viewState.update {
-            it.copy(showVisitorErrorDialog = false)
-        }
-    }
-
     fun onEmailChange(email: String) {
         _email.value = email
     }
@@ -884,6 +878,7 @@ class AgendaDetailsViewModel @Inject constructor(
                         )
                         _viewState.update {
                             it.copy(
+                                showVisitorDoesNotExist = false,
                                 showLoadingSpinner = false,
                                 isAddVisitorDialogVisible = false,
                                 visitorList = it.visitorList + newVisitor
@@ -895,7 +890,7 @@ class AgendaDetailsViewModel @Inject constructor(
                         _viewState.update {
                             it.copy(
                                 showLoadingSpinner = false,
-                                showVisitorErrorDialog = true
+                                showVisitorDoesNotExist = true
                             )
                         }
                     }
