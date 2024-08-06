@@ -186,9 +186,10 @@ fun AgendaDetailsRoot(
         onToggleVisitorDialog = { agendaDetailsViewModel.toggleVisitorDialog() },
         onAddVisitorClick = { agendaDetailsViewModel.addVisitor() },
         isAddVisitorDialogVisible = viewState.isAddVisitorDialogVisible,
-        visitorList = viewState.visitorList,
         showVisitorDoesNotExist = viewState.showVisitorDoesNotExist,
-        onRemoveVisitor = { agendaDetailsViewModel.removeVisitor(it) }
+        onRemoveVisitor = { agendaDetailsViewModel.removeVisitor(it) },
+        visitorGoingList = viewState.visitorGoingList,
+        visitorNotGoingList = viewState.visitorNotGoingList
     )
 
     if (viewState.showLoadingSpinner) {
@@ -254,9 +255,10 @@ fun AgendaDetailsContent(
     onToggleVisitorDialog: () -> Unit,
     onAddVisitorClick: () -> Unit,
     isAddVisitorDialogVisible: Boolean,
-    visitorList: List<AttendeeBasicInfoDetails>,
     showVisitorDoesNotExist: Boolean,
-    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit
+    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit,
+    visitorGoingList: List<AttendeeBasicInfoDetails>,
+    visitorNotGoingList: List<AttendeeBasicInfoDetails>
 ) {
     Box(
         modifier = Modifier
@@ -369,9 +371,10 @@ fun AgendaDetailsContent(
                             onToggleVisitorDialog = onToggleVisitorDialog,
                             onAddVisitorClick = onAddVisitorClick,
                             isAddVisitorDialogVisible = isAddVisitorDialogVisible,
-                            visitorList = visitorList,
                             showVisitorDoesNotExist = showVisitorDoesNotExist,
-                            onRemoveVisitor = onRemoveVisitor
+                            onRemoveVisitor = onRemoveVisitor,
+                            visitorGoingList = visitorGoingList,
+                            visitorNotGoingList = visitorNotGoingList
                         )
                     }
                 }
@@ -475,7 +478,8 @@ fun PreviewEventContent() {
         onToggleVisitorDialog = {},
         onAddVisitorClick = {},
         isAddVisitorDialogVisible = true,
-        visitorList = listOf(),
+        visitorGoingList = listOf(),
+        visitorNotGoingList = listOf(),
         showVisitorDoesNotExist = false,
         onRemoveVisitor = {}
     )

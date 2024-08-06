@@ -89,7 +89,7 @@ class AgendaDetailsViewModel @Inject constructor(
                         toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
                             .toFormatted_HH_mm(),
                         isInEditMode = true,
-                        visitorList = listOf(
+                        visitorGoingList = listOf(
                             AttendeeBasicInfoDetails(
                                 email = "",
                                 fullName = sessionStateManager.getName()!!,
@@ -892,10 +892,10 @@ class AgendaDetailsViewModel @Inject constructor(
                                 showVisitorDoesNotExist = false,
                                 showLoadingSpinner = false,
                                 isAddVisitorDialogVisible = false,
-                                visitorList = it.visitorList + attendeeWithInitials
+                                visitorGoingList = it.visitorGoingList + attendeeWithInitials
                             )
                         }
-                        println("visitorList = ${_viewState.value.visitorList}")
+                        println("visitorGoingList = ${_viewState.value.visitorGoingList}")
                     } else {
                         println("visitor email does not exist")
                         _viewState.update {
@@ -923,8 +923,8 @@ class AgendaDetailsViewModel @Inject constructor(
 
     fun removeVisitor(visitor: AttendeeBasicInfoDetails) {
         _viewState.update { currentState ->
-            val updatedList = currentState.visitorList.filterNot { it == visitor }
-            currentState.copy(visitorList = updatedList)
+            val updatedList = currentState.visitorGoingList.filterNot { it == visitor }
+            currentState.copy(visitorGoingList = updatedList)
         }
     }
 

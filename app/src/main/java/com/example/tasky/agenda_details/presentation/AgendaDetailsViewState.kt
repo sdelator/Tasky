@@ -29,7 +29,8 @@ data class AgendaDetailsViewState(
     val dataError: DataError = DataError.Network.UNKNOWN,
     val isInEditMode: Boolean = false,
     val isAddVisitorDialogVisible: Boolean = false,
-    val visitorList: List<AttendeeBasicInfoDetails> = emptyList(),
+    val visitorGoingList: List<AttendeeBasicInfoDetails> = emptyList(),
+    val visitorNotGoingList: List<AttendeeBasicInfoDetails> = emptyList(),
     val showVisitorDoesNotExist: Boolean = false
 )
 
