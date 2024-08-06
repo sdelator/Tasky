@@ -26,7 +26,8 @@ data class AgendaDetailsViewState(
     val showLoadingSpinner: Boolean = false,
     val showErrorDialog: Boolean = false,
     val dataError: DataError = DataError.Network.UNKNOWN,
-    val isInEditMode: Boolean = false
+    val isInEditMode: Boolean = false,
+    val isAddVisitorDialogVisible: Boolean = false
 )
 
 enum class AttendeeFilter(val typeName: Int) {

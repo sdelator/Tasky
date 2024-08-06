@@ -12,6 +12,7 @@ import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRep
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.model.AgendaItemType
+import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.util.convertMillisToHhmm
 import com.example.tasky.common.domain.util.convertMillisToMmmDdYyyy
 import com.example.tasky.common.presentation.CardAction
@@ -23,8 +24,11 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -34,6 +38,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AgendaDetailsViewModel @Inject constructor(
+    private val emailPatternValidator: EmailPatternValidatorImpl,
     private val imageCompressor: ImageCompressor,
     private val agendaDetailsRemoteRepository: AgendaDetailsRemoteRepository,
     private val savedStateHandle: SavedStateHandle
@@ -51,6 +56,12 @@ class AgendaDetailsViewModel @Inject constructor(
     private val agendaItemType = savedStateHandle.get<String>("agendaItemType")?.let {
         AgendaItemType.valueOf(it)
     }
+    private val _email = MutableStateFlow("")
+    val email: StateFlow<String> get() = _email
+
+    val isEmailValid = _email.map { email ->
+        emailPatternValidator.isValidEmailPattern(email) // <- Each email emission is mapped to this boolean when it changes
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), false)
 
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
@@ -835,5 +846,22 @@ class AgendaDetailsViewModel @Inject constructor(
         _viewState.update {
             it.copy(showErrorDialog = false)
         }
+    }
+
+    fun onEmailChange(email: String) {
+        _email.value = email
+    }
+
+    fun toggleVisitorDialog() {
+        _viewState.update {
+            it.copy(
+                isAddVisitorDialogVisible = !it.isAddVisitorDialogVisible
+            )
+        }
+    }
+
+    fun addVisitor() {
+        println("add visitor ${_email.value}")
+        //todo loading spinner and api call to verify email
     }
 }
