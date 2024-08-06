@@ -81,7 +81,7 @@ class AgendaDetailsViewModel @Inject constructor(
             CardAction.Delete -> deleteAgendaItem()
             null -> {
                 // isNewEvent
-                _viewState.update { it ->
+                _viewState.update {
                     it.copy(
                         fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
                         toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
