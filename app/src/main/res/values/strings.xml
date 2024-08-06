@@ -67,4 +67,7 @@
     <string name="none">None</string>
     <string name="delete">DELETE %1$s</string>
     <string name="add_attendee">Add Attendee</string>
+    <string name="add_visitor">Add visitor</string>
+    <string name="email_address">Email address</string>
+    <string name="add">ADD</string>
 </resources>

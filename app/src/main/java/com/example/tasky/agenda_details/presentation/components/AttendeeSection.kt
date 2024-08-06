@@ -10,8 +10,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,8 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.tasky.R
 import com.example.tasky.agenda_details.presentation.AttendeeFilter
 import com.example.tasky.common.presentation.HeaderMedium
@@ -79,6 +91,91 @@ fun AddAttendeeButton() {
 }
 
 @Composable
+fun AddAttendeeDialog(
+    onDismiss: () -> Unit,
+    onAddVisitor: (String) -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                IconButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(id = R.string.cancel)
+                    )
+                }
+                AddVisitorHeader(modifier = Modifier.align(Alignment.CenterHorizontally))
+                Spacer(modifier = Modifier.padding(bottom = 10.dp))
+                EmailAddressTextField()
+                Spacer(modifier = Modifier.padding(bottom = 3.dp))
+                AddButton()
+                Spacer(modifier = Modifier.padding(5.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun AddVisitorHeader(modifier: Modifier) {
+    Text(
+        text = stringResource(R.string.add_visitor),
+        fontWeight = FontWeight.Bold,
+        color = Color.Black,
+        fontSize = 20.sp,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun AddButton() {
+    Button(
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Black,
+            contentColor = Color.White
+        ),
+        onClick = {
+            //todo add api call?
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(stringResource(R.string.add))
+    }
+}
+
+@Composable
+fun EmailAddressTextField() {
+    TextField(
+        value = "",
+        onValueChange = { },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = TextFieldDefaults.colors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        ),
+        label = { Text(stringResource(R.string.email_address)) }
+    )
+}
+
+@Composable
 fun AttendeeStatusSection(
     attendeeFilter: AttendeeFilter,
     onAttendeeFilterClick: (AttendeeFilter) -> Unit
@@ -116,5 +213,14 @@ fun PreviewAttendeeSection() {
         isEditMode = true,
         attendeeFilter = AttendeeFilter.ALL,
         onAttendeeFilterClick = {}
+    )
+}
+
+@Preview
+@Composable
+fun PreviewAttendeeDialog() {
+    AddAttendeeDialog(
+        onDismiss = {},
+        onAddVisitor = {}
     )
 }
