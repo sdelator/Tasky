@@ -27,8 +27,6 @@ data class AgendaDetailsViewState(
     val showErrorDialog: Boolean = false,
     val dataError: DataError = DataError.Network.UNKNOWN,
     val isInEditMode: Boolean = false,
-    val visitorEmail: String = "",
-    val isVisitorEmailValid: Boolean = false,
     val isAddVisitorDialogVisible: Boolean = false
 )
 

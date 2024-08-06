@@ -24,8 +24,11 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -53,6 +56,12 @@ class AgendaDetailsViewModel @Inject constructor(
     private val agendaItemType = savedStateHandle.get<String>("agendaItemType")?.let {
         AgendaItemType.valueOf(it)
     }
+    private val _email = MutableStateFlow("")
+    val email: StateFlow<String> get() = _email
+
+    val isEmailValid = _email.map { email ->
+        emailPatternValidator.isValidEmailPattern(email) // <- Each email emission is mapped to this boolean when it changes
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), false)
 
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
@@ -840,13 +849,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun onEmailChange(email: String) {
-        val isEmailValid = emailPatternValidator.isValidEmailPattern(email)
-        //viewstate
-        _viewState.update {
-            it.copy(
-                isVisitorEmailValid = isEmailValid
-            )
-        }
+        _email.value = email
     }
 
     fun toggleVisitorDialog() {
@@ -858,7 +861,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun addVisitor() {
-        println("add visitor ${_viewState.value.visitorEmail}")
-
+        println("add visitor ${_email.value}")
+        //todo loading spinner and api call to verify email
     }
 }
