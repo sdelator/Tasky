@@ -29,6 +29,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -81,25 +82,27 @@ class AgendaDetailsViewModel @Inject constructor(
             CardAction.Delete -> deleteAgendaItem()
             null -> {
                 // isNewEvent
-                _viewState.update {
-                    it.copy(
-                        fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
-                        toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
-                        fromTime = LocalTime.now().toFormatted_HH_mm(),
-                        toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
-                            .toFormatted_HH_mm(),
-                        isInEditMode = true,
-                        visitorGoingList = listOf(
-                            AttendeeBasicInfoDetails(
-                                email = "",
-                                fullName = sessionStateManager.getName()!!,
-                                userId = "",
-                                userInitials = sessionStateManager.getName()
-                                    ?.let { ProfileUtils.getInitials(it) } ?: "",
-                                isCreator = true
+                viewModelScope.launch {
+                    _viewState.update {
+                        it.copy(
+                            fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
+                            toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
+                            fromTime = LocalTime.now().toFormatted_HH_mm(),
+                            toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
+                                .toFormatted_HH_mm(),
+                            isInEditMode = true,
+                            visitorGoingList = listOf(
+                                AttendeeBasicInfoDetails(
+                                    email = "",
+                                    fullName = sessionStateManager.getName()!!,
+                                    userId = sessionStateManager.getUserId().first().toString(),
+                                    userInitials = sessionStateManager.getName()
+                                        ?.let { ProfileUtils.getInitials(it) } ?: "",
+                                    isCreator = true
+                                )
                             )
                         )
-                    )
+                    }
                 }
             }
         }
@@ -936,7 +939,7 @@ class AgendaDetailsViewModel @Inject constructor(
 
             when (result) {
                 is Result.Success -> {
-                    println("visitor removed!")
+                    println("attendee removed!")
                     _viewState.update {
                         it.copy(
                             showLoadingSpinner = false
@@ -946,7 +949,7 @@ class AgendaDetailsViewModel @Inject constructor(
                 }
 
                 is Result.Error -> {
-                    println("failed to remove visitor :(")
+                    println("failed to remove attendee :(")
                     _viewState.update {
                         it.copy(
                             showLoadingSpinner = false,
