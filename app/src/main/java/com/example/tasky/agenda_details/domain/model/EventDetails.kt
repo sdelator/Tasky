@@ -47,4 +47,5 @@ data class AttendeeBasicInfoDetails(
     val fullName: String,
     val userId: String,
     val userInitials: String = "",
+    val isCreator: Boolean = false
 )

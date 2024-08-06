@@ -81,14 +81,24 @@ class AgendaDetailsViewModel @Inject constructor(
             CardAction.Delete -> deleteAgendaItem()
             null -> {
                 // isNewEvent
-                _viewState.update {
+                _viewState.update { it ->
                     it.copy(
                         fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
                         toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
                         fromTime = LocalTime.now().toFormatted_HH_mm(),
                         toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
                             .toFormatted_HH_mm(),
-                        isInEditMode = true
+                        isInEditMode = true,
+                        visitorList = listOf(
+                            AttendeeBasicInfoDetails(
+                                email = "",
+                                fullName = sessionStateManager.getName()!!,
+                                userId = "",
+                                userInitials = sessionStateManager.getName()
+                                    ?.let { ProfileUtils.getInitials(it) } ?: "",
+                                isCreator = true
+                            )
+                        )
                     )
                 }
             }

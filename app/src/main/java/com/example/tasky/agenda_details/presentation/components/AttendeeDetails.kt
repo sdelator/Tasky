@@ -82,8 +82,7 @@ fun Attendee(
                 initials = visitor.userInitials
             )
             AttendeeName(visitor.fullName, modifier = Modifier.weight(1f))
-            val isCreator = false
-            if (isCreator) {
+            if (visitor.isCreator) {
                 CreatorText()
             } else {
                 TrashIcon(visitor, onRemoveVisitor = onRemoveVisitor)
