@@ -36,7 +36,7 @@ import com.example.tasky.common.presentation.HeaderSmall
 fun GoingSection(
     headerText: String,
     visitorList: List<AttendeeBasicInfoDetails>,
-    onRemoveVisitor: () -> Unit = {}
+    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -53,7 +53,8 @@ fun GoingSection(
             if (visitorList.isNotEmpty()) {
                 visitorList.forEach { visitor ->
                     Attendee(
-                        visitor = visitor
+                        visitor = visitor,
+                        onRemoveVisitor = onRemoveVisitor
                     )
                 }
             }
@@ -62,7 +63,10 @@ fun GoingSection(
 }
 
 @Composable
-fun Attendee(visitor: AttendeeBasicInfoDetails) {
+fun Attendee(
+    visitor: AttendeeBasicInfoDetails,
+    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit
+) {
     Surface(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
@@ -78,11 +82,11 @@ fun Attendee(visitor: AttendeeBasicInfoDetails) {
                 initials = visitor.userInitials
             )
             AttendeeName(visitor.fullName, modifier = Modifier.weight(1f))
-            val isCreator = true
+            val isCreator = false
             if (isCreator) {
                 CreatorText()
             } else {
-                TrashIcon()
+                TrashIcon(visitor, onRemoveVisitor = onRemoveVisitor)
             }
         }
     }
@@ -121,8 +125,11 @@ fun AttendeeName(name: String, modifier: Modifier) {
 }
 
 @Composable
-fun TrashIcon() {
-    IconButton(onClick = { /*TODO*/ }) {
+fun TrashIcon(
+    visitor: AttendeeBasicInfoDetails,
+    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit
+) {
+    IconButton(onClick = { onRemoveVisitor(visitor) }) {
         Icon(
             painter = painterResource(id = R.drawable.ic_trash),
             contentDescription = stringResource(id = R.string.cancel),

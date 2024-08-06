@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
+import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.EventDetailsUpdated
 import com.example.tasky.agenda_details.domain.model.Photo
@@ -910,7 +911,40 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    fun getInitials(fullName: String): String {
-        return sessionStateManager.getName()?.let { ProfileUtils.getInitials(it) } ?: ""
+    fun removeVisitor(visitor: AttendeeBasicInfoDetails) {
+        _viewState.update { currentState ->
+            val updatedList = currentState.visitorList.filterNot { it == visitor }
+            currentState.copy(visitorList = updatedList)
+        }
+    }
+
+    fun deleteAttendee(eventId: String) {
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.deleteAttendee(eventId = eventId)
+
+            when (result) {
+                is Result.Success -> {
+                    println("visitor removed!")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false
+                        )
+                    }
+
+                }
+
+                is Result.Error -> {
+                    println("failed to remove visitor :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 }

@@ -50,7 +50,8 @@ fun AttendeeSection(
     onAddVisitorClick: () -> Unit,
     isAddVisitorDialogVisible: Boolean,
     visitorList: List<AttendeeBasicInfoDetails>,
-    showVisitorDoesNotExist: Boolean
+    showVisitorDoesNotExist: Boolean,
+    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -76,11 +77,13 @@ fun AttendeeSection(
         )
         GoingSection(
             headerText = stringResource(R.string.going),
-            visitorList = visitorList
+            visitorList = visitorList,
+            onRemoveVisitor = onRemoveVisitor
         )
         GoingSection(
             headerText = stringResource(R.string.not_going),
-            visitorList = visitorList
+            visitorList = visitorList,
+            onRemoveVisitor = onRemoveVisitor
         )
     }
 
@@ -249,7 +252,8 @@ fun PreviewAttendeeSection() {
         onAddVisitorClick = {},
         isAddVisitorDialogVisible = true,
         visitorList = listOf(),
-        showVisitorDoesNotExist = true
+        showVisitorDoesNotExist = true,
+        onRemoveVisitor = {}
     )
 }
 

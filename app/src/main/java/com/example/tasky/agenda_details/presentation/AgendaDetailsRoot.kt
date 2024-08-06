@@ -187,7 +187,8 @@ fun AgendaDetailsRoot(
         onAddVisitorClick = { agendaDetailsViewModel.addVisitor() },
         isAddVisitorDialogVisible = viewState.isAddVisitorDialogVisible,
         visitorList = viewState.visitorList,
-        showVisitorDoesNotExist = viewState.showVisitorDoesNotExist
+        showVisitorDoesNotExist = viewState.showVisitorDoesNotExist,
+        onRemoveVisitor = { agendaDetailsViewModel.removeVisitor(it) }
     )
 
     if (viewState.showLoadingSpinner) {
@@ -254,7 +255,8 @@ fun AgendaDetailsContent(
     onAddVisitorClick: () -> Unit,
     isAddVisitorDialogVisible: Boolean,
     visitorList: List<AttendeeBasicInfoDetails>,
-    showVisitorDoesNotExist: Boolean
+    showVisitorDoesNotExist: Boolean,
+    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -368,7 +370,8 @@ fun AgendaDetailsContent(
                             onAddVisitorClick = onAddVisitorClick,
                             isAddVisitorDialogVisible = isAddVisitorDialogVisible,
                             visitorList = visitorList,
-                            showVisitorDoesNotExist = showVisitorDoesNotExist
+                            showVisitorDoesNotExist = showVisitorDoesNotExist,
+                            onRemoveVisitor = onRemoveVisitor
                         )
                     }
                 }
@@ -473,7 +476,8 @@ fun PreviewEventContent() {
         onAddVisitorClick = {},
         isAddVisitorDialogVisible = true,
         visitorList = listOf(),
-        showVisitorDoesNotExist = false
+        showVisitorDoesNotExist = false,
+        onRemoveVisitor = {}
     )
 }
 
