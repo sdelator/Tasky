@@ -201,6 +201,15 @@ fun AgendaDetailsRoot(
         )
     }
 
+    if (viewState.showVisitorErrorDialog) {
+        val message = stringResource(R.string.visitor_does_not_exist)
+        CreateErrorAlertDialog(
+            showDialog = true,
+            dialogMessage = message,
+            onDismiss = { agendaDetailsViewModel.onVisitorErrorDialogDismissed() }
+        )
+    }
+
     ObserveAsEvents(flow = agendaDetailsViewModel.viewEvent) { event ->
         when (event) {
             is AgendaDetailsViewEvent.NavigateToAgenda -> {

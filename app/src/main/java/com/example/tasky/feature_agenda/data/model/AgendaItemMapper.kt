@@ -76,7 +76,7 @@ fun TaskDto.toAgendaItemTask(): AgendaItem.Task {
 fun AttendeeAccountDto.toAttendeeAccountDetails(): AttendeeAccountDetails {
     return AttendeeAccountDetails(
         doesUserExist = this.doesUserExist,
-        attendee = this.attendee.toAttendeeBasicInfoDetails()
+        attendee = this.attendee?.toAttendeeBasicInfoDetails()
     )
 }
 

@@ -848,6 +848,12 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
+    fun onVisitorErrorDialogDismissed() {
+        _viewState.update {
+            it.copy(showVisitorErrorDialog = false)
+        }
+    }
+
     fun onEmailChange(email: String) {
         _email.value = email
     }
@@ -870,7 +876,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     println("get visitor info success!")
                     if (result.data.doesUserExist) {
                         println("add visitor success!")
-                        val attendee = result.data.attendee
+                        val attendee = result.data.attendee!!
                         val newVisitor = AttendeeBasicInfoDetails(
                             email = attendee.email,
                             fullName = attendee.fullName,
@@ -879,12 +885,19 @@ class AgendaDetailsViewModel @Inject constructor(
                         _viewState.update {
                             it.copy(
                                 showLoadingSpinner = false,
+                                isAddVisitorDialogVisible = false,
                                 visitorList = it.visitorList + newVisitor
                             )
                         }
                         println("visitorList = ${_viewState.value.visitorList}")
                     } else {
                         println("visitor email does not exist")
+                        _viewState.update {
+                            it.copy(
+                                showLoadingSpinner = false,
+                                showVisitorErrorDialog = true
+                            )
+                        }
                     }
                 }
 

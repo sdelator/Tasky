@@ -39,7 +39,7 @@ data class AttendeeDetails(
 
 data class AttendeeAccountDetails(
     val doesUserExist: Boolean,
-    val attendee: AttendeeBasicInfoDetails
+    val attendee: AttendeeBasicInfoDetails?
 )
 
 data class AttendeeBasicInfoDetails(
