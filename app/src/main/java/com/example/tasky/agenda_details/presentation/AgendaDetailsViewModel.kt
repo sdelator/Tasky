@@ -366,7 +366,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     deletedPhotoKeys = listOf(), //todo fix
                     isGoing = false //todo fix
                 ),
-                photosByteArray = getByteArrayFromPhotoList(_viewState.value.photos)
+                photos = _viewState.value.photos.filterIsInstance<Photo.LocalPhoto>()
             )
 
             when (result) {
@@ -602,7 +602,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     remindAt = fromInEpochSeconds - reminderTime,
                     attendeeIds = listOf("a", "b")
                 ),
-                photos = _viewState.value.photos as List<Photo.LocalPhoto>
+                photos = _viewState.value.photos.filterIsInstance<Photo.LocalPhoto>()
             )
 
             when (result) {
