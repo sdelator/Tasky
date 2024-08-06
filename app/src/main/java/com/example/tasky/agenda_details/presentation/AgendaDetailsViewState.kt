@@ -1,6 +1,7 @@
 package com.example.tasky.agenda_details.presentation
 
 import com.example.tasky.R
+import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.common.domain.error.DataError
 import com.example.tasky.common.presentation.ReminderTime
@@ -27,7 +28,10 @@ data class AgendaDetailsViewState(
     val showErrorDialog: Boolean = false,
     val dataError: DataError = DataError.Network.UNKNOWN,
     val isInEditMode: Boolean = false,
-    val isAddVisitorDialogVisible: Boolean = false
+    val isAddVisitorDialogVisible: Boolean = false,
+    val visitorGoingList: List<AttendeeBasicInfoDetails> = emptyList(),
+    val visitorNotGoingList: List<AttendeeBasicInfoDetails> = emptyList(),
+    val showVisitorDoesNotExist: Boolean = false
 )
 
 enum class AttendeeFilter(val typeName: Int) {

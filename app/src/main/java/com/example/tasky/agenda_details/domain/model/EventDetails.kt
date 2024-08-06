@@ -36,3 +36,16 @@ data class AttendeeDetails(
     val isGoing: Boolean,
     val remindAt: Long
 )
+
+data class AttendeeAccountDetails(
+    val doesUserExist: Boolean,
+    val attendee: AttendeeBasicInfoDetails?
+)
+
+data class AttendeeBasicInfoDetails(
+    val email: String,
+    val fullName: String,
+    val userId: String,
+    val userInitials: String = "",
+    val isCreator: Boolean = false
+)

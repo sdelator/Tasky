@@ -14,9 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -42,6 +41,7 @@ import com.example.tasky.CalendarNavRoute
 import com.example.tasky.EditingNav
 import com.example.tasky.PhotoDetailNav
 import com.example.tasky.R
+import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.presentation.components.AttendeeSection
 import com.example.tasky.agenda_details.presentation.components.EmptyPhotos
 import com.example.tasky.agenda_details.presentation.components.Photos
@@ -185,7 +185,11 @@ fun AgendaDetailsRoot(
         onVisitorEmailChange = { agendaDetailsViewModel.onEmailChange(it) },//(String) -> Unit,
         onToggleVisitorDialog = { agendaDetailsViewModel.toggleVisitorDialog() },
         onAddVisitorClick = { agendaDetailsViewModel.addVisitor() },
-        isAddVisitorDialogVisible = viewState.isAddVisitorDialogVisible
+        isAddVisitorDialogVisible = viewState.isAddVisitorDialogVisible,
+        showVisitorDoesNotExist = viewState.showVisitorDoesNotExist,
+        onRemoveVisitor = { agendaDetailsViewModel.removeVisitor(it) },
+        visitorGoingList = viewState.visitorGoingList,
+        visitorNotGoingList = viewState.visitorNotGoingList
     )
 
     if (viewState.showLoadingSpinner) {
@@ -250,7 +254,11 @@ fun AgendaDetailsContent(
     onVisitorEmailChange: (String) -> Unit,
     onToggleVisitorDialog: () -> Unit,
     onAddVisitorClick: () -> Unit,
-    isAddVisitorDialogVisible: Boolean
+    isAddVisitorDialogVisible: Boolean,
+    showVisitorDoesNotExist: Boolean,
+    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit,
+    visitorGoingList: List<AttendeeBasicInfoDetails>,
+    visitorNotGoingList: List<AttendeeBasicInfoDetails>
 ) {
     Box(
         modifier = Modifier
@@ -274,29 +282,34 @@ fun AgendaDetailsContent(
                 containerColor = Color.White
             )
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(top = 32.dp, bottom = 16.dp)
-                    .verticalScroll(rememberScrollState())
             ) {
-                HeaderSection(agendaItemType = agendaItemType)
-                Spacer(modifier = Modifier.padding(top = 10.dp))
-                TitleSection(
-                    title = titleText,
-                    isEditMode = isEditMode,
-                    onEditClick = onEditClick
-                )
-                GrayDivider()
-                DescriptionSection(
-                    description = itemDescription,
-                    isEditMode = isEditMode,
-                    onEditClick = onEditClick
-                )
+                item { HeaderSection(agendaItemType = agendaItemType) }
+                item { Spacer(modifier = Modifier.padding(top = 10.dp)) }
+                item {
+                    TitleSection(
+                        title = titleText,
+                        isEditMode = isEditMode,
+                        onEditClick = onEditClick
+                    )
+                }
+                item { GrayDivider() }
+                item {
+                    DescriptionSection(
+                        description = itemDescription,
+                        isEditMode = isEditMode,
+                        onEditClick = onEditClick
+                    )
+                }
                 if (agendaItemType == AgendaItemType.Event) {
                     if (photosUriList.isEmpty()) {
-                        EmptyPhotos(onAddPhotosClick = onAddPhotosClick)
-                    } else {
+                        item { EmptyPhotos(onAddPhotosClick = onAddPhotosClick) }
+                    }
+                } else {
+                    item {
                         Photos(
                             photoUriList = photosUriList,
                             photoSkipCount = photoSkipCount,
@@ -306,55 +319,67 @@ fun AgendaDetailsContent(
                         )
                     }
                 }
-                GrayDivider()
-                DateLineItem(
-                    date = fromDate,
-                    dialogState = fromDateDialogState,
-                    timeDialogState = fromTimeDialogState,
-                    onDateSelected = onDateSelected,
-                    onTimeSelected = onTimeSelected,
-                    time = startTime,
-                    buttonType = if (agendaItemType == AgendaItemType.Event) {
-                        LineItemType.FROM
-                    } else LineItemType.AT,
-                    isEditing = isEditMode
-                )
-                if (agendaItemType == AgendaItemType.Event) {
-                    GrayDivider()
+                item { GrayDivider() }
+                item {
                     DateLineItem(
-                        date = toDate,
-                        dialogState = toDateDialogState,
-                        timeDialogState = toTimeDialogState,
+                        date = fromDate,
+                        dialogState = fromDateDialogState,
+                        timeDialogState = fromTimeDialogState,
                         onDateSelected = onDateSelected,
                         onTimeSelected = onTimeSelected,
-                        time = endTime,
-                        buttonType = LineItemType.TO,
+                        time = startTime,
+                        buttonType = if (agendaItemType == AgendaItemType.Event) {
+                            LineItemType.FROM
+                        } else LineItemType.AT,
                         isEditing = isEditMode
                     )
                 }
-                GrayDivider()
-                ReminderSection(
-                    reminderTime = reminderTime,
-                    showReminderDropdown = showReminderDropdown,
-                    toggleReminderDropdownVisibility = toggleReminderDropdownVisibility,
-                    onReminderClick = onReminderClick
-                )
-                GrayDivider()
                 if (agendaItemType == AgendaItemType.Event) {
-                    AttendeeSection(
-                        isEditMode = isEditMode,
-                        attendeeFilter = attendeeFilter,
-                        onAttendeeFilterClick = onAttendeeFilterClick,
-                        visitorEmail = visitorEmail,
-                        isVisitorEmailValid = isVisitorEmailValid,
-                        onVisitorEmailChange = onVisitorEmailChange,
-                        onToggleVisitorDialog = onToggleVisitorDialog,
-                        onAddVisitorClick = onAddVisitorClick,
-                        isAddVisitorDialogVisible = isAddVisitorDialogVisible
+                    item { GrayDivider() }
+                    item {
+                        DateLineItem(
+                            date = toDate,
+                            dialogState = toDateDialogState,
+                            timeDialogState = toTimeDialogState,
+                            onDateSelected = onDateSelected,
+                            onTimeSelected = onTimeSelected,
+                            time = endTime,
+                            buttonType = LineItemType.TO,
+                            isEditing = isEditMode
+                        )
+                    }
+                }
+                item { GrayDivider() }
+                item {
+                    ReminderSection(
+                        reminderTime = reminderTime,
+                        showReminderDropdown = showReminderDropdown,
+                        toggleReminderDropdownVisibility = toggleReminderDropdownVisibility,
+                        onReminderClick = onReminderClick
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f))
-                DeleteButton(agendaItemType = agendaItemType, onItemDelete = onItemDelete)
+                item { GrayDivider() }
+                if (agendaItemType == AgendaItemType.Event) {
+                    item {
+                        AttendeeSection(
+                            isEditMode = isEditMode,
+                            attendeeFilter = attendeeFilter,
+                            onAttendeeFilterClick = onAttendeeFilterClick,
+                            visitorEmail = visitorEmail,
+                            isVisitorEmailValid = isVisitorEmailValid,
+                            onVisitorEmailChange = onVisitorEmailChange,
+                            onToggleVisitorDialog = onToggleVisitorDialog,
+                            onAddVisitorClick = onAddVisitorClick,
+                            isAddVisitorDialogVisible = isAddVisitorDialogVisible,
+                            showVisitorDoesNotExist = showVisitorDoesNotExist,
+                            onRemoveVisitor = onRemoveVisitor,
+                            visitorGoingList = visitorGoingList,
+                            visitorNotGoingList = visitorNotGoingList
+                        )
+                    }
+                }
+                item { Spacer(modifier = Modifier.weight(1f)) }
+                item { DeleteButton(agendaItemType, onItemDelete) }
             }
         }
     }
@@ -452,7 +477,11 @@ fun PreviewEventContent() {
         onVisitorEmailChange = { _ -> },
         onToggleVisitorDialog = {},
         onAddVisitorClick = {},
-        isAddVisitorDialogVisible = true
+        isAddVisitorDialogVisible = true,
+        visitorGoingList = listOf(),
+        visitorNotGoingList = listOf(),
+        showVisitorDoesNotExist = false,
+        onRemoveVisitor = {}
     )
 }
 

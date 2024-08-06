@@ -23,3 +23,14 @@ data class AttendeeDto(
     val isGoing: Boolean,
     val remindAt: Long
 )
+
+data class AttendeeAccountDto(
+    val doesUserExist: Boolean,
+    val attendee: AttendeeBasicInfoDto?
+)
+
+data class AttendeeBasicInfoDto(
+    val email: String,
+    val fullName: String,
+    val userId: String
+)

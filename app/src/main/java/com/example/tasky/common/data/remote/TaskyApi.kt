@@ -2,6 +2,7 @@ package com.example.tasky.common.data.remote
 
 import com.example.tasky.common.domain.model.AccessTokenResponse
 import com.example.tasky.feature_agenda.data.model.AgendaResponse
+import com.example.tasky.feature_agenda.data.model.AttendeeAccountDto
 import com.example.tasky.feature_agenda.data.model.EventDto
 import com.example.tasky.feature_agenda.data.model.ReminderDto
 import com.example.tasky.feature_agenda.data.model.TaskDto
@@ -60,6 +61,12 @@ interface TaskyApi {
         @Part("update_event_request") updateEventRequest: RequestBody,
         @Part photos: List<MultipartBody.Part>
     ): Response<EventDto>
+
+    @GET("/attendee")
+    suspend fun getAttendee(@Query("email") email: String): Response<AttendeeAccountDto>
+
+    @DELETE("/attendee")
+    suspend fun deleteAttendee(@Query("eventId") eventId: String): Response<Unit>
 
     @GET("/agenda")
     suspend fun loadAgenda(@Query("time") time: Long): Response<AgendaResponse>

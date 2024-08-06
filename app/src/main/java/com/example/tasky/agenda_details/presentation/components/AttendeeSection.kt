@@ -19,8 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.tasky.R
+import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.presentation.AttendeeFilter
 import com.example.tasky.common.presentation.HeaderMedium
 import com.example.tasky.common.presentation.PillButton
@@ -49,7 +48,11 @@ fun AttendeeSection(
     onVisitorEmailChange: (String) -> Unit,
     onToggleVisitorDialog: () -> Unit,
     onAddVisitorClick: () -> Unit,
-    isAddVisitorDialogVisible: Boolean
+    isAddVisitorDialogVisible: Boolean,
+    showVisitorDoesNotExist: Boolean,
+    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit,
+    visitorGoingList: List<AttendeeBasicInfoDetails>,
+    visitorNotGoingList: List<AttendeeBasicInfoDetails>,
 ) {
     Column(
         modifier = Modifier
@@ -73,8 +76,16 @@ fun AttendeeSection(
             attendeeFilter = attendeeFilter,
             onAttendeeFilterClick = onAttendeeFilterClick
         )
-        GoingSection(headerText = stringResource(R.string.going))
-        GoingSection(headerText = stringResource(R.string.not_going))
+        GoingSection(
+            headerText = stringResource(R.string.going),
+            visitorList = visitorGoingList,
+            onRemoveVisitor = onRemoveVisitor
+        )
+        GoingSection(
+            headerText = stringResource(R.string.not_going),
+            visitorList = visitorNotGoingList,
+            onRemoveVisitor = onRemoveVisitor
+        )
     }
 
     if (isAddVisitorDialogVisible) {
@@ -83,7 +94,8 @@ fun AttendeeSection(
             isEmailValid = isVisitorEmailValid,
             onEmailChange = onVisitorEmailChange,
             onDismiss = onToggleVisitorDialog,
-            onAddVisitorClick = onAddVisitorClick
+            onAddVisitorClick = onAddVisitorClick,
+            showVisitorDoesNotExist = showVisitorDoesNotExist
         )
     }
 }
@@ -115,7 +127,8 @@ fun AddVisitorDialog(
     isEmailValid: Boolean,
     onEmailChange: (String) -> Unit,
     onDismiss: () -> Unit,
-    onAddVisitorClick: () -> Unit
+    onAddVisitorClick: () -> Unit,
+    showVisitorDoesNotExist: Boolean
 ) {
     Dialog(
         onDismissRequest = onDismiss
@@ -148,7 +161,14 @@ fun AddVisitorDialog(
                     isValid = isEmailValid,
                     onValueChange = onEmailChange
                 )
-                //EmailAddressTextField()
+
+                if (showVisitorDoesNotExist) {
+                    Text(
+                        text = stringResource(id = R.string.visitor_does_not_exist),
+                        color = Color.Red,
+                        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.padding(bottom = 3.dp))
                 AddButton(
                     enabled = isEmailValid,
@@ -186,23 +206,6 @@ fun AddButton(enabled: Boolean, onClick: () -> Unit) {
     ) {
         Text(stringResource(R.string.add))
     }
-}
-
-@Composable
-fun EmailAddressTextField() {
-    TextField(
-        value = "",
-        onValueChange = { },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        label = { Text(stringResource(R.string.email_address)) }
-    )
 }
 
 @Composable
@@ -248,7 +251,11 @@ fun PreviewAttendeeSection() {
         onToggleVisitorDialog = {},
         onVisitorEmailChange = {},
         onAddVisitorClick = {},
-        isAddVisitorDialogVisible = true
+        isAddVisitorDialogVisible = true,
+        visitorGoingList = listOf(),
+        visitorNotGoingList = listOf(),
+        showVisitorDoesNotExist = true,
+        onRemoveVisitor = {}
     )
 }
 
@@ -260,6 +267,7 @@ fun PreviewAttendeeDialog() {
         isEmailValid = true,
         onEmailChange = {},
         onDismiss = {},
-        onAddVisitorClick = {}
+        onAddVisitorClick = {},
+        showVisitorDoesNotExist = false
     )
 }

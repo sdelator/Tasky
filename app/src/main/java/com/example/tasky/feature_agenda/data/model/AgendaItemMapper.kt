@@ -1,6 +1,8 @@
 package com.example.tasky.feature_agenda.data.model
 
 import com.example.tasky.agenda_details.domain.model.AgendaItem
+import com.example.tasky.agenda_details.domain.model.AttendeeAccountDetails
+import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.domain.model.AttendeeDetails
 
 fun AgendaItem.Task.toTaskDto(): TaskDto {
@@ -68,5 +70,20 @@ fun TaskDto.toAgendaItemTask(): AgendaItem.Task {
         time = this.time,
         remindAt = this.remindAt,
         isDone = this.isDone
+    )
+}
+
+fun AttendeeAccountDto.toAttendeeAccountDetails(): AttendeeAccountDetails {
+    return AttendeeAccountDetails(
+        doesUserExist = this.doesUserExist,
+        attendee = this.attendee?.toAttendeeBasicInfoDetails()
+    )
+}
+
+fun AttendeeBasicInfoDto.toAttendeeBasicInfoDetails(): AttendeeBasicInfoDetails {
+    return AttendeeBasicInfoDetails(
+        email = this.email,
+        fullName = this.fullName,
+        userId = this.userId
     )
 }

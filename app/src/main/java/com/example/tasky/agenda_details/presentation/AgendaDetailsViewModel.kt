@@ -5,12 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
+import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.EventDetailsUpdated
 import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
+import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.util.convertMillisToHhmm
@@ -18,6 +20,7 @@ import com.example.tasky.common.domain.util.convertMillisToMmmDdYyyy
 import com.example.tasky.common.presentation.CardAction
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
+import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_HH_mm
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -26,6 +29,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -41,6 +45,7 @@ class AgendaDetailsViewModel @Inject constructor(
     private val emailPatternValidator: EmailPatternValidatorImpl,
     private val imageCompressor: ImageCompressor,
     private val agendaDetailsRemoteRepository: AgendaDetailsRemoteRepository,
+    private val sessionStateManager: SessionStateManager,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -77,15 +82,27 @@ class AgendaDetailsViewModel @Inject constructor(
             CardAction.Delete -> deleteAgendaItem()
             null -> {
                 // isNewEvent
-                _viewState.update {
-                    it.copy(
-                        fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
-                        toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
-                        fromTime = LocalTime.now().toFormatted_HH_mm(),
-                        toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
-                            .toFormatted_HH_mm(),
-                        isInEditMode = true
-                    )
+                viewModelScope.launch {
+                    _viewState.update {
+                        it.copy(
+                            fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
+                            toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
+                            fromTime = LocalTime.now().toFormatted_HH_mm(),
+                            toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
+                                .toFormatted_HH_mm(),
+                            isInEditMode = true,
+                            visitorGoingList = listOf(
+                                AttendeeBasicInfoDetails(
+                                    email = "",
+                                    fullName = sessionStateManager.getName()!!,
+                                    userId = sessionStateManager.getUserId().first().toString(),
+                                    userInitials = sessionStateManager.getName()
+                                        ?.let { ProfileUtils.getInitials(it) } ?: "",
+                                    isCreator = true
+                                )
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -134,7 +151,6 @@ class AgendaDetailsViewModel @Inject constructor(
                             isInEditMode = isEditMode
                         )
                     }
-
                 }
 
                 is Result.Error -> {
@@ -861,7 +877,88 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun addVisitor() {
-        println("add visitor ${_email.value}")
-        //todo loading spinner and api call to verify email
+        viewModelScope.launch {
+            println("add visitor ${_email.value}")
+            val result = agendaDetailsRemoteRepository.getAttendee(_email.value)
+
+            when (result) {
+                is Result.Success -> {
+                    println("get visitor info success!")
+                    if (result.data.doesUserExist) {
+                        println("add visitor success!")
+                        val newVisitor = result.data.attendee!!
+                        val attendeeWithInitials = newVisitor.copy(
+                            userInitials = ProfileUtils.getInitials(newVisitor.fullName)
+                        )
+                        _viewState.update {
+                            it.copy(
+                                showVisitorDoesNotExist = false,
+                                showLoadingSpinner = false,
+                                isAddVisitorDialogVisible = false,
+                                visitorGoingList = it.visitorGoingList + attendeeWithInitials
+                            )
+                        }
+                        println("visitorGoingList = ${_viewState.value.visitorGoingList}")
+                    } else {
+                        println("visitor email does not exist")
+                        _viewState.update {
+                            it.copy(
+                                showLoadingSpinner = false,
+                                showVisitorDoesNotExist = true
+                            )
+                        }
+                    }
+                }
+
+                is Result.Error -> {
+                    println("failed to add visitor :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun removeVisitor(visitor: AttendeeBasicInfoDetails) {
+        _viewState.update { currentState ->
+            val updatedList = currentState.visitorGoingList.filterNot { it == visitor }
+            currentState.copy(visitorGoingList = updatedList)
+        }
+    }
+
+    fun deleteAttendee() {
+        val eventId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
+        viewModelScope.launch {
+            _viewState.update { it.copy(showLoadingSpinner = true) }
+            val result = agendaDetailsRemoteRepository.deleteAttendee(eventId = eventId)
+
+            when (result) {
+                is Result.Success -> {
+                    println("attendee removed!")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false
+                        )
+                    }
+
+                }
+
+                is Result.Error -> {
+                    println("failed to remove attendee :(")
+                    _viewState.update {
+                        it.copy(
+                            showLoadingSpinner = false,
+                            showErrorDialog = true,
+                            dataError = result.error
+                        )
+                    }
+                }
+            }
+        }
     }
 }

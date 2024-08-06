@@ -1,10 +1,12 @@
 package com.example.tasky.agenda_details.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,33 +25,52 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
+import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.common.presentation.HeaderSmall
 
 @Composable
-fun GoingSection(headerText: String) {
+fun GoingSection(
+    headerText: String,
+    visitorList: List<AttendeeBasicInfoDetails>,
+    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
         HeaderSmall(title = headerText)
-        Spacer(modifier = Modifier.padding(bottom = 5.dp))
-        //TODO add a scrollable adapter
-        Attendee(name = "Ann Bailey", isCreator = true)
-        Attendee(name = "Bertha Cole", isCreator = false)
+        Spacer(modifier = Modifier.padding(bottom = 15.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            if (visitorList.isNotEmpty()) {
+                visitorList.forEach { visitor ->
+                    Attendee(
+                        visitor = visitor,
+                        onRemoveVisitor = onRemoveVisitor
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
-fun Attendee(name: String, isCreator: Boolean) {
+fun Attendee(
+    visitor: AttendeeBasicInfoDetails,
+    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit
+) {
     Surface(
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 5.dp, bottom = 5.dp)
     ) {
         Row(
             modifier = Modifier
@@ -58,13 +79,13 @@ fun Attendee(name: String, isCreator: Boolean) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AttendeeProfile(
-                initials = "AB" // TODO getInitials from name
+                initials = visitor.userInitials
             )
-            AttendeeName(name, modifier = Modifier.weight(1f))
-            if (isCreator) {
+            AttendeeName(visitor.fullName, modifier = Modifier.weight(1f))
+            if (visitor.isCreator) {
                 CreatorText()
             } else {
-                TrashIcon()
+                TrashIcon(visitor, onRemoveVisitor = onRemoveVisitor)
             }
         }
     }
@@ -103,8 +124,11 @@ fun AttendeeName(name: String, modifier: Modifier) {
 }
 
 @Composable
-fun TrashIcon() {
-    IconButton(onClick = { /*TODO*/ }) {
+fun TrashIcon(
+    visitor: AttendeeBasicInfoDetails,
+    onRemoveVisitor: (AttendeeBasicInfoDetails) -> Unit
+) {
+    IconButton(onClick = { onRemoveVisitor(visitor) }) {
         Icon(
             painter = painterResource(id = R.drawable.ic_trash),
             contentDescription = stringResource(id = R.string.cancel),
@@ -120,5 +144,25 @@ fun CreatorText() {
         fontSize = 14.sp,
         modifier = Modifier.padding(end = 16.dp),
         color = colorResource(id = R.color.light_blue)
+    )
+}
+
+@Preview
+@Composable
+fun PreviewAttendee() {
+    GoingSection(
+        "Going",
+        listOf(
+            AttendeeBasicInfoDetails(
+                "test@t.com",
+                "test user",
+                userId = "123abc"
+            ),
+            AttendeeBasicInfoDetails(
+                "test@t.com",
+                "test user",
+                userId = "123abc"
+            )
+        )
     )
 }
