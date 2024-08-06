@@ -328,6 +328,7 @@ fun AgendaDetailsContent(
                 GrayDivider()
                 if (agendaItemType == AgendaItemType.Event) {
                     AttendeeSection(
+                        isEditMode = isEditMode,
                         attendeeFilter = attendeeFilter,
                         onAttendeeFilterClick = onAttendeeFilterClick
                     )
@@ -413,7 +414,7 @@ fun PreviewEventContent() {
         onTimeSelected = { _, _, _ -> },
         startTime = "08:00",
         endTime = "08:15",
-        agendaItemType = AgendaItemType.Task,
+        agendaItemType = AgendaItemType.Event,
         showReminderDropdown = false,
         toggleReminderDropdownVisibility = {},
         onReminderClick = {},
