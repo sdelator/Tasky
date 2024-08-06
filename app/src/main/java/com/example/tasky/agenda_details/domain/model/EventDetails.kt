@@ -45,5 +45,6 @@ data class AttendeeAccountDetails(
 data class AttendeeBasicInfoDetails(
     val email: String,
     val fullName: String,
-    val userId: String
+    val userId: String,
+    val userInitials: String = "",
 )

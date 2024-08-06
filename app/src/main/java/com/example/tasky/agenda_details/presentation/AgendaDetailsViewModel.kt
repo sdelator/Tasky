@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
-import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.EventDetailsUpdated
 import com.example.tasky.agenda_details.domain.model.Photo
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
+import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.util.convertMillisToHhmm
@@ -19,6 +19,7 @@ import com.example.tasky.common.domain.util.convertMillisToMmmDdYyyy
 import com.example.tasky.common.presentation.CardAction
 import com.example.tasky.common.presentation.LineItemType
 import com.example.tasky.common.presentation.ReminderTime
+import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_HH_mm
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -42,6 +43,7 @@ class AgendaDetailsViewModel @Inject constructor(
     private val emailPatternValidator: EmailPatternValidatorImpl,
     private val imageCompressor: ImageCompressor,
     private val agendaDetailsRemoteRepository: AgendaDetailsRemoteRepository,
+    private val sessionStateManager: SessionStateManager,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -870,18 +872,16 @@ class AgendaDetailsViewModel @Inject constructor(
                     println("get visitor info success!")
                     if (result.data.doesUserExist) {
                         println("add visitor success!")
-                        val attendee = result.data.attendee!!
-                        val newVisitor = AttendeeBasicInfoDetails(
-                            email = attendee.email,
-                            fullName = attendee.fullName,
-                            userId = attendee.userId
+                        val newVisitor = result.data.attendee!!
+                        val attendeeWithInitials = newVisitor.copy(
+                            userInitials = ProfileUtils.getInitials(newVisitor.fullName)
                         )
                         _viewState.update {
                             it.copy(
                                 showVisitorDoesNotExist = false,
                                 showLoadingSpinner = false,
                                 isAddVisitorDialogVisible = false,
-                                visitorList = it.visitorList + newVisitor
+                                visitorList = it.visitorList + attendeeWithInitials
                             )
                         }
                         println("visitorList = ${_viewState.value.visitorList}")
@@ -908,5 +908,9 @@ class AgendaDetailsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getInitials(fullName: String): String {
+        return sessionStateManager.getName()?.let { ProfileUtils.getInitials(it) } ?: ""
     }
 }

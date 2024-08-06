@@ -75,7 +75,7 @@ fun Attendee(visitor: AttendeeBasicInfoDetails) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AttendeeProfile(
-                initials = "AB" // TODO getInitials from name
+                initials = visitor.userInitials
             )
             AttendeeName(visitor.fullName, modifier = Modifier.weight(1f))
             val isCreator = true
