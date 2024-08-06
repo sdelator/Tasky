@@ -44,7 +44,7 @@ fun GoingSection(
             .padding(16.dp)
     ) {
         HeaderSmall(title = headerText)
-        Spacer(modifier = Modifier.padding(bottom = 5.dp))
+        Spacer(modifier = Modifier.padding(bottom = 15.dp))
         Column(
             modifier = Modifier
                 .fillMaxHeight(),
@@ -67,7 +67,6 @@ fun Attendee(visitor: AttendeeBasicInfoDetails) {
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 5.dp, bottom = 5.dp)
     ) {
         Row(
             modifier = Modifier
@@ -148,6 +147,11 @@ fun PreviewAttendee() {
     GoingSection(
         "Going",
         listOf(
+            AttendeeBasicInfoDetails(
+                "test@t.com",
+                "test user",
+                userId = "123abc"
+            ),
             AttendeeBasicInfoDetails(
                 "test@t.com",
                 "test user",
