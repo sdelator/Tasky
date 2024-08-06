@@ -602,7 +602,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     remindAt = fromInEpochSeconds - reminderTime,
                     attendeeIds = listOf("a", "b")
                 ),
-                photosByteArray = getByteArrayFromPhotoList(_viewState.value.photos)
+                photos = _viewState.value.photos as List<Photo.LocalPhoto>
             )
 
             when (result) {
