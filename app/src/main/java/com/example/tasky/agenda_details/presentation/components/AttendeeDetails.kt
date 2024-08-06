@@ -6,13 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -27,6 +25,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.tasky.R
@@ -46,17 +45,13 @@ fun GoingSection(
     ) {
         HeaderSmall(title = headerText)
         Spacer(modifier = Modifier.padding(bottom = 5.dp))
-        LazyColumn(
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .weight(1f),
+                .fillMaxHeight(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             if (visitorList.isNotEmpty()) {
-                items(
-                    items = visitorList,
-                    key = { it.userId }
-                ) { visitor ->
+                visitorList.forEach { visitor ->
                     Attendee(
                         visitor = visitor
                     )
@@ -144,5 +139,20 @@ fun CreatorText() {
         fontSize = 14.sp,
         modifier = Modifier.padding(end = 16.dp),
         color = colorResource(id = R.color.light_blue)
+    )
+}
+
+@Preview
+@Composable
+fun PreviewAttendee() {
+    GoingSection(
+        "Going",
+        listOf(
+            AttendeeBasicInfoDetails(
+                "test@t.com",
+                "test user",
+                userId = "123abc"
+            )
+        )
     )
 }
