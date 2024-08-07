@@ -6,7 +6,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.R
-import com.example.tasky.common.domain.Constants.DATE_SELECTED
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.util.convertMillisToDateDdMmmYyyy
@@ -26,9 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
@@ -55,9 +52,7 @@ class AgendaViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val initialDate = savedStateHandle.get<Long>(DATE_SELECTED)?.let {
-                Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
-            } ?: LocalDate.now()
+            val initialDate = LocalDate.now()
 
             _viewState.emit(
                 AgendaViewState(
@@ -69,9 +64,16 @@ class AgendaViewModel @Inject constructor(
                 )
             )
             loadAgendaForDay(
-                savedStateHandle.get<Long>(DATE_SELECTED) ?: System.currentTimeMillis()
+                System.currentTimeMillis()
             )
         }
+    }
+
+    fun refreshData() {
+        println("data is refreshed! ${_viewState.value.dateSelected}")
+        loadAgendaForDay(
+            _viewState.value.dateSelected
+        )
     }
 
     private fun loadAgendaForDay(time: Long) {

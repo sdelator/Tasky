@@ -5,5 +5,5 @@ object Constants {
     const val TITLE = "title"
     const val DESCRIPTION = "description"
     const val IMAGE_ACTION = "image_action"
-    const val DATE_SELECTED = "date_selected"
+    const val REFRESH_DATA = "refresh_data"
 }

@@ -83,9 +83,9 @@ fun NavGraphBuilder.authGraph(
 
 fun NavGraphBuilder.calendarGraph(navController: NavController) {
     composable<AgendaNav> {
-        val dateSelected = it.savedStateHandle.get<Long>(Constants.DATE_SELECTED)
-        Log.d("CalendarGraph", "Date Selected: $dateSelected")
-        AgendaRoot(navController = navController)
+        val refreshData = it.savedStateHandle.get<Boolean>(Constants.REFRESH_DATA) ?: false
+        println("refresh? $refreshData")
+        AgendaRoot(navController = navController, refreshData = refreshData)
     }
     composable<EventNav> {
         val title = it.savedStateHandle.get<String>(Constants.TITLE)
