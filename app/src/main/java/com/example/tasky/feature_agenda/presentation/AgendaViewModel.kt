@@ -16,7 +16,6 @@ import com.example.tasky.common.domain.util.toMMMdHHmm
 import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_MMMM_dd_yyyy
-import com.example.tasky.common.presentation.util.toLong
 import com.example.tasky.feature_agenda.domain.repository.AgendaRemoteRepository
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -194,7 +193,7 @@ class AgendaViewModel @Inject constructor(
                 yearSelected = date.year,
                 calendarDays = calendarDays,
                 headerDateText = getHeaderDateText(date),
-                dateSelected = date.toLong()
+                dateSelected = dateToMilliseconds
             )
         }
     }

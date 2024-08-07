@@ -51,7 +51,7 @@ fun ZonedDateTime.toEpochMillis(): Long {
 }
 
 fun LocalDate.getZonedDateTime(): ZonedDateTime {
-    val localTime = LocalTime.MIDNIGHT
+    val localTime = LocalTime.now()
     val localDateTime = LocalDateTime.of(this, localTime)
     return ZonedDateTime.of(localDateTime, ZoneId.systemDefault())
 }
