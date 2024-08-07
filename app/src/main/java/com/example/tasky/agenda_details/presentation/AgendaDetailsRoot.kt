@@ -307,16 +307,16 @@ fun AgendaDetailsContent(
                 if (agendaItemType == AgendaItemType.Event) {
                     if (photosUriList.isEmpty()) {
                         item { EmptyPhotos(onAddPhotosClick = onAddPhotosClick) }
-                    }
-                } else {
-                    item {
-                        Photos(
-                            photoUriList = photosUriList,
-                            photoSkipCount = photoSkipCount,
-                            onAddPhotosClick = onAddPhotosClick,
-                            onPhotoClick = onPhotoClick,
-                            resetPhotoSkipCount = resetPhotoSkipCount
-                        )
+                    } else {
+                        item {
+                            Photos(
+                                photoUriList = photosUriList,
+                                photoSkipCount = photoSkipCount,
+                                onAddPhotosClick = onAddPhotosClick,
+                                onPhotoClick = onPhotoClick,
+                                resetPhotoSkipCount = resetPhotoSkipCount
+                            )
+                        }
                     }
                 }
                 item { GrayDivider() }
