@@ -2,9 +2,11 @@ package com.example.tasky.feature_agenda.presentation
 
 import android.app.Application
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.R
+import com.example.tasky.common.domain.Constants.DATE_SELECTED
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.util.convertMillisToDateDdMmmYyyy
@@ -25,7 +27,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
@@ -34,7 +38,8 @@ class AgendaViewModel @Inject constructor(
     private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
     private val agendaRemoteRepository: AgendaRemoteRepository,
     private val sessionStateManager: SessionStateManager,
-    private val application: Application
+    private val application: Application,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     companion object {
@@ -51,17 +56,23 @@ class AgendaViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            val initialDate = savedStateHandle.get<Long>(DATE_SELECTED)?.let {
+                Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+            } ?: LocalDate.now()
+
             _viewState.emit(
                 AgendaViewState(
                     calendarDays = CalendarHelper.getCalendarDaysForMonth(
-                        LocalDate.now().year,
-                        LocalDate.now().monthValue
+                        initialDate.year,
+                        initialDate.monthValue
                     ),
                     headerDateText = application.applicationContext.getString(R.string.today)
                 )
             )
+            loadAgendaForDay(
+                savedStateHandle.get<Long>(DATE_SELECTED) ?: System.currentTimeMillis()
+            )
         }
-        loadAgendaForDay(System.currentTimeMillis())
     }
 
     private fun loadAgendaForDay(time: Long) {
