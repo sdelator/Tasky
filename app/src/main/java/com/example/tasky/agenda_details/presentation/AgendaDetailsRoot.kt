@@ -378,7 +378,7 @@ fun AgendaDetailsContent(
                         )
                     }
                 }
-                item { Spacer(modifier = Modifier.weight(1f)) }
+                item { Spacer(modifier = Modifier.padding(100.dp)) }
                 item { DeleteButton(agendaItemType, onItemDelete) }
             }
         }
