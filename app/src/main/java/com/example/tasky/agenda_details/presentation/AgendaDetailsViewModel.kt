@@ -15,6 +15,7 @@ import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.model.AgendaItemType
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
+import com.example.tasky.common.domain.util.convertMillisToZonedDateTime
 import com.example.tasky.common.domain.util.toEpochMillis
 import com.example.tasky.common.domain.util.toHHmmString
 import com.example.tasky.common.domain.util.toMillisToMmmDdYyyy
@@ -54,6 +55,7 @@ class AgendaDetailsViewModel @Inject constructor(
         const val DEFAULT_TIME_RANGE = 15L
     }
 
+    private val selectedDate: Long? = savedStateHandle.get<Long>("date")
     private val agendaItemId: String? = savedStateHandle.get<String>("agendaItemId")
     private val agendaItemAction: CardAction? = savedStateHandle.get<String>("cardAction")?.let {
         CardAction.valueOf(it)
@@ -77,13 +79,21 @@ class AgendaDetailsViewModel @Inject constructor(
             null -> {
                 // isNewEvent
                 viewModelScope.launch {
+                    // Convert selectedDate to ZonedDateTime if not null
+                    val zonedDateTime = selectedDate?.convertMillisToZonedDateTime()
+
+                    val defaultDate = LocalDate.now().toFormatted_MMM_dd_yyyy()
+                    val defaultTime = LocalTime.now().toFormatted_HH_mm()
+                    val defaultToTime =
+                        LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE).toFormatted_HH_mm()
+
                     _viewState.update {
                         it.copy(
-                            fromDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
-                            toDate = LocalDate.now().toFormatted_MMM_dd_yyyy(),
-                            fromTime = LocalTime.now().toFormatted_HH_mm(),
-                            toTime = LocalTime.now().plusMinutes(DEFAULT_TIME_RANGE)
-                                .toFormatted_HH_mm(),
+                            fromDate = zonedDateTime?.toMillisToMmmDdYyyy() ?: defaultDate,
+                            toDate = zonedDateTime?.toMillisToMmmDdYyyy() ?: defaultDate,
+                            fromTime = zonedDateTime?.toHHmmString() ?: defaultTime,
+                            toTime = zonedDateTime?.plusMinutes(DEFAULT_TIME_RANGE)?.toHHmmString()
+                                ?: defaultToTime,
                             isInEditMode = true,
                             visitorGoingList = listOf(
                                 AttendeeBasicInfoDetails(
