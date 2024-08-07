@@ -75,8 +75,6 @@ fun AgendaDetailsRoot(
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
-    val email by agendaDetailsViewModel.email.collectAsStateWithLifecycle()
-    val isEmailValid by agendaDetailsViewModel.isEmailValid.collectAsStateWithLifecycle()
     val maxPhotoCount = 10
 
     LaunchedEffect(navController.currentBackStackEntry) {
@@ -180,8 +178,8 @@ fun AgendaDetailsRoot(
         },
         resetPhotoSkipCount = { agendaDetailsViewModel.resetPhotoSkipCount() },
         onItemDelete = { agendaDetailsViewModel.deleteAgendaItem() },
-        visitorEmail = email,
-        isVisitorEmailValid = isEmailValid,
+        visitorEmail = viewState.email,
+        isVisitorEmailValid = viewState.isEmailValid,
         onVisitorEmailChange = { agendaDetailsViewModel.onEmailChange(it) },//(String) -> Unit,
         onToggleVisitorDialog = { agendaDetailsViewModel.toggleVisitorDialog() },
         onAddVisitorClick = { agendaDetailsViewModel.addVisitor() },

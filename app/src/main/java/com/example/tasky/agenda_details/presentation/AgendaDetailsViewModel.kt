@@ -28,12 +28,9 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Duration
@@ -64,12 +61,6 @@ class AgendaDetailsViewModel @Inject constructor(
     private val agendaItemType = savedStateHandle.get<String>("agendaItemType")?.let {
         AgendaItemType.valueOf(it)
     }
-    private val _email = MutableStateFlow("")
-    val email: StateFlow<String> get() = _email
-
-    val isEmailValid = _email.map { email ->
-        emailPatternValidator.isValidEmailPattern(email) // <- Each email emission is mapped to this boolean when it changes
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), false)
 
     private val _viewState = MutableStateFlow(AgendaDetailsViewState())
     val viewState: StateFlow<AgendaDetailsViewState> = _viewState
@@ -868,7 +859,10 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     fun onEmailChange(email: String) {
-        _email.value = email
+        val valid = emailPatternValidator.isValidEmailPattern(email)
+        _viewState.update {
+            it.copy(email = email, isEmailValid = valid)
+        }
     }
 
     fun toggleVisitorDialog() {
@@ -881,8 +875,8 @@ class AgendaDetailsViewModel @Inject constructor(
 
     fun addVisitor() {
         viewModelScope.launch {
-            println("add visitor ${_email.value}")
-            val result = agendaDetailsRemoteRepository.getAttendee(_email.value)
+            println("add visitor ${_viewState.value.email}")
+            val result = agendaDetailsRemoteRepository.getAttendee(_viewState.value.email)
 
             when (result) {
                 is Result.Success -> {
