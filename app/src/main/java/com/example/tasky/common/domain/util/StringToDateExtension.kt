@@ -33,11 +33,11 @@ fun ZonedDateTime.toMillisToMmmDdYyyy(): String {
     return this.format(formatter)
 }
 
-fun Long.convertMillisToMMMdHHmm(): String {
-    val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
-    val formattedDateTime = DateTimeFormatter.ofPattern("MMM d, HH:mm").format(dateTime)
-    return formattedDateTime
+fun ZonedDateTime.toMMMdHHmm(): String {
+    val formatter = DateTimeFormatter.ofPattern("MMM d, HH:mm")
+    return this.format(formatter)
 }
+
 
 fun Int.convertMonthToString(): String {
     return java.time.Month.of(this).getDisplayName(TextStyle.FULL, Locale.getDefault()).uppercase()

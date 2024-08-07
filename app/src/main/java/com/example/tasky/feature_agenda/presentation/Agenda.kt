@@ -45,6 +45,7 @@ import com.example.tasky.common.presentation.LoadingSpinner
 import com.example.tasky.common.presentation.ObserveAsEvents
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import java.time.ZonedDateTime
 
 @Composable
 fun AgendaRoot(
@@ -58,7 +59,7 @@ fun AgendaRoot(
         agendaViewModel.updateDateSelected(month, day, year)
     }
 
-    val formatTimeBasedOnEvent: (Long, Long?) -> String = { fromDate, toDate ->
+    val formatTimeBasedOnEvent: (ZonedDateTime, ZonedDateTime?) -> String = { fromDate, toDate ->
         agendaViewModel.formatTimeOnAgendaCard(fromDate, toDate)
     }
 
@@ -195,7 +196,7 @@ fun AgendaContent(
     onFabActionClick: (AgendaItemType) -> Unit,
     headerDateText: String,
     agendaItems: List<AgendaItem>?,
-    formatTimeBasedOnEvent: (Long, Long?) -> String,
+    formatTimeBasedOnEvent: (ZonedDateTime, ZonedDateTime?) -> String,
     showAgendaCardDropdown: Boolean,
     toggleAgendaCardDropdownVisibility: () -> Unit,
     onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit,
