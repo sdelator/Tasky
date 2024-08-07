@@ -36,8 +36,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZonedDateTime
 import java.util.UUID
 import javax.inject.Inject
 
@@ -248,14 +250,14 @@ class AgendaDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun getReminderTime(remindAt: Long, fromTime: Long): ReminderTime {
-        val secondsBetween = DateTimeHelper.calculateTimeDifferenceInSeconds(remindAt, fromTime)
-        val reminderTime = getReminderTimeForDuration(secondsBetween)
+    private fun getReminderTime(remindAt: ZonedDateTime, fromTime: ZonedDateTime): ReminderTime {
+        val milliSecondsBetween = Duration.between(fromTime, remindAt).toMillis()
+        val reminderTime = getReminderTimeForDuration(milliSecondsBetween)
         return reminderTime
     }
 
-    private fun getReminderTimeForDuration(durationInSeconds: Long): ReminderTime {
-        return ReminderTime.entries.find { it.epochMilliSeconds == durationInSeconds }
+    private fun getReminderTimeForDuration(durationInMilliSeconds: Long): ReminderTime {
+        return ReminderTime.entries.find { it.epochMilliSeconds == durationInMilliSeconds }
             ?: ReminderTime.THIRTY_MINUTES
     }
 
@@ -390,7 +392,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     description = _viewState.value.description ?: "",
                     from = fromInZoneDateTime.toEpochMillis(),
                     to = toInZoneDateTime.toEpochMillis(),
-                    remindAt = fromInZoneDateTime - reminderTime,
+                    remindAt = DateTimeHelper.calculateRemindAtMs(fromInZoneDateTime, reminderTime),
                     attendeeIds = listOf("a", "b"), //todo fix
                     deletedPhotoKeys = listOf(), //todo fix
                     isGoing = false //todo fix
@@ -421,7 +423,7 @@ class AgendaDetailsViewModel @Inject constructor(
 
     private fun updateTask() {
         val taskId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
-        val atInEpochSeconds =
+        val atInZoneDateTime =
             DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
@@ -435,8 +437,8 @@ class AgendaDetailsViewModel @Inject constructor(
                     id = taskId,
                     title = _viewState.value.title ?: "",
                     description = _viewState.value.description ?: "",
-                    time = atInEpochSeconds,
-                    remindAt = atInEpochSeconds - reminderTime,
+                    time = atInZoneDateTime,
+                    remindAt = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime),
                     isDone = false //todo remove hardcode
                 )
             )
@@ -463,7 +465,7 @@ class AgendaDetailsViewModel @Inject constructor(
 
     private fun updateReminder() {
         val reminderId = agendaItemId ?: throw IllegalArgumentException("agendaItemId is null")
-        val atInEpochSeconds =
+        val atInZoneDateTime =
             DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
@@ -477,8 +479,8 @@ class AgendaDetailsViewModel @Inject constructor(
                     id = reminderId,
                     title = _viewState.value.title ?: "",
                     description = _viewState.value.description ?: "",
-                    time = atInEpochSeconds,
-                    remindAt = atInEpochSeconds - reminderTime
+                    time = atInZoneDateTime,
+                    remindAt = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime)
                 )
             )
 
@@ -526,7 +528,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun createTask() {
-        val atInEpochSeconds =
+        val atInZoneDateTime =
             DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
@@ -540,8 +542,8 @@ class AgendaDetailsViewModel @Inject constructor(
                     id = UUID.randomUUID().toString(),
                     title = _viewState.value.title ?: "",
                     description = _viewState.value.description ?: "",
-                    time = atInEpochSeconds,
-                    remindAt = atInEpochSeconds - reminderTime,
+                    time = atInZoneDateTime,
+                    remindAt = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime),
                     isDone = false //todo remove hardcode
                 )
             )
@@ -567,7 +569,7 @@ class AgendaDetailsViewModel @Inject constructor(
     }
 
     private fun createReminder() {
-        val atInEpochSeconds =
+        val atInZoneDateTime =
             DateTimeHelper.getZonedDateTimeFromDateAndTime(
                 date = _viewState.value.fromDate,
                 time = _viewState.value.fromTime
@@ -581,8 +583,8 @@ class AgendaDetailsViewModel @Inject constructor(
                     id = UUID.randomUUID().toString(),
                     title = _viewState.value.title ?: "",
                     description = _viewState.value.description ?: "",
-                    time = atInEpochSeconds,
-                    remindAt = atInEpochSeconds - reminderTime
+                    time = atInZoneDateTime,
+                    remindAt = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime),
                 )
             )
 
