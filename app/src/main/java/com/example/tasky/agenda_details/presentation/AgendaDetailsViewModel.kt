@@ -79,7 +79,6 @@ class AgendaDetailsViewModel @Inject constructor(
             null -> {
                 // isNewEvent
                 viewModelScope.launch {
-                    // Convert selectedDate to ZonedDateTime if not null
                     val zonedDateTime = selectedDate?.convertMillisToZonedDateTime()
 
                     val defaultDate = LocalDate.now().toFormatted_MMM_dd_yyyy()
