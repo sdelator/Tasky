@@ -36,6 +36,7 @@ uiTestManifest = "1.4.3"
 uiTooling = "1.4.3"
 uiToolingPreview = "1.4.3"
 assertk = "0.28.1"
+workRuntimeKtx = "2.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -81,6 +82,7 @@ ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.re
 ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

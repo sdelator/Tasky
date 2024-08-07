@@ -551,6 +551,8 @@ class AgendaDetailsViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     println("success task creation!")
+                    //todo schedule reminder
+                    reminderNotificationService.showNotification("test")
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                 }
 
