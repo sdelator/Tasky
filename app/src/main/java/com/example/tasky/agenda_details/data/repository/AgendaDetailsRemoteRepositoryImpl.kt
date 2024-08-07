@@ -1,8 +1,7 @@
 package com.example.tasky.agenda_details.data.repository
 
 import android.content.ContentResolver
-import android.net.Uri
-import android.webkit.MimeTypeMap
+import com.example.tasky.agenda_details.data.MimeUtils
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.AttendeeAccountDetails
 import com.example.tasky.agenda_details.domain.model.EventDetails
@@ -22,8 +21,8 @@ import com.example.tasky.feature_agenda.data.model.toReminderDto
 import com.example.tasky.feature_agenda.data.model.toTaskDto
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
 
@@ -36,25 +35,8 @@ class AgendaDetailsRemoteRepositoryImpl(
         photos: List<Photo.LocalPhoto>
     ): Result<AgendaItem.Event, DataError.Network> {
         return try {
-            val gson = Gson()
-            val json = gson.toJson(eventDetails)
-            val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaType())
-
-            val photoParts = photos.mapIndexed { index, localPhoto ->
-                val mimeTypeMap = MimeTypeMap.getSingleton()
-                val type = contentResolver.getType(Uri.parse(localPhoto.uri))
-                val extension = mimeTypeMap.getExtensionFromMimeType(type)
-                val requestFile = localPhoto.byteArray.toRequestBody(
-                    type?.toMediaTypeOrNull(),
-                    0,
-                    localPhoto.byteArray.size
-                )
-                MultipartBody.Part.createFormData(
-                    "photo$index",
-                    "image$index.${extension}",
-                    requestFile
-                )
-            }
+            val requestBody = createRequestBodyFromJson(eventDetails)
+            val photoParts = createPhotoParts(photos)
 
             val response = api.createEvent(requestBody, photoParts)
             val responseBody = response.body()
@@ -69,6 +51,24 @@ class AgendaDetailsRemoteRepositoryImpl(
             Result.Error(DataError.Network.NO_INTERNET)
         }
     }
+
+    private fun <T> createRequestBodyFromJson(data: T): RequestBody {
+        val gson = Gson()
+        val json = gson.toJson(data)
+        return json.toRequestBody("application/json; charset=utf-8".toMediaType())
+    }
+
+    private fun createPhotoParts(photos: List<Photo.LocalPhoto>) =
+        photos.mapIndexed { index, localPhoto ->
+            val type = MimeUtils.getMimeType(contentResolver, localPhoto.uri)
+            val extension = MimeUtils.getExtensionFromMimeType(type)
+            val requestFile = MimeUtils.toRequestBody(localPhoto.byteArray, type)
+            MultipartBody.Part.createFormData(
+                "photo$index",
+                "image$index.${extension}",
+                requestFile
+            )
+        }
 
     override suspend fun loadEvent(eventId: String): Result<AgendaItem.Event, DataError.Network> {
         return try {
@@ -106,25 +106,8 @@ class AgendaDetailsRemoteRepositoryImpl(
         photos: List<Photo.LocalPhoto>
     ): Result<AgendaItem.Event, DataError.Network> {
         return try {
-            val gson = Gson()
-            val json = gson.toJson(eventDetails)
-            val requestBody = json.toRequestBody("application/json; charset=utf-8".toMediaType())
-
-            val photoParts = photos.mapIndexed { index, localPhoto ->
-                val mimeTypeMap = MimeTypeMap.getSingleton()
-                val type = contentResolver.getType(Uri.parse(localPhoto.uri))
-                val extension = mimeTypeMap.getExtensionFromMimeType(type)
-                val requestFile = localPhoto.byteArray.toRequestBody(
-                    type?.toMediaTypeOrNull(),
-                    0,
-                    localPhoto.byteArray.size
-                )
-                MultipartBody.Part.createFormData(
-                    "photo$index",
-                    "image$index.${extension}",
-                    requestFile
-                )
-            }
+            val requestBody = createRequestBodyFromJson(eventDetails)
+            val photoParts = createPhotoParts(photos)
 
             val response = api.updateEvent(requestBody, photoParts)
             val responseBody = response.body()
