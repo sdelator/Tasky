@@ -2,17 +2,19 @@ package com.example.tasky.feature_agenda.presentation
 
 import android.app.Application
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tasky.R
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.util.convertMillisToDateDdMmmYyyy
+import com.example.tasky.common.domain.util.getZonedDateTime
+import com.example.tasky.common.domain.util.toEpochMillis
 import com.example.tasky.common.domain.util.toMMMdHHmm
 import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_MMMM_dd_yyyy
-import com.example.tasky.common.presentation.util.toLong
 import com.example.tasky.feature_agenda.domain.repository.AgendaRemoteRepository
 import com.example.tasky.feature_agenda.domain.repository.AuthenticatedRemoteRepository
 import com.vanpra.composematerialdialogs.MaterialDialogState
@@ -32,7 +34,8 @@ class AgendaViewModel @Inject constructor(
     private val authenticatedRemoteRepository: AuthenticatedRemoteRepository,
     private val agendaRemoteRepository: AgendaRemoteRepository,
     private val sessionStateManager: SessionStateManager,
-    private val application: Application
+    private val application: Application,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     companion object {
@@ -49,17 +52,28 @@ class AgendaViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            val initialDate = LocalDate.now()
+
             _viewState.emit(
                 AgendaViewState(
                     calendarDays = CalendarHelper.getCalendarDaysForMonth(
-                        LocalDate.now().year,
-                        LocalDate.now().monthValue
+                        initialDate.year,
+                        initialDate.monthValue
                     ),
                     headerDateText = application.applicationContext.getString(R.string.today)
                 )
             )
+            loadAgendaForDay(
+                System.currentTimeMillis()
+            )
         }
-        loadAgendaForDay(System.currentTimeMillis())
+    }
+
+    fun refreshData() {
+        println("data is refreshed! ${_viewState.value.dateSelected}")
+        loadAgendaForDay(
+            _viewState.value.dateSelected
+        )
     }
 
     private fun loadAgendaForDay(time: Long) {
@@ -171,6 +185,8 @@ class AgendaViewModel @Inject constructor(
             } else {
                 _viewState.value.calendarDays
             }
+        val dateToMilliseconds = date.getZonedDateTime().toEpochMillis()
+        loadAgendaForDay(dateToMilliseconds)
 
         _viewState.update {
             it.copy(
@@ -179,7 +195,7 @@ class AgendaViewModel @Inject constructor(
                 yearSelected = date.year,
                 calendarDays = calendarDays,
                 headerDateText = getHeaderDateText(date),
-                dateSelected = date.toLong()
+                dateSelected = dateToMilliseconds
             )
         }
     }

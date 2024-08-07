@@ -36,8 +36,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.tasky.AgendaNav
-import com.example.tasky.CalendarNavRoute
 import com.example.tasky.EditingNav
 import com.example.tasky.PhotoDetailNav
 import com.example.tasky.R
@@ -206,11 +204,11 @@ fun AgendaDetailsRoot(
     ObserveAsEvents(flow = agendaDetailsViewModel.viewEvent) { event ->
         when (event) {
             is AgendaDetailsViewEvent.NavigateToAgenda -> {
-                navController.navigate(AgendaNav) {
-                    popUpTo(CalendarNavRoute) {
-                        inclusive = false
-                    }
-                }
+                navController.previousBackStackEntry?.savedStateHandle?.set(
+                    Constants.REFRESH_DATA,
+                    true
+                )
+                navController.popBackStack()
             }
         }
     }

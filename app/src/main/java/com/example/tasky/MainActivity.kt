@@ -49,13 +49,13 @@ class MainActivity : ComponentActivity() {
         }
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
 
             val startDestination: Any = if (isLoggedInState.value) {
                 AgendaNav
             } else AuthNavRoute
 
             TaskyTheme {
+                val navController = rememberNavController()
                 NavHost(navController, startDestination = startDestination) {
                     navigation<AuthNavRoute>(startDestination = LoginNav) {
                         authGraph(navController)
@@ -83,7 +83,9 @@ fun NavGraphBuilder.authGraph(
 
 fun NavGraphBuilder.calendarGraph(navController: NavController) {
     composable<AgendaNav> {
-        AgendaRoot(navController = navController)
+        val refreshData = it.savedStateHandle.get<Boolean>(Constants.REFRESH_DATA) ?: false
+        println("refresh? $refreshData")
+        AgendaRoot(navController = navController, refreshData = refreshData)
     }
     composable<EventNav> {
         val title = it.savedStateHandle.get<String>(Constants.TITLE)

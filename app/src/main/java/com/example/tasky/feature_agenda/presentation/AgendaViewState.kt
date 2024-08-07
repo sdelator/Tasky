@@ -2,10 +2,11 @@ package com.example.tasky.feature_agenda.presentation
 
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.error.DataError
-import com.example.tasky.common.presentation.util.toLong
+import com.example.tasky.common.domain.util.toEpochMillis
 import com.example.tasky.feature_agenda.presentation.model.CalendarDay
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import java.time.LocalDate
+import java.time.ZonedDateTime
 
 /* define viewState as UI elements that change throughout app usage */
 data class AgendaViewState(
@@ -22,6 +23,6 @@ data class AgendaViewState(
     val dataError: DataError = DataError.Network.UNKNOWN,
     val headerDateText: String = "",
     val yearSelected: Int = LocalDate.now().year,
-    val dateSelected: Long = LocalDate.now().toLong(),
+    val dateSelected: Long = ZonedDateTime.now().toEpochMillis(),
     val agendaItems: List<AgendaItem>? = null
 )

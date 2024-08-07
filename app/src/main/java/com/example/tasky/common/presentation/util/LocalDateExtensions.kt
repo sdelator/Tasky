@@ -2,7 +2,6 @@ package com.example.tasky.common.presentation.util
 
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 fun LocalDate.toFormatted_MMMM_dd_yyyy(): String {
@@ -18,8 +17,4 @@ fun LocalDate.toFormatted_MMM_dd_yyyy(): String {
 fun LocalTime.toFormatted_HH_mm(): String {
     val formatter = DateTimeFormatter.ofPattern("HH:mm")
     return this.format(formatter)
-}
-
-fun LocalDate.toLong(): Long {
-    return this.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
