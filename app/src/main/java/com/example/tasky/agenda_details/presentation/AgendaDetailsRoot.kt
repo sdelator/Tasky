@@ -75,8 +75,6 @@ fun AgendaDetailsRoot(
     agendaDetailsViewModel: AgendaDetailsViewModel = hiltViewModel()
 ) {
     val viewState by agendaDetailsViewModel.viewState.collectAsStateWithLifecycle()
-    val email by agendaDetailsViewModel.email.collectAsStateWithLifecycle()
-    val isEmailValid by agendaDetailsViewModel.isEmailValid.collectAsStateWithLifecycle()
     val maxPhotoCount = 10
 
     LaunchedEffect(navController.currentBackStackEntry) {
@@ -180,8 +178,8 @@ fun AgendaDetailsRoot(
         },
         resetPhotoSkipCount = { agendaDetailsViewModel.resetPhotoSkipCount() },
         onItemDelete = { agendaDetailsViewModel.deleteAgendaItem() },
-        visitorEmail = email,
-        isVisitorEmailValid = isEmailValid,
+        visitorEmail = viewState.email,
+        isVisitorEmailValid = viewState.isEmailValid,
         onVisitorEmailChange = { agendaDetailsViewModel.onEmailChange(it) },//(String) -> Unit,
         onToggleVisitorDialog = { agendaDetailsViewModel.toggleVisitorDialog() },
         onAddVisitorClick = { agendaDetailsViewModel.addVisitor() },
@@ -307,16 +305,16 @@ fun AgendaDetailsContent(
                 if (agendaItemType == AgendaItemType.Event) {
                     if (photosUriList.isEmpty()) {
                         item { EmptyPhotos(onAddPhotosClick = onAddPhotosClick) }
-                    }
-                } else {
-                    item {
-                        Photos(
-                            photoUriList = photosUriList,
-                            photoSkipCount = photoSkipCount,
-                            onAddPhotosClick = onAddPhotosClick,
-                            onPhotoClick = onPhotoClick,
-                            resetPhotoSkipCount = resetPhotoSkipCount
-                        )
+                    } else {
+                        item {
+                            Photos(
+                                photoUriList = photosUriList,
+                                photoSkipCount = photoSkipCount,
+                                onAddPhotosClick = onAddPhotosClick,
+                                onPhotoClick = onPhotoClick,
+                                resetPhotoSkipCount = resetPhotoSkipCount
+                            )
+                        }
                     }
                 }
                 item { GrayDivider() }
@@ -378,7 +376,7 @@ fun AgendaDetailsContent(
                         )
                     }
                 }
-                item { Spacer(modifier = Modifier.weight(1f)) }
+                item { Spacer(modifier = Modifier.padding(100.dp)) }
                 item { DeleteButton(agendaItemType, onItemDelete) }
             }
         }

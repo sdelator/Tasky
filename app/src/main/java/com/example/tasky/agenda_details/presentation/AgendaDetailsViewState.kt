@@ -31,7 +31,9 @@ data class AgendaDetailsViewState(
     val isAddVisitorDialogVisible: Boolean = false,
     val visitorGoingList: List<AttendeeBasicInfoDetails> = emptyList(),
     val visitorNotGoingList: List<AttendeeBasicInfoDetails> = emptyList(),
-    val showVisitorDoesNotExist: Boolean = false
+    val showVisitorDoesNotExist: Boolean = false,
+    val isEmailValid: Boolean = false,
+    val email: String = ""
 )
 
 enum class AttendeeFilter(val typeName: Int) {

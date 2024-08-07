@@ -1,7 +1,6 @@
 package com.example.tasky.common.domain.util
 
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -14,10 +13,9 @@ fun Long.convertMillisToMmmm(): String {
     return formattedDateTime
 }
 
-fun Long.convertMillisToHhmm(): String {
-    val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
-    val formattedDateTime = DateTimeFormatter.ofPattern("HH:mm").format(dateTime)
-    return formattedDateTime
+fun ZonedDateTime.toHHmmString(): String {
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+    return this.format(formatter)
 }
 
 fun Long.convertMillisToDateDdMmmYyyy(): String {
@@ -26,23 +24,25 @@ fun Long.convertMillisToDateDdMmmYyyy(): String {
     return formattedDateTime
 }
 
-fun Long.convertMillisToLocalDate(): LocalDate {
-    val zonedDateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
-    return zonedDateTime.toLocalDate()
+fun Long.convertMillisToZonedDateTime(): ZonedDateTime {
+    return ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
 }
 
-fun Long.convertMillisToMmmDdYyyy(): String {
-    val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
-    val formattedDateTime = DateTimeFormatter.ofPattern("MMM dd yyyy").format(dateTime)
-    return formattedDateTime
+fun ZonedDateTime.toMillisToMmmDdYyyy(): String {
+    val formatter = DateTimeFormatter.ofPattern("MMM dd yyyy")
+    return this.format(formatter)
 }
 
-fun Long.convertMillisToMMMdHHmm(): String {
-    val dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(this), ZoneId.systemDefault())
-    val formattedDateTime = DateTimeFormatter.ofPattern("MMM d, HH:mm").format(dateTime)
-    return formattedDateTime
+fun ZonedDateTime.toMMMdHHmm(): String {
+    val formatter = DateTimeFormatter.ofPattern("MMM d, HH:mm")
+    return this.format(formatter)
 }
+
 
 fun Int.convertMonthToString(): String {
     return java.time.Month.of(this).getDisplayName(TextStyle.FULL, Locale.getDefault()).uppercase()
+}
+
+fun ZonedDateTime.toEpochMillis(): Long {
+    return this.toInstant().toEpochMilli()
 }

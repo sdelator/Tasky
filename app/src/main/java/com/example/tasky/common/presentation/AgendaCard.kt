@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.example.tasky.R
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.common.domain.model.AgendaItemType
+import java.time.ZonedDateTime
 
 @Composable
 fun AgendaCard(
@@ -189,9 +190,9 @@ fun PreviewEventCard() {
             "123",
             "Place Holder Text",
             "Amet minim mollit non deserunt",
-            123,
-            123,
-            123,
+            ZonedDateTime.now(),
+            ZonedDateTime.now(),
+            ZonedDateTime.now(),
             "",
             true,
             listOf(),
@@ -216,8 +217,8 @@ fun PreviewTaskCard() {
             "123",
             "Place Holder Text",
             "Amet minim mollit non deserunt",
-            123,
-            123,
+            ZonedDateTime.now(),
+            ZonedDateTime.now(),
             isDone = false
         ),
         onAgendaCardActionClick = { _, _ -> },
@@ -239,8 +240,8 @@ fun PreviewReminderCard() {
             "123",
             "Place Holder Text",
             "Amet minim mollit non deserunt",
-            123,
-            123
+            ZonedDateTime.now(),
+            ZonedDateTime.now()
         ),
         onAgendaCardActionClick = { _, _ -> },
         visibleAgendaCardDropdownId = null,

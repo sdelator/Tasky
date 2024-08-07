@@ -1,24 +1,32 @@
 package com.example.tasky.agenda_details.presentation.utils
 
 
+import com.example.tasky.common.domain.util.toEpochMillis
 import java.time.Duration
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object DateTimeHelper {
-    fun calculateTimeDifferenceInSeconds(startTime: Long, endTime: Long): Long {
-        val startTimeInSeconds = Instant.ofEpochSecond(startTime)
-        val endTimeInSeconds = Instant.ofEpochSecond(endTime)
-
-        val duration = Duration.between(startTimeInSeconds, endTimeInSeconds)
-        return duration.seconds
+    fun calculateRemindAtMs(timeInZonedDT: ZonedDateTime, reminderTimeMillis: Long): Long {
+        val startTime = timeInZonedDT.toEpochMillis()
+        val remindAt = startTime - reminderTimeMillis
+        return remindAt
     }
 
-    fun getEpochMillisecondsFromDateAndTime(date: String, time: String): Long {
+    fun calculateRemindAtZDT(
+        timeInZonedDT: ZonedDateTime,
+        reminderTimeMillis: Long
+    ): ZonedDateTime {
+        val reminderDuration = Duration.ofMillis(reminderTimeMillis)
+        val remindAt = timeInZonedDT.minus(reminderDuration)
+        return remindAt
+    }
+
+    fun getZonedDateTimeFromDateAndTime(date: String, time: String): ZonedDateTime {
         val dateTimeFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm")
         val datePart = LocalDateTime.parse("$date $time", dateTimeFormatter)
-        return datePart.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        return datePart.atZone(ZoneId.systemDefault())
     }
 }

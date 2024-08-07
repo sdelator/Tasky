@@ -4,14 +4,16 @@ import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.AttendeeAccountDetails
 import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.domain.model.AttendeeDetails
+import com.example.tasky.common.domain.util.convertMillisToZonedDateTime
+import com.example.tasky.common.domain.util.toEpochMillis
 
 fun AgendaItem.Task.toTaskDto(): TaskDto {
     return TaskDto(
         id = this.id,
         title = this.title,
         description = this.description,
-        time = this.time,
-        remindAt = this.remindAt,
+        time = this.time.toEpochMillis(),
+        remindAt = this.remindAt.toEpochMillis(),
         isDone = this.isDone
     )
 }
@@ -21,8 +23,8 @@ fun AgendaItem.Reminder.toReminderDto(): ReminderDto {
         id = this.id,
         title = this.title,
         description = this.description,
-        time = this.time,
-        remindAt = this.remindAt
+        time = this.time.toEpochMillis(),
+        remindAt = this.remindAt.toEpochMillis()
     )
 }
 
@@ -31,9 +33,9 @@ fun EventDto.toAgendaItemEvent(): AgendaItem.Event {
         id = this.id,
         title = this.title,
         description = this.description,
-        from = this.from,
-        to = this.to,
-        remindAt = this.remindAt,
+        from = this.from.convertMillisToZonedDateTime(),
+        to = this.to.convertMillisToZonedDateTime(),
+        remindAt = this.remindAt.convertMillisToZonedDateTime(),
         host = this.host,
         isUserEventCreator = this.isUserEventCreator,
         attendees = this.attendees.map { attendee -> attendee.toAttendeeDetails() },
@@ -57,8 +59,8 @@ fun ReminderDto.toAgendaItemReminder(): AgendaItem.Reminder {
         id = this.id,
         title = this.title,
         description = this.description,
-        time = this.time,
-        remindAt = this.remindAt
+        time = this.time.convertMillisToZonedDateTime(),
+        remindAt = this.remindAt.convertMillisToZonedDateTime()
     )
 }
 
@@ -67,8 +69,8 @@ fun TaskDto.toAgendaItemTask(): AgendaItem.Task {
         id = this.id,
         title = this.title,
         description = this.description,
-        time = this.time,
-        remindAt = this.remindAt,
+        time = this.time.convertMillisToZonedDateTime(),
+        remindAt = this.remindAt.convertMillisToZonedDateTime(),
         isDone = this.isDone
     )
 }
