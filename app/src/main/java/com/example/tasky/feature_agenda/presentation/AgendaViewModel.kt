@@ -8,6 +8,8 @@ import com.example.tasky.R
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.util.convertMillisToDateDdMmmYyyy
+import com.example.tasky.common.domain.util.getZonedDateTime
+import com.example.tasky.common.domain.util.toEpochMillis
 import com.example.tasky.common.domain.util.toMMMdHHmm
 import com.example.tasky.common.presentation.util.CalendarHelper
 import com.example.tasky.common.presentation.util.ProfileUtils
@@ -171,6 +173,8 @@ class AgendaViewModel @Inject constructor(
             } else {
                 _viewState.value.calendarDays
             }
+        val dateToMilliseconds = date.getZonedDateTime().toEpochMillis()
+        loadAgendaForDay(dateToMilliseconds)
 
         _viewState.update {
             it.copy(

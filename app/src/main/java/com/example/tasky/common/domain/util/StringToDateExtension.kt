@@ -1,6 +1,9 @@
 package com.example.tasky.common.domain.util
 
 import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -45,4 +48,10 @@ fun Int.convertMonthToString(): String {
 
 fun ZonedDateTime.toEpochMillis(): Long {
     return this.toInstant().toEpochMilli()
+}
+
+fun LocalDate.getZonedDateTime(): ZonedDateTime {
+    val localTime = LocalTime.MIDNIGHT
+    val localDateTime = LocalDateTime.of(this, localTime)
+    return ZonedDateTime.of(localDateTime, ZoneId.systemDefault())
 }
