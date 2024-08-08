@@ -12,6 +12,9 @@ import androidx.work.WorkerParameters
 import com.example.tasky.MainActivity
 import com.example.tasky.R
 
+/**
+ * Handles the actual work of creating and displaying the notification
+ */
 class ReminderNotificationWorker(
     private val context: Context,
     params: WorkerParameters

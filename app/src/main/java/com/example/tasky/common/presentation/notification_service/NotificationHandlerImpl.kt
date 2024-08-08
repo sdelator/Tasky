@@ -11,6 +11,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.UUID
 import javax.inject.Inject
 
+/**
+ * Set up and cancel alarm using AlarmManager
+ */
 class NotificationHandlerImpl @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : NotificationHandler {

@@ -10,6 +10,9 @@ import com.example.tasky.common.domain.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+/**
+ * Receive the broadcast from AlarmManager and delegate the work to NotificationWorker
+ */
 @AndroidEntryPoint
 class NotificationBroadcastReceiver @Inject constructor() : BroadcastReceiver() {
     companion object {
