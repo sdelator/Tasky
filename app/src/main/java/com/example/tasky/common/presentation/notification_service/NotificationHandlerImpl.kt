@@ -8,7 +8,6 @@ import android.content.Intent
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.notification.NotificationHandler
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
 
@@ -37,10 +36,17 @@ class NotificationHandlerImpl @Inject constructor(
         notificationManager.cancel(uniqueId)
     }
 
-    override fun initNotification(notificationId: String, title: String, description: String) {
+    override fun initNotification(
+        notificationId: String,
+        title: String,
+        description: String,
+        remindAt: Long
+    ) {
         val uniqueId = uuidToInt(notificationId)
         val alarmIntent = Intent(context, NotificationBroadcastReceiver::class.java)
         alarmIntent.putExtra(Constants.NOTIFICATION_ID, uniqueId)
+        alarmIntent.putExtra("title", title)
+        alarmIntent.putExtra("description", description)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             uniqueId,
@@ -49,10 +55,9 @@ class NotificationHandlerImpl @Inject constructor(
         )
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setInexactRepeating(
+        alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            Date().toInstant().epochSecond,
-            10000,
+            remindAt,
             pendingIntent
         )
     }

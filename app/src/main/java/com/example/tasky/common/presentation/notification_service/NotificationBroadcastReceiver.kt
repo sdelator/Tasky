@@ -19,16 +19,20 @@ class NotificationBroadcastReceiver @Inject constructor() : BroadcastReceiver() 
     override fun onReceive(context: Context, intent: Intent) {
         println("onReceive NotificationBroadcastReceiver")
         val notificationId = intent.getIntExtra(Constants.NOTIFICATION_ID, 0)
+        val title = intent.getStringExtra("title") ?: ""
+        val description = intent.getStringExtra("description") ?: ""
 
         val workManager = WorkManager.getInstance(context)
 
         val data = Data.Builder()
-            .putInt("notificationId", notificationId) //
+            .putInt("notificationId", notificationId)
+            .putString("title", title)
+            .putString("description", description)
             .build()
 
         val workRequest = OneTimeWorkRequest.Builder(ReminderNotificationWorker::class.java)
             .setInputData(data)
-            .build() //.setInitialDelay(time - System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+            .build()
 
         workManager.enqueue(workRequest)
     }

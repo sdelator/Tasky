@@ -542,6 +542,7 @@ class AgendaDetailsViewModel @Inject constructor(
             val taskId = UUID.randomUUID().toString()
             val title = _viewState.value.title ?: ""
             val description = _viewState.value.description ?: ""
+            val remindAt = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime)
 
             val result = agendaDetailsRemoteRepository.createTask(
                 taskDetails = AgendaItem.Task(
@@ -549,7 +550,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     title = title,
                     description = description,
                     time = atInZoneDateTime,
-                    remindAt = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime),
+                    remindAt = remindAt,
                     isDone = false //todo remove hardcode
                 )
             )
@@ -561,7 +562,8 @@ class AgendaDetailsViewModel @Inject constructor(
                     notificationHandler.initNotification(
                         notificationId = taskId,
                         title = title,
-                        description = description
+                        description = description,
+                        remindAt = remindAt.toInstant().toEpochMilli()
                     )
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                 }

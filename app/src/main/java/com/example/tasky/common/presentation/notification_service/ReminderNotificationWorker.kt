@@ -23,19 +23,19 @@ class ReminderNotificationWorker(
 
     override fun doWork(): Result {
         return try {
-            val reminder = inputData.getInt("reminderId", 0)
-            createAndShowNotification(reminder)
+            val notificationId = inputData.getInt("notificationId", 0)
+            val title = inputData.getString("title") ?: ""
+            val description = inputData.getString("description") ?: ""
+            createAndShowNotification(notificationId, title, description)
+            Result.success()
             return Result.success()
         } catch (throwable: Throwable) {
             Result.failure()
         }
     }
 
-    private fun createAndShowNotification(notificationId: Int) {
+    private fun createAndShowNotification(notificationId: Int, title: String, message: String) {
         val context = applicationContext
-
-        val messageToDisplay = "message" //todo comes from reminderData
-        val channelName = "channel" //todo
 
         val channel = NotificationChannel(
             REMINDER_CHANNEL_ID,
@@ -57,13 +57,10 @@ class ReminderNotificationWorker(
             PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notification = NotificationCompat.Builder(
-            context,
-            REMINDER_CHANNEL_ID
-        )
+        val notification = NotificationCompat.Builder(context, REMINDER_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_bell)
-            .setContentTitle("Reminder")
-            .setContentText("go to store")
+            .setContentTitle(title)
+            .setContentText(message)
             .setDefaults(Notification.DEFAULT_LIGHTS)
             .setContentIntent(pendingIntent)
             .build()
