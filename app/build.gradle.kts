@@ -82,6 +82,8 @@ dependencies {
 
     // Room Database
     implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+    ksp("androidx.room:room-compiler:2.6.1")
 
     // ViewModel Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)

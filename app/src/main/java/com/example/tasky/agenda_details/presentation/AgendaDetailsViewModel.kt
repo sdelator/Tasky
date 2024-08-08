@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
+import com.example.tasky.agenda_details.domain.model.AttendeeDetails
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.EventDetailsUpdated
 import com.example.tasky.agenda_details.domain.model.Photo
@@ -26,8 +27,12 @@ import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_HH_mm
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
+import com.example.tasky.feature_agenda.domain.local.EventLocalRepository
+import com.example.tasky.feature_agenda.domain.local.ReminderLocalRepository
+import com.example.tasky.feature_agenda.domain.local.TaskLocalRepository
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +40,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
@@ -49,7 +55,10 @@ class AgendaDetailsViewModel @Inject constructor(
     private val agendaDetailsRemoteRepository: AgendaDetailsRemoteRepository,
     private val sessionStateManager: SessionStateManager,
     private val savedStateHandle: SavedStateHandle,
-    private val notificationHandler: NotificationHandler
+    private val notificationHandler: NotificationHandler,
+    private val eventLocalRepository: EventLocalRepository,
+    private val taskLocalRepository: TaskLocalRepository,
+    private val reminderLocalRepository: ReminderLocalRepository
 ) : ViewModel() {
 
     companion object {
@@ -317,6 +326,11 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
+
+            withContext(Dispatchers.IO) {
+                // delete in local db
+                eventLocalRepository.deleteEvent(eventId = eventId)
+            }
         }
     }
 
@@ -344,6 +358,11 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
+
+            withContext(Dispatchers.IO) {
+                // delete in local db
+                taskLocalRepository.deleteTask(taskId = taskId)
+            }
         }
     }
 
@@ -370,6 +389,11 @@ class AgendaDetailsViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+
+            withContext(Dispatchers.IO) {
+                // delete in local db
+                reminderLocalRepository.deleteReminder(reminderId = reminderId)
             }
         }
     }
@@ -442,6 +466,25 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
+
+            withContext(Dispatchers.IO) {
+                // update into local db
+                eventLocalRepository.updateEvent(
+                    event =
+                    AgendaItem.Event(
+                        id = eventId,
+                        title = title,
+                        description = description,
+                        from = fromInZoneDateTime,
+                        to = toInZoneDateTime,
+                        remindAt = remindAtInZDT,
+                        host = "", //todo remove hard-coding
+                        isUserEventCreator = true,
+                        attendees = emptyList<AttendeeDetails>(), //todo remove hard-coding
+                        photos = emptyList<Photo>(), //todo remove hard-coding
+                    )
+                )
+            }
         }
     }
 
@@ -501,6 +544,21 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
+
+            withContext(Dispatchers.IO) {
+                // update into local db
+                taskLocalRepository.updateTask(
+                    task =
+                    AgendaItem.Task(
+                        id = taskId,
+                        title = title,
+                        description = description,
+                        time = atInZoneDateTime,
+                        remindAt = remindAtInZDT,
+                        isDone = false //todo remove hardcode
+                    )
+                )
+            }
         }
     }
 
@@ -558,6 +616,20 @@ class AgendaDetailsViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+
+            withContext(Dispatchers.IO) {
+                // update into local db
+                reminderLocalRepository.updateReminder(
+                    reminder =
+                    AgendaItem.Reminder(
+                        id = reminderId,
+                        title = title,
+                        description = description,
+                        time = atInZoneDateTime,
+                        remindAt = remindAtInZDT
+                    )
+                )
             }
         }
     }
@@ -641,6 +713,20 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
+            withContext(Dispatchers.IO) {
+                // insert into local db
+                taskLocalRepository.insertTask(
+                    task =
+                    AgendaItem.Task(
+                        id = taskId,
+                        title = title,
+                        description = description,
+                        time = atInZoneDateTime,
+                        remindAt = remindAtInZDT,
+                        isDone = false //todo remove hardcode
+                    )
+                )
+            }
         }
     }
 
@@ -703,6 +789,20 @@ class AgendaDetailsViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+
+            withContext(Dispatchers.IO) {
+                // insert into local db
+                reminderLocalRepository.insertReminder(
+                    reminder =
+                    AgendaItem.Reminder(
+                        id = reminderId,
+                        title = title,
+                        description = description,
+                        time = atInZoneDateTime,
+                        remindAt = remindAtInZDT
+                    )
+                )
             }
         }
     }
@@ -771,6 +871,25 @@ class AgendaDetailsViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+
+            withContext(Dispatchers.IO) {
+                // create into local db
+                eventLocalRepository.insertEvent(
+                    event =
+                    AgendaItem.Event(
+                        id = eventId,
+                        title = title,
+                        description = description,
+                        from = fromInZoneDateTime,
+                        to = toInZoneDateTime,
+                        remindAt = remindAtInZDT,
+                        host = "", //todo remove hard-coding
+                        isUserEventCreator = true,
+                        attendees = emptyList<AttendeeDetails>(), //todo remove hard-coding
+                        photos = _viewState.value.photos.filterIsInstance<Photo.LocalPhoto>()
+                    )
+                )
             }
         }
     }
