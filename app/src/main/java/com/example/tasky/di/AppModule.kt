@@ -17,9 +17,10 @@ import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.EmailPatternValidator
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.TokenManager
+import com.example.tasky.common.domain.notification.NotificationHandler
 import com.example.tasky.common.domain.repository.TokenRemoteRepository
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
-import com.example.tasky.common.presentation.notification_service.ReminderNotificationService
+import com.example.tasky.common.presentation.notification_service.NotificationHandlerImpl
 import com.example.tasky.feature_agenda.data.repository.AgendaRemoteRepositoryImpl
 import com.example.tasky.feature_agenda.data.repository.AuthenticatedRemoteRepositoryImpl
 import com.example.tasky.feature_agenda.domain.repository.AgendaRemoteRepository
@@ -190,7 +191,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideReminderNotificationService(@ApplicationContext context: Context): ReminderNotificationService {
-        return ReminderNotificationService(context)
+    fun provideNotificationHandler(@ApplicationContext context: Context): NotificationHandler {
+        return NotificationHandlerImpl(context)
     }
 }

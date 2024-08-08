@@ -9,6 +9,7 @@ import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.notification.NotificationHandler
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Date
+import java.util.UUID
 import javax.inject.Inject
 
 class NotificationHandlerImpl @Inject constructor(
@@ -18,12 +19,13 @@ class NotificationHandlerImpl @Inject constructor(
         private const val TAG = "NotificationHandler"
     }
 
-    override fun cancelAlarmAndNotification(notificationId: Int) {
+    override fun cancelAlarmAndNotification(notificationId: String) {
+        val uniqueId = uuidToInt(notificationId)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context, NotificationBroadcastReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            notificationId,
+            uniqueId,
             alarmIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -32,15 +34,16 @@ class NotificationHandlerImpl @Inject constructor(
         // cancel ongoing notification
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(notificationId)
+        notificationManager.cancel(uniqueId)
     }
 
-    override fun initNotification(notificationId: Int) {
+    override fun initNotification(notificationId: String, title: String, description: String) {
+        val uniqueId = uuidToInt(notificationId)
         val alarmIntent = Intent(context, NotificationBroadcastReceiver::class.java)
-        alarmIntent.putExtra(Constants.NOTIFICATION_ID, notificationId)
+        alarmIntent.putExtra(Constants.NOTIFICATION_ID, uniqueId)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            notificationId,
+            uniqueId,
             alarmIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -56,5 +59,11 @@ class NotificationHandlerImpl @Inject constructor(
 
     override fun setNotification() {
         //check api and see if there is a new notification
+    }
+
+
+    fun uuidToInt(uuidString: String): Int {
+        val uuid = UUID.fromString(uuidString)
+        return uuid.hashCode()
     }
 }

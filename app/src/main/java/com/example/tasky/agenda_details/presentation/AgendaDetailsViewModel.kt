@@ -14,6 +14,7 @@ import com.example.tasky.agenda_details.presentation.utils.DateTimeHelper
 import com.example.tasky.common.domain.Result
 import com.example.tasky.common.domain.SessionStateManager
 import com.example.tasky.common.domain.model.AgendaItemType
+import com.example.tasky.common.domain.notification.NotificationHandler
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
 import com.example.tasky.common.domain.util.convertMillisToZonedDateTime
 import com.example.tasky.common.domain.util.toEpochMillis
@@ -47,7 +48,8 @@ class AgendaDetailsViewModel @Inject constructor(
     private val imageCompressor: ImageCompressor,
     private val agendaDetailsRemoteRepository: AgendaDetailsRemoteRepository,
     private val sessionStateManager: SessionStateManager,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val notificationHandler: NotificationHandler
 ) : ViewModel() {
 
     companion object {
@@ -537,11 +539,15 @@ class AgendaDetailsViewModel @Inject constructor(
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
+            val taskId = UUID.randomUUID().toString()
+            val title = _viewState.value.title ?: ""
+            val description = _viewState.value.description ?: ""
+
             val result = agendaDetailsRemoteRepository.createTask(
                 taskDetails = AgendaItem.Task(
-                    id = UUID.randomUUID().toString(),
-                    title = _viewState.value.title ?: "",
-                    description = _viewState.value.description ?: "",
+                    id = taskId,
+                    title = title,
+                    description = description,
                     time = atInZoneDateTime,
                     remindAt = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime),
                     isDone = false //todo remove hardcode
@@ -551,8 +557,12 @@ class AgendaDetailsViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     println("success task creation!")
-                    //todo schedule reminder
-                    reminderNotificationService.showNotification("test")
+                    // schedule reminder for newly created
+                    notificationHandler.initNotification(
+                        notificationId = taskId,
+                        title = title,
+                        description = description
+                    )
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                 }
 
