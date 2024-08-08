@@ -3,6 +3,7 @@ package com.example.tasky.di
 import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
+import androidx.room.Room.databaseBuilder
 import com.example.tasky.agenda_details.data.ImageCompressorImpl
 import com.example.tasky.agenda_details.data.repository.AgendaDetailsRemoteRepositoryImpl
 import com.example.tasky.agenda_details.domain.ImageCompressor
@@ -21,6 +22,7 @@ import com.example.tasky.common.domain.TokenManager
 import com.example.tasky.common.domain.notification.NotificationHandler
 import com.example.tasky.common.domain.repository.TokenRemoteRepository
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
+import com.example.tasky.feature_agenda.data.local.TaskyDatabase
 import com.example.tasky.feature_agenda.data.repository.AgendaRemoteRepositoryImpl
 import com.example.tasky.feature_agenda.data.repository.AuthenticatedRemoteRepositoryImpl
 import com.example.tasky.feature_agenda.domain.repository.AgendaRemoteRepository
@@ -193,5 +195,15 @@ object AppModule {
     @Singleton
     fun provideNotificationHandler(@ApplicationContext context: Context): NotificationHandler {
         return NotificationHandlerImpl(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTaskyDatabase(@ApplicationContext appContext: Context): TaskyDatabase {
+        return databaseBuilder(
+            appContext,
+            TaskyDatabase::class.java,
+            "tasky_database"
+        ).build()
     }
 }

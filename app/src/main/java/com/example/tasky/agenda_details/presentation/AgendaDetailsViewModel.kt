@@ -26,6 +26,7 @@ import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_HH_mm
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
+import com.example.tasky.feature_agenda.data.local.TaskyDatabase
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -49,7 +50,8 @@ class AgendaDetailsViewModel @Inject constructor(
     private val agendaDetailsRemoteRepository: AgendaDetailsRemoteRepository,
     private val sessionStateManager: SessionStateManager,
     private val savedStateHandle: SavedStateHandle,
-    private val notificationHandler: NotificationHandler
+    private val notificationHandler: NotificationHandler,
+    private val taskyDatabase: TaskyDatabase
 ) : ViewModel() {
 
     companion object {
