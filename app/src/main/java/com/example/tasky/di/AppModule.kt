@@ -9,6 +9,7 @@ import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.repository.AgendaDetailsRemoteRepository
 import com.example.tasky.common.data.PreferenceHelper
 import com.example.tasky.common.data.SessionStateManagerImpl
+import com.example.tasky.common.data.notification_service.NotificationHandlerImpl
 import com.example.tasky.common.data.remote.ApiKeyInterceptor
 import com.example.tasky.common.data.remote.AuthInterceptor
 import com.example.tasky.common.data.remote.TaskyApi
@@ -20,7 +21,6 @@ import com.example.tasky.common.domain.TokenManager
 import com.example.tasky.common.domain.notification.NotificationHandler
 import com.example.tasky.common.domain.repository.TokenRemoteRepository
 import com.example.tasky.common.domain.util.EmailPatternValidatorImpl
-import com.example.tasky.common.presentation.notification_service.NotificationHandlerImpl
 import com.example.tasky.feature_agenda.data.repository.AgendaRemoteRepositoryImpl
 import com.example.tasky.feature_agenda.data.repository.AuthenticatedRemoteRepositoryImpl
 import com.example.tasky.feature_agenda.domain.repository.AgendaRemoteRepository

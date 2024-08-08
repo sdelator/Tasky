@@ -1,4 +1,4 @@
-package com.example.tasky.common.presentation.notification_service
+package com.example.tasky.common.data.notification_service
 
 import android.app.AlarmManager
 import android.app.NotificationManager
