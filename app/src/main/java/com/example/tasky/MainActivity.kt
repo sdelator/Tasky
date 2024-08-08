@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import com.example.tasky.agenda_details.presentation.AgendaDetailsRoot
 import com.example.tasky.agenda_details.presentation.components.PhotoDetailRoot
@@ -82,25 +83,50 @@ fun NavGraphBuilder.authGraph(
 }
 
 fun NavGraphBuilder.calendarGraph(navController: NavController) {
-    composable<AgendaNav> {
+    composable<AgendaNav>(
+    ) {
         val refreshData = it.savedStateHandle.get<Boolean>(Constants.REFRESH_DATA) ?: false
         println("refresh? $refreshData")
         AgendaRoot(navController = navController, refreshData = refreshData)
     }
-    composable<EventNav> {
+    composable<EventNav>(
+        deepLinks = listOf(
+            navDeepLink<AgendaNav>(
+                basePath = "taskyapp://details/{date}?agendaItemType={agendaItemType}&agendaItemId={agendaItemId}&cardAction={cardAction}"
+            )
+        )
+    ) {
+        val notificationArguments = requireNotNull(it.arguments) //todo
+        val notificationDate = notificationArguments.getLong("date")
+        val notificationItemType = notificationArguments.getString("agendaItemType")
+        val notificationItemId = notificationArguments.getString("agendaItemId")
+        val notificationCardAction = notificationArguments.getString("cardAction")
+
         val title = it.savedStateHandle.get<String>(Constants.TITLE)
         val description = it.savedStateHandle.get<String>(Constants.DESCRIPTION)
         val imageAction = it.savedStateHandle.get<String>(Constants.IMAGE_ACTION)
         val args = it.toRoute<EventNav>()
         val date = args.date
-        AgendaDetailsRoot(
-            navController = navController,
-            date = date,
-            agendaItemType = AgendaItemType.Event,
-            title = title,
-            description = description,
-            imageAction = imageAction
-        )
+
+        if (notificationItemId != null) {
+            AgendaDetailsRoot(
+                navController = navController,
+                date = notificationDate,
+                agendaItemType = AgendaItemType.valueOf(notificationItemType!!),
+                title = title,
+                description = description,
+                imageAction = imageAction
+            )
+        } else {
+            AgendaDetailsRoot(
+                navController = navController,
+                date = date,
+                agendaItemType = AgendaItemType.Event,
+                title = title,
+                description = description,
+                imageAction = imageAction
+            )
+        }
     }
     composable<TaskNav> {
         val title = it.savedStateHandle.get<String>(Constants.TITLE)

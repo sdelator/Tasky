@@ -420,7 +420,10 @@ class AgendaDetailsViewModel @Inject constructor(
                             notificationId = eventId,
                             title = title,
                             description = description,
-                            remindAt = remindAtInMillis
+                            remindAt = remindAtInMillis,
+                            agendaItemId = agendaItemId,
+                            date = selectedDate!!,
+                            agendaItemType = agendaItemType!!.name
                         )
                     }
 
@@ -478,7 +481,10 @@ class AgendaDetailsViewModel @Inject constructor(
                             notificationId = taskId,
                             title = title,
                             description = description,
-                            remindAt = remindAtInMillis
+                            remindAt = remindAtInMillis,
+                            agendaItemId = agendaItemId,
+                            date = selectedDate!!,
+                            agendaItemType!!.name
                         )
                     }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
@@ -533,7 +539,10 @@ class AgendaDetailsViewModel @Inject constructor(
                             notificationId = reminderId,
                             title = title,
                             description = description,
-                            remindAt = remindAtInMillis
+                            remindAt = remindAtInMillis,
+                            agendaItemId = agendaItemId,
+                            date = selectedDate!!,
+                            agendaItemType!!.name
                         )
                     }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
@@ -612,7 +621,10 @@ class AgendaDetailsViewModel @Inject constructor(
                             notificationId = taskId,
                             title = title,
                             description = description,
-                            remindAt = remindAtInMillis
+                            remindAt = remindAtInMillis,
+                            agendaItemId = agendaItemId!!,
+                            date = selectedDate!!,
+                            agendaItemType!!.name
                         )
                     }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
@@ -672,7 +684,10 @@ class AgendaDetailsViewModel @Inject constructor(
                             notificationId = reminderId,
                             title = title,
                             description = description,
-                            remindAt = remindAtInMillis
+                            remindAt = remindAtInMillis,
+                            agendaItemId = agendaItemId!!,
+                            date = selectedDate!!,
+                            agendaItemType!!.name
                         )
                     }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
@@ -736,7 +751,10 @@ class AgendaDetailsViewModel @Inject constructor(
                             notificationId = eventId,
                             title = title,
                             description = description,
-                            remindAt = remindAtInMillis
+                            remindAt = remindAtInMillis,
+                            agendaItemId = agendaItemId!!,
+                            date = selectedDate!!,
+                            agendaItemType!!.name
                         )
                     }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)

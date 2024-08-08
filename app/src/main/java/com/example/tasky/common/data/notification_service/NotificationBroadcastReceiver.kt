@@ -24,6 +24,9 @@ class NotificationBroadcastReceiver @Inject constructor() : BroadcastReceiver() 
         val notificationId = intent.getIntExtra(Constants.NOTIFICATION_ID, 0)
         val title = intent.getStringExtra("title") ?: ""
         val description = intent.getStringExtra("description") ?: ""
+        val agendaItemId = intent.getStringExtra("agendaItemId") ?: ""
+        val date = intent.getLongExtra("date", 0)
+        val agendaItemType = intent.getStringExtra("agendaItemType") ?: ""
 
         val workManager = WorkManager.getInstance(context)
 
@@ -31,6 +34,9 @@ class NotificationBroadcastReceiver @Inject constructor() : BroadcastReceiver() 
             .putInt("notificationId", notificationId)
             .putString("title", title)
             .putString("description", description)
+            .putString("agendaItemId", agendaItemId)
+            .putLong("date", date)
+            .putString("agendaItemType", agendaItemType)
             .build()
 
         val workRequest = OneTimeWorkRequest.Builder(ReminderNotificationWorker::class.java)
