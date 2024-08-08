@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tasky.agenda_details.domain.ImageCompressor
 import com.example.tasky.agenda_details.domain.model.AgendaItem
 import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
+import com.example.tasky.agenda_details.domain.model.AttendeeDetails
 import com.example.tasky.agenda_details.domain.model.EventDetails
 import com.example.tasky.agenda_details.domain.model.EventDetailsUpdated
 import com.example.tasky.agenda_details.domain.model.Photo
@@ -26,9 +27,6 @@ import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_HH_mm
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
-import com.example.tasky.feature_agenda.data.local.EventEntity
-import com.example.tasky.feature_agenda.data.local.ReminderEntity
-import com.example.tasky.feature_agenda.data.local.TaskEntity
 import com.example.tasky.feature_agenda.domain.local.EventLocalRepository
 import com.example.tasky.feature_agenda.domain.local.ReminderLocalRepository
 import com.example.tasky.feature_agenda.domain.local.TaskLocalRepository
@@ -470,15 +468,17 @@ class AgendaDetailsViewModel @Inject constructor(
                 // update into local db
                 eventLocalRepository.updateEvent(
                     event =
-                    EventEntity(
+                    AgendaItem.Event(
                         id = eventId,
                         title = title,
                         description = description,
-                        from = fromInZoneDateTime.toEpochMillis(),
-                        to = toInZoneDateTime.toEpochMillis(),
-                        remindAt = remindAtInMillis,
-                        host = "", //todo fix hardcoding
-                        isUserEventCreator = false //todo fix hardcoding
+                        from = fromInZoneDateTime,
+                        to = toInZoneDateTime,
+                        remindAt = remindAtInZDT,
+                        host = "", //todo remove hard-coding
+                        isUserEventCreator = true,
+                        attendees = emptyList<AttendeeDetails>(), //todo remove hard-coding
+                        photos = emptyList<Photo>(), //todo remove hard-coding
                     )
                 )
             }
@@ -543,12 +543,12 @@ class AgendaDetailsViewModel @Inject constructor(
                 // update into local db
                 taskLocalRepository.updateTask(
                     task =
-                    TaskEntity(
+                    AgendaItem.Task(
                         id = taskId,
                         title = title,
                         description = description,
-                        time = atInZoneDateTime.toEpochMillis(),
-                        remindAt = remindAtInZDT.toEpochMillis(),
+                        time = atInZoneDateTime,
+                        remindAt = remindAtInZDT,
                         isDone = false //todo remove hardcode
                     )
                 )
@@ -613,12 +613,12 @@ class AgendaDetailsViewModel @Inject constructor(
                 // update into local db
                 reminderLocalRepository.updateReminder(
                     reminder =
-                    ReminderEntity(
+                    AgendaItem.Reminder(
                         id = reminderId,
                         title = title,
                         description = description,
-                        time = atInZoneDateTime.toEpochMillis(),
-                        remindAt = remindAtInZDT.toEpochMillis()
+                        time = atInZoneDateTime,
+                        remindAt = remindAtInZDT
                     )
                 )
             }
@@ -705,12 +705,12 @@ class AgendaDetailsViewModel @Inject constructor(
                 // insert into local db
                 taskLocalRepository.insertTask(
                     task =
-                    TaskEntity(
+                    AgendaItem.Task(
                         id = taskId,
                         title = title,
                         description = description,
-                        time = atInZoneDateTime.toEpochMillis(),
-                        remindAt = remindAtInZDT.toEpochMillis(),
+                        time = atInZoneDateTime,
+                        remindAt = remindAtInZDT,
                         isDone = false //todo remove hardcode
                     )
                 )
@@ -780,12 +780,12 @@ class AgendaDetailsViewModel @Inject constructor(
                 // insert into local db
                 reminderLocalRepository.insertReminder(
                     reminder =
-                    ReminderEntity(
+                    AgendaItem.Reminder(
                         id = reminderId,
                         title = title,
                         description = description,
-                        time = atInZoneDateTime.toEpochMillis(),
-                        remindAt = remindAtInZDT.toEpochMillis()
+                        time = atInZoneDateTime,
+                        remindAt = remindAtInZDT
                     )
                 )
             }
@@ -859,15 +859,17 @@ class AgendaDetailsViewModel @Inject constructor(
                 // create into local db
                 eventLocalRepository.insertEvent(
                     event =
-                    EventEntity(
+                    AgendaItem.Event(
                         id = eventId,
                         title = title,
                         description = description,
-                        from = fromInZoneDateTime.toEpochMillis(),
-                        to = toInZoneDateTime.toEpochMillis(),
-                        remindAt = remindAtInMillis,
-                        host = "", //todo fix hardcoding but how to grab this?
-                        isUserEventCreator = true
+                        from = fromInZoneDateTime,
+                        to = toInZoneDateTime,
+                        remindAt = remindAtInZDT,
+                        host = "", //todo remove hard-coding
+                        isUserEventCreator = true,
+                        attendees = emptyList<AttendeeDetails>(), //todo remove hard-coding
+                        photos = _viewState.value.photos.filterIsInstance<Photo.LocalPhoto>()
                     )
                 )
             }

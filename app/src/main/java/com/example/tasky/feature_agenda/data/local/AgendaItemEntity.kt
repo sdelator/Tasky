@@ -22,8 +22,11 @@ data class EventEntity(
     val to: Long,
     val remindAt: Long,
     val host: String,
-    val isUserEventCreator: Boolean
+    val isUserEventCreator: Boolean,
+//    val attendees: List<AttendeeDetails>, //todo figure out how to store this
+//    val photos: List<Photo> //todo figure out how to store this
 )
+
 
 @Entity(tableName = "tasks")
 data class TaskEntity(

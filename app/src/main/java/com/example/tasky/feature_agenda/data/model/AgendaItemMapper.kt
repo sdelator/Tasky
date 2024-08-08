@@ -6,6 +6,9 @@ import com.example.tasky.agenda_details.domain.model.AttendeeBasicInfoDetails
 import com.example.tasky.agenda_details.domain.model.AttendeeDetails
 import com.example.tasky.common.domain.util.convertMillisToZonedDateTime
 import com.example.tasky.common.domain.util.toEpochMillis
+import com.example.tasky.feature_agenda.data.local.EventEntity
+import com.example.tasky.feature_agenda.data.local.ReminderEntity
+import com.example.tasky.feature_agenda.data.local.TaskEntity
 
 fun AgendaItem.Task.toTaskDto(): TaskDto {
     return TaskDto(
@@ -87,5 +90,41 @@ fun AttendeeBasicInfoDto.toAttendeeBasicInfoDetails(): AttendeeBasicInfoDetails 
         email = this.email,
         fullName = this.fullName,
         userId = this.userId
+    )
+}
+
+fun AgendaItem.Task.toTaskEntity(): TaskEntity {
+    return TaskEntity(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        time = this.time.toEpochMillis(),
+        remindAt = this.remindAt.toEpochMillis(),
+        isDone = this.isDone
+    )
+}
+
+fun AgendaItem.Reminder.toReminderEntity(): ReminderEntity {
+    return ReminderEntity(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        time = this.time.toEpochMillis(),
+        remindAt = this.remindAt.toEpochMillis()
+    )
+}
+
+fun AgendaItem.Event.toEventEntity(): EventEntity {
+    return EventEntity(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        from = this.from.toEpochMillis(),
+        to = this.to.toEpochMillis(),
+        remindAt = this.remindAt.toEpochMillis(),
+        host = this.host,
+        isUserEventCreator = this.isUserEventCreator,
+//            attendees = this.attendees,
+//            photos = this.photos
     )
 }
