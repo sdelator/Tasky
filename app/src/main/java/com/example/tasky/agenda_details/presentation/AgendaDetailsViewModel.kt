@@ -542,7 +542,8 @@ class AgendaDetailsViewModel @Inject constructor(
             val taskId = UUID.randomUUID().toString()
             val title = _viewState.value.title ?: ""
             val description = _viewState.value.description ?: ""
-            val remindAt = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime)
+            val remindAtInZDT = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime)
+            val remindAtInMillis = remindAtInZDT.toInstant().toEpochMilli()
 
             val result = agendaDetailsRemoteRepository.createTask(
                 taskDetails = AgendaItem.Task(
@@ -550,7 +551,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     title = title,
                     description = description,
                     time = atInZoneDateTime,
-                    remindAt = remindAt,
+                    remindAt = remindAtInZDT,
                     isDone = false //todo remove hardcode
                 )
             )
@@ -558,13 +559,15 @@ class AgendaDetailsViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     println("success task creation!")
-                    // schedule reminder for newly created
-                    notificationHandler.initNotification(
-                        notificationId = taskId,
-                        title = title,
-                        description = description,
-                        remindAt = remindAt.toInstant().toEpochMilli()
-                    )
+                    // schedule reminder for newly created only if reminder time is in the future
+                    if (isReminderTimeInFuture(remindAtInMillis)) {
+                        notificationHandler.initNotification(
+                            notificationId = taskId,
+                            title = title,
+                            description = description,
+                            remindAt = remindAtInMillis
+                        )
+                    }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                 }
 
@@ -580,6 +583,11 @@ class AgendaDetailsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun isReminderTimeInFuture(reminderEpochMillis: Long): Boolean {
+        val currentEpochMillis = System.currentTimeMillis()
+        return reminderEpochMillis > currentEpochMillis
     }
 
     private fun createReminder() {
