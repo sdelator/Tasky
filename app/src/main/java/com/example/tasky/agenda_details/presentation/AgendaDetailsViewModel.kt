@@ -559,7 +559,7 @@ class AgendaDetailsViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     println("success task creation!")
-                    // schedule reminder for newly created only if reminder time is in the future
+                    // schedule notification for newly created only if reminder time is in the future
                     if (isReminderTimeInFuture(remindAtInMillis)) {
                         notificationHandler.initNotification(
                             notificationId = taskId,
@@ -600,19 +600,34 @@ class AgendaDetailsViewModel @Inject constructor(
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
+            val reminderId = UUID.randomUUID().toString()
+            val title = _viewState.value.title ?: ""
+            val description = _viewState.value.description ?: ""
+            val remindAtInZDT = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime)
+            val remindAtInMillis = remindAtInZDT.toInstant().toEpochMilli()
+
             val result = agendaDetailsRemoteRepository.createReminder(
                 reminderDetails = AgendaItem.Reminder(
-                    id = UUID.randomUUID().toString(),
-                    title = _viewState.value.title ?: "",
-                    description = _viewState.value.description ?: "",
+                    id = reminderId,
+                    title = title,
+                    description = description,
                     time = atInZoneDateTime,
-                    remindAt = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime),
+                    remindAt = remindAtInZDT
                 )
             )
 
             when (result) {
                 is Result.Success -> {
                     println("success reminder creation!")
+                    // schedule notification for newly created only if reminder time is in the future
+                    if (isReminderTimeInFuture(remindAtInMillis)) {
+                        notificationHandler.initNotification(
+                            notificationId = reminderId,
+                            title = title,
+                            description = description,
+                            remindAt = remindAtInMillis
+                        )
+                    }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                 }
 
@@ -645,14 +660,21 @@ class AgendaDetailsViewModel @Inject constructor(
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
+            val eventId = UUID.randomUUID().toString()
+            val title = _viewState.value.title ?: ""
+            val description = _viewState.value.description ?: ""
+            val remindAtInZDT =
+                DateTimeHelper.calculateRemindAtZDT(fromInZoneDateTime, reminderTime)
+            val remindAtInMillis = remindAtInZDT.toInstant().toEpochMilli()
+
             val result = agendaDetailsRemoteRepository.createEvent(
                 eventDetails = EventDetails(
-                    id = UUID.randomUUID().toString(),
-                    title = _viewState.value.title ?: "",
-                    description = _viewState.value.description ?: "",
+                    id = eventId,
+                    title = title,
+                    description = description,
                     from = fromInZoneDateTime.toEpochMillis(),
                     to = toInZoneDateTime.toEpochMillis(),
-                    remindAt = fromInZoneDateTime.toEpochMillis() - reminderTime,
+                    remindAt = remindAtInMillis,
                     attendeeIds = listOf("a", "b")
                 ),
                 photos = _viewState.value.photos.filterIsInstance<Photo.LocalPhoto>()
@@ -661,6 +683,15 @@ class AgendaDetailsViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     println("success event creation!")
+                    // schedule notification for newly created only if reminder time is in the future
+                    if (isReminderTimeInFuture(remindAtInMillis)) {
+                        notificationHandler.initNotification(
+                            notificationId = eventId,
+                            title = title,
+                            description = description,
+                            remindAt = remindAtInMillis
+                        )
+                    }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                     println("response = ${result.data}")
                 }
