@@ -6,4 +6,5 @@ object Constants {
     const val DESCRIPTION = "description"
     const val IMAGE_ACTION = "image_action"
     const val REFRESH_DATA = "refresh_data"
+    const val NOTIFICATION_ID = "notification_id"
 }

@@ -47,9 +47,9 @@ class MainActivity : ComponentActivity() {
             isLoggedInState.value = splashViewModel.isUserLoggedIn()
             false
         }
+
         enableEdgeToEdge()
         setContent {
-
             val startDestination: Any = if (isLoggedInState.value) {
                 AgendaNav
             } else AuthNavRoute
