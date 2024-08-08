@@ -10,8 +10,8 @@ class ReminderLocalRepositoryImpl @Inject constructor(
         reminderDao.upsert(reminder)
     }
 
-    override suspend fun deleteReminder(reminder: ReminderEntity) {
-        reminderDao.delete(reminder)
+    override suspend fun deleteReminder(reminderId: String) {
+        reminderDao.delete(reminderId)
     }
 
     override suspend fun updateReminder(reminder: ReminderEntity) {

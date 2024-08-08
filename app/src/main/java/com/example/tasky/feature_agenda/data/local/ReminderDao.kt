@@ -1,7 +1,6 @@
 package com.example.tasky.feature_agenda.data.local
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 
@@ -13,8 +12,8 @@ interface ReminderDao {
     @Upsert
     fun upsert(reminder: ReminderEntity)
 
-    @Delete
-    fun delete(reminder: ReminderEntity)
+    @Query("DELETE FROM reminders WHERE id = (:id)")
+    fun delete(id: String)
 
     @Query("DELETE FROM reminders")
     fun deleteAllReminders()

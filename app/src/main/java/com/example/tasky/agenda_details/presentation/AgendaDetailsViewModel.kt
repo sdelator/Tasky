@@ -328,6 +328,11 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
+
+            withContext(Dispatchers.IO) {
+                // delete in local db
+                eventLocalRepository.deleteEvent(eventId = eventId)
+            }
         }
     }
 
@@ -355,6 +360,11 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
+
+            withContext(Dispatchers.IO) {
+                // delete in local db
+                taskLocalRepository.deleteTask(taskId = taskId)
+            }
         }
     }
 
@@ -381,6 +391,11 @@ class AgendaDetailsViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+
+            withContext(Dispatchers.IO) {
+                // delete in local db
+                reminderLocalRepository.deleteReminder(reminderId = reminderId)
             }
         }
     }
@@ -851,7 +866,7 @@ class AgendaDetailsViewModel @Inject constructor(
                         from = fromInZoneDateTime.toEpochMillis(),
                         to = toInZoneDateTime.toEpochMillis(),
                         remindAt = remindAtInMillis,
-                        host = "", //todo fix hardcoding
+                        host = "", //todo fix hardcoding but how to grab this?
                         isUserEventCreator = true
                     )
                 )

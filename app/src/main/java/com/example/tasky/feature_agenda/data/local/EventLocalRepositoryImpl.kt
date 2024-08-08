@@ -10,8 +10,8 @@ class EventLocalRepositoryImpl @Inject constructor(
         eventDao.upsert(event)
     }
 
-    override suspend fun deleteEvent(event: EventEntity) {
-        eventDao.delete(event = event)
+    override suspend fun deleteEvent(eventId: String) {
+        eventDao.delete(eventId)
     }
 
     override suspend fun deleteAllEvents() {
