@@ -302,6 +302,7 @@ class AgendaDetailsViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     println("event deleted!")
+                    notificationHandler.cancelAlarmAndNotification(notificationId = eventId)
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                 }
 
@@ -328,6 +329,7 @@ class AgendaDetailsViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     println("task deleted!")
+                    notificationHandler.cancelAlarmAndNotification(notificationId = taskId)
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                 }
 
@@ -354,6 +356,7 @@ class AgendaDetailsViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     println("reminder deleted!")
+                    notificationHandler.cancelAlarmAndNotification(notificationId = reminderId)
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                 }
 
