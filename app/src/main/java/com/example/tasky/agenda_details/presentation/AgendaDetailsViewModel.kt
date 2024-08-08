@@ -434,13 +434,18 @@ class AgendaDetailsViewModel @Inject constructor(
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
+            val title = _viewState.value.title ?: ""
+            val description = _viewState.value.description ?: ""
+            val remindAtInZDT = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime)
+            val remindAtInMillis = remindAtInZDT.toInstant().toEpochMilli()
+
             val result = agendaDetailsRemoteRepository.updateTask(
                 taskDetails = AgendaItem.Task(
                     id = taskId,
-                    title = _viewState.value.title ?: "",
-                    description = _viewState.value.description ?: "",
+                    title = title,
+                    description = description,
                     time = atInZoneDateTime,
-                    remindAt = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime),
+                    remindAt = remindAtInZDT,
                     isDone = false //todo remove hardcode
                 )
             )
@@ -448,6 +453,15 @@ class AgendaDetailsViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     println("success task updated!")
+                    // schedule notification for updated item only if reminder time is in the future
+                    if (isReminderTimeInFuture(remindAtInMillis)) {
+                        notificationHandler.updateNotification(
+                            notificationId = taskId,
+                            title = _viewState.value.title ?: "",
+                            description = _viewState.value.description ?: "",
+                            remindAt = remindAtInMillis
+                        )
+                    }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                 }
 

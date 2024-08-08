@@ -91,6 +91,16 @@ class NotificationHandlerImpl @Inject constructor(
         //check api and see if there is a new notification
     }
 
+    override fun updateNotification(
+        notificationId: String,
+        title: String,
+        description: String,
+        remindAt: Long
+    ) {
+        cancelAlarmAndNotification(notificationId)
+        initNotification(notificationId, title, description, remindAt)
+    }
+
 
     fun uuidToInt(uuidString: String): Int {
         val uuid = UUID.fromString(uuidString)
