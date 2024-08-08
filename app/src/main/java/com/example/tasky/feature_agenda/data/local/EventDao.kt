@@ -8,11 +8,17 @@ import androidx.room.Upsert
 @Dao
 interface EventDao {
     @Query("SELECT * FROM events")
-    fun getAllEvents(): List<EventInfo>
+    fun getAllEvents(): List<EventEntity>
+
+    @Query("SELECT * FROM events WHERE id = (:id)")
+    fun getAllEventsById(id: String): List<EventEntity>
 
     @Upsert
-    fun upsert(event: EventInfo)
+    fun upsert(event: EventEntity)
 
     @Delete
-    fun delete(event: EventInfo)
+    fun delete(event: EventEntity)
+
+    @Query("DELETE FROM events")
+    fun deleteAllEvents()
 }

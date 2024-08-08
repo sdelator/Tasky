@@ -26,7 +26,10 @@ import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_HH_mm
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
-import com.example.tasky.feature_agenda.data.local.TaskyDatabase
+import com.example.tasky.feature_agenda.data.local.TaskEntity
+import com.example.tasky.feature_agenda.domain.local.EventLocalRepository
+import com.example.tasky.feature_agenda.domain.local.ReminderLocalRepository
+import com.example.tasky.feature_agenda.domain.local.TaskLocalRepository
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -51,7 +54,9 @@ class AgendaDetailsViewModel @Inject constructor(
     private val sessionStateManager: SessionStateManager,
     private val savedStateHandle: SavedStateHandle,
     private val notificationHandler: NotificationHandler,
-    private val taskyDatabase: TaskyDatabase
+    private val eventLocalRepository: EventLocalRepository,
+    private val taskLocalRepository: TaskLocalRepository,
+    private val reminderLocalRepository: ReminderLocalRepository
 ) : ViewModel() {
 
     companion object {
@@ -631,6 +636,19 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
+
+            // insert into local db
+            taskLocalRepository.insertTask(
+                task =
+                TaskEntity(
+                    id = taskId,
+                    title = title,
+                    description = description,
+                    time = atInZoneDateTime.toEpochMillis(),
+                    remindAt = remindAtInZDT.toEpochMillis(),
+                    isDone = false //todo remove hardcode
+                )
+            )
         }
     }
 

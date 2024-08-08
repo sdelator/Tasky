@@ -2,8 +2,6 @@ package com.example.tasky.feature_agenda.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.tasky.agenda_details.domain.model.Photo
-import com.example.tasky.feature_agenda.data.model.AttendeeDto
 import com.example.tasky.feature_agenda.data.model.EventDto
 import com.example.tasky.feature_agenda.data.model.ReminderDto
 import com.example.tasky.feature_agenda.data.model.TaskDto
@@ -16,7 +14,7 @@ data class AgendaItemsInfo(
 )
 
 @Entity(tableName = "events")
-data class EventInfo(
+data class EventEntity(
     @PrimaryKey val id: String,
     val title: String,
     val description: String,
@@ -24,13 +22,11 @@ data class EventInfo(
     val to: Long,
     val remindAt: Long,
     val host: String,
-    val isUserEventCreator: Boolean,
-    val attendees: List<AttendeeDto>, // This will need a type converter
-    val photos: List<Photo.RemotePhoto> // This will need a type converter
+    val isUserEventCreator: Boolean
 )
 
 @Entity(tableName = "tasks")
-data class TaskInfo(
+data class TaskEntity(
     @PrimaryKey val id: String,
     val title: String,
     val description: String?,
@@ -40,7 +36,7 @@ data class TaskInfo(
 )
 
 @Entity(tableName = "reminders")
-data class ReminderInfo(
+data class ReminderEntity(
     @PrimaryKey val id: String,
     val title: String,
     val description: String?,

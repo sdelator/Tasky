@@ -8,11 +8,11 @@ import androidx.room.Upsert
 @Dao
 interface ReminderDao {
     @Query("SELECT * FROM reminders")
-    fun getAllReminders(): List<ReminderInfo>
+    fun getAllReminders(): List<ReminderEntity>
 
     @Upsert
-    fun upsert(reminder: ReminderInfo)
+    fun upsert(reminder: ReminderEntity)
 
     @Delete
-    fun delete(reminder: ReminderInfo)
+    fun delete(reminder: ReminderEntity)
 }
