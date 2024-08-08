@@ -5,6 +5,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import com.example.tasky.common.domain.Constants
 import com.example.tasky.common.domain.notification.NotificationHandler
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -40,6 +42,26 @@ class NotificationHandlerImpl @Inject constructor(
     }
 
     override fun initNotification(
+        notificationId: String,
+        title: String,
+        description: String,
+        remindAt: Long
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            if (!alarmManager.canScheduleExactAlarms()) {
+                // Request permission to schedule exact alarms
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
+                return
+            }
+        }
+
+        scheduleExactAlarm(notificationId, title, description, remindAt)
+    }
+
+    private fun scheduleExactAlarm(
         notificationId: String,
         title: String,
         description: String,
