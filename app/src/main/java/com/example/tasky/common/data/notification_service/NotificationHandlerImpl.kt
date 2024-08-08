@@ -45,7 +45,10 @@ class NotificationHandlerImpl @Inject constructor(
         notificationId: String,
         title: String,
         description: String,
-        remindAt: Long
+        remindAt: Long,
+        agendaItemId: String,
+        date: Long,
+        agendaItemType: String
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -58,20 +61,34 @@ class NotificationHandlerImpl @Inject constructor(
             }
         }
 
-        scheduleExactAlarm(notificationId, title, description, remindAt)
+        scheduleExactAlarm(
+            notificationId,
+            title,
+            description,
+            remindAt,
+            agendaItemId,
+            agendaItemType,
+            date
+        )
     }
 
     private fun scheduleExactAlarm(
         notificationId: String,
         title: String,
         description: String,
-        remindAt: Long
+        remindAt: Long,
+        agendaItemId: String,
+        agendaItemType: String,
+        date: Long
     ) {
         val uniqueId = uuidToInt(notificationId)
         val alarmIntent = Intent(context, NotificationBroadcastReceiver::class.java)
         alarmIntent.putExtra(Constants.NOTIFICATION_ID, uniqueId)
         alarmIntent.putExtra("title", title)
         alarmIntent.putExtra("description", description)
+        alarmIntent.putExtra("agendaItemId", agendaItemId)
+        alarmIntent.putExtra("date", date)
+        alarmIntent.putExtra("agendaItemType", agendaItemType)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             uniqueId,
@@ -95,10 +112,21 @@ class NotificationHandlerImpl @Inject constructor(
         notificationId: String,
         title: String,
         description: String,
-        remindAt: Long
+        remindAt: Long,
+        agendaItemId: String,
+        date: Long,
+        agendaItemType: String
     ) {
         cancelAlarmAndNotification(notificationId)
-        initNotification(notificationId, title, description, remindAt)
+        initNotification(
+            notificationId,
+            title,
+            description,
+            remindAt,
+            agendaItemId,
+            date,
+            agendaItemType
+        )
     }
 
 
