@@ -387,14 +387,20 @@ class AgendaDetailsViewModel @Inject constructor(
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
+            val title = _viewState.value.title ?: ""
+            val description = _viewState.value.description ?: ""
+            val remindAtInZDT =
+                DateTimeHelper.calculateRemindAtZDT(fromInZoneDateTime, reminderTime)
+            val remindAtInMillis = remindAtInZDT.toInstant().toEpochMilli()
+
             val result = agendaDetailsRemoteRepository.updateEvent(
                 eventDetails = EventDetailsUpdated(
                     id = eventId,
-                    title = _viewState.value.title ?: "",
-                    description = _viewState.value.description ?: "",
+                    title = title,
+                    description = description,
                     from = fromInZoneDateTime.toEpochMillis(),
                     to = toInZoneDateTime.toEpochMillis(),
-                    remindAt = DateTimeHelper.calculateRemindAtMs(fromInZoneDateTime, reminderTime),
+                    remindAt = remindAtInMillis,
                     attendeeIds = listOf("a", "b"), //todo fix
                     deletedPhotoKeys = listOf(), //todo fix
                     isGoing = false //todo fix
@@ -405,6 +411,16 @@ class AgendaDetailsViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     println("success update event!")
+                    // schedule notification for updated item only if reminder time is in the future
+                    if (isReminderTimeInFuture(remindAtInMillis)) {
+                        notificationHandler.updateNotification(
+                            notificationId = eventId,
+                            title = title,
+                            description = description,
+                            remindAt = remindAtInMillis
+                        )
+                    }
+
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                     println("response = ${result.data}")
                 }
@@ -457,8 +473,8 @@ class AgendaDetailsViewModel @Inject constructor(
                     if (isReminderTimeInFuture(remindAtInMillis)) {
                         notificationHandler.updateNotification(
                             notificationId = taskId,
-                            title = _viewState.value.title ?: "",
-                            description = _viewState.value.description ?: "",
+                            title = title,
+                            description = description,
                             remindAt = remindAtInMillis
                         )
                     }
@@ -490,19 +506,33 @@ class AgendaDetailsViewModel @Inject constructor(
 
         viewModelScope.launch {
             _viewState.update { it.copy(showLoadingSpinner = true) }
+            val title = _viewState.value.title ?: ""
+            val description = _viewState.value.description ?: ""
+            val remindAtInZDT = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime)
+            val remindAtInMillis = remindAtInZDT.toInstant().toEpochMilli()
+
             val result = agendaDetailsRemoteRepository.updateReminder(
                 reminderDetails = AgendaItem.Reminder(
                     id = reminderId,
-                    title = _viewState.value.title ?: "",
-                    description = _viewState.value.description ?: "",
+                    title = title,
+                    description = description,
                     time = atInZoneDateTime,
-                    remindAt = DateTimeHelper.calculateRemindAtZDT(atInZoneDateTime, reminderTime)
+                    remindAt = remindAtInZDT
                 )
             )
 
             when (result) {
                 is Result.Success -> {
                     println("success reminder updated!")
+                    // schedule notification for updated item only if reminder time is in the future
+                    if (isReminderTimeInFuture(remindAtInMillis)) {
+                        notificationHandler.updateNotification(
+                            notificationId = reminderId,
+                            title = title,
+                            description = description,
+                            remindAt = remindAtInMillis
+                        )
+                    }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
                 }
 
