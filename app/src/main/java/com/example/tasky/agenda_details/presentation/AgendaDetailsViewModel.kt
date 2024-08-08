@@ -32,6 +32,7 @@ import com.example.tasky.feature_agenda.domain.local.ReminderLocalRepository
 import com.example.tasky.feature_agenda.domain.local.TaskLocalRepository
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
@@ -636,19 +638,20 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
-
-            // insert into local db
-            taskLocalRepository.insertTask(
-                task =
-                TaskEntity(
-                    id = taskId,
-                    title = title,
-                    description = description,
-                    time = atInZoneDateTime.toEpochMillis(),
-                    remindAt = remindAtInZDT.toEpochMillis(),
-                    isDone = false //todo remove hardcode
+            withContext(Dispatchers.IO) {
+                // insert into local db
+                taskLocalRepository.insertTask(
+                    task =
+                    TaskEntity(
+                        id = taskId,
+                        title = title,
+                        description = description,
+                        time = atInZoneDateTime.toEpochMillis(),
+                        remindAt = remindAtInZDT.toEpochMillis(),
+                        isDone = false //todo remove hardcode
+                    )
                 )
-            )
+            }
         }
     }
 
