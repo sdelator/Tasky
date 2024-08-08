@@ -6,19 +6,19 @@ import javax.inject.Inject
 class EventLocalRepositoryImpl @Inject constructor(
     private val eventDao: EventDao
 ) : EventLocalRepository {
-    override suspend fun insertEvent(eventEntity: EventEntity) {
-        eventDao.upsert(eventEntity)
+    override suspend fun insertEvent(event: EventEntity) {
+        eventDao.upsert(event)
     }
 
-    override suspend fun deleteEvent(eventEntity: EventEntity) {
-        eventDao.delete(event = eventEntity)
+    override suspend fun deleteEvent(event: EventEntity) {
+        eventDao.delete(event = event)
     }
 
     override suspend fun deleteAllEvents() {
         eventDao.deleteAllEvents()
     }
 
-    override suspend fun updateEvent(eventEntity: EventEntity) {
-        eventDao.upsert(event = eventEntity)
+    override suspend fun updateEvent(event: EventEntity) {
+        eventDao.upsert(event = event)
     }
 }

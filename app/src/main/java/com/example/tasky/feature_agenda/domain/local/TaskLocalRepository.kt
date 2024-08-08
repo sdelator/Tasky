@@ -7,5 +7,4 @@ interface TaskLocalRepository {
     suspend fun deleteTask(taskEntity: TaskEntity)
     suspend fun updateTask(task: TaskEntity)
     suspend fun deleteAllTasks()
-
 }

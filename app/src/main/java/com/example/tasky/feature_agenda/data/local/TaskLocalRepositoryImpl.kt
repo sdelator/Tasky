@@ -10,8 +10,8 @@ class TaskLocalRepositoryImpl @Inject constructor(
         taskDao.upsert(task)
     }
 
-    override suspend fun deleteTask(taskEntity: TaskEntity) {
-        taskDao.delete(taskEntity)
+    override suspend fun deleteTask(task: TaskEntity) {
+        taskDao.delete(task)
     }
 
     override suspend fun updateTask(task: TaskEntity) {

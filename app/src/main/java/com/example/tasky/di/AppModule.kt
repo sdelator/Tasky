@@ -241,6 +241,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideReminderLocalRepository(reminderDao: ReminderDao): ReminderLocalRepository {
-        return ReminderLocalRepositoryImpl()
+        return ReminderLocalRepositoryImpl(reminderDao)
     }
 }

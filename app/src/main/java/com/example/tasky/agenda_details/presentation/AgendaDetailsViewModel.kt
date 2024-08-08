@@ -26,6 +26,8 @@ import com.example.tasky.common.presentation.ReminderTime
 import com.example.tasky.common.presentation.util.ProfileUtils
 import com.example.tasky.common.presentation.util.toFormatted_HH_mm
 import com.example.tasky.common.presentation.util.toFormatted_MMM_dd_yyyy
+import com.example.tasky.feature_agenda.data.local.EventEntity
+import com.example.tasky.feature_agenda.data.local.ReminderEntity
 import com.example.tasky.feature_agenda.data.local.TaskEntity
 import com.example.tasky.feature_agenda.domain.local.EventLocalRepository
 import com.example.tasky.feature_agenda.domain.local.ReminderLocalRepository
@@ -448,6 +450,23 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
+
+            withContext(Dispatchers.IO) {
+                // update into local db
+                eventLocalRepository.updateEvent(
+                    event =
+                    EventEntity(
+                        id = eventId,
+                        title = title,
+                        description = description,
+                        from = fromInZoneDateTime.toEpochMillis(),
+                        to = toInZoneDateTime.toEpochMillis(),
+                        remindAt = remindAtInMillis,
+                        host = "", //todo fix hardcoding
+                        isUserEventCreator = false //todo fix hardcoding
+                    )
+                )
+            }
         }
     }
 
@@ -504,6 +523,21 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
+
+            withContext(Dispatchers.IO) {
+                // update into local db
+                taskLocalRepository.updateTask(
+                    task =
+                    TaskEntity(
+                        id = taskId,
+                        title = title,
+                        description = description,
+                        time = atInZoneDateTime.toEpochMillis(),
+                        remindAt = remindAtInZDT.toEpochMillis(),
+                        isDone = false //todo remove hardcode
+                    )
+                )
+            }
         }
     }
 
@@ -558,6 +592,20 @@ class AgendaDetailsViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+
+            withContext(Dispatchers.IO) {
+                // update into local db
+                reminderLocalRepository.updateReminder(
+                    reminder =
+                    ReminderEntity(
+                        id = reminderId,
+                        title = title,
+                        description = description,
+                        time = atInZoneDateTime.toEpochMillis(),
+                        remindAt = remindAtInZDT.toEpochMillis()
+                    )
+                )
             }
         }
     }
@@ -712,6 +760,20 @@ class AgendaDetailsViewModel @Inject constructor(
                     }
                 }
             }
+
+            withContext(Dispatchers.IO) {
+                // insert into local db
+                reminderLocalRepository.insertReminder(
+                    reminder =
+                    ReminderEntity(
+                        id = reminderId,
+                        title = title,
+                        description = description,
+                        time = atInZoneDateTime.toEpochMillis(),
+                        remindAt = remindAtInZDT.toEpochMillis()
+                    )
+                )
+            }
         }
     }
 
@@ -776,6 +838,23 @@ class AgendaDetailsViewModel @Inject constructor(
                         )
                     }
                 }
+            }
+
+            withContext(Dispatchers.IO) {
+                // create into local db
+                eventLocalRepository.insertEvent(
+                    event =
+                    EventEntity(
+                        id = eventId,
+                        title = title,
+                        description = description,
+                        from = fromInZoneDateTime.toEpochMillis(),
+                        to = toInZoneDateTime.toEpochMillis(),
+                        remindAt = remindAtInMillis,
+                        host = "", //todo fix hardcoding
+                        isUserEventCreator = true
+                    )
+                )
             }
         }
     }
