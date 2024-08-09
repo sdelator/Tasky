@@ -47,7 +47,7 @@ fun Int.convertMonthToString(): String {
 }
 
 fun ZonedDateTime.toEpochMillis(): Long {
-    return this.toInstant().toEpochMilli()
+    return this.withZoneSameInstant(ZoneId.of("UTC")).toInstant().toEpochMilli()
 }
 
 fun LocalDate.getZonedDateTime(): ZonedDateTime {

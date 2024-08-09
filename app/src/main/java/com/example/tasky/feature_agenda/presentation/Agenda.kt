@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -155,6 +155,7 @@ fun AgendaRoot(
         onFabActionClick = onFabAgendaItemTypeClick,
         headerDateText = viewState.headerDateText,
         agendaItems = viewState.agendaItems,
+        needlePosition = viewState.needlePosition,
         formatTimeBasedOnEvent = formatTimeBasedOnEvent,
         onAgendaCardActionClick = onAgendaCardActionClick,
         toggleAgendaCardDropdownVisibility = { agendaViewModel.toggleAgendaDropdownVisibility() },
@@ -203,6 +204,7 @@ fun AgendaContent(
     onFabActionClick: (AgendaItemType) -> Unit,
     headerDateText: String,
     agendaItems: List<AgendaItem>?,
+    needlePosition: ZonedDateTime,
     formatTimeBasedOnEvent: (ZonedDateTime, ZonedDateTime?) -> String,
     showAgendaCardDropdown: Boolean,
     toggleAgendaCardDropdownVisibility: () -> Unit,
@@ -260,10 +262,15 @@ fun AgendaContent(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     if (!agendaItems.isNullOrEmpty()) {
-                        items(
-                            items = agendaItems,
-                            key = { it.id }
-                        ) { agendaItem ->
+                        itemsIndexed(
+                            items = agendaItems
+                        ) { index, agendaItem ->
+                            if (index > 0 && agendaItem.startTime.toLocalDate() == needlePosition.toLocalDate() && agendaItem.startTime.isAfter(
+                                    needlePosition
+                                ) && agendaItems[index - 1].startTime.isBefore(needlePosition)
+                            ) {
+                                Needle()
+                            }
                             AgendaCard(
                                 agendaItem = agendaItem,
                                 modifier = Modifier.animateItem(),
@@ -285,7 +292,7 @@ fun AgendaContent(
                                 visibleAgendaCardDropdownId = visibleAgendaCardDropdownId,
                                 setVisibleAgendaItemId = setVisibleAgendaItemId,
                                 showAgendaCardDropdown = showAgendaCardDropdown
-                            ) 
+                            )
                         }
                     }
                 }
@@ -333,7 +340,8 @@ fun PreviewAgendaContent() {
         showAgendaCardDropdown = true,
         toggleAgendaCardDropdownVisibility = {},
         visibleAgendaCardDropdownId = null,
-        setVisibleAgendaItemId = { _ -> }
+        setVisibleAgendaItemId = { _ -> },
+        needlePosition = ZonedDateTime.now()
     )
 }
 
