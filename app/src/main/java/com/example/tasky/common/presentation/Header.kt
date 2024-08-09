@@ -133,7 +133,11 @@ fun TitleSection(title: String, isEditMode: Boolean, onEditClick: (TextFieldType
             .padding(top = 16.dp, start = 16.dp, end = 24.dp)
             .clickable { onEditClick(TextFieldType.TITLE) }
     ) {
-        CustomCheckbox(isChecked = false, color = Color.Black, size = 20.dp)
+        CustomCheckbox(
+            isTaskChecked = false,
+            color = Color.Black,
+            size = 20.dp
+        )
         HeaderLargeStrikeThrough(
             title = title,
             isChecked = false,

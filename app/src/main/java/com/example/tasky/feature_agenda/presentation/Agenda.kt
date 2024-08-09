@@ -161,7 +161,11 @@ fun AgendaRoot(
         toggleAgendaCardDropdownVisibility = { agendaViewModel.toggleAgendaDropdownVisibility() },
         showAgendaCardDropdown = viewState.showAgendaCardDropdown,
         visibleAgendaCardDropdownId = viewState.visibleAgendaCardDropdownId,
-        setVisibleAgendaItemId = { agendaViewModel.setVisibleAgendaItemId(it) }
+        setVisibleAgendaItemId = { agendaViewModel.setVisibleAgendaItemId(it) },
+        toggleTaskComplete = { agendaViewModel.toggleTaskComplete() },
+        isTaskChecked = viewState.isTaskChecked,
+        setTaskCompleteForAgendaItemId = { agendaViewModel.setTaskCompleteForAgendaItemId(it) },
+        taskCompleteForAgendaItemId = viewState.taskCompleteForAgendaItemId
     )
 
     if (viewState.showLoadingSpinner) {
@@ -210,7 +214,11 @@ fun AgendaContent(
     toggleAgendaCardDropdownVisibility: () -> Unit,
     onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit,
     visibleAgendaCardDropdownId: String?,
-    setVisibleAgendaItemId: (String) -> Unit
+    setVisibleAgendaItemId: (String) -> Unit,
+    toggleTaskComplete: () -> Unit,
+    isTaskChecked: Boolean,
+    setTaskCompleteForAgendaItemId: (String) -> Unit,
+    taskCompleteForAgendaItemId: String
 ) {
     Box(
         modifier = Modifier
@@ -286,12 +294,15 @@ fun AgendaContent(
                                             null
                                         )
                                 },
-                                isChecked = false,
+                                isTaskChecked = isTaskChecked,
                                 toggleAgendaCardDropdownVisibility = toggleAgendaCardDropdownVisibility,
                                 onAgendaCardActionClick = onAgendaCardActionClick,
                                 visibleAgendaCardDropdownId = visibleAgendaCardDropdownId,
                                 setVisibleAgendaItemId = setVisibleAgendaItemId,
-                                showAgendaCardDropdown = showAgendaCardDropdown
+                                showAgendaCardDropdown = showAgendaCardDropdown,
+                                toggleTaskComplete = toggleTaskComplete,
+                                setTaskCompleteForAgendaItemId = setTaskCompleteForAgendaItemId,
+                                taskCompleteForAgendaItemId = taskCompleteForAgendaItemId
                             )
                         }
                     }
@@ -341,7 +352,11 @@ fun PreviewAgendaContent() {
         toggleAgendaCardDropdownVisibility = {},
         visibleAgendaCardDropdownId = null,
         setVisibleAgendaItemId = { _ -> },
-        needlePosition = ZonedDateTime.now()
+        needlePosition = ZonedDateTime.now(),
+        toggleTaskComplete = {},
+        isTaskChecked = true,
+        setTaskCompleteForAgendaItemId = { _ -> },
+        taskCompleteForAgendaItemId = ""
     )
 }
 

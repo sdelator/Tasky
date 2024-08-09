@@ -680,7 +680,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     description = description,
                     time = atInZoneDateTime,
                     remindAt = remindAtInZDT,
-                    isDone = false //todo remove hardcode
+                    isDone = false
                 )
             )
 
