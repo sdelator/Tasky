@@ -24,5 +24,8 @@ data class AgendaViewState(
     val headerDateText: String = "",
     val yearSelected: Int = LocalDate.now().year,
     val dateSelected: Long = ZonedDateTime.now().toEpochMillis(),
-    val agendaItems: List<AgendaItem>? = null
+    val agendaItems: List<AgendaItem>? = null,
+    val needlePosition: ZonedDateTime = ZonedDateTime.now(),
+    val isTaskChecked: Boolean = true,
+    val taskCompleteForAgendaItemId: String = ""
 )

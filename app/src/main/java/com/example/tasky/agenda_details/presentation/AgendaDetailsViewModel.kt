@@ -445,9 +445,9 @@ class AgendaDetailsViewModel @Inject constructor(
                             title = title,
                             description = description,
                             remindAt = remindAtInMillis,
-                            agendaItemId = agendaItemId,
-                            date = selectedDate!!,
-                            agendaItemType = agendaItemType!!.name
+                            agendaItemId = eventId,
+                            date = fromInZoneDateTime.toEpochMillis(),
+                            agendaItemType = AgendaItemType.Event.name
                         )
                     }
 
@@ -525,9 +525,9 @@ class AgendaDetailsViewModel @Inject constructor(
                             title = title,
                             description = description,
                             remindAt = remindAtInMillis,
-                            agendaItemId = agendaItemId,
-                            date = selectedDate!!,
-                            agendaItemType!!.name
+                            agendaItemId = taskId,
+                            date = atInZoneDateTime.toEpochMillis(),
+                            agendaItemType = AgendaItemType.Task.name
                         )
                     }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
@@ -598,9 +598,9 @@ class AgendaDetailsViewModel @Inject constructor(
                             title = title,
                             description = description,
                             remindAt = remindAtInMillis,
-                            agendaItemId = agendaItemId,
-                            date = selectedDate!!,
-                            agendaItemType!!.name
+                            agendaItemId = reminderId,
+                            date = atInZoneDateTime.toEpochMillis(),
+                            agendaItemType = AgendaItemType.Reminder.name
                         )
                     }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
@@ -680,7 +680,7 @@ class AgendaDetailsViewModel @Inject constructor(
                     description = description,
                     time = atInZoneDateTime,
                     remindAt = remindAtInZDT,
-                    isDone = false //todo remove hardcode
+                    isDone = false
                 )
             )
 
@@ -694,9 +694,9 @@ class AgendaDetailsViewModel @Inject constructor(
                             title = title,
                             description = description,
                             remindAt = remindAtInMillis,
-                            agendaItemId = agendaItemId!!,
-                            date = selectedDate!!,
-                            agendaItemType!!.name
+                            agendaItemId = taskId,
+                            date = atInZoneDateTime.toEpochMillis(),
+                            agendaItemType = AgendaItemType.Task.name
                         )
                     }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
@@ -771,9 +771,9 @@ class AgendaDetailsViewModel @Inject constructor(
                             title = title,
                             description = description,
                             remindAt = remindAtInMillis,
-                            agendaItemId = agendaItemId!!,
-                            date = selectedDate!!,
-                            agendaItemType!!.name
+                            agendaItemId = reminderId,
+                            date = atInZoneDateTime.toEpochMillis(),
+                            AgendaItemType.Reminder.name
                         )
                     }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)
@@ -852,9 +852,9 @@ class AgendaDetailsViewModel @Inject constructor(
                             title = title,
                             description = description,
                             remindAt = remindAtInMillis,
-                            agendaItemId = agendaItemId!!,
-                            date = selectedDate!!,
-                            agendaItemType!!.name
+                            agendaItemId = eventId,
+                            date = fromInZoneDateTime.toEpochMillis(),
+                            agendaItemType = AgendaItemType.Event.name
                         )
                     }
                     _viewEvent.send(AgendaDetailsViewEvent.NavigateToAgenda)

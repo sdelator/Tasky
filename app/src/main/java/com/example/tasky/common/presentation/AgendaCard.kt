@@ -20,7 +20,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -35,12 +37,15 @@ fun AgendaCard(
     agendaItem: AgendaItem,
     modifier: Modifier,
     date: String,
-    isChecked: Boolean,
+    isTaskChecked: Boolean,
     toggleAgendaCardDropdownVisibility: () -> Unit,
     showAgendaCardDropdown: Boolean,
     onAgendaCardActionClick: (AgendaItem, CardAction) -> Unit,
     visibleAgendaCardDropdownId: String?,
-    setVisibleAgendaItemId: (String) -> Unit
+    setVisibleAgendaItemId: (String) -> Unit,
+    toggleTaskComplete: () -> Unit,
+    setTaskCompleteForAgendaItemId: (String) -> Unit,
+    taskCompleteForAgendaItemId: String
 ) {
     var cardColor = CardDefaults.cardColors()
     var textColor = colorResource(id = R.color.dark_gray)
@@ -80,11 +85,21 @@ fun AgendaCard(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CustomCheckbox(isChecked = isChecked, color = headerColor, size = 16.dp)
-            HeaderMedium(
+            CustomCheckbox(
+                agendaItem = agendaItem,
+                isTaskChecked = isTaskChecked,
+                color = headerColor,
+                size = 16.dp,
+                toggleTaskComplete = toggleTaskComplete,
+                setTaskCompleteForAgendaItemId = setTaskCompleteForAgendaItemId,
+                taskCompleteForAgendaItemId = taskCompleteForAgendaItemId
+            )
+            AgendaCardHeaderMedium(
+                agendaItem = agendaItem,
                 title = agendaItem.title,
-                isChecked = isChecked,
-                textColor = headerColor
+                isTaskChecked = isTaskChecked,
+                textColor = headerColor,
+                taskCompleteForAgendaItemId = taskCompleteForAgendaItemId
             )
             Spacer(modifier = Modifier.weight(1f))
             HorizontalEllipsisIcon(
@@ -103,10 +118,25 @@ fun AgendaCard(
 }
 
 @Composable
-fun CustomCheckbox(isChecked: Boolean, color: Color, size: Dp) {
-    IconButton(onClick = { /*TODO*/ }) {
+fun CustomCheckbox(
+    agendaItem: AgendaItem? = null,
+    isTaskChecked: Boolean,
+    color: Color,
+    size: Dp,
+    toggleTaskComplete: () -> Unit = {},
+    setTaskCompleteForAgendaItemId: (String) -> Unit = { _ -> },
+    taskCompleteForAgendaItemId: String = ""
+) {
+    IconButton(onClick = {
+        if (agendaItem != null) {
+            if (agendaItem.cardType == AgendaItemType.Task) {
+                setTaskCompleteForAgendaItemId(agendaItem.id)
+                toggleTaskComplete()
+            }
+        }
+    }) {
         Icon(
-            painter = if (isChecked) {
+            painter = if (isTaskChecked && (taskCompleteForAgendaItemId == agendaItem?.id)) {
                 painterResource(id = R.drawable.ic_closed_checkbox)
             } else {
                 painterResource(id = R.drawable.ic_open_checkbox)
@@ -118,6 +148,26 @@ fun CustomCheckbox(isChecked: Boolean, color: Color, size: Dp) {
 
             )
     }
+}
+
+@Composable
+fun AgendaCardHeaderMedium(
+    agendaItem: AgendaItem,
+    title: String,
+    isTaskChecked: Boolean = false,
+    textColor: Color,
+    taskCompleteForAgendaItemId: String
+) {
+    Text(
+        text = title,
+        style = TextStyle(
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = textColor,
+            textDecoration = if (isTaskChecked && (taskCompleteForAgendaItemId == agendaItem.id)) TextDecoration.LineThrough else TextDecoration.None
+        ),
+        textAlign = TextAlign.Center
+    )
 }
 
 @Composable
@@ -184,7 +234,7 @@ fun PreviewEventCard() {
     AgendaCard(
         modifier = Modifier,
         date = "Mar 5, 10:30 - Mar 5, 11:00",
-        isChecked = true,
+        isTaskChecked = true,
         toggleAgendaCardDropdownVisibility = {},
         agendaItem = AgendaItem.Event(
             "123",
@@ -201,7 +251,10 @@ fun PreviewEventCard() {
         onAgendaCardActionClick = { _, _ -> },
         visibleAgendaCardDropdownId = null,
         setVisibleAgendaItemId = {},
-        showAgendaCardDropdown = true
+        showAgendaCardDropdown = true,
+        toggleTaskComplete = {},
+        setTaskCompleteForAgendaItemId = { _ -> },
+        taskCompleteForAgendaItemId = ""
     )
 }
 
@@ -211,7 +264,7 @@ fun PreviewTaskCard() {
     AgendaCard(
         modifier = Modifier,
         date = "Mar 5, 10:30 - Mar 5, 11:00",
-        isChecked = false,
+        isTaskChecked = false,
         toggleAgendaCardDropdownVisibility = {},
         agendaItem = AgendaItem.Task(
             "123",
@@ -224,7 +277,10 @@ fun PreviewTaskCard() {
         onAgendaCardActionClick = { _, _ -> },
         visibleAgendaCardDropdownId = null,
         setVisibleAgendaItemId = {},
-        showAgendaCardDropdown = true
+        showAgendaCardDropdown = true,
+        toggleTaskComplete = {},
+        setTaskCompleteForAgendaItemId = { _ -> },
+        taskCompleteForAgendaItemId = ""
     )
 }
 
@@ -234,7 +290,7 @@ fun PreviewReminderCard() {
     AgendaCard(
         modifier = Modifier,
         date = "Mar 5, 10:30 - Mar 5, 11:00",
-        isChecked = true,
+        isTaskChecked = true,
         toggleAgendaCardDropdownVisibility = {},
         agendaItem = AgendaItem.Reminder(
             "123",
@@ -246,12 +302,28 @@ fun PreviewReminderCard() {
         onAgendaCardActionClick = { _, _ -> },
         visibleAgendaCardDropdownId = null,
         setVisibleAgendaItemId = {},
-        showAgendaCardDropdown = true
+        showAgendaCardDropdown = true,
+        toggleTaskComplete = {},
+        setTaskCompleteForAgendaItemId = { _ -> },
+        taskCompleteForAgendaItemId = ""
     )
 }
 
 @Composable
 @Preview
 fun PreviewCustomCheckbox() {
-    CustomCheckbox(isChecked = true, color = Color.White, size = 16.dp)
+    CustomCheckbox(
+        agendaItem = AgendaItem.Task(
+            "",
+            "",
+            "",
+            ZonedDateTime.now(),
+            ZonedDateTime.now(),
+            true
+        ),
+        isTaskChecked = true,
+        color = Color.White,
+        size = 16.dp,
+        toggleTaskComplete = {},
+        setTaskCompleteForAgendaItemId = { _ -> })
 }

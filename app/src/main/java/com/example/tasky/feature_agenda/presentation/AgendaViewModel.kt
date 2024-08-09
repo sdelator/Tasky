@@ -168,6 +168,14 @@ class AgendaViewModel @Inject constructor(
         }
     }
 
+    fun setTaskCompleteForAgendaItemId(agendaItemId: String) {
+        _viewState.update {
+            it.copy(
+                taskCompleteForAgendaItemId = agendaItemId
+            )
+        }
+    }
+
     fun updateDateDialogState(dialogState: MaterialDialogState) {
         _viewState.update {
             it.copy(datePickerDialogState = dialogState)
@@ -247,5 +255,11 @@ class AgendaViewModel @Inject constructor(
             return "$startDate - $endDate"
         }
         return startDate
+    }
+
+    fun toggleTaskComplete() {
+        _viewState.update {
+            it.copy(isTaskChecked = !_viewState.value.isTaskChecked)
+        }
     }
 }
